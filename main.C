@@ -53,7 +53,7 @@ int main (int argc, char **argv)
 	GBool append = gFalse;
 	
 	int firstpage = 1;
-	int lastpage = 0;
+	int lastpage = doc->getNumPages();
 
 	TextOutputDev *output = new TextOutputDev(
 		outputfile->getCString(),
