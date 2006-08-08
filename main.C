@@ -7,7 +7,12 @@
 #include <GlobalParams.h>
 #include <TextOutputDev.h>
 
-#include <gtk/gtk.h>
+#include <gtkmm.h>
+
+// For strstr
+#include <string.h>
+
+#include "BibData.h"
 
 void *textfunc (void *stream, char *text, int len)
 {
@@ -49,12 +54,11 @@ int main (int argc, char **argv)
 	GooString *outputfile = new GooString("output.txt");
 	GBool physLayout = gFalse;
 	GBool rawOrder = gFalse;
-	GBool append = gFalse;
 	
 	int firstpage = 1;
 	int lastpage = doc->getNumPages();
 
-	GooString *textdump = new GooString();
+	GooString *textdump = new GooString("");
 
 	TextOutputDev *output = new TextOutputDev(
 		(TextOutputFunc) textfunc,
@@ -77,4 +81,22 @@ int main (int argc, char **argv)
 	delete doc;
 	
 	return 0;
+}
+
+void guess_journal (char *raw, BibData *bib)
+{
+	unsigned int const n_titles = 1;
+	char search_titles[n_titles][]= {
+		"PHYSICAL REVIEW B"
+	};
+	char bib_titles[n_titles][] = {
+		"Phys. Rev. B"
+	};
+
+	for (unsigned int i = 0; i < n_titles; ++i) {
+		if (strstr (raw, search_titles[i])) {
+			bib->setJournal (bib_titles[i]);
+			break;
+		}
+	}
 }
