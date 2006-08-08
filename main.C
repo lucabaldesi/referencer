@@ -6,14 +6,13 @@
 #include <goo/GooString.h>
 #include <GlobalParams.h>
 #include <TextOutputDev.h>
-// ***
-#include <PSOutputDev.h>
 
 #include <gtk/gtk.h>
 
 void *textfunc (void *stream, char *text, int len)
 {
-	printf ("%d\n", len);
+	GooString *str = (GooString *)stream;
+	str->append(text);
 }
 
 int main (int argc, char **argv)
@@ -25,7 +24,7 @@ int main (int argc, char **argv)
 	gtk_set_locale ();
 	gtk_init (&argc, &argv);
 	
-	GlobalParams *params = new GlobalParams (NULL);
+	globalParams = new GlobalParams (NULL);
 	
 	GooString *filename = new GooString (argv[1]);
 
@@ -47,7 +46,7 @@ int main (int argc, char **argv)
 		g_message ("No metadata");
 	}
 
-	GooString *outputfile = new GooString("output.text");
+	GooString *outputfile = new GooString("output.txt");
 	GBool physLayout = gFalse;
 	GBool rawOrder = gFalse;
 	GBool append = gFalse;
@@ -55,21 +54,13 @@ int main (int argc, char **argv)
 	int firstpage = 1;
 	int lastpage = doc->getNumPages();
 
+	GooString *textdump = new GooString();
+
 	TextOutputDev *output = new TextOutputDev(
-		outputfile->getCString(),
-		physLayout,
-		rawOrder,
-		append);
-
-	/*TextOutputDev *output = new TextOutputDev(
 		(TextOutputFunc) textfunc,
-		NULL,
+		textdump,
 		physLayout,
-		rawOrder);*/
-
-	/*PSOutputDev *output = new PSOutputDev(
-		"output.ps", doc->getXRef(), doc->getCatalog(),
-		firstpage, lastpage, psModePS);*/
+		rawOrder);
 
 	if (output->isOk()) {
 		g_message ("Extracting text...");
@@ -80,6 +71,8 @@ int main (int argc, char **argv)
 		delete output;
 		g_error ("Could not create text output device\n");
 	}
+
+	printf ("%s", textdump->getCString());
 
 	delete doc;
 	
