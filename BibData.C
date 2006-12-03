@@ -129,8 +129,35 @@ void BibData::guessYear (Glib::ustring const &raw_)
 /*
  * Try to guess the authors of the paper from the raw text
  */
-void BibData::guessAuthors (Glib::ustring const &raw)
+void BibData::guessAuthors (Glib::ustring const &raw_)
 {
+	/*
+	 * Take the first four-letter numeric which is between
+	 * 1990 and the current year.  This will occasionally 
+	 * pick up a 'number' or 'page' instead, but should
+	 * almost always be the year
+	 */
+
+	std::string const &raw = raw_;
+
+	boost::regex expression("^(\\D{5,}\n\\D{5,})$"); 
+
+	std::string::const_iterator start, end; 
+	start = raw.begin();
+	end = raw.end(); 
+	boost::match_results<std::string::const_iterator> what; 
+	boost::match_flag_type flags = boost::match_default; 
+	while(regex_search(start, end, what, expression, flags)) 
+	{ 
+		std::string authors = what[0];
+		std::cout << authors << std::endl;
+
+	  // update search position: 
+	  start = what[0].second; 
+	  // update flags: 
+	  flags |= boost::match_prev_avail; 
+	  flags |= boost::match_not_bob; 
+	}
 }
 
 /*

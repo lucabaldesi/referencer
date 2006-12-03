@@ -88,6 +88,7 @@ int main (int argc, char **argv)
 	obj.free();
 
 	bib->guessYear (textdump);
+	bib->guessAuthors (textdump);
 
 	bib->guessJournal (textdump);
 	bib->guessVolumeNumberPage (textdump);
