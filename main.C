@@ -14,9 +14,11 @@
 
 #include "BibData.h"
 
+void guess_journal (Glib::ustring &raw, BibData *bib);
+
 void *textfunc (void *stream, char *text, int len)
 {
-	GooString *str = (GooString *)stream;
+	Glib::ustring *str = (Glib::ustring *)stream;
 	str->append(text);
 }
 
@@ -32,9 +34,7 @@ int main (int argc, char **argv)
 	globalParams = new GlobalParams (NULL);
 	
 	GooString *filename = new GooString (argv[1]);
-
 	PDFDoc *doc = new PDFDoc (filename, NULL, NULL);
-
 	if (doc->isOk())
 		g_message ("Loaded '%s' successfully, %d pages",
 			filename->getCString (),
@@ -42,27 +42,26 @@ int main (int argc, char **argv)
 	else
 		g_error ("Failed to load '%s'", filename->getCString());
 
-	g_message ("Reading metadata...");
-
-	GooString *meta = doc->readMetadata ();
-	if (meta) {
-		g_message ("Got metadata string '%s'\n", meta->getCString());
+	// Obsolete - we use poppler's getInfo instead
+	/*GooString *metagoo = doc->readMetadata ();
+	Glib::ustring meta;
+	if (metagoo) {
+		g_message ("Got metadata string.");
+		meta = metagoo->getCString();	
+		delete metagoo;
 	} else {
-		g_message ("No metadata");
-	}
+		g_message ("No metadata found.");
+	}*/
 
-	GooString *outputfile = new GooString("output.txt");
-	GBool physLayout = gFalse;
-	GBool rawOrder = gFalse;
-	
 	int firstpage = 1;
 	int lastpage = doc->getNumPages();
+	GBool physLayout = gFalse;
+	GBool rawOrder = gFalse;
 
-	GooString *textdump = new GooString("");
-
+	Glib::ustring textdump;
 	TextOutputDev *output = new TextOutputDev(
 		(TextOutputFunc) textfunc,
-		textdump,
+		&textdump,
 		physLayout,
 		rawOrder);
 
@@ -73,30 +72,31 @@ int main (int argc, char **argv)
 		delete output;	
 	} else {
 		delete output;
-		g_error ("Could not create text output device\n");
+		g_error ("Could not create text output device");
 	}
 
-	printf ("%s", textdump->getCString());
+	if (!textdump.empty())
+		g_message ("Got text.");
+	else
+		g_message ("No text found.");
+
+	BibData *bib = new BibData();
+
+	Object obj;
+	if (obj.isDict()) {
+	}
+	obj.free();
+
+	bib->guessYear (textdump);
+
+	bib->guessJournal (textdump);
+	bib->guessVolumeNumberPage (textdump);
+	textdump = "";
+
+	bib->print();
 
 	delete doc;
 	
 	return 0;
 }
 
-void guess_journal (char *raw, BibData *bib)
-{
-	unsigned int const n_titles = 1;
-	char search_titles[n_titles][]= {
-		"PHYSICAL REVIEW B"
-	};
-	char bib_titles[n_titles][] = {
-		"Phys. Rev. B"
-	};
-
-	for (unsigned int i = 0; i < n_titles; ++i) {
-		if (strstr (raw, search_titles[i])) {
-			bib->setJournal (bib_titles[i]);
-			break;
-		}
-	}
-}

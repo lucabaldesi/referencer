@@ -9,7 +9,20 @@ class BibData {
 	Glib::ustring authors_;
 	Glib::ustring journal_;
 	Glib::ustring title_;
+	Glib::ustring year_;
+
 	public:
+	typedef enum {
+		FIELD_VOLUME = 1<<0,
+		FIELD_NUMBER = 1<<1,
+		FIELD_PAGES = 1<<2,
+		FIELD_AUTHORS = 1<<3,
+		FIELD_JOURNAL = 1<<4,
+		FIELD_TITLE = 1<<5,
+		FIELD_YEAR = 1<<6,
+		FIELD_ALL = 1<<7
+	} FieldMask;
+
 	void setVolume (Glib::ustring &vol) {volume_ = vol;}
 	Glib::ustring getVolume () {return volume_;}
 	void setNumber (Glib::ustring &num) {number_ = num;}
@@ -22,6 +35,17 @@ class BibData {
 	Glib::ustring getJournal () {return journal_;}
 	void setTitle (Glib::ustring &title) {title_ = title;}
 	Glib::ustring getTitle () {return title_;}
+	void setYear (Glib::ustring &year) {year_ = year;}
+	Glib::ustring getYear () {return year_;}
 
 	void print ();
+
+	void parseMetadata (Glib::ustring const &meta, FieldMask mask);
+	void guessJournal (Glib::ustring const &raw);
+	void guessVolumeNumberPage (Glib::ustring const &raw);
+	void guessYear (Glib::ustring const &raw);
+	void guessAuthors (Glib::ustring const &raw);
+	void guessTitle (Glib::ustring const &raw);
 };
+
+

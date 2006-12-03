@@ -2,7 +2,7 @@
 
 CC = g++
 CFLAGS = `pkg-config --cflags poppler gtkmm-2.4`
-LIBS = `pkg-config --libs poppler gtkmm-2.4`
+LIBS = `pkg-config --libs poppler gtkmm-2.4` -lboost_regex
 
 TARGET = pdfdivine
 
