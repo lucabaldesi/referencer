@@ -82,17 +82,19 @@ int main (int argc, char **argv)
 
 	BibData *bib = new BibData();
 
-	Object obj;
-	if (obj.isDict()) {
-	}
-	obj.free();
-
 	bib->guessYear (textdump);
 	bib->guessAuthors (textdump);
 
 	bib->guessJournal (textdump);
 	bib->guessVolumeNumberPage (textdump);
+	
+	Glib::ustring cppdump = textdump;
+	
 	textdump = "";
+	
+	FILE *out = fopen("dump.txt", "w");
+	fwrite (cppdump.c_str(), 1, strlen(cppdump.c_str()), out);
+	fclose (out);
 
 	bib->print();
 
