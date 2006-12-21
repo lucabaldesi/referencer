@@ -1,6 +1,6 @@
 
 
-CC = g++
+CC = g++ -g
 CFLAGS = `pkg-config --cflags poppler gtkmm-2.4`
 LIBS = `pkg-config --libs poppler gtkmm-2.4` -lboost_regex
 
@@ -13,11 +13,12 @@ clean:
 	rm -f $(TARGET)
 	rm -f $(OBJECTS)
 
-main.o: main.C BibData.h
-	$(CC) $(CFLAGS) -c main.C
-
-BibData.o: BibData.C BibData.h
-	$(CC) $(CFLAGS) -c BibData.C
+.C.o:
+	$(CC) $(CFLAGS) -o ${patsubst %.C, %.o, $<} -c $<
 
 pdfdivine: $(OBJECTS)
 	$(CC) $(LIBS) -o $(TARGET) $(OBJECTS)
+
+tagwindow: TagWindow.o TagWindow.h TagList.o TagList.h 
+	$(CC) $(LIBS) -o tagwindow TagWindow.o TagList.o
+
