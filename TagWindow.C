@@ -89,7 +89,7 @@ int main (int argc, char **argv)
 		
 		time_t mtime;
 		Glib::RefPtr<Gnome::Vfs::Uri> uri = Gnome::Vfs::Uri::create (pdffile);
-		Glib::RefPtr<Gnome::Vfs::FileInfo> fileinfo = uri->get_file_info (/*Gnome::Vfs::FILE_INFO_DEFAULT*/);
+		Glib::RefPtr<Gnome::Vfs::FileInfo> fileinfo = uri->get_file_info ();
 		mtime = fileinfo->get_modification_time ();
 		std::cerr << "mtime " << mtime << std::endl;
 		
