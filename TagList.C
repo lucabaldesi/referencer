@@ -15,10 +15,10 @@ std::vector<Tag> TagList::getTags()
 	return tags_;
 }
 
-std::vector<Tag> TagList::newTag(std::string const name, Tag::Action const action)
+void TagList::newTag(std::string const name, Tag::Action const action)
 {
-	Tag const *newtag = new Tag(uidCounter_++, name, action);
-	tags_.push_back(*newtag);
+	Tag newtag (uidCounter_++, name, action);
+	tags_.push_back(newtag);
 }
 
 void TagList::print()
@@ -26,6 +26,9 @@ void TagList::print()
 	std::vector<Tag>::iterator it = tags_.begin();
 	std::vector<Tag>::iterator const end = tags_.end();
 	for (; it != end; it++) {
-		std::cout << (*it).uid_;
+		std::cerr << (*it).uid_ << " ";
+		std::cerr << (*it).name_ << " ";
+		std::cerr << (*it).action_ << " ";
+		std::cerr << std::endl;
 	}
 }

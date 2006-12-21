@@ -5,9 +5,10 @@
 #include <string>
 #include <vector>
 
+
 class Tag {
 	public:
-	typedef enum {ATTACH, SEARCH_ALL, SEARCH_AUTHOR,
+	typedef enum {ATTACH = 0, SEARCH_ALL, SEARCH_AUTHOR,
 		SEARCH_ABSTRACT, SEARCH_TITLE} Action;
 	Tag (int const uid, std::string const name, Tag::Action const action);
 	int uid_;
@@ -22,10 +23,12 @@ class TagList {
 	std::vector<Tag> tags_;
 	
 	public:
-	TagList() {uidCounter_ = 0;}
+	TagList() {
+		uidCounter_ = 0;
+	}
 	void print();
 	std::vector<Tag> getTags();
-	std::vector<Tag> newTag(std::string const name, Tag::Action const action);
+	void newTag(std::string const name, Tag::Action const action);
 };
 
 #endif
