@@ -115,10 +115,10 @@ window_ = new Gtk::Window(Gtk::WINDOW_TOPLEVEL);
 
 	// Create the treeview for the tag list
 	Gtk::TreeView *tags = new Gtk::TreeView(tagstore_);
-	tags->append_column("UID", taguidcol_);
+	//tags->append_column("UID", taguidcol_);
 	Gtk::CellRendererText *render = Gtk::manage(new Gtk::CellRendererText());
 	Gtk::TreeView::Column *namecol = Gtk::manage(
-		new Gtk::TreeView::Column ("Tag name", *render));
+		new Gtk::TreeView::Column ("Tags", *render));
 	namecol->add_attribute (render->property_markup (), tagnamecol_);
 	tags->append_column (*namecol);
 
