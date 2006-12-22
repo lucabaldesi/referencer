@@ -14,8 +14,6 @@
 
 #include "BibData.h"
 
-void guess_journal (Glib::ustring &raw, BibData *bib);
-
 void *textfunc (void *stream, char *text, int len)
 {
 	Glib::ustring *str = (Glib::ustring *)stream;
