@@ -9,12 +9,18 @@ class DocumentList;
 class TagList;
 class Gtk::TreePath;
 
+#define ALL_TAGS_UID -1
+
 class TagWindow {
+
 	private:
+		int memberint;
 		void populateDocIcons ();
 		void populateTagList ();
 		void constructUI ();
+		void constructMenu ();
 		
+
 		DocumentList *doclist_;
 		TagList *taglist_;
 		
@@ -35,9 +41,17 @@ class TagWindow {
 		Glib::RefPtr<Gtk::TreeSelection> tagselection_;
 		std::vector<int> filtertags_;
 		
+		Glib::RefPtr<Gtk::UIManager> uimanager_;
+		Glib::RefPtr<Gtk::ActionGroup> actiongroup_;
+
+		
 		void docActivated (const Gtk::TreePath& path);
 		void tagSelectionChanged ();
 		bool docClicked (GdkEventButton* event);
+		void onQuit (/*GdkEventAny *ev*/);
+		void onCreateTag ();
+		void onDeleteTag ();
+		void onExportBibtex ();
 		
 		Gtk::Menu doccontextmenu_;
 		
@@ -48,12 +62,11 @@ class TagWindow {
 		} YesNoMaybe;
 		
 		YesNoMaybe selectedDocsHaveTag (int uid);
+		void writeXML ();
 		
 	public:
 		TagWindow ();
 		void run ();
-		
-
 };
 
 #endif
