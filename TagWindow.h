@@ -65,9 +65,12 @@ class TagWindow {
 		YesNoMaybe selectedDocsHaveTag (int uid);
 		Glib::ustring writeXML ();
 		void readXML (Glib::ustring XML);
+		void loadLibrary ();
+		void saveLibrary ();
 		
 	public:
 		TagWindow ();
+		~TagWindow ();
 		void run ();
 };
 

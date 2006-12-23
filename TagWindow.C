@@ -22,7 +22,7 @@ int main (int argc, char **argv)
 	TagWindow window;
 	
 	window.run();
-	
+
 	return 0;
 }
 
@@ -251,13 +251,13 @@ void TagWindow::constructMenu ()
 TagWindow::TagWindow ()
 {
 	taglist_ = new TagList();
-	int griduid = taglist_->newTag("Grid", Tag::ATTACH);
-	int ompuid = taglist_->newTag("OpenMP", Tag::ATTACH);
+	/*int griduid = taglist_->newTag("Grid", Tag::ATTACH);
+	int ompuid = taglist_->newTag("OpenMP", Tag::ATTACH);*/
 	
-	Document *mydoc;
+	//Document *mydoc;
 	
 	doclist_ = new DocumentList();
-	doclist_->newDoc("file:///home/jcspray/Desktop/sc06/pap104.pdf");
+	/*doclist_->newDoc("file:///home/jcspray/Desktop/sc06/pap104.pdf");
 	mydoc = doclist_->newDoc("file:///home/jcspray/Desktop/sc06/pap107.pdf");
 	mydoc->setTag(griduid);
 	doclist_->newDoc("file:///home/jcspray/Desktop/sc06/pap108.pdf");
@@ -265,14 +265,21 @@ TagWindow::TagWindow ()
 	mydoc->setTag(ompuid);
 	mydoc = doclist_->newDoc("file:///home/jcspray/Desktop/sc06/pap122.pdf");
 	mydoc->setTag(griduid);
-	mydoc->setTag(ompuid);
+	mydoc->setTag(ompuid);*/
 
-	readXML (writeXML ());
+	//readXML (writeXML ());
+
+	loadLibrary ();
 
 	constructUI ();
 	populateDocIcons ();
 	populateTagList ();
 	window_->show_all ();
+}
+
+TagWindow::~TagWindow ()
+{
+	saveLibrary ();
 }
 
 
@@ -464,6 +471,7 @@ void TagWindow::onDeleteTag ()
 
 void TagWindow::onExportBibtex ()
 {
+	std::ostringstream out;
 }
 
 
@@ -474,7 +482,7 @@ Glib::ustring TagWindow::writeXML ()
 	taglist_->writeXML (out);
 	doclist_->writeXML (out);
 	out << "</library>\n";
-	std::cerr << out.str();
+	//std::cerr << out.str();
 	return out.str ();
 }
 
@@ -489,3 +497,63 @@ void TagWindow::readXML (Glib::ustring XMLtext)
 	context.end_parse ();
 }
 
+
+void TagWindow::loadLibrary ()
+{
+	Gnome::Vfs::Handle libfile;
+	
+	/*Glib::ustring libfilename =
+		Gnome::Vfs::expand_initial_tilde("~/.pdfdivine.lib");*/
+	Glib::ustring libfilename = "/home/jcspray/.pdfdivine.lib";
+		
+	Glib::RefPtr<Gnome::Vfs::Uri> liburi = Gnome::Vfs::Uri::create (libfilename);
+	
+	bool exists = liburi->uri_exists ();
+	if (!exists) {
+		std::cerr << "TagWindow::loadLibrary: Library file '" << libfilename << "' not found\n";
+		return;
+	}
+	
+	libfile.open (libfilename, Gnome::Vfs::OPEN_READ);
+	
+	Glib::RefPtr<Gnome::Vfs::FileInfo> fileinfo;
+	fileinfo = libfile.get_file_info ();
+	
+	char *buffer = (char *) malloc (sizeof(char) * fileinfo->get_size());
+	
+	libfile.read (buffer, fileinfo->get_size());
+	
+	Glib::ustring rawtext = buffer;
+	
+	free (buffer);
+	
+	libfile.close ();
+	
+	readXML (rawtext);
+}
+
+
+void TagWindow::saveLibrary ()
+{
+	Gnome::Vfs::Handle libfile;
+	
+	/*Glib::ustring libfilename =
+		Gnome::Vfs::expand_initial_tilde("~/.pdfdivine.lib");*/
+	Glib::ustring libfilename = "/home/jcspray/.pdfdivine.lib";
+		
+	Glib::RefPtr<Gnome::Vfs::Uri> liburi = Gnome::Vfs::Uri::create (libfilename);
+	
+	bool exists = liburi->uri_exists ();
+	if (!exists) {
+		std::cerr << "TagWindow::loadLibrary: Library file '" << libfilename << "' not found\n";
+		return;
+	}
+	
+	libfile.open (libfilename, Gnome::Vfs::OPEN_WRITE);
+	
+	Glib::ustring rawtext = writeXML ();
+	
+	libfile.write (rawtext.c_str(), strlen(rawtext.c_str()));
+	
+	libfile.close ();
+}
