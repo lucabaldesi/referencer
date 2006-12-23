@@ -32,6 +32,14 @@ class LibraryParser : public Glib::Markup::Parser {
 	LibraryParser (TagList &taglist, DocumentList &doclist)
 		: doclist_(doclist), taglist_(taglist)
 	{
+		inTag_ = false;
+		inUid_ = false;
+		inTagName_ = false;
+		
+		inDoc_ = false;
+		inDisplayName_ = false;
+		inFileName_ = false;
+		inTagged_ = false;
 	}
 
 	private:
@@ -111,8 +119,10 @@ class LibraryParser : public Glib::Markup::Parser {
 		else if (inTagName_)
 			newTagName_ += text;
 	
-		else if (inFileName_)
+		else if (inFileName_) {
+			std::cerr << "Adding '" << text << "' to filename\n";
 			newDocFileName_ += text;
+		}
 		else if (inDisplayName_)
 			newDocDisplayName_ += text;
 		else if (inTagged_)
