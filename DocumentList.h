@@ -3,6 +3,7 @@
 #define DOCUMENTLIST_H
 
 #include <gtkmm.h>
+#include <sstream>
 
 class Document {
 	private:
@@ -30,6 +31,8 @@ class DocumentList {
 	Document* newDoc (Glib::ustring const filename);
 	void print ();
 	bool test ();
+	void clearTag (int uid);
+	void writeXML (std::ostringstream& out);
 };
 
 #endif
