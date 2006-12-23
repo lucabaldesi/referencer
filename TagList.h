@@ -4,6 +4,8 @@
 
 #include <string>
 #include <vector>
+#include <sstream>
+#include <gtkmm.h>
 
 
 class Tag {
@@ -26,9 +28,11 @@ class TagList {
 	TagList() {
 		uidCounter_ = 0;
 	}
-	void print();
-	std::vector<Tag>& getTags();
-	int newTag(std::string const name, Tag::Action const action);
+	void print ();
+	std::vector<Tag>& getTags ();
+	int newTag (std::string const name, Tag::Action const action);
+	void deleteTag (int uid);
+	void writeXML (std::ostringstream& out);
 };
 
 #endif
