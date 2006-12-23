@@ -31,8 +31,11 @@ class TagList {
 	void print ();
 	std::vector<Tag>& getTags ();
 	int newTag (std::string const name, Tag::Action const action);
+	void loadTag (std::string const name, Tag::Action const action, int uid);
 	void deleteTag (int uid);
 	void writeXML (std::ostringstream& out);
+	void clear () {tags_.clear ();}
+	
 };
 
 #endif

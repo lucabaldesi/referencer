@@ -12,7 +12,11 @@ class Document {
 	std::vector<int> tagUids_;
 
 	public:
-	Document (Glib::ustring const filename);
+	Document (Glib::ustring const &filename);
+	Document (
+		Glib::ustring const &filename,
+		Glib::ustring const &displayname,
+		std::vector<int> const &tagUids);
 	Glib::ustring getDisplayName();
 	Glib::ustring getFileName();
 	std::vector<int> getTags ();
@@ -28,11 +32,16 @@ class DocumentList {
 	
 	public:
 	std::vector<Document>& getDocs ();
-	Document* newDoc (Glib::ustring const filename);
+	Document* newDoc (Glib::ustring const &filename);
+	void loadDoc (
+		Glib::ustring const &filename,
+		Glib::ustring const &displayname,
+		std::vector<int> const &taguids);
 	void print ();
 	bool test ();
 	void clearTag (int uid);
 	void writeXML (std::ostringstream& out);
+	void clear () {docs_.clear ();}
 };
 
 #endif

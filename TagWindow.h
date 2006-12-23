@@ -8,6 +8,7 @@ class Document;
 class DocumentList;
 class TagList;
 class Gtk::TreePath;
+class Glib::ustring;
 
 #define ALL_TAGS_UID -1
 
@@ -62,7 +63,8 @@ class TagWindow {
 		} YesNoMaybe;
 		
 		YesNoMaybe selectedDocsHaveTag (int uid);
-		void writeXML ();
+		Glib::ustring writeXML ();
+		void readXML (Glib::ustring XML);
 		
 	public:
 		TagWindow ();

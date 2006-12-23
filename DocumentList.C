@@ -8,10 +8,20 @@
 #include "DocumentList.h"
 
 
-Document::Document (Glib::ustring const filename)
+Document::Document (Glib::ustring const &filename)
 {
 	filename_ = filename;
 	displayname_ = Glib::path_get_basename (filename);
+}
+
+Document::Document (
+	Glib::ustring const &filename,
+	Glib::ustring const &displayname,
+	std::vector<int> const &tagUids)
+{
+	filename_ = filename;
+	displayname_ = displayname;
+	tagUids_ = tagUids;
 }
 
 
@@ -76,11 +86,21 @@ std::vector<Document>& DocumentList::getDocs ()
 }
 
 
-Document* DocumentList::newDoc (Glib::ustring const filename)
+Document* DocumentList::newDoc (Glib::ustring const &filename)
 {
 	Document newdoc(filename);
 	docs_.push_back(newdoc);
 	return &(docs_.back());
+}
+
+
+void DocumentList::loadDoc (
+	Glib::ustring const &filename,
+	Glib::ustring const &displayname,
+	std::vector<int> const &taguids)
+{
+	Document newdoc (filename, displayname, taguids);
+	docs_.push_back(newdoc);
 }
 
 
@@ -137,7 +157,7 @@ void DocumentList::writeXML (std::ostringstream& out)
 		std::vector<int> docvec = (*it).getTags();
 		for (std::vector<int>::iterator it = docvec.begin();
 			   it != docvec.end(); ++it) {
-			out << "    <tag>" << (*it) << "</tag>\n";
+			out << "    <tagged>" << (*it) << "</tagged>\n";
 		}
 		out << "  </doc>\n";
 	}

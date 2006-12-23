@@ -10,6 +10,8 @@
 #include "TagList.h"
 #include "DocumentList.h"
 
+#include "LibraryParser.h"
+
 int main (int argc, char **argv)
 {
 	Gnome::Main gui ("TagWindow", "0.0.0",
@@ -265,7 +267,7 @@ TagWindow::TagWindow ()
 	mydoc->setTag(griduid);
 	mydoc->setTag(ompuid);
 
-	writeXML ();
+	readXML (writeXML ());
 
 	constructUI ();
 	populateDocIcons ();
@@ -465,7 +467,7 @@ void TagWindow::onExportBibtex ()
 }
 
 
-void TagWindow::writeXML ()
+Glib::ustring TagWindow::writeXML ()
 {
 	std::ostringstream out;
 	out << "<library>\n";
@@ -473,6 +475,17 @@ void TagWindow::writeXML ()
 	doclist_->writeXML (out);
 	out << "</library>\n";
 	std::cerr << out.str();
+	return out.str ();
 }
 
+
+void TagWindow::readXML (Glib::ustring XMLtext)
+{
+	taglist_->clear();
+	doclist_->clear();
+	LibraryParser parser (*taglist_, *doclist_);
+	Glib::Markup::ParseContext context (parser);
+	context.parse (XMLtext);
+	context.end_parse ();
+}
 

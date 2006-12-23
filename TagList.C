@@ -23,6 +23,16 @@ int TagList::newTag (std::string const name, Tag::Action const action)
 	return uidCounter_++;
 }
 
+
+void TagList::loadTag (std::string const name, Tag::Action const action, int uid)
+{
+	Tag newtag (uid, name, action);
+	tags_.push_back(newtag);
+	if (uid > uidCounter_)
+		uidCounter_ = uid + 1;
+}
+
+
 void TagList::print ()
 {
 	std::vector<Tag>::iterator it = tags_.begin();
@@ -49,6 +59,9 @@ void TagList::deleteTag (int uid)
 }
 
 
+
+
+
 using Glib::Markup::escape_text;
 
 
@@ -60,7 +73,7 @@ void TagList::writeXML (std::ostringstream& out)
 	for (; it != end; it++) {
 		out << "  <tag>\n";
 		out << "    <uid>" << (*it).uid_ << "</uid>\n";
-		out << "    <name>" << escape_text((*it).name_) << "</uid>\n";
+		out << "    <name>" << escape_text((*it).name_) << "</name>\n";
 		// For now assume all tags are ATTACH, when they're not we need
 		// to put some more information here
 		out << "  </tag>\n";
