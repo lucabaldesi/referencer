@@ -10,15 +10,16 @@ Tag::Tag (int const uid, std::string const name, Tag::Action const action)
 	action_ = action;
 }
 
-std::vector<Tag> TagList::getTags()
+std::vector<Tag>& TagList::getTags()
 {
 	return tags_;
 }
 
-void TagList::newTag(std::string const name, Tag::Action const action)
+int TagList::newTag(std::string const name, Tag::Action const action)
 {
-	Tag newtag (uidCounter_++, name, action);
+	Tag newtag (uidCounter_, name, action);
 	tags_.push_back(newtag);
+	return uidCounter_++;
 }
 
 void TagList::print()

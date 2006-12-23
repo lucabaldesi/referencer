@@ -27,7 +27,7 @@ class DocumentList {
 	
 	public:
 	std::vector<Document>& getDocs ();
-	void newDoc (Glib::ustring const filename);
+	Document* newDoc (Glib::ustring const filename);
 	void print ();
 	bool test ();
 };

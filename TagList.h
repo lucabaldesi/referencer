@@ -27,8 +27,8 @@ class TagList {
 		uidCounter_ = 0;
 	}
 	void print();
-	std::vector<Tag> getTags();
-	void newTag(std::string const name, Tag::Action const action);
+	std::vector<Tag>& getTags();
+	int newTag(std::string const name, Tag::Action const action);
 };
 
 #endif

@@ -73,10 +73,11 @@ std::vector<Document>& DocumentList::getDocs ()
 }
 
 
-void DocumentList::newDoc (Glib::ustring const filename)
+Document* DocumentList::newDoc (Glib::ustring const filename)
 {
 	Document newdoc(filename);
 	docs_.push_back(newdoc);
+	return &(docs_.back());
 }
 
 
