@@ -49,16 +49,18 @@ void TagList::deleteTag (int uid)
 }
 
 
+using Glib::Markup::escape_text;
+
+
 void TagList::writeXML (std::ostringstream& out)
 {
-	// Should escape this stuff
 	out << "<taglist>\n";
 	std::vector<Tag>::iterator it = tags_.begin();
 	std::vector<Tag>::iterator const end = tags_.end();
 	for (; it != end; it++) {
 		out << "  <tag>\n";
 		out << "    <uid>" << (*it).uid_ << "</uid>\n";
-		out << "    <name>" << (*it).name_ << "</uid>\n";
+		out << "    <name>" << escape_text((*it).name_) << "</uid>\n";
 		// For now assume all tags are ATTACH, when they're not we need
 		// to put some more information here
 		out << "  </tag>\n";

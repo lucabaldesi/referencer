@@ -3,6 +3,8 @@
 #include <iostream>
 #include <sstream>
 
+#include <glibmm/markup.h>
+
 #include "DocumentList.h"
 
 
@@ -118,16 +120,20 @@ void DocumentList::clearTag (int uid)
 	}
 }	
 
+
+using Glib::Markup::escape_text;
+
 void DocumentList::writeXML (std::ostringstream& out)
 {
-	// Should escape this stuff
 	out << "<doclist>\n";
 	std::vector<Document>::iterator it = docs_.begin();
 	std::vector<Document>::iterator const end = docs_.end();
 	for (; it != end; it++) {
 		out << "  <doc>\n";
-		out << "    <filename>" << (*it).getFileName() << "</filename>\n";
-		out << "    <displayname>" << (*it).getDisplayName() << "</displayname>\n";
+		out << "    <filename>" << escape_text((*it).getFileName())
+			<< "</filename>\n";
+		out << "    <displayname>" << escape_text((*it).getDisplayName())
+			<< "</displayname>\n";
 		std::vector<int> docvec = (*it).getTags();
 		for (std::vector<int>::iterator it = docvec.begin();
 			   it != docvec.end(); ++it) {
