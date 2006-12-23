@@ -193,14 +193,21 @@ void TagWindow::constructUI ()
 		
 	icons->signal_button_press_event().connect(
 		sigc::mem_fun (*this, &TagWindow::docClicked));
+		
+	icons->signal_selection_changed().connect(
+		sigc::mem_fun (*this, &TagWindow::docSelectionChanged));
 	
 	icons->set_selection_mode (Gtk::SELECTION_MULTIPLE);
 	
 	docsview_ = icons;
 	
+	Gtk::ScrolledWindow *scroll = Gtk::manage(new Gtk::ScrolledWindow());
+	scroll->add(*icons);
+	scroll->set_policy (Gtk::POLICY_NEVER, Gtk::POLICY_AUTOMATIC);
+	
 	// Frame it and put it in the HPaned
 	Gtk::Frame *iconsframe = new Gtk::Frame ();
-	iconsframe->add(*icons);
+	iconsframe->add(*scroll);
 	hpaned->pack2(*iconsframe, Gtk::EXPAND);
 }
 
@@ -223,6 +230,14 @@ void TagWindow::constructMenu ()
 	actiongroup_->add( Gtk::Action::create(
 		"DeleteTag", Gtk::Stock::DELETE, "_Delete Tag"),
   	sigc::mem_fun(*this, &TagWindow::onDeleteTag));
+  	
+	actiongroup_->add ( Gtk::Action::create("DocMenu", "_Documents") );
+	actiongroup_->add( Gtk::Action::create(
+		"AddDoc", Gtk::Stock::ADD, "_Add Document"),
+  	sigc::mem_fun(*this, &TagWindow::onAddDoc));
+	actiongroup_->add( Gtk::Action::create(
+		"RemoveDoc", Gtk::Stock::REMOVE, "_Remove Document"),
+  	sigc::mem_fun(*this, &TagWindow::onRemoveDoc));
 
 	uimanager_ = Gtk::UIManager::create ();
 	uimanager_->insert_action_group (actiongroup_);
@@ -237,6 +252,10 @@ void TagWindow::constructMenu ()
 		"      <menuitem action='CreateTag'/>"
 		"      <menuitem action='DeleteTag'/>"
 		"    </menu>"
+		"    <menu action='DocMenu'>"
+		"      <menuitem action='AddDoc'/>"
+		"      <menuitem action='RemoveDoc'/>"
+		"    </menu>"
 		"  </menubar>"
 		"  <toolbar name='TagBar'>"
 		"    <toolitem action='CreateTag'/>"
@@ -245,6 +264,8 @@ void TagWindow::constructMenu ()
 		"</ui>";
 	
 	uimanager_->add_ui_from_string (ui);
+	
+	window_->add_accel_group (uimanager_->get_accel_group ());
 }
 
 
@@ -254,9 +275,8 @@ TagWindow::TagWindow ()
 	/*int griduid = taglist_->newTag("Grid", Tag::ATTACH);
 	int ompuid = taglist_->newTag("OpenMP", Tag::ATTACH);*/
 	
-	//Document *mydoc;
-	
 	doclist_ = new DocumentList();
+	//Document *mydoc;
 	/*doclist_->newDoc("file:///home/jcspray/Desktop/sc06/pap104.pdf");
 	mydoc = doclist_->newDoc("file:///home/jcspray/Desktop/sc06/pap107.pdf");
 	mydoc->setTag(griduid);
@@ -266,8 +286,6 @@ TagWindow::TagWindow ()
 	mydoc = doclist_->newDoc("file:///home/jcspray/Desktop/sc06/pap122.pdf");
 	mydoc->setTag(griduid);
 	mydoc->setTag(ompuid);*/
-
-	//readXML (writeXML ());
 
 	loadLibrary ();
 
@@ -320,6 +338,13 @@ void TagWindow::tagSelectionChanged ()
 		anythingselected && !allselected);
 	
 	populateDocIcons ();
+}
+
+
+void TagWindow::docSelectionChanged ()
+{
+	actiongroup_->get_action("RemoveDoc")->set_sensitive (
+		!docsview_->get_selected_items().empty());
 }
 
 
@@ -461,7 +486,6 @@ void TagWindow::onDeleteTag ()
 			taglist_->deleteTag ((*iter)[taguidcol_]);
 			somethingdeleted = true;
 		}
-
 	}
 	
 	if (somethingdeleted)
@@ -475,13 +499,69 @@ void TagWindow::onExportBibtex ()
 }
 
 
+void TagWindow::onAddDoc ()
+{
+	static Glib::ustring startlocation = "";
+	
+	Gtk::FileChooserDialog chooser(
+		"Add Document",
+		Gtk::FILE_CHOOSER_ACTION_OPEN);
+	
+	chooser.set_select_multiple (true);
+	chooser.set_local_only (false);
+	chooser.set_current_folder (startlocation);
+	chooser.add_button (Gtk::Stock::CANCEL, Gtk::RESPONSE_REJECT);
+	chooser.add_button (Gtk::Stock::ADD, Gtk::RESPONSE_ACCEPT);
+	
+	int result = chooser.run ();
+	if (result == Gtk::RESPONSE_ACCEPT) {
+		startlocation = Glib::path_get_dirname(chooser.get_filename());
+		Glib::SListHandle<Glib::ustring> uris = chooser.get_uris ();
+		Glib::SListHandle<Glib::ustring>::iterator iter = uris.begin();
+		Glib::SListHandle<Glib::ustring>::iterator const end = uris.end();
+		for (; iter != end; ++iter) {
+			//std::cerr << (*iter) << std::endl;
+			doclist_->newDoc(*iter);
+		}
+	}
+	populateDocIcons ();
+}
+
+
+void TagWindow::onRemoveDoc ()
+{
+	Gtk::IconView::ArrayHandle_TreePaths paths = docsview_->get_selected_items ();
+
+	bool const multiple = paths.size() > 1;
+	
+	if (multiple) {
+		// Do you really want to remove N documents?
+		// else return
+	}
+	
+	Gtk::IconView::ArrayHandle_TreePaths::iterator it = paths.begin ();
+	Gtk::IconView::ArrayHandle_TreePaths::iterator const end = paths.end ();
+	for (; it != end; it++) {
+		Gtk::TreePath path = (*it);
+		Gtk::ListStore::iterator iter = iconstore_->get_iter (path);
+		if (!multiple) {
+			// Do you really want to remove this file?
+			//doclist_->removeDoc((*iter)[docnamecol_]);
+		} else {
+			//doclist_->removeDoc((*iter)[docnamecol_]);
+		}
+		
+	}
+}
+
+
 Glib::ustring TagWindow::writeXML ()
 {
 	std::ostringstream out;
-	out << "<library>\n";
+	out << "<xml>\n<library>\n";
 	taglist_->writeXML (out);
 	doclist_->writeXML (out);
-	out << "</library>\n";
+	out << "</library>\n</xml>\n";
 	//std::cerr << out.str();
 	return out.str ();
 }
@@ -493,7 +573,24 @@ void TagWindow::readXML (Glib::ustring XMLtext)
 	doclist_->clear();
 	LibraryParser parser (*taglist_, *doclist_);
 	Glib::Markup::ParseContext context (parser);
-	context.parse (XMLtext);
+	try {
+		context.parse (XMLtext);
+	} catch (Glib::MarkupError const ex) {
+		std::cerr << "Exception on line " << context.get_line_number () << ", character " << context.get_char_number () << ", code ";
+		switch (ex.code()) {
+			case Glib::MarkupError::BAD_UTF8:
+				std::cerr << "Bad UTF8\n";
+				break;
+			case Glib::MarkupError::EMPTY:
+				std::cerr << "Empty\n";
+				break;
+			case Glib::MarkupError::PARSE:
+				std::cerr << "Parse error\n";
+				break;
+			default:
+				std::cerr << (int)ex.code() << "\n";
+		}
+	}
 	context.end_parse ();
 }
 
@@ -510,7 +607,8 @@ void TagWindow::loadLibrary ()
 	
 	bool exists = liburi->uri_exists ();
 	if (!exists) {
-		std::cerr << "TagWindow::loadLibrary: Library file '" << libfilename << "' not found\n";
+		std::cerr << "TagWindow::loadLibrary: Library file '" <<
+			libfilename << "' not found\n";
 		return;
 	}
 	
@@ -519,16 +617,13 @@ void TagWindow::loadLibrary ()
 	Glib::RefPtr<Gnome::Vfs::FileInfo> fileinfo;
 	fileinfo = libfile.get_file_info ();
 	
-	char *buffer = (char *) malloc (sizeof(char) * fileinfo->get_size());
-	
+	char *buffer = (char *) malloc (sizeof(char) * (fileinfo->get_size() + 1));
 	libfile.read (buffer, fileinfo->get_size());
+	buffer[fileinfo->get_size()] = 0;
 	
 	Glib::ustring rawtext = buffer;
-	
 	free (buffer);
-	
 	libfile.close ();
-	
 	readXML (rawtext);
 }
 
@@ -540,17 +635,16 @@ void TagWindow::saveLibrary ()
 	/*Glib::ustring libfilename =
 		Gnome::Vfs::expand_initial_tilde("~/.pdfdivine.lib");*/
 	Glib::ustring libfilename = "/home/jcspray/.pdfdivine.lib";
-		
-	Glib::RefPtr<Gnome::Vfs::Uri> liburi = Gnome::Vfs::Uri::create (libfilename);
-	
-	bool exists = liburi->uri_exists ();
-	if (!exists) {
-		std::cerr << "TagWindow::loadLibrary: Library file '" << libfilename << "' not found\n";
+
+	try {
+		libfile.create (libfilename, Gnome::Vfs::OPEN_WRITE,
+			false, Gnome::Vfs::PERM_USER_READ | Gnome::Vfs::PERM_USER_WRITE);
+	} catch (const Gnome::Vfs::exception ex) {
+		std::cerr << "TagWindow::saveLibrary: "
+			"exception in create '" << ex.what() << "'\n";
 		return;
 	}
-	
-	libfile.open (libfilename, Gnome::Vfs::OPEN_WRITE);
-	
+
 	Glib::ustring rawtext = writeXML ();
 	
 	libfile.write (rawtext.c_str(), strlen(rawtext.c_str()));

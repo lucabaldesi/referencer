@@ -48,10 +48,13 @@ class TagWindow {
 		
 		void docActivated (const Gtk::TreePath& path);
 		void tagSelectionChanged ();
+		void docSelectionChanged ();
 		bool docClicked (GdkEventButton* event);
 		void onQuit (/*GdkEventAny *ev*/);
 		void onCreateTag ();
 		void onDeleteTag ();
+		void onAddDoc ();
+		void onRemoveDoc ();
 		void onExportBibtex ();
 		
 		Gtk::Menu doccontextmenu_;
