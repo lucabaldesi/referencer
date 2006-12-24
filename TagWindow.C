@@ -102,6 +102,10 @@ void TagWindow::populateTagList ()
 	(*all)[taguidcol_] = ALL_TAGS_UID;
 	(*all)[tagnamecol_] = "<b>All</b>";
 
+	taggerbox_->children().clear();
+	
+	taggerchecks_.clear();
+
 	// Populate from taglist_
 	std::vector<Tag> tagvec = taglist_->getTags();
 	std::vector<Tag>::iterator it = tagvec.begin();
@@ -110,6 +114,11 @@ void TagWindow::populateTagList ()
 		Gtk::TreeModel::iterator item = tagstore_->append();
 		(*item)[taguidcol_] = (*it).uid_;
 		(*item)[tagnamecol_] = (*it).name_;
+		
+		Gtk::CheckButton *check =
+			Gtk::manage (new Gtk::CheckButton ((*it).name_));
+		taggerbox_->pack_start (*check, false, false, 6);
+		taggerchecks_[(*it).uid_] = check;
 	}
 	
 	// Should restore original selection
@@ -141,14 +150,22 @@ void TagWindow::constructUI ()
 	vbox->pack_start (*hpaned, true, true, 6);
 	
 	vbox = Gtk::manage(new Gtk::VBox);
-	hpaned->pack1(*vbox, Gtk::FILL);
-
+	Gtk::Frame *tagsframe = new Gtk::Frame ();
+	tagsframe->add(*vbox);
+	hpaned->pack1(*tagsframe, Gtk::FILL);
+	
+	Gtk::VBox *filtervbox = Gtk::manage (new Gtk::VBox);
+	Gtk::Expander *filterexpander =
+		Gtk::manage (new Gtk::Expander ("Tag _filter", true));
+	filterexpander->set_expanded (true);
+	filterexpander->add (*filtervbox);
+	vbox->pack_start (*filterexpander, true, true, 0);
+	
 	// Create the store for the tag list
 	Gtk::TreeModel::ColumnRecord tagcols;
 	tagcols.add(taguidcol_);
 	tagcols.add(tagnamecol_);
 	tagstore_ = Gtk::ListStore::create(tagcols);
-
 
 	// Create the treeview for the tag list
 	Gtk::TreeView *tags = new Gtk::TreeView(tagstore_);
@@ -161,23 +178,32 @@ void TagWindow::constructUI ()
 	tags->signal_button_press_event().connect_notify(
 		sigc::mem_fun (*this, &TagWindow::tagClicked));
 
+	filtervbox->pack_start(*tags, true, true, 0);
+
 	tagselection_ = tags->get_selection();
 	tagselection_->signal_changed().connect_notify (
 		sigc::mem_fun (*this, &TagWindow::tagSelectionChanged));
 	tagselection_->set_mode (Gtk::SELECTION_MULTIPLE);
-
-	
-	// Frame it and put it in the HPaned
-	Gtk::Frame *tagsframe = new Gtk::Frame ();
-	tagsframe->add(*tags);
-	vbox->pack_start(*tagsframe, true, true, 0);
 	
 	Gtk::Toolbar& tagbar = (Gtk::Toolbar&) *uimanager_->get_widget("/TagBar");
-	vbox->pack_start (tagbar, false, false, 0);
 	tagbar.set_toolbar_style (Gtk::TOOLBAR_ICONS);
 	tagbar.set_show_arrow (false);
+	filtervbox->pack_start (tagbar, false, false, 0);
+
+	Gtk::VBox *taggervbox = Gtk::manage (new Gtk::VBox);
+	Gtk::Expander *taggerexpander =
+		Gtk::manage (new Gtk::Expander ("_Tagger", true));
+	taggerexpander->set_expanded (true);
+	taggerexpander->add (*taggervbox);
+	vbox->pack_start (*taggerexpander, false, true, 0);
 	
+	taggerbox_ = taggervbox;
+
+	// The iconview side
 	vbox = Gtk::manage(new Gtk::VBox);
+	Gtk::Frame *iconsframe = new Gtk::Frame ();
+	iconsframe->add(*vbox);
+	hpaned->pack2(*iconsframe, Gtk::EXPAND);
 
 	// Create the store for the document icons
 	Gtk::TreeModel::ColumnRecord iconcols;
@@ -202,21 +228,18 @@ void TagWindow::constructUI ()
 	icons->set_selection_mode (Gtk::SELECTION_MULTIPLE);
 	
 	docsview_ = icons;
-	
+
 	Gtk::ScrolledWindow *scroll = Gtk::manage(new Gtk::ScrolledWindow());
 	scroll->add(*icons);
 	scroll->set_policy (Gtk::POLICY_NEVER, Gtk::POLICY_AUTOMATIC);
-	
+
+
+	vbox->pack_start(*scroll, true, true, 0);	
+
 	Gtk::Toolbar& docbar = (Gtk::Toolbar&) *uimanager_->get_widget("/DocBar");
 	vbox->pack_start (docbar, false, false, 0);
-	tagbar.set_toolbar_style (Gtk::TOOLBAR_ICONS);
-	tagbar.set_show_arrow (false);
-	
-	// Frame it and put it in the HPaned
-	Gtk::Frame *iconsframe = new Gtk::Frame ();
-	iconsframe->add(*scroll);
-	vbox->pack_start(*iconsframe, true, true, 0);
-	hpaned->pack2(*vbox, Gtk::EXPAND);
+	docbar.set_toolbar_style (Gtk::TOOLBAR_ICONS);
+	docbar.set_show_arrow (false);
 }
 
 
@@ -273,6 +296,10 @@ void TagWindow::constructMenu ()
 		"    <toolitem action='CreateTag'/>"
 		"    <toolitem action='DeleteTag'/>"
 		"  </toolbar>"
+		"  <toolbar name='DocBar'>"
+		"    <toolitem action='AddDoc'/>"
+		"    <toolitem action='RemoveDoc'/>"
+		"  </toolbar>"
 		"  <popup name='DocPopup'>"
 		"    <menuitem action='AddDoc'/>"
 		"    <menuitem action='RemoveDoc'/>"
@@ -281,7 +308,6 @@ void TagWindow::constructMenu ()
 		"    <menuitem action='CreateTag'/>"
 		"    <menuitem action='DeleteTag'/>"
 		"  </popup>"
-		//"  <menuitem action='AddDoc' name='AddDocItem'/>"
 		"</ui>";
 	
 	uimanager_->add_ui_from_string (ui);
@@ -293,21 +319,7 @@ void TagWindow::constructMenu ()
 TagWindow::TagWindow ()
 {
 	taglist_ = new TagList();
-	/*int griduid = taglist_->newTag("Grid", Tag::ATTACH);
-	int ompuid = taglist_->newTag("OpenMP", Tag::ATTACH);*/
-	
 	doclist_ = new DocumentList();
-	//Document *mydoc;
-	/*doclist_->newDoc("file:///home/jcspray/Desktop/sc06/pap104.pdf");
-	mydoc = doclist_->newDoc("file:///home/jcspray/Desktop/sc06/pap107.pdf");
-	mydoc->setTag(griduid);
-	doclist_->newDoc("file:///home/jcspray/Desktop/sc06/pap108.pdf");
-	mydoc = doclist_->newDoc("file:///home/jcspray/Desktop/sc06/pap119.pdf");
-	mydoc->setTag(ompuid);
-	mydoc = doclist_->newDoc("file:///home/jcspray/Desktop/sc06/pap122.pdf");
-	mydoc->setTag(griduid);
-	mydoc->setTag(ompuid);*/
-
 	loadLibrary ();
 
 	constructUI ();
@@ -374,6 +386,27 @@ void TagWindow::docSelectionChanged ()
 {
 	actiongroup_->get_action("RemoveDoc")->set_sensitive (
 		!docsview_->get_selected_items().empty());
+		
+	
+	for (std::vector<Tag>::iterator tagit = taglist_->getTags().begin();
+	     tagit != taglist_->getTags().end(); ++tagit) {
+		Gtk::CheckButton *check = taggerchecks_[(*tagit).uid_];
+		YesNoMaybe state = selectedDocsHaveTag ((*tagit).uid_);
+		if (state == YES) {
+			//std::cerr << (*tagit).name_ << " : " << "Yes\n";
+			check->set_active (true);
+			check->set_inconsistent (false);
+		} else if (state == MAYBE) {
+			//std::cerr << (*tagit).name_ << " : " << "Maybe\n";
+			check->set_active (false);
+			check->set_inconsistent (true);
+			//std::cerr << item->get_inconsistent() << std::endl;
+		} else {
+			check->set_active (false);
+			check->set_inconsistent (false);
+		}
+
+	}
 }
 
 
@@ -396,28 +429,6 @@ bool TagWindow::docClicked (GdkEventButton* event)
 		}
 		// Should also check if we're currently multiple-item selected
 		// in which case don't reset selection
-
-		
-		/*doccontextmenu_.items().clear();
-		
-		for (std::vector<Tag>::iterator tagit = taglist_->getTags().begin();
-		     tagit != taglist_->getTags().end(); ++tagit) {
-			Gtk::CheckMenuItem *item = Gtk::manage (new Gtk::CheckMenuItem((*tagit).name_));
-			YesNoMaybe state = selectedDocsHaveTag ((*tagit).uid_);
-			if (state == YES) {
-				std::cerr << (*tagit).name_ << " : " << "Yes\n";
-				item->set_active (true);
-			} else if (state == MAYBE) {
-				std::cerr << (*tagit).name_ << " : " << "Maybe\n";
-				item->set_inconsistent (true);
-				std::cerr << item->get_inconsistent() << std::endl;
-			}
-			doccontextmenu_.append(*item);
-		}
-		
-		doccontextmenu_.show_all();
-		doccontextmenu_.popup (event->button, event->time);*/
-		
 		Gtk::Menu *popupmenu = 
 			(Gtk::Menu*)uimanager_->get_widget("/DocPopup");
 		popupmenu->popup (event->button, event->time);

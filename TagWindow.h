@@ -3,6 +3,7 @@
 #define TAGWINDOW_H
 
 #include <vector>
+#include <map>
 
 class Document;
 class DocumentList;
@@ -35,8 +36,9 @@ class TagWindow {
 		Glib::RefPtr<Gtk::ListStore> tagstore_;
 		Glib::RefPtr<Gtk::ListStore> iconstore_;
 		
-		Gtk::IconView* docsview_;
-		
+		Gtk::IconView *docsview_;
+		Gtk::VBox *taggerbox_;
+		std::map<int, Gtk::CheckButton*> taggerchecks_;
 		Gtk::Window *window_;
 		
 		Glib::RefPtr<Gtk::TreeSelection> tagselection_;
