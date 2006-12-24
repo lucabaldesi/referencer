@@ -33,6 +33,7 @@ class DocumentList {
 	public:
 	std::vector<Document>& getDocs ();
 	Document* newDoc (Glib::ustring const &filename);
+	void removeDoc (Glib::ustring const &displayname);
 	void loadDoc (
 		Glib::ustring const &filename,
 		Glib::ustring const &displayname,

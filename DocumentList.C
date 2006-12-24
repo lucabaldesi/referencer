@@ -104,6 +104,22 @@ void DocumentList::loadDoc (
 }
 
 
+void DocumentList::removeDoc (Glib::ustring const &displayname)
+{
+	std::vector<Document>::iterator it = docs_.begin();
+	std::vector<Document>::iterator const end = docs_.end();
+	for (; it != end; it++) {
+		if ((*it).getDisplayName() == displayname) {
+			docs_.erase(it);
+			return;
+		}
+	}
+	
+	std::cerr << "Warning: DocumentList::removeDoc: couldn't find '"
+		<< displayname << "' to erase it\n";
+}
+
+
 void DocumentList::print()
 {
 	std::vector<Document>::iterator it = docs_.begin();

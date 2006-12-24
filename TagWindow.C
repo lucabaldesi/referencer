@@ -108,9 +108,7 @@ void TagWindow::populateTagList ()
 	std::vector<Tag>::iterator const end = tagvec.end();
 	for (; it != end; ++it) {
 		Gtk::TreeModel::iterator item = tagstore_->append();
-		/*std::ostringstream uidstr;
-		uidstr << (*it).uid_;*/
-		(*item)[taguidcol_] = (*it).uid_;//uidstr.str();
+		(*item)[taguidcol_] = (*it).uid_;
 		(*item)[tagnamecol_] = (*it).name_;
 	}
 	
@@ -160,12 +158,14 @@ void TagWindow::constructUI ()
 		new Gtk::TreeView::Column ("Tags", *render));
 	namecol->add_attribute (render->property_markup (), tagnamecol_);
 	tags->append_column (*namecol);
-
+	tags->signal_button_press_event().connect_notify(
+		sigc::mem_fun (*this, &TagWindow::tagClicked));
 
 	tagselection_ = tags->get_selection();
 	tagselection_->signal_changed().connect_notify (
 		sigc::mem_fun (*this, &TagWindow::tagSelectionChanged));
 	tagselection_->set_mode (Gtk::SELECTION_MULTIPLE);
+
 	
 	// Frame it and put it in the HPaned
 	Gtk::Frame *tagsframe = new Gtk::Frame ();
@@ -175,7 +175,9 @@ void TagWindow::constructUI ()
 	Gtk::Toolbar& tagbar = (Gtk::Toolbar&) *uimanager_->get_widget("/TagBar");
 	vbox->pack_start (tagbar, false, false, 0);
 	tagbar.set_toolbar_style (Gtk::TOOLBAR_ICONS);
+	tagbar.set_show_arrow (false);
 	
+	vbox = Gtk::manage(new Gtk::VBox);
 
 	// Create the store for the document icons
 	Gtk::TreeModel::ColumnRecord iconcols;
@@ -205,10 +207,16 @@ void TagWindow::constructUI ()
 	scroll->add(*icons);
 	scroll->set_policy (Gtk::POLICY_NEVER, Gtk::POLICY_AUTOMATIC);
 	
+	Gtk::Toolbar& docbar = (Gtk::Toolbar&) *uimanager_->get_widget("/DocBar");
+	vbox->pack_start (docbar, false, false, 0);
+	tagbar.set_toolbar_style (Gtk::TOOLBAR_ICONS);
+	tagbar.set_show_arrow (false);
+	
 	// Frame it and put it in the HPaned
 	Gtk::Frame *iconsframe = new Gtk::Frame ();
 	iconsframe->add(*scroll);
-	hpaned->pack2(*iconsframe, Gtk::EXPAND);
+	vbox->pack_start(*iconsframe, true, true, 0);
+	hpaned->pack2(*vbox, Gtk::EXPAND);
 }
 
 
@@ -230,6 +238,9 @@ void TagWindow::constructMenu ()
 	actiongroup_->add( Gtk::Action::create(
 		"DeleteTag", Gtk::Stock::DELETE, "_Delete Tag"),
   	sigc::mem_fun(*this, &TagWindow::onDeleteTag));
+	actiongroup_->add( Gtk::Action::create(
+		"RenameTag", Gtk::Stock::EDIT, "_Rename Tag"),
+  	sigc::mem_fun(*this, &TagWindow::onRenameTag));
   	
 	actiongroup_->add ( Gtk::Action::create("DocMenu", "_Documents") );
 	actiongroup_->add( Gtk::Action::create(
@@ -251,6 +262,7 @@ void TagWindow::constructMenu ()
 		"    <menu action='TagMenu'>"
 		"      <menuitem action='CreateTag'/>"
 		"      <menuitem action='DeleteTag'/>"
+		"      <menuitem action='RenameTag'/>"
 		"    </menu>"
 		"    <menu action='DocMenu'>"
 		"      <menuitem action='AddDoc'/>"
@@ -261,6 +273,15 @@ void TagWindow::constructMenu ()
 		"    <toolitem action='CreateTag'/>"
 		"    <toolitem action='DeleteTag'/>"
 		"  </toolbar>"
+		"  <popup name='DocPopup'>"
+		"    <menuitem action='AddDoc'/>"
+		"    <menuitem action='RemoveDoc'/>"
+		"  </popup>"
+		"  <popup name='TagPopup'>"
+		"    <menuitem action='CreateTag'/>"
+		"    <menuitem action='DeleteTag'/>"
+		"  </popup>"
+		//"  <menuitem action='AddDoc' name='AddDocItem'/>"
 		"</ui>";
 	
 	uimanager_->add_ui_from_string (ui);
@@ -321,21 +342,29 @@ void TagWindow::tagSelectionChanged ()
 	bool allselected = false;
 	bool anythingselected = false;
 	
-	Gtk::TreeSelection::ListHandle_Path::iterator it = paths.begin ();
-	Gtk::TreeSelection::ListHandle_Path::iterator const end = paths.end ();
-	for (; it != end; it++) {
+	if (paths.empty()) {
+		allselected = true;
 		anythingselected = true;
-		Gtk::TreePath path = (*it);
-		Gtk::ListStore::iterator iter = tagstore_->get_iter (path);
-		filtertags_.push_back((*iter)[taguidcol_]);
-		if ((*iter)[taguidcol_] == ALL_TAGS_UID) {
-			allselected = true;
-			break;
+		filtertags_.push_back(ALL_TAGS_UID);
+	} else {
+		Gtk::TreeSelection::ListHandle_Path::iterator it = paths.begin ();
+		Gtk::TreeSelection::ListHandle_Path::iterator const end = paths.end ();
+		for (; it != end; it++) {
+			anythingselected = true;
+			Gtk::TreePath path = (*it);
+			Gtk::ListStore::iterator iter = tagstore_->get_iter (path);
+			filtertags_.push_back((*iter)[taguidcol_]);
+			if ((*iter)[taguidcol_] == ALL_TAGS_UID) {
+				allselected = true;
+				break;
+			}
 		}
 	}
 	
 	actiongroup_->get_action("DeleteTag")->set_sensitive (
 		anythingselected && !allselected);
+	actiongroup_->get_action("RenameTag")->set_sensitive (
+		paths.size() == 1 && !allselected);
 	
 	populateDocIcons ();
 }
@@ -351,7 +380,6 @@ void TagWindow::docSelectionChanged ()
 bool TagWindow::docClicked (GdkEventButton* event)
 {
   if((event->type == GDK_BUTTON_PRESS) && (event->button == 3)) {
-    //m_Menu_Popup.popup(event->button, event->time);
 		Gtk::TreeModel::Path clickedpath =
 			docsview_->get_path_at_pos ((int)event->x, (int)event->y);
 
@@ -370,7 +398,8 @@ bool TagWindow::docClicked (GdkEventButton* event)
 		// in which case don't reset selection
 
 		
-		doccontextmenu_.items().clear();
+		/*doccontextmenu_.items().clear();
+		
 		for (std::vector<Tag>::iterator tagit = taglist_->getTags().begin();
 		     tagit != taglist_->getTags().end(); ++tagit) {
 			Gtk::CheckMenuItem *item = Gtk::manage (new Gtk::CheckMenuItem((*tagit).name_));
@@ -385,14 +414,20 @@ bool TagWindow::docClicked (GdkEventButton* event)
 			}
 			doccontextmenu_.append(*item);
 		}
+		
 		doccontextmenu_.show_all();
-		doccontextmenu_.popup (event->button, event->time);
+		doccontextmenu_.popup (event->button, event->time);*/
+		
+		Gtk::Menu *popupmenu = 
+			(Gtk::Menu*)uimanager_->get_widget("/DocPopup");
+		popupmenu->popup (event->button, event->time);
 		
 		return true;
   } else {
   	return false;
   }
 }
+
 
 TagWindow::YesNoMaybe TagWindow::selectedDocsHaveTag (int uid)
 {
@@ -422,6 +457,16 @@ TagWindow::YesNoMaybe TagWindow::selectedDocsHaveTag (int uid)
 		return MAYBE;
 	else
 		return NO;
+}
+
+
+void TagWindow::tagClicked (GdkEventButton* event)
+{
+  if((event->type == GDK_BUTTON_PRESS) && (event->button == 3)) {
+		Gtk::Menu *popupmenu = 
+			(Gtk::Menu*)uimanager_->get_widget("/TagPopup");
+		popupmenu->popup (event->button, event->time);
+	}
 }
 
 
@@ -465,10 +510,9 @@ void TagWindow::onDeleteTag ()
 		}
 		
 		Glib::ustring message =
-			"<b><big>Really delete tag?</big></b>\n\n"
-			"Are you sure you want to delete \""
+			"<b><big>Are you sure you want to delete \""
 			+ (*iter)[tagnamecol_]
-			+ "\"?\n\n"
+			+"\"?</big></b>\n\n"
 			+ "When a tag is deleted it is also permanently removed "
 			+ "from all documents it is currently associated with";
 		
@@ -493,9 +537,14 @@ void TagWindow::onDeleteTag ()
 }
 
 
+void TagWindow::onRenameTag ()
+{
+}
+
+
 void TagWindow::onExportBibtex ()
 {
-	std::ostringstream out;
+	
 }
 
 
@@ -513,6 +562,8 @@ void TagWindow::onAddDoc ()
 	chooser.add_button (Gtk::Stock::CANCEL, Gtk::RESPONSE_REJECT);
 	chooser.add_button (Gtk::Stock::ADD, Gtk::RESPONSE_ACCEPT);
 	
+	bool doclistdirty = false;
+
 	int result = chooser.run ();
 	if (result == Gtk::RESPONSE_ACCEPT) {
 		startlocation = Glib::path_get_dirname(chooser.get_filename());
@@ -522,9 +573,12 @@ void TagWindow::onAddDoc ()
 		for (; iter != end; ++iter) {
 			//std::cerr << (*iter) << std::endl;
 			doclist_->newDoc(*iter);
+			doclistdirty = true;
 		}
 	}
-	populateDocIcons ();
+	
+	if (doclistdirty)
+		populateDocIcons ();
 }
 
 
@@ -534,9 +588,25 @@ void TagWindow::onRemoveDoc ()
 
 	bool const multiple = paths.size() > 1;
 	
+	bool doclistdirty = false;
+	
 	if (multiple) {
 		// Do you really want to remove N documents?
-		// else return
+		std::ostringstream num;
+		num << paths.size ();
+		Glib::ustring message = "<b><big>Are you sure you want to remove these "
+			+ num.str() + " documents?</big></b>\n\nAll tag "
+			"associations and metadata for these documents will be permanently lost.";
+		Gtk::MessageDialog confirmdialog (
+			message, true, Gtk::MESSAGE_QUESTION,
+			Gtk::BUTTONS_NONE, true);
+		
+		confirmdialog.add_button (Gtk::Stock::CANCEL, 0);
+		confirmdialog.add_button (Gtk::Stock::REMOVE, 1);
+		
+		if (!confirmdialog.run()) {
+			return;
+		}
 	}
 	
 	Gtk::IconView::ArrayHandle_TreePaths::iterator it = paths.begin ();
@@ -545,24 +615,38 @@ void TagWindow::onRemoveDoc ()
 		Gtk::TreePath path = (*it);
 		Gtk::ListStore::iterator iter = iconstore_->get_iter (path);
 		if (!multiple) {
-			// Do you really want to remove this file?
-			//doclist_->removeDoc((*iter)[docnamecol_]);
-		} else {
-			//doclist_->removeDoc((*iter)[docnamecol_]);
+			Glib::ustring message = "<b><big>Are you sure you want to remove '" +
+				(*iter)[docnamecol_] + "'?</big></b>\n\nAll tag "
+				"associations and metadata for the document will be permanently lost.";
+			Gtk::MessageDialog confirmdialog (
+				message, true, Gtk::MESSAGE_QUESTION,
+				Gtk::BUTTONS_NONE, true);
+			
+			confirmdialog.add_button (Gtk::Stock::CANCEL, 0);
+			confirmdialog.add_button (Gtk::Stock::REMOVE, 1);
+			
+			if (!confirmdialog.run()) {
+				continue;
+			}
 		}
-		
+
+		doclist_->removeDoc((*iter)[docnamecol_]);
+		doclistdirty = true;
 	}
+	
+	if (doclistdirty)
+		populateDocIcons ();
 }
 
 
 Glib::ustring TagWindow::writeXML ()
 {
 	std::ostringstream out;
-	out << "<xml>\n<library>\n";
+	out << "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n";
+	out << "<library>\n";
 	taglist_->writeXML (out);
 	doclist_->writeXML (out);
-	out << "</library>\n</xml>\n";
-	//std::cerr << out.str();
+	out << "</library>\n";
 	return out.str ();
 }
 

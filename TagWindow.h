@@ -50,9 +50,11 @@ class TagWindow {
 		void tagSelectionChanged ();
 		void docSelectionChanged ();
 		bool docClicked (GdkEventButton* event);
+		void tagClicked (GdkEventButton* event);
 		void onQuit (/*GdkEventAny *ev*/);
 		void onCreateTag ();
 		void onDeleteTag ();
+		void onRenameTag ();
 		void onAddDoc ();
 		void onRemoveDoc ();
 		void onExportBibtex ();

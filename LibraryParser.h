@@ -120,7 +120,6 @@ class LibraryParser : public Glib::Markup::Parser {
 			newTagName_ += text;
 	
 		else if (inFileName_) {
-			std::cerr << "Adding '" << text << "' to filename\n";
 			newDocFileName_ += text;
 		}
 		else if (inDisplayName_)
