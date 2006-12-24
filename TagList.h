@@ -32,6 +32,7 @@ class TagList {
 	std::vector<Tag>& getTags ();
 	int newTag (std::string const name, Tag::Action const action);
 	void loadTag (std::string const name, Tag::Action const action, int uid);
+	void renameTag (int uid, Glib::ustring newname);
 	void deleteTag (int uid);
 	void writeXML (std::ostringstream& out);
 	void clear () {tags_.clear ();}

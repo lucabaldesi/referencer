@@ -12,6 +12,8 @@ class Gtk::TreePath;
 class Glib::ustring;
 
 #define ALL_TAGS_UID -1
+#define PROGRAM_NAME "TagWindow"
+#define VERSION "0.0"
 
 class TagWindow {
 
@@ -39,20 +41,24 @@ class TagWindow {
 		Gtk::IconView *docsview_;
 		Gtk::VBox *taggerbox_;
 		std::map<int, Gtk::CheckButton*> taggerchecks_;
+		bool ignoretaggerchecktoggled_;
 		Gtk::Window *window_;
 		
 		Glib::RefPtr<Gtk::TreeSelection> tagselection_;
+		Gtk::TreeView *tagview_;
+		bool tagselectionignore_;
 		std::vector<int> filtertags_;
 		
 		Glib::RefPtr<Gtk::UIManager> uimanager_;
 		Glib::RefPtr<Gtk::ActionGroup> actiongroup_;
 
-		
+		void taggerCheckToggled (Gtk::CheckButton *check, int taguid);
 		void docActivated (const Gtk::TreePath& path);
 		void tagSelectionChanged ();
 		void docSelectionChanged ();
 		bool docClicked (GdkEventButton* event);
 		void tagClicked (GdkEventButton* event);
+		void tagNameEdited (Glib::ustring const &text1, Glib::ustring const &text2);
 		void onQuit (/*GdkEventAny *ev*/);
 		void onCreateTag ();
 		void onDeleteTag ();
@@ -60,6 +66,7 @@ class TagWindow {
 		void onAddDoc ();
 		void onRemoveDoc ();
 		void onExportBibtex ();
+		void onAbout ();
 		
 		Gtk::Menu doccontextmenu_;
 		

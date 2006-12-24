@@ -33,6 +33,21 @@ void TagList::loadTag (std::string const name, Tag::Action const action, int uid
 }
 
 
+void TagList::renameTag (int uid, Glib::ustring newname)
+{
+	std::vector<Tag>::iterator it = tags_.begin();
+	std::vector<Tag>::iterator const end = tags_.end();
+	for (; it != end; it++) {
+		if ((*it).uid_ == uid) {
+			(*it).name_ = newname;
+			return;
+		}
+	}
+	
+	std::cerr << "Warning: TagList::renameTag: uid " << uid << "not found\n";
+}
+
+
 void TagList::print ()
 {
 	std::vector<Tag>::iterator it = tags_.begin();
@@ -53,9 +68,12 @@ void TagList::deleteTag (int uid)
 	for (; it != end; it++) {
 		if ((*it).uid_ == uid) {
 			tags_.erase(it);
-			break;
+			return;
 		}
 	}
+	
+	std::cerr << "Warning:: TagList::deleteTag: tag uid "
+		<< uid << "not found\n";
 }
 
 
