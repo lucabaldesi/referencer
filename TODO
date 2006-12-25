@@ -1,0 +1,13 @@
+taglist and tagger need to be in scrolledwindows
+need to update tagger when rename tag
+need to update docicons when tagging file (time to be more efficient)
+LookupDoi and Open should really handle multiple documents.
+
+A View menu which allows hiding of "Tag Bar"
+
+Drag and drop to add by filename
+Add by DOI
+Add by nothing but displayname
+
+Default thumbnail for unthumbnailable things
+Thumbnail generation
