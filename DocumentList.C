@@ -4,6 +4,7 @@
 #include <sstream>
 
 #include <glibmm/markup.h>
+#include <libgnomevfsmm.h>
 
 #include "DocumentList.h"
 
@@ -11,7 +12,9 @@
 Document::Document (Glib::ustring const &filename)
 {
 	filename_ = filename;
-	displayname_ = Glib::path_get_basename (filename);
+	displayname_ =
+		Gnome::Vfs::unescape_string_for_display (
+			Glib::path_get_basename (filename));
 	int const maxlen = 16;
 	if (displayname_.size() > maxlen) {
 		displayname_ = displayname_.substr(0, maxlen);
