@@ -756,7 +756,10 @@ void TagWindow::onRenameTag ()
 
 void TagWindow::onExportBibtex ()
 {
-	
+	// Prompt for location
+	// overwrite schitt
+	// open file
+	// ask doclist_ to write into it.
 }
 
 

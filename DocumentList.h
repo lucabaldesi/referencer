@@ -29,6 +29,8 @@ class Document {
 	void clearTags ();
 	bool hasTag (int uid);
 	
+	void writeBibtex (std::ostringstream& out);
+	
 	BibData& getBibData () {return bib_;}
 	void setBibData (BibData& bib){bib_ = bib;}
 };

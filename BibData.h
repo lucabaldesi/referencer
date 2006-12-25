@@ -47,7 +47,7 @@ class BibData {
 	Glib::ustring getYear () {return year_;}
 
 	void print ();
-
+	
 	void parseMetadata (Glib::ustring const &meta, FieldMask mask);
 	void guessJournal (Glib::ustring const &raw);
 	void guessVolumeNumberPage (Glib::ustring const &raw);

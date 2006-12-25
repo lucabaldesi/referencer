@@ -166,4 +166,3 @@ void BibData::guessAuthors (Glib::ustring const &raw_)
 void BibData::guessTitle (Glib::ustring const &raw)
 {
 }
-

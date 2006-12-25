@@ -86,6 +86,29 @@ bool Document::hasTag(int uid)
 }
 
 
+static Glib::ustring writeBibKey (Glib::ustring& key, Glib::ustring&value)
+{
+	// Should be doing lots of escaping here, going from UTF-8 to LaTeX
+	return key + " = {" + value + "}";
+}
+
+void Document::writeBibtex (std::ostringstream& out)
+{
+	// BibTeX values cannot be larger than 1000 characters - should make sure of this
+	// This doctype bit should be a variable
+	// We should strip illegal characters from displayname in a predictable way
+	out << "@article{" << displayname_ << "," << std::endl;
+	// There are more fields than this, or there should be!
+	out << writeBibKey ("author", bib_.getAuthor()) << ",\n";
+	out << writeBibKey ("title", bib_.getTitle()) << ",\n";
+	out << writeBibKey ("journal", bib_.getJournal()) << ",\n";
+	out << writeBibKey ("volume", bib_.getVolume()) << ",\n";
+	out << writeBibKey ("number", bib_.getNumber()) << ",\n";
+	out << writeBibKey ("pages", bib_.getPages()) << ",\n";
+	out << writeBibKey ("year", bib_.getYear()) << "\n";
+	out << "}\n\n";
+}
+
 
 std::vector<Document>& DocumentList::getDocs ()
 {
