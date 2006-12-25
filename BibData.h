@@ -3,6 +3,7 @@
 
 class BibData {
 	private:
+	Glib::ustring doi_;
 	Glib::ustring volume_;
 	Glib::ustring number_;
 	Glib::ustring pages_;
@@ -22,6 +23,13 @@ class BibData {
 		FIELD_YEAR = 1<<6,
 		FIELD_ALL = 1<<7
 	} FieldMask;
+
+	BibData () {
+		doi_ = "10.1126/science.1066804";
+	}
+	
+	void setDoi (Glib::ustring &doi) {doi_ = doi;}
+	Glib::ustring getDoi () {return doi_;}
 
 	void setVolume (Glib::ustring &vol) {volume_ = vol;}
 	Glib::ustring getVolume () {return volume_;}

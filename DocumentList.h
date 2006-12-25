@@ -5,11 +5,15 @@
 #include <gtkmm.h>
 #include <sstream>
 
+#include "BibData.h"
+
 class Document {
 	private:
 	Glib::ustring filename_;
 	Glib::ustring displayname_;
 	std::vector<int> tagUids_;
+	
+	BibData bib_;
 
 	public:
 	Document (Glib::ustring const &filename);
@@ -17,13 +21,16 @@ class Document {
 		Glib::ustring const &filename,
 		Glib::ustring const &displayname,
 		std::vector<int> const &tagUids);
-	Glib::ustring getDisplayName();
-	Glib::ustring getFileName();
-	std::vector<int> getTags ();
+	Glib::ustring& getDisplayName();
+	Glib::ustring& getFileName();
+	std::vector<int>& getTags ();
 	void setTag (int uid);
 	void clearTag (int uid);
 	void clearTags ();
 	bool hasTag (int uid);
+	
+	BibData& getBibData () {return bib_;}
+	void setBibData (BibData& bib){bib_ = bib;}
 };
 
 class DocumentList {

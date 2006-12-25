@@ -12,6 +12,10 @@ Document::Document (Glib::ustring const &filename)
 {
 	filename_ = filename;
 	displayname_ = Glib::path_get_basename (filename);
+	int const maxlen = 16;
+	if (displayname_.size() > maxlen) {
+		displayname_ = displayname_.substr(0, maxlen);
+	}
 }
 
 Document::Document (
@@ -25,19 +29,19 @@ Document::Document (
 }
 
 
-Glib::ustring Document::getDisplayName()
+Glib::ustring& Document::getDisplayName()
 {
 	return displayname_;
 }
 
 
-Glib::ustring Document::getFileName()
+Glib::ustring& Document::getFileName()
 {
 	return filename_;
 }
 
 
-std::vector<int> Document::getTags()
+std::vector<int>& Document::getTags()
 {
 	return tagUids_;
 }

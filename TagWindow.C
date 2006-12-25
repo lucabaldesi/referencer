@@ -185,7 +185,7 @@ void TagWindow::constructMenu ()
 
 	actiongroup_->add ( Gtk::Action::create("TagMenu", "_Tags") );
 	actiongroup_->add( Gtk::Action::create(
-		"CreateTag", Gtk::Stock::NEW, "_Create Tag"),
+		"CreateTag", Gtk::Stock::NEW, "_Create Tag..."),
   	sigc::mem_fun(*this, &TagWindow::onCreateTag));
 	actiongroup_->add( Gtk::Action::create(
 		"DeleteTag", Gtk::Stock::DELETE, "_Delete Tag"),
@@ -196,11 +196,17 @@ void TagWindow::constructMenu ()
   	
 	actiongroup_->add ( Gtk::Action::create("DocMenu", "_Documents") );
 	actiongroup_->add( Gtk::Action::create(
-		"AddDoc", Gtk::Stock::ADD, "_Add Document"),
+		"AddDoc", Gtk::Stock::ADD, "_Add File..."),
   	sigc::mem_fun(*this, &TagWindow::onAddDoc));
 	actiongroup_->add( Gtk::Action::create(
-		"RemoveDoc", Gtk::Stock::REMOVE, "_Remove Document"),
+		"RemoveDoc", Gtk::Stock::REMOVE, "_Remove"),
   	sigc::mem_fun(*this, &TagWindow::onRemoveDoc));
+	actiongroup_->add( Gtk::Action::create(
+		"DoiLookupDoc", Gtk::Stock::CONNECT, "_Lookup DOI..."),
+  	sigc::mem_fun(*this, &TagWindow::onDoiLookupDoc));
+	actiongroup_->add( Gtk::Action::create(
+		"OpenDoc", Gtk::Stock::OPEN, "_Open..."),
+  	sigc::mem_fun(*this, &TagWindow::onOpenDoc));
   	
 	actiongroup_->add ( Gtk::Action::create("HelpMenu", "_Help") );
 	actiongroup_->add( Gtk::Action::create(
@@ -218,12 +224,17 @@ void TagWindow::constructMenu ()
 		"    </menu>"
 		"    <menu action='TagMenu'>"
 		"      <menuitem action='CreateTag'/>"
+		"      <separator/>"
 		"      <menuitem action='DeleteTag'/>"
 		"      <menuitem action='RenameTag'/>"
 		"    </menu>"
 		"    <menu action='DocMenu'>"
+
 		"      <menuitem action='AddDoc'/>"
+		"      <separator/>"
 		"      <menuitem action='RemoveDoc'/>"
+		"      <menuitem action='DoiLookupDoc'/>"
+		"      <menuitem action='OpenDoc'/>"
 		"    </menu>"
 		"    <menu action='HelpMenu'>"
 		"      <menuitem action='About'/>"
@@ -239,10 +250,14 @@ void TagWindow::constructMenu ()
 		"  </toolbar>"
 		"  <popup name='DocPopup'>"
 		"    <menuitem action='AddDoc'/>"
+		"    <separator/>"
 		"    <menuitem action='RemoveDoc'/>"
+		"    <menuitem action='DoiLookupDoc'/>"
+		"    <menuitem action='OpenDoc'/>"
 		"  </popup>"
 		"  <popup name='TagPopup'>"
 		"    <menuitem action='CreateTag'/>"
+		"    <separator/>"
 		"    <menuitem action='DeleteTag'/>"
 		"    <menuitem action='RenameTag'/>"
 		"  </popup>"
@@ -420,8 +435,6 @@ void TagWindow::docActivated (const Gtk::TreeModel::Path& path)
 {
 	Gtk::ListStore::iterator it = iconstore_->get_iter (path);
 	Document *doc = (*it)[docpointercol_];
-	std::cerr <<  doc << std::endl;
-	std::cerr << doc->getFileName() << std::endl;
 	Gnome::Vfs::url_show (doc->getFileName());
 }
 
@@ -471,9 +484,18 @@ void TagWindow::docSelectionChanged ()
 {
 	actiongroup_->get_action("RemoveDoc")->set_sensitive (
 		!docsview_->get_selected_items().empty());
+	actiongroup_->get_action("DoiLookupDoc")->set_sensitive (
+		!docsview_->get_selected_items().empty()
+		&& !(docsview_->get_selected_items().size() > 1)
+		&& !getSelectedDoc()->getBibData().getDoi().empty());
+	actiongroup_->get_action("OpenDoc")->set_sensitive (
+		!docsview_->get_selected_items().empty()
+		&& !(docsview_->get_selected_items().size() > 1)
+		&& !getSelectedDoc()->getFileName().empty());
 
 	taggerbox_->set_sensitive (
 		!docsview_->get_selected_items().empty());
+	
 	
 	std::cerr << "docSelectionChanged\n";
 	
@@ -558,6 +580,21 @@ TagWindow::YesNoMaybe TagWindow::selectedDocsHaveTag (int uid)
 		return MAYBE;
 	else
 		return NO;
+}
+
+
+Document *TagWindow::getSelectedDoc ()
+{
+	if (docsview_->get_selected_items ().size() != 1) {
+		std::cerr << "Warning: TagWindow::getSelectedDoc: size != 1\n";
+		return false;
+	}
+
+	Gtk::IconView::ArrayHandle_TreePaths paths = docsview_->get_selected_items ();
+
+	Gtk::TreePath path = (*paths.begin ());
+	Gtk::ListStore::iterator iter = iconstore_->get_iter (path);
+	return (*iter)[docpointercol_];
 }
 
 
@@ -897,4 +934,25 @@ void TagWindow::saveLibrary ()
 	libfile.write (rawtext.c_str(), strlen(rawtext.c_str()));
 	
 	libfile.close ();
+}
+
+
+void TagWindow::onDoiLookupDoc ()
+{
+	Document *doc = getSelectedDoc ();
+	if (doc) {
+		Glib::ustring prefix = "http://dx.doi.org/";
+		Glib::ustring doi = doc->getBibData().getDoi();
+		
+		Gnome::Vfs::url_show (prefix + doi);
+	}
+}
+
+
+void TagWindow::onOpenDoc ()
+{
+	Document *doc = getSelectedDoc ();
+	if (doc && !doc->getFileName().empty()) {
+			Gnome::Vfs::url_show (doc->getFileName());
+	}
 }

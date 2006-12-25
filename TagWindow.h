@@ -65,6 +65,8 @@ class TagWindow {
 		void onRenameTag ();
 		void onAddDoc ();
 		void onRemoveDoc ();
+		void onDoiLookupDoc ();
+		void onOpenDoc ();
 		void onExportBibtex ();
 		void onAbout ();
 		
@@ -77,6 +79,7 @@ class TagWindow {
 		} YesNoMaybe;
 		
 		YesNoMaybe selectedDocsHaveTag (int uid);
+		Document *getSelectedDoc ();
 		Glib::ustring writeXML ();
 		void readXML (Glib::ustring XML);
 		void loadLibrary ();
