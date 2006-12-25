@@ -9,5 +9,15 @@ Drag and drop to add by filename
 Add by DOI
 Add by nothing but displayname
 
-Default thumbnail for unthumbnailable things
-Thumbnail generation
+DONE Default thumbnail for unthumbnailable things
+	Although it relies on unknown.png in current path, should get from iconfactory
+DONE Thumbnail generation
+	Now do it in the background
+
+
+
+Competition on Science biblio export:
+	EndNote
+	Reference Manager
+	ProCite
+	RefWorks

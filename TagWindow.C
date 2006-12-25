@@ -58,7 +58,7 @@ void TagWindow::run ()
 void TagWindow::constructUI ()
 {
 	window_ = new Gtk::Window(Gtk::WINDOW_TOPLEVEL);
-	window_->set_default_size (500, 500);
+	window_->set_default_size (700, 500);
 	/*window_->signal_delete_event().connect (
 		sigc::mem_fun (*this, &TagWindow::onQuit));*/
 
@@ -196,8 +196,11 @@ void TagWindow::constructMenu ()
   	
 	actiongroup_->add ( Gtk::Action::create("DocMenu", "_Documents") );
 	actiongroup_->add( Gtk::Action::create(
-		"AddDoc", Gtk::Stock::ADD, "_Add File..."),
-  	sigc::mem_fun(*this, &TagWindow::onAddDoc));
+		"AddDocFile", Gtk::Stock::ADD, "_Add File..."),
+  	sigc::mem_fun(*this, &TagWindow::onAddDocFile));
+	actiongroup_->add( Gtk::Action::create(
+		"AddDocFolder", Gtk::Stock::ADD, "_Add Folder..."),
+  	sigc::mem_fun(*this, &TagWindow::onAddDocFolder));
 	actiongroup_->add( Gtk::Action::create(
 		"RemoveDoc", Gtk::Stock::REMOVE, "_Remove"),
   	sigc::mem_fun(*this, &TagWindow::onRemoveDoc));
@@ -230,7 +233,8 @@ void TagWindow::constructMenu ()
 		"    </menu>"
 		"    <menu action='DocMenu'>"
 
-		"      <menuitem action='AddDoc'/>"
+		"      <menuitem action='AddDocFile'/>"
+		"      <menuitem action='AddDocFolder'/>"
 		"      <separator/>"
 		"      <menuitem action='RemoveDoc'/>"
 		"      <menuitem action='DoiLookupDoc'/>"
@@ -245,11 +249,12 @@ void TagWindow::constructMenu ()
 		"    <toolitem action='DeleteTag'/>"
 		"  </toolbar>"
 		"  <toolbar name='DocBar'>"
-		"    <toolitem action='AddDoc'/>"
+		"    <toolitem action='AddDocFile'/>"
 		"    <toolitem action='RemoveDoc'/>"
 		"  </toolbar>"
 		"  <popup name='DocPopup'>"
-		"    <menuitem action='AddDoc'/>"
+		"    <menuitem action='AddDocFile'/>"
+		"    <menuitem action='AddDocFolder'/>"
 		"    <separator/>"
 		"    <menuitem action='RemoveDoc'/>"
 		"    <menuitem action='DoiLookupDoc'/>"
@@ -303,28 +308,48 @@ void TagWindow::populateDocIcons ()
 		(*item)[docpointercol_] = &(*docit);
 		
 		std::string pdffile = (*docit).getFileName();
-		//std::cerr << "pdf file " << pdffile << std::endl;
+		
+		Glib::RefPtr<Gdk::Pixbuf> thumbnail;
 		
 		time_t mtime;
 		Glib::RefPtr<Gnome::Vfs::Uri> uri = Gnome::Vfs::Uri::create (pdffile);
-		if (!uri->uri_exists()) {
-			std::cerr << "File " << pdffile <<
-				" does not exist, can't thumbnail" << std::endl;
-			continue;
+		if (uri->uri_exists()) {
+			Glib::RefPtr<Gnome::Vfs::FileInfo> fileinfo = uri->get_file_info ();
+			mtime = fileinfo->get_modification_time ();
+			
+			std::string thumbfile;
+			thumbfile = thumbfac->lookup (pdffile, mtime);
+			
+			// Should we be using Gnome::UI::icon_lookup_sync?
+			
+			if (thumbfile.empty()) {
+				std::cerr << "Couldn't find thumbnail:'" << pdffile << "'\n";
+				if (thumbfac->has_valid_failed_thumbnail (pdffile, mtime)) {
+					std::cerr << "Has valid failed thumbnail: '" << pdffile << "'\n";
+
+				} else {
+					std::cerr << "Generate thumbnail: '" << pdffile << "'\n";
+					thumbnail = thumbfac->generate_thumbnail (pdffile, "application/pdf");
+					if (thumbnail)				
+						thumbfac->save_thumbnail (thumbnail, pdffile, mtime);
+					else
+						std::cerr << "Failed to generate thumbnail: '" << pdffile << "'\n";
+				}
+
+			} else {
+				thumbnail = Gdk::Pixbuf::create_from_file (thumbfile);
+			}
 		}
-		Glib::RefPtr<Gnome::Vfs::FileInfo> fileinfo = uri->get_file_info ();
-		mtime = fileinfo->get_modification_time ();
-		//std::cerr << "mtime " << mtime << std::endl;
 		
-		std::string thumbfile;
-		thumbfile = thumbfac->lookup (pdffile, mtime);
-		//std::cerr << "thumbnail file " << thumbfile << std::endl;
-		
-		Glib::RefPtr<Gdk::Pixbuf> thumbnail;
-		if (thumbfile.empty()) {
-			std::cerr << "Couldn't get thumbnail for " << pdffile << "\n";
+		if (!thumbnail) {
+			thumbnail = getThemeIcon ("gnome-mime-application-pdf");
 		} else {
-			thumbnail = Gdk::Pixbuf::create_from_file(thumbfile);
+			float desiredheight = 96.0;
+			int oldwidth = thumbnail->get_width ();
+			int oldheight = thumbnail->get_height ();
+			int newheight = (int)desiredheight;
+			int newwidth = (int)((float)oldwidth * (desiredheight / (float)oldheight));
+			thumbnail = thumbnail->scale_simple (newwidth, newheight, Gdk::INTERP_BILINEAR);
 		}
 		
 		std::auto_ptr<Glib::Error> error;
@@ -426,8 +451,12 @@ void TagWindow::tagNameEdited (
 		
 	Gtk::TreePath path = (*paths.begin ());
 	Gtk::ListStore::iterator iter = tagstore_->get_iter (path);
-	(*iter)[tagnamecol_] = text2;
-	taglist_->renameTag ((*iter)[taguidcol_], text2);
+	
+	// Should escape this
+	Glib::ustring newname = text2;
+	(*iter)[tagnamecol_] = newname;
+	taglist_->renameTag ((*iter)[taguidcol_], newname);
+	taggerchecks_[(*iter)[taguidcol_]]->set_label (newname);
 }
 
 
@@ -626,6 +655,7 @@ void TagWindow::onCreateTag  ()
 	dialog.set_default_response (1);
 	
 	Gtk::Entry nameentry;
+	nameentry.set_activates_default (true);
 	Gtk::HBox hbox;
 	hbox.set_spacing (6);
 	Gtk::Label label ("Name:");
@@ -745,17 +775,16 @@ void TagWindow::onAbout ()
 }
 
 
-void TagWindow::onAddDoc ()
+void TagWindow::onAddDocFile ()
 {
-	static Glib::ustring startlocation = "";
-	
 	Gtk::FileChooserDialog chooser(
 		"Add Document",
 		Gtk::FILE_CHOOSER_ACTION_OPEN);
 	
 	chooser.set_select_multiple (true);
 	chooser.set_local_only (false);
-	chooser.set_current_folder (startlocation);
+	if (!addfolder_.empty())
+		chooser.set_current_folder (addfolder_);
 	chooser.add_button (Gtk::Stock::CANCEL, Gtk::RESPONSE_REJECT);
 	chooser.add_button (Gtk::Stock::ADD, Gtk::RESPONSE_ACCEPT);
 	chooser.set_default_response (Gtk::RESPONSE_ACCEPT);
@@ -764,14 +793,86 @@ void TagWindow::onAddDoc ()
 
 	int result = chooser.run ();
 	if (result == Gtk::RESPONSE_ACCEPT) {
-		startlocation = Glib::path_get_dirname(chooser.get_filename());
+		addfolder_ = Glib::path_get_dirname(chooser.get_filename());
 		Glib::SListHandle<Glib::ustring> uris = chooser.get_uris ();
 		Glib::SListHandle<Glib::ustring>::iterator iter = uris.begin();
 		Glib::SListHandle<Glib::ustring>::iterator const end = uris.end();
 		for (; iter != end; ++iter) {
-			//std::cerr << (*iter) << std::endl;
 			doclist_->newDoc(*iter);
 			doclistdirty = true;
+		}
+	}
+	
+	if (doclistdirty)
+		populateDocIcons ();
+}
+
+
+
+// For recursing through directories to add all documents from a folder
+
+static Glib::ustring _basepath;
+std::vector<Glib::ustring> _filestoadd;
+
+bool onAddDocFolderRecurse (const Glib::ustring& rel_path, const Glib::RefPtr<const Gnome::Vfs::FileInfo>& info, bool recursing_will_loop, bool& recurse)
+{
+	Glib::ustring fullname =
+		Glib::build_filename (_basepath, info->get_name());
+
+	if (info->get_type () == Gnome::Vfs::FILE_TYPE_DIRECTORY) {
+		Gnome::Vfs::DirectoryHandle dir;
+		Glib::ustring tmp = _basepath;
+		_basepath = fullname;
+		dir.visit (
+			fullname,
+			Gnome::Vfs::FILE_INFO_DEFAULT,
+			Gnome::Vfs::DIRECTORY_VISIT_DEFAULT,
+			&onAddDocFolderRecurse);
+		_basepath = tmp;
+	} else {
+		_filestoadd.push_back (fullname);
+	}
+}
+
+
+void TagWindow::onAddDocFolder ()
+{
+	Gtk::FileChooserDialog chooser(
+		"Add Folder",
+		Gtk::FILE_CHOOSER_ACTION_SELECT_FOLDER);
+	
+	// Want an option for following symlinks? (we don't)
+	
+	chooser.set_local_only (false);
+	if (!addfolder_.empty())
+		chooser.set_current_folder (addfolder_);
+	chooser.add_button (Gtk::Stock::CANCEL, Gtk::RESPONSE_REJECT);
+	chooser.add_button (Gtk::Stock::ADD, Gtk::RESPONSE_ACCEPT);
+	chooser.set_default_response (Gtk::RESPONSE_ACCEPT);
+	
+	bool doclistdirty = false;
+
+	int result = chooser.run ();
+	if (result == Gtk::RESPONSE_ACCEPT) {
+		addfolder_ = Glib::path_get_dirname(chooser.get_filename());
+		Glib::ustring rootfoldername = chooser.get_uri();
+		std::cerr << "Adding folder '" << rootfoldername << "'\n";
+		Gnome::Vfs::DirectoryHandle dir;
+		_basepath = rootfoldername;
+		_filestoadd.clear();
+		dir.visit (
+			rootfoldername,
+			Gnome::Vfs::FILE_INFO_DEFAULT,
+			Gnome::Vfs::DIRECTORY_VISIT_DEFAULT,
+			&onAddDocFolderRecurse);
+		
+		if (!_filestoadd.empty())
+			doclistdirty = true;
+		
+		std::vector<Glib::ustring>::iterator it = _filestoadd.begin ();
+		std::vector<Glib::ustring>::iterator const end = _filestoadd.end ();
+		for (; it != end; ++it) {
+			doclist_->newDoc(*it);			
 		}
 	}
 	
@@ -956,3 +1057,22 @@ void TagWindow::onOpenDoc ()
 			Gnome::Vfs::url_show (doc->getFileName());
 	}
 }
+
+
+Glib::RefPtr<Gdk::Pixbuf> TagWindow::getThemeIcon(Glib::ustring const &iconname)
+{
+	Glib::RefPtr<Gtk::IconTheme> theme = Gtk::IconTheme::get_default();
+	if (!theme) {
+		return Glib::RefPtr<Gdk::Pixbuf> (NULL);
+	}
+
+	if (!iconname.empty()) {
+		if (theme->has_icon(iconname)) {
+			return theme->load_icon(iconname, 48, Gtk::ICON_LOOKUP_FORCE_SVG);
+		}
+	}
+	
+	// Fall through on failure
+	return Glib::RefPtr<Gdk::Pixbuf> (NULL);
+}
+

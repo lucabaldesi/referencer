@@ -63,7 +63,8 @@ class TagWindow {
 		void onCreateTag ();
 		void onDeleteTag ();
 		void onRenameTag ();
-		void onAddDoc ();
+		void onAddDocFile ();
+		void onAddDocFolder ();
 		void onRemoveDoc ();
 		void onDoiLookupDoc ();
 		void onOpenDoc ();
@@ -84,6 +85,10 @@ class TagWindow {
 		void readXML (Glib::ustring XML);
 		void loadLibrary ();
 		void saveLibrary ();
+		Glib::RefPtr<Gdk::Pixbuf> getThemeIcon(Glib::ustring const &iconname);
+		
+		// Memory of where the user added files from
+		Glib::ustring addfolder_;
 		
 	public:
 		TagWindow ();
