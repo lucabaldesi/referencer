@@ -12,7 +12,11 @@ class Document {
 	Glib::ustring filename_;
 	Glib::ustring displayname_;
 	std::vector<int> tagUids_;
+	Glib::RefPtr<Gdk::Pixbuf> thumbnail_;
 	
+	void setupThumbnail ();
+	static Glib::RefPtr<Gdk::Pixbuf> getThemeIcon(Glib::ustring const &iconname);
+
 	BibData bib_;
 
 	public:
@@ -23,6 +27,7 @@ class Document {
 		std::vector<int> const &tagUids);
 	Glib::ustring& getDisplayName();
 	Glib::ustring& getFileName();
+	Glib::RefPtr<Gdk::Pixbuf> getThumbnail () {return thumbnail_;}
 	std::vector<int>& getTags ();
 	void setTag (int uid);
 	void clearTag (int uid);

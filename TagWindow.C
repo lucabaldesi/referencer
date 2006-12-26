@@ -156,6 +156,10 @@ void TagWindow::constructUI ()
 	
 	icons->set_selection_mode (Gtk::SELECTION_MULTIPLE);
 	
+	/*icons->set_column_spacing (50);
+	icons->set_icon_width (10);*/
+	icons->set_columns (3);
+	
 	docsview_ = icons;
 
 	Gtk::ScrolledWindow *scroll = Gtk::manage(new Gtk::ScrolledWindow());
@@ -278,9 +282,6 @@ void TagWindow::populateDocIcons ()
 {
 	std::cerr << "populateDocIcons\n";
 
-	Glib::RefPtr<Gnome::UI::ThumbnailFactory> thumbfac = 
-		Gnome::UI::ThumbnailFactory::create (Gnome::UI::THUMBNAIL_SIZE_NORMAL);
-
 	// Should save selection and restore at end
 	iconstore_->clear ();
 
@@ -306,54 +307,7 @@ void TagWindow::populateDocIcons ()
 		// THIS LINE DID IT!
 		// WHEE!  LOOK AT THIS LINE OF CODE!
 		(*item)[docpointercol_] = &(*docit);
-		
-		std::string pdffile = (*docit).getFileName();
-		
-		Glib::RefPtr<Gdk::Pixbuf> thumbnail;
-		
-		time_t mtime;
-		Glib::RefPtr<Gnome::Vfs::Uri> uri = Gnome::Vfs::Uri::create (pdffile);
-		if (uri->uri_exists()) {
-			Glib::RefPtr<Gnome::Vfs::FileInfo> fileinfo = uri->get_file_info ();
-			mtime = fileinfo->get_modification_time ();
-			
-			std::string thumbfile;
-			thumbfile = thumbfac->lookup (pdffile, mtime);
-			
-			// Should we be using Gnome::UI::icon_lookup_sync?
-			
-			if (thumbfile.empty()) {
-				std::cerr << "Couldn't find thumbnail:'" << pdffile << "'\n";
-				if (thumbfac->has_valid_failed_thumbnail (pdffile, mtime)) {
-					std::cerr << "Has valid failed thumbnail: '" << pdffile << "'\n";
-
-				} else {
-					std::cerr << "Generate thumbnail: '" << pdffile << "'\n";
-					thumbnail = thumbfac->generate_thumbnail (pdffile, "application/pdf");
-					if (thumbnail)				
-						thumbfac->save_thumbnail (thumbnail, pdffile, mtime);
-					else
-						std::cerr << "Failed to generate thumbnail: '" << pdffile << "'\n";
-				}
-
-			} else {
-				thumbnail = Gdk::Pixbuf::create_from_file (thumbfile);
-			}
-		}
-		
-		if (!thumbnail) {
-			thumbnail = getThemeIcon ("gnome-mime-application-pdf");
-		} else {
-			float desiredheight = 96.0;
-			int oldwidth = thumbnail->get_width ();
-			int oldheight = thumbnail->get_height ();
-			int newheight = (int)desiredheight;
-			int newwidth = (int)((float)oldwidth * (desiredheight / (float)oldheight));
-			thumbnail = thumbnail->scale_simple (newwidth, newheight, Gdk::INTERP_BILINEAR);
-		}
-		
-		std::auto_ptr<Glib::Error> error;
-		(*item)[docthumbnailcol_] = thumbnail;
+		(*item)[docthumbnailcol_] = (*docit).getThumbnail();
 	}
 	
 	// Should restore initial selection here
@@ -812,6 +766,24 @@ void TagWindow::onAbout ()
 }
 
 
+void TagWindow::addDocFiles (std::vector<Glib::ustring> const &filenames)
+{
+	std::vector<Glib::ustring>::const_iterator it = filenames.begin();
+	std::vector<Glib::ustring>::const_iterator const end = filenames.end();
+	for (; it != end; ++it) {
+		doclist_->newDoc(*it);
+	}
+	
+	if (!filenames.empty()) {
+		// We added something
+		// Should check if we actually added something in case a newDoc
+		// failed, eg if the doc was already in there
+		populateDocIcons ();
+	}
+	
+}
+
+
 void TagWindow::onAddDocFile ()
 {
 	Gtk::FileChooserDialog chooser(
@@ -825,23 +797,19 @@ void TagWindow::onAddDocFile ()
 	chooser.add_button (Gtk::Stock::CANCEL, Gtk::RESPONSE_REJECT);
 	chooser.add_button (Gtk::Stock::ADD, Gtk::RESPONSE_ACCEPT);
 	chooser.set_default_response (Gtk::RESPONSE_ACCEPT);
-	
-	bool doclistdirty = false;
 
-	int result = chooser.run ();
-	if (result == Gtk::RESPONSE_ACCEPT) {
+
+	if (chooser.run () == Gtk::RESPONSE_ACCEPT) {
 		addfolder_ = Glib::path_get_dirname(chooser.get_filename());
+		std::vector<Glib::ustring> newfiles;
 		Glib::SListHandle<Glib::ustring> uris = chooser.get_uris ();
 		Glib::SListHandle<Glib::ustring>::iterator iter = uris.begin();
 		Glib::SListHandle<Glib::ustring>::iterator const end = uris.end();
 		for (; iter != end; ++iter) {
-			doclist_->newDoc(*iter);
-			doclistdirty = true;
+			newfiles.push_back (*iter);
 		}
+		addDocFiles (newfiles);
 	}
-	
-	if (doclistdirty)
-		populateDocIcons ();
 }
 
 
@@ -878,7 +846,7 @@ void TagWindow::onAddDocFolder ()
 		"Add Folder",
 		Gtk::FILE_CHOOSER_ACTION_SELECT_FOLDER);
 	
-	// Want an option for following symlinks? (we don't)
+	// Want an option for following symlinks? (we don't do it)
 	
 	chooser.set_local_only (false);
 	if (!addfolder_.empty())
@@ -886,11 +854,8 @@ void TagWindow::onAddDocFolder ()
 	chooser.add_button (Gtk::Stock::CANCEL, Gtk::RESPONSE_REJECT);
 	chooser.add_button (Gtk::Stock::ADD, Gtk::RESPONSE_ACCEPT);
 	chooser.set_default_response (Gtk::RESPONSE_ACCEPT);
-	
-	bool doclistdirty = false;
 
-	int result = chooser.run ();
-	if (result == Gtk::RESPONSE_ACCEPT) {
+	if (chooser.run () == Gtk::RESPONSE_ACCEPT) {
 		addfolder_ = Glib::path_get_dirname(chooser.get_filename());
 		Glib::ustring rootfoldername = chooser.get_uri();
 		std::cerr << "Adding folder '" << rootfoldername << "'\n";
@@ -903,18 +868,9 @@ void TagWindow::onAddDocFolder ()
 			Gnome::Vfs::DIRECTORY_VISIT_DEFAULT,
 			&onAddDocFolderRecurse);
 		
-		if (!_filestoadd.empty())
-			doclistdirty = true;
 		
-		std::vector<Glib::ustring>::iterator it = _filestoadd.begin ();
-		std::vector<Glib::ustring>::iterator const end = _filestoadd.end ();
-		for (; it != end; ++it) {
-			doclist_->newDoc(*it);			
-		}
+		addDocFiles (_filestoadd);
 	}
-	
-	if (doclistdirty)
-		populateDocIcons ();
 }
 
 
@@ -1093,23 +1049,5 @@ void TagWindow::onOpenDoc ()
 	if (doc && !doc->getFileName().empty()) {
 			Gnome::Vfs::url_show (doc->getFileName());
 	}
-}
-
-
-Glib::RefPtr<Gdk::Pixbuf> TagWindow::getThemeIcon(Glib::ustring const &iconname)
-{
-	Glib::RefPtr<Gtk::IconTheme> theme = Gtk::IconTheme::get_default();
-	if (!theme) {
-		return Glib::RefPtr<Gdk::Pixbuf> (NULL);
-	}
-
-	if (!iconname.empty()) {
-		if (theme->has_icon(iconname)) {
-			return theme->load_icon(iconname, 48, Gtk::ICON_LOOKUP_FORCE_SVG);
-		}
-	}
-	
-	// Fall through on failure
-	return Glib::RefPtr<Gdk::Pixbuf> (NULL);
 }
 

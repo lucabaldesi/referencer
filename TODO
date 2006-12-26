@@ -1,5 +1,7 @@
+
 taglist and tagger need to be in scrolledwindows
-need to update tagger when rename tag
+DONE need to update tagger when rename tag
+	tagging and tag create/delete seems a bit buggy still
 need to update docicons when tagging file (time to be more efficient)
 LookupDoi and Open should really handle multiple documents.
 
@@ -8,11 +10,16 @@ A View menu which allows hiding of "Tag Bar"
 Drag and drop to add by filename
 Add by DOI
 Add by nothing but displayname
+Progressbar when adding (many or one, both can be slow)
+
+We should write to file and then copy into place (prevent crash blanking file)
+
 
 DONE Default thumbnail for unthumbnailable things
 	Although it relies on unknown.png in current path, should get from iconfactory
 DONE Thumbnail generation
-	Now do it in the background
+	Now do it in the background?
+
 
 
 

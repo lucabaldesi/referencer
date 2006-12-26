@@ -65,6 +65,7 @@ class TagWindow {
 		void onRenameTag ();
 		void onAddDocFile ();
 		void onAddDocFolder ();
+		void addDocFiles (std::vector<Glib::ustring> const &filenames);
 		void onRemoveDoc ();
 		void onDoiLookupDoc ();
 		void onOpenDoc ();
@@ -85,7 +86,6 @@ class TagWindow {
 		void readXML (Glib::ustring XML);
 		void loadLibrary ();
 		void saveLibrary ();
-		Glib::RefPtr<Gdk::Pixbuf> getThemeIcon(Glib::ustring const &iconname);
 		
 		// Memory of where the user added files from
 		Glib::ustring addfolder_;

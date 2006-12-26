@@ -5,6 +5,7 @@
 
 #include <glibmm/markup.h>
 #include <libgnomevfsmm.h>
+#include <libgnomeuimm.h>
 
 #include "DocumentList.h"
 
@@ -12,6 +13,7 @@
 Document::Document (Glib::ustring const &filename)
 {
 	filename_ = filename;
+	setupThumbnail ();
 	displayname_ =
 		Gnome::Vfs::unescape_string_for_display (
 			Glib::path_get_basename (filename));
@@ -27,8 +29,77 @@ Document::Document (
 	std::vector<int> const &tagUids)
 {
 	filename_ = filename;
+	setupThumbnail ();
 	displayname_ = displayname;
 	tagUids_ = tagUids;
+}
+
+
+
+Glib::RefPtr<Gdk::Pixbuf> Document::getThemeIcon(Glib::ustring const &iconname)
+{
+	Glib::RefPtr<Gtk::IconTheme> theme = Gtk::IconTheme::get_default();
+	if (!theme) {
+		return Glib::RefPtr<Gdk::Pixbuf> (NULL);
+	}
+
+	if (!iconname.empty()) {
+		if (theme->has_icon(iconname)) {
+			return theme->load_icon(iconname, 48, Gtk::ICON_LOOKUP_FORCE_SVG);
+		}
+	}
+	
+	// Fall through on failure
+	return Glib::RefPtr<Gdk::Pixbuf> (NULL);
+}
+
+
+void Document::setupThumbnail ()
+{
+	Glib::RefPtr<Gnome::Vfs::Uri> uri = Gnome::Vfs::Uri::create (filename_);
+	if (uri->uri_exists()) {
+		Glib::RefPtr<Gnome::Vfs::FileInfo> fileinfo = uri->get_file_info ();
+		time_t mtime = fileinfo->get_modification_time ();
+		
+		Glib::RefPtr<Gnome::UI::ThumbnailFactory> thumbfac = 
+			Gnome::UI::ThumbnailFactory::create (Gnome::UI::THUMBNAIL_SIZE_NORMAL);
+		
+		Glib::ustring thumbfile;
+		thumbfile = thumbfac->lookup (filename_, mtime);
+		
+		// Should we be using Gnome::UI::icon_lookup_sync?
+		if (thumbfile.empty()) {
+			std::cerr << "Couldn't find thumbnail:'" << filename_ << "'\n";
+			if (thumbfac->has_valid_failed_thumbnail (filename_, mtime)) {
+				std::cerr << "Has valid failed thumbnail: '" << filename_ << "'\n";
+
+			} else {
+				std::cerr << "Generate thumbnail: '" << filename_ << "'\n";
+				thumbnail_ = thumbfac->generate_thumbnail (filename_, "application/pdf");
+				if (thumbnail_)				
+					thumbfac->save_thumbnail (thumbnail_, filename_, mtime);
+				else
+					std::cerr << "Failed to generate thumbnail: '" << filename_ << "'\n";
+			}
+
+		} else {
+			thumbnail_ = Gdk::Pixbuf::create_from_file (thumbfile);
+		}
+	}
+	
+	if (!thumbnail_) {
+		// Should use one global pixbuf for this instead of loading
+		// it separately for each doc
+		thumbnail_ = getThemeIcon ("gnome-mime-application-pdf");
+	} else {
+		float desiredheight = 96.0;
+		int oldwidth = thumbnail_->get_width ();
+		int oldheight = thumbnail_->get_height ();
+		int newheight = (int)desiredheight;
+		int newwidth = (int)((float)oldwidth * (desiredheight / (float)oldheight));
+		thumbnail_ = thumbnail_->scale_simple (
+			newwidth, newheight, Gdk::INTERP_BILINEAR);
+	}
 }
 
 
