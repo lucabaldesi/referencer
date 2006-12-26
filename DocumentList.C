@@ -100,13 +100,13 @@ void Document::writeBibtex (std::ostringstream& out)
 	// We should strip illegal characters from displayname in a predictable way
 	out << "@article{" << displayname_ << "," << std::endl;
 	// There are more fields than this, or there should be!
-	out << writeBibKey ("author", bib_.getAuthors()) << ",\n";
-	out << writeBibKey ("title", bib_.getTitle()) << ",\n";
+	out << writeBibKey ("author",  bib_.getAuthors()) << ",\n";
+	out << writeBibKey ("title",   bib_.getTitle()) << ",\n";
 	out << writeBibKey ("journal", bib_.getJournal()) << ",\n";
-	out << writeBibKey ("volume", bib_.getVolume()) << ",\n";
-	out << writeBibKey ("number", bib_.getNumber()) << ",\n";
-	out << writeBibKey ("pages", bib_.getPages()) << ",\n";
-	out << writeBibKey ("year", bib_.getYear()) << "\n";
+	out << writeBibKey ("volume",  bib_.getVolume()) << ",\n";
+	out << writeBibKey ("number",  bib_.getNumber()) << ",\n";
+	out << writeBibKey ("pages",   bib_.getPages()) << ",\n";
+	out << writeBibKey ("year",    bib_.getYear()) << "\n";
 	out << "}\n\n";
 }
 
@@ -210,3 +210,14 @@ void DocumentList::writeXML (std::ostringstream& out)
 	}
 	out << "</doclist>\n";
 }
+
+
+void DocumentList::writeBibtex (std::ostringstream& out)
+{
+	std::vector<Document>::iterator it = docs_.begin();
+	std::vector<Document>::iterator const end = docs_.end();
+	for (; it != end; it++) {
+		(*it).writeBibtex (out);
+	}
+}
+

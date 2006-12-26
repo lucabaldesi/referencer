@@ -89,6 +89,7 @@ class TagWindow {
 		
 		// Memory of where the user added files from
 		Glib::ustring addfolder_;
+		Glib::ustring exportfolder_;
 		
 	public:
 		TagWindow ();

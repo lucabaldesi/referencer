@@ -756,6 +756,40 @@ void TagWindow::onRenameTag ()
 
 void TagWindow::onExportBibtex ()
 {
+	Gtk::FileChooserDialog chooser (
+		"Export BibTeX",
+		Gtk::FILE_CHOOSER_ACTION_SAVE);
+	chooser.add_button (Gtk::Stock::CANCEL, Gtk::RESPONSE_REJECT);
+	chooser.add_button (Gtk::Stock::SAVE, Gtk::RESPONSE_ACCEPT);
+	chooser.set_default_response (Gtk::RESPONSE_ACCEPT);
+	chooser.set_do_overwrite_confirmation (true);
+	
+	if (!exportfolder_.empty())
+		chooser.set_current_folder (exportfolder_);
+	
+	if (chooser.run() == Gtk::RESPONSE_ACCEPT) {
+		exportfolder_ = Glib::path_get_dirname(chooser.get_filename());
+		Glib::ustring bibfilename = chooser.get_uri();
+		
+		std::ostringstream bibtext;
+		doclist_->writeBibtex (bibtext);
+		
+		Gnome::Vfs::Handle bibfile;
+
+		try {
+			bibfile.create (bibfilename, Gnome::Vfs::OPEN_WRITE,
+				false, Gnome::Vfs::PERM_USER_READ | Gnome::Vfs::PERM_USER_WRITE);
+		} catch (const Gnome::Vfs::exception ex) {
+			std::cerr << "TagWindow::onExportBibtex: "
+				"exception in create '" << ex.what() << "'\n";
+			return;
+		}
+
+		bibfile.write (bibtext.str().c_str(), strlen(bibtext.str().c_str()));
+		
+		bibfile.close ();
+	}
+	
 	// Prompt for location
 	// overwrite schitt
 	// open file

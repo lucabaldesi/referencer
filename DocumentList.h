@@ -52,6 +52,7 @@ class DocumentList {
 	void clearTag (int uid);
 	void writeXML (std::ostringstream& out);
 	void clear () {docs_.clear ();}
+	void writeBibtex (std::ostringstream &out);
 };
 
 #endif
