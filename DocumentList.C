@@ -86,7 +86,8 @@ bool Document::hasTag(int uid)
 }
 
 
-static Glib::ustring writeBibKey (Glib::ustring& key, Glib::ustring&value)
+// key is not ref because it gets initted from a const char*
+static Glib::ustring writeBibKey (Glib::ustring key, Glib::ustring const & value)
 {
 	// Should be doing lots of escaping here, going from UTF-8 to LaTeX
 	return key + " = {" + value + "}";
@@ -99,7 +100,7 @@ void Document::writeBibtex (std::ostringstream& out)
 	// We should strip illegal characters from displayname in a predictable way
 	out << "@article{" << displayname_ << "," << std::endl;
 	// There are more fields than this, or there should be!
-	out << writeBibKey ("author", bib_.getAuthor()) << ",\n";
+	out << writeBibKey ("author", bib_.getAuthors()) << ",\n";
 	out << writeBibKey ("title", bib_.getTitle()) << ",\n";
 	out << writeBibKey ("journal", bib_.getJournal()) << ",\n";
 	out << writeBibKey ("volume", bib_.getVolume()) << ",\n";
