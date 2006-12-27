@@ -1,5 +1,6 @@
 
 #include <stdlib.h>
+#include <iostream>
 
 #include <PDFDoc.h>
 #include <goo/gtypes.h>
@@ -17,7 +18,19 @@
 void *textfunc (void *stream, char *text, int len)
 {
 	Glib::ustring *str = (Glib::ustring *)stream;
-	str->append(text);
+
+	int size = len;
+	if (size < 1)
+		return NULL;
+
+	// Note ustring DOESN'T WORK for addition, I think because the units of 
+	// len are unicode characters and not bytes, or vice versa
+	// This should break eventually and get really fixed.
+	//Glib::ustring addition (text, size);
+	std::string addition (text, size);
+	//std::cerr << "addition = '" << addition << "'\n";
+	//str->append(text, len - 1);
+	*str += addition;
 }
 
 int main (int argc, char **argv)

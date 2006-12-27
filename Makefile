@@ -20,4 +20,4 @@ clean:
 	rm -f $(OBJECTS)
 
 pdfdivine: main.o BibData.o
-	$(CC) $(LIBS) -o pdfdivine
+	$(CC) $(LIBS) main.o BibData.o -o pdfdivine
