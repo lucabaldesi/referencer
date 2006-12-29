@@ -7,6 +7,16 @@
 #include <libgnomevfsmm.h>
 #include <libgnomeuimm.h>
 
+// fwrite etc
+#include <stdlib.h>
+
+// Libpoppler stuff
+#include <PDFDoc.h>
+#include <goo/gtypes.h>
+#include <goo/GooString.h>
+#include <GlobalParams.h>
+#include <TextOutputDev.h>
+
 #include "DocumentList.h"
 
 
@@ -76,10 +86,12 @@ void Document::setupThumbnail ()
 			} else {
 				std::cerr << "Generate thumbnail: '" << filename_ << "'\n";
 				thumbnail_ = thumbfac->generate_thumbnail (filename_, "application/pdf");
-				if (thumbnail_)				
+				if (thumbnail_) {
 					thumbfac->save_thumbnail (thumbnail_, filename_, mtime);
-				else
+				} else {
 					std::cerr << "Failed to generate thumbnail: '" << filename_ << "'\n";
+					thumbfac->create_failed_thumbnail (filename_, mtime);
+				}
 			}
 
 		} else {
@@ -292,3 +304,88 @@ void DocumentList::writeBibtex (std::ostringstream& out)
 	}
 }
 
+
+static void *textfunc (void *stream, char *text, int len)
+{
+	Glib::ustring *str = (Glib::ustring *)stream;
+
+	int size = len;
+	if (size < 1)
+		return NULL;
+
+	// Note ustring DOESN'T WORK for addition, I think because the units of 
+	// len are unicode characters and not bytes, or vice versa
+	// This should break eventually and get really fixed.
+	//Glib::ustring addition (text, size);
+	std::string addition (text, size);
+	//std::cerr << "addition = '" << addition << "'\n";
+	//str->append(text, len - 1);
+	*str += addition;
+	
+	// What is this retval used for?
+	return NULL;
+}
+
+
+void Document::readPDF () 
+{
+	if (filename_.empty()) {
+		std::cerr << "Warning: Document::readFile: has no filename\n";
+		return;
+	}
+
+	//globalParams = new GlobalParams (NULL);
+	
+	GooString *filename = new GooString (filename_.c_str());
+	PDFDoc *doc = new PDFDoc (filename, NULL, NULL);
+	if (doc->isOk()) {
+		std::cerr << "Loaded '" << filename_ << "' successfully, "
+			<< doc->getNumPages() << " pages.\n";
+	} else {
+		std::cerr << "Failed to load '" << filename << "'\n";
+		return;
+	}
+
+	int firstpage = 1;
+	int lastpage = doc->getNumPages();
+	GBool physLayout = gFalse;
+	GBool rawOrder = gFalse;
+
+	Glib::ustring textdump;
+	TextOutputDev *output = new TextOutputDev(
+		(TextOutputFunc) textfunc,
+		&textdump,
+		physLayout,
+		rawOrder);
+
+	if (output->isOk()) {
+		g_message ("Extracting text...");
+		doc->displayPages(output, firstpage, lastpage, 72, 72, 0,
+			gTrue, gFalse, gFalse);
+		delete output;	
+	} else {
+		delete output;
+		g_error ("Could not create text output device");
+	}
+
+	if (!textdump.empty())
+		g_message ("Got text.");
+	else
+		g_message ("No text found.");
+
+	/*BibData *bib = new BibData();
+
+	bib->guessYear (textdump);
+	bib->guessAuthors (textdump);
+
+	bib->guessJournal (textdump);
+	bib->guessVolumeNumberPage (textdump);
+
+	FILE *out = fopen("dump.txt", "w");
+	fwrite (text.c_str(), 1, strlen(cppdump.c_str()), out);
+	fclose (out);
+
+	bib->print();
+
+	delete doc;*/
+}

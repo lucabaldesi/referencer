@@ -406,6 +406,10 @@ void TagWindow::tagNameEdited (
 	Gtk::TreePath path = (*paths.begin ());
 	Gtk::ListStore::iterator iter = tagstore_->get_iter (path);
 	
+	if ((*iter)[taguidcol_] == ALL_TAGS_UID)
+		return;
+	
+	
 	// Should escape this
 	Glib::ustring newname = text2;
 	(*iter)[tagnamecol_] = newname;
@@ -467,6 +471,9 @@ void TagWindow::docSelectionChanged ()
 {
 	actiongroup_->get_action("RemoveDoc")->set_sensitive (
 		!docsview_->get_selected_items().empty());
+	std::cerr << docsview_->get_selected_items().empty() << "\n";
+	std::cerr << docsview_->get_selected_items().size() << "\n";
+	std::cerr << getSelectedDoc() << "\n";
 	actiongroup_->get_action("DoiLookupDoc")->set_sensitive (
 		!docsview_->get_selected_items().empty()
 		&& !(docsview_->get_selected_items().size() > 1)
@@ -1035,10 +1042,12 @@ void TagWindow::onDoiLookupDoc ()
 {
 	Document *doc = getSelectedDoc ();
 	if (doc) {
-		Glib::ustring prefix = "http://dx.doi.org/";
+		/*Glib::ustring prefix = "http://dx.doi.org/";
 		Glib::ustring doi = doc->getBibData().getDoi();
 		
-		Gnome::Vfs::url_show (prefix + doi);
+		Gnome::Vfs::url_show (prefix + doi);*/
+		doc->readPDF ();
+		doc->getBibData().print();
 	}
 }
 

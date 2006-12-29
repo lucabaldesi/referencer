@@ -19,8 +19,9 @@ DONE Default thumbnail for unthumbnailable things
 	Although it relies on unknown.png in current path, should get from iconfactory
 DONE Thumbnail generation
 	Now do it in the background?
+When thumbnailing fails, save the failure so that we don't try again
 
-
+Fix paths like "'file:///home/jcspray/Work/MPhys%20Dissertation/Papers/Papers (Spin glass EB)/2005: Spin-Glass-Like behaviour in CoO Nanoparticles and the origin of EB in layered COO-ferromagnet structures (Gruyters).pdf" when adding folder
 
 
 Competition on Science biblio export:
