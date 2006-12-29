@@ -39,6 +39,8 @@ class Document {
 	
 	BibData& getBibData () {return bib_;}
 	void setBibData (BibData& bib){bib_ = bib;}
+
+	static Glib::RefPtr<Gdk::Pixbuf> defaultthumb_;
 };
 
 class DocumentList {

@@ -18,7 +18,7 @@
 #include <TextOutputDev.h>
 
 #include "DocumentList.h"
-
+Glib::RefPtr<Gdk::Pixbuf> Document::defaultthumb_;
 
 Document::Document (Glib::ustring const &filename)
 {
@@ -102,7 +102,14 @@ void Document::setupThumbnail ()
 	if (!thumbnail_) {
 		// Should use one global pixbuf for this instead of loading
 		// it separately for each doc
-		thumbnail_ = getThemeIcon ("gnome-mime-application-pdf");
+		if (defaultthumb_) {
+			thumbnail_ = Document::defaultthumb_;
+		} else {
+			thumbnail_ = getThemeIcon ("gnome-mime-application-pdf");
+			Document::defaultthumb_ = thumbnail_;
+		}
+		
+
 	} else {
 		float desiredheight = 96.0;
 		int oldwidth = thumbnail_->get_width ();
