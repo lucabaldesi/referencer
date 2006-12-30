@@ -353,7 +353,8 @@ void Document::readPDF ()
 	}
 
 	int firstpage = 1;
-	int lastpage = doc->getNumPages();
+	//int lastpage = doc->getNumPages();
+	int lastpage = 1;
 	GBool physLayout = gFalse;
 	GBool rawOrder = gFalse;
 

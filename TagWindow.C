@@ -220,7 +220,7 @@ void TagWindow::constructMenu ()
 		"OpenDoc", Gtk::Stock::OPEN, "_Open..."),
   	sigc::mem_fun(*this, &TagWindow::onOpenDoc));
 	actiongroup_->add( Gtk::Action::create(
-		"Divine", Gtk::Stock::OPEN, "_Divine..."),
+		"Divine", "_Divine..."),
   	sigc::mem_fun(*this, &TagWindow::onDivine));
   	
 	actiongroup_->add ( Gtk::Action::create("HelpMenu", "_Help") );
@@ -483,23 +483,22 @@ void TagWindow::docSelectionChanged ()
 
 	std::cerr << "TagWindow::docSelectionChanged >>\n";
 
-	actiongroup_->get_action("RemoveDoc")->set_sensitive (
-		!docsview_->get_selected_items().empty());
-	std::cerr << "TagWindow::docSelectionChanged :\n";
-	std::cerr << "\t" << docsview_->get_selected_items().empty() << "\n";
-	std::cerr << "\t" << docsview_->get_selected_items().size() << "\n";
-	std::cerr << "\t" << getSelectedDoc() << "\n";
+	int selectcount = getSelectedDocCount ();
+	
+	bool const somethingselected = selectcount > 0;
+	bool const onlyoneselected = selectcount == 1;
+
+	actiongroup_->get_action("RemoveDoc")->set_sensitive (somethingselected);
+	taggerbox_->set_sensitive (somethingselected);
+
 	actiongroup_->get_action("DoiLookupDoc")->set_sensitive (
-		!docsview_->get_selected_items().empty()
-		&& !(docsview_->get_selected_items().size() > 1)
+		onlyoneselected
 		&& !getSelectedDoc()->getBibData().getDoi().empty());
 	actiongroup_->get_action("OpenDoc")->set_sensitive (
-		!docsview_->get_selected_items().empty()
-		&& !(docsview_->get_selected_items().size() > 1)
+		onlyoneselected
 		&& !getSelectedDoc()->getFileName().empty());
 
-	taggerbox_->set_sensitive (
-		!docsview_->get_selected_items().empty());
+
 	
 	ignoretaggerchecktoggled_ = true;
 	for (std::vector<Tag>::iterator tagit = taglist_->getTags().begin();
@@ -893,12 +892,33 @@ void TagWindow::onAddDocFolder ()
 }
 
 
+std::vector<Document*> TagWindow::getSelectedDocs ()
+{
+	std::vector<Document*> docpointers;
+
+	Gtk::IconView::ArrayHandle_TreePaths paths =
+		docsview_->get_selected_items ();
+
+	Gtk::IconView::ArrayHandle_TreePaths::iterator it = paths.begin ();
+	Gtk::IconView::ArrayHandle_TreePaths::iterator const end = paths.end ();
+	for (; it != end; it++) {
+		Gtk::TreePath path = (*it);
+		Gtk::ListStore::iterator iter = iconstore_->get_iter (path);
+		docpointers.push_back((*iter)[docpointercol_]);
+	}
+	
+	return docpointers;
+}
+
+
+int TagWindow::getSelectedDocCount ()
+{
+	return docsview_->get_selected_items().size();
+}
+
+
 void TagWindow::onRemoveDoc ()
 {
-
-	
-
-	
 	Gtk::IconView::ArrayHandle_TreePaths paths = docsview_->get_selected_items ();
 
 	bool const multiple = paths.size() > 1;
@@ -1080,12 +1100,13 @@ void TagWindow::onDoiLookupDoc ()
 
 void TagWindow::onDivine ()
 {
-	Document *doc = getSelectedDoc ();
-	if (doc) {
-		doc->readPDF ();
-		doc->getBibData().print();
-	} else {
-		std::cerr << "Warning: TagWindow::onDivine: can't get doc\n";
+	std::vector<Document*> docpointers = getSelectedDocs ();
+
+	std::vector<Document*>::iterator it = docpointers.begin ();
+	std::vector<Document*>::iterator const end = docpointers.end ();
+	for (; it != end; ++it) {
+		(*it)->readPDF ();
+		(*it)->getBibData().print();
 	}
 }
 

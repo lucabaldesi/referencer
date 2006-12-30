@@ -85,6 +85,8 @@ class TagWindow {
 		
 		YesNoMaybe selectedDocsHaveTag (int uid);
 		Document *getSelectedDoc ();
+		std::vector<Document*> getSelectedDocs ();
+		int getSelectedDocCount ();
 		Glib::ustring writeXML ();
 		void readXML (Glib::ustring XML);
 		void loadLibrary ();

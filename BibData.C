@@ -177,7 +177,7 @@ void BibData::guessDoi (Glib::ustring const &raw_)
 	std::string doistring;
 
 //	boost::regex expression("\\WDOI: (.*)\\W");
-		boost::regex expression("[Dd][Oo][Ii]: ?([^[ \\n]]*)[ \\n]");  
+		boost::regex expression("[Dd][Oo][Ii]: ?([^ \\n]*)[^ \\n]");
 
 	std::string::const_iterator start, end;
 	start = raw.begin();
