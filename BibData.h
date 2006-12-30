@@ -24,9 +24,7 @@ class BibData {
 		FIELD_ALL = 1<<7
 	} FieldMask;
 
-	BibData () {
-		doi_ = "10.1126/science.1066804";
-	}
+	BibData () {}
 	
 	void setDoi (Glib::ustring &doi) {doi_ = doi;}
 	Glib::ustring getDoi () {return doi_;}
@@ -54,6 +52,7 @@ class BibData {
 	void guessYear (Glib::ustring const &raw);
 	void guessAuthors (Glib::ustring const &raw);
 	void guessTitle (Glib::ustring const &raw);
+	void guessDoi (Glib::ustring const &raw);
 };
 
 

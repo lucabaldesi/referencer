@@ -2,6 +2,7 @@
 #include <gtkmm.h>
 #include <libgnomeuimm.h>
 #include <libgnomevfsmm.h>
+#include <poppler/GlobalParams.h>
 
 // for ostringstream
 #include <sstream>
@@ -18,6 +19,9 @@ int main (int argc, char **argv)
 		Gnome::UI::module_info_get(), argc, argv);
 
 	Gnome::Vfs::init ();
+
+	// Initialise libpoppler
+	globalParams = new GlobalParams (NULL);
 
 	TagWindow window;
 	
@@ -40,6 +44,7 @@ TagWindow::TagWindow ()
 	
 	tagselectionignore_ = false;
 	ignoretaggerchecktoggled_ = false;
+	docselectionignore_ = false;
 }
 
 
@@ -214,6 +219,9 @@ void TagWindow::constructMenu ()
 	actiongroup_->add( Gtk::Action::create(
 		"OpenDoc", Gtk::Stock::OPEN, "_Open..."),
   	sigc::mem_fun(*this, &TagWindow::onOpenDoc));
+	actiongroup_->add( Gtk::Action::create(
+		"Divine", Gtk::Stock::OPEN, "_Divine..."),
+  	sigc::mem_fun(*this, &TagWindow::onDivine));
   	
 	actiongroup_->add ( Gtk::Action::create("HelpMenu", "_Help") );
 	actiongroup_->add( Gtk::Action::create(
@@ -263,6 +271,7 @@ void TagWindow::constructMenu ()
 		"    <menuitem action='RemoveDoc'/>"
 		"    <menuitem action='DoiLookupDoc'/>"
 		"    <menuitem action='OpenDoc'/>"
+		"    <menuitem action='Divine'/>"
 		"  </popup>"
 		"  <popup name='TagPopup'>"
 		"    <menuitem action='CreateTag'/>"
@@ -280,7 +289,7 @@ void TagWindow::constructMenu ()
 
 void TagWindow::populateDocIcons ()
 {
-	std::cerr << "populateDocIcons\n";
+	std::cerr << "TagWindow::populateDocIcons >>\n";
 
 	// Should save selection and restore at end
 	iconstore_->clear ();
@@ -469,11 +478,17 @@ void TagWindow::tagSelectionChanged ()
 
 void TagWindow::docSelectionChanged ()
 {
+	if (docselectionignore_)
+		return;
+
+	std::cerr << "TagWindow::docSelectionChanged >>\n";
+
 	actiongroup_->get_action("RemoveDoc")->set_sensitive (
 		!docsview_->get_selected_items().empty());
-	std::cerr << docsview_->get_selected_items().empty() << "\n";
-	std::cerr << docsview_->get_selected_items().size() << "\n";
-	std::cerr << getSelectedDoc() << "\n";
+	std::cerr << "TagWindow::docSelectionChanged :\n";
+	std::cerr << "\t" << docsview_->get_selected_items().empty() << "\n";
+	std::cerr << "\t" << docsview_->get_selected_items().size() << "\n";
+	std::cerr << "\t" << getSelectedDoc() << "\n";
 	actiongroup_->get_action("DoiLookupDoc")->set_sensitive (
 		!docsview_->get_selected_items().empty()
 		&& !(docsview_->get_selected_items().size() > 1)
@@ -486,23 +501,17 @@ void TagWindow::docSelectionChanged ()
 	taggerbox_->set_sensitive (
 		!docsview_->get_selected_items().empty());
 	
-	
-	std::cerr << "docSelectionChanged\n";
-	
 	ignoretaggerchecktoggled_ = true;
 	for (std::vector<Tag>::iterator tagit = taglist_->getTags().begin();
 	     tagit != taglist_->getTags().end(); ++tagit) {
 		Gtk::CheckButton *check = taggerchecks_[(*tagit).uid_];
 		YesNoMaybe state = selectedDocsHaveTag ((*tagit).uid_);
 		if (state == YES) {
-			//std::cerr << (*tagit).name_ << " : " << "Yes\n";
 			check->set_active (true);
 			check->set_inconsistent (false);
 		} else if (state == MAYBE) {
-			//std::cerr << (*tagit).name_ << " : " << "Maybe\n";
 			check->set_active (false);
 			check->set_inconsistent (true);
-			//std::cerr << item->get_inconsistent() << std::endl;
 		} else {
 			check->set_active (false);
 			check->set_inconsistent (false);
@@ -844,6 +853,9 @@ bool onAddDocFolderRecurse (const Glib::ustring& rel_path, const Glib::RefPtr<co
 	} else {
 		_filestoadd.push_back (fullname);
 	}
+	
+	// What does this retval do?
+	return true;
 }
 
 
@@ -883,6 +895,10 @@ void TagWindow::onAddDocFolder ()
 
 void TagWindow::onRemoveDoc ()
 {
+
+	
+
+	
 	Gtk::IconView::ArrayHandle_TreePaths paths = docsview_->get_selected_items ();
 
 	bool const multiple = paths.size() > 1;
@@ -930,13 +946,23 @@ void TagWindow::onRemoveDoc ()
 				continue;
 			}
 		}
-
+		
+		std::cerr << "TagWindow::onRemoveDoc: removeDoc on '" << (*iter)[docnamecol_] << "'\n";
 		doclist_->removeDoc((*iter)[docnamecol_]);
 		doclistdirty = true;
 	}
-	
-	if (doclistdirty)
+
+	if (doclistdirty) {
+		std::cerr << "TagWindow::onRemoveDoc: dirty, calling populateDocIcons\n";
+		// We disable docSelectionChanged because otherwise it gets called N
+		// times for deleting N items
+		docselectionignore_ = true;
 		populateDocIcons ();
+		docselectionignore_ = false;
+		docSelectionChanged ();
+	} else {
+		docselectionignore_ = false;
+	}
 }
 
 
@@ -1042,12 +1068,24 @@ void TagWindow::onDoiLookupDoc ()
 {
 	Document *doc = getSelectedDoc ();
 	if (doc) {
-		/*Glib::ustring prefix = "http://dx.doi.org/";
+		Glib::ustring prefix = "http://dx.doi.org/";
 		Glib::ustring doi = doc->getBibData().getDoi();
 		
-		Gnome::Vfs::url_show (prefix + doi);*/
+		Gnome::Vfs::url_show (prefix + doi);
+	} else {
+		std::cerr << "Warning: TagWindow::onDoiLookupDoc: can't get doc\n";
+	}
+}
+
+
+void TagWindow::onDivine ()
+{
+	Document *doc = getSelectedDoc ();
+	if (doc) {
 		doc->readPDF ();
 		doc->getBibData().print();
+	} else {
+		std::cerr << "Warning: TagWindow::onDivine: can't get doc\n";
 	}
 }
 

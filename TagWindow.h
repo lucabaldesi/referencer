@@ -47,6 +47,7 @@ class TagWindow {
 		Glib::RefPtr<Gtk::TreeSelection> tagselection_;
 		Gtk::TreeView *tagview_;
 		bool tagselectionignore_;
+		bool docselectionignore_;
 		std::vector<int> filtertags_;
 		
 		Glib::RefPtr<Gtk::UIManager> uimanager_;
@@ -71,6 +72,8 @@ class TagWindow {
 		void onOpenDoc ();
 		void onExportBibtex ();
 		void onAbout ();
+		
+		void onDivine ();
 		
 		Gtk::Menu doccontextmenu_;
 		

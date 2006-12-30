@@ -14,6 +14,7 @@ Progressbar when adding (many or one, both can be slow)
 
 We should write to file and then copy into place (prevent crash blanking file)
 
+Need to do bibdata XML IO
 
 DONE Default thumbnail for unthumbnailable things
 	DONE Although it relies on unknown.png in current path, should get from iconfactory

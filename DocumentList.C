@@ -341,15 +341,14 @@ void Document::readPDF ()
 		return;
 	}
 
-	//globalParams = new GlobalParams (NULL);
-	
-	GooString *filename = new GooString (filename_.c_str());
+	GooString *filename = new GooString (
+		Gnome::Vfs::get_local_path_from_uri(filename_).c_str());
 	PDFDoc *doc = new PDFDoc (filename, NULL, NULL);
 	if (doc->isOk()) {
-		std::cerr << "Loaded '" << filename_ << "' successfully, "
+		std::cerr << "Loaded '" << filename->getCString() << "' successfully, "
 			<< doc->getNumPages() << " pages.\n";
 	} else {
-		std::cerr << "Failed to load '" << filename << "'\n";
+		std::cerr << "Failed to load '" << filename->getCString() << "'\n";
 		return;
 	}
 
@@ -379,6 +378,8 @@ void Document::readPDF ()
 		g_message ("Got text.");
 	else
 		g_message ("No text found.");
+
+	bib_.guessDoi (textdump);
 
 	/*BibData *bib = new BibData();
 

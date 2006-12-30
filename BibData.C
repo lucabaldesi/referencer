@@ -12,6 +12,7 @@
  */
 void BibData::print ()
 {
+	std::cout << "DOI: " << doi_ << std::endl;	
 	std::cout << "Title: " << title_ << std::endl;	
 	std::cout << "Authors: " << authors_ << std::endl;	
 	std::cout << "Journal: " << journal_ << std::endl;	
@@ -147,8 +148,7 @@ void BibData::guessAuthors (Glib::ustring const &raw_)
 	end = raw.end(); 
 	boost::match_results<std::string::const_iterator> what; 
 	boost::match_flag_type flags = boost::match_default; 
-	while(regex_search(start, end, what, expression, flags)) 
-	{ 
+	while(regex_search(start, end, what, expression, flags)) { 
 		std::string authors = what[0];
 		std::cout << authors << std::endl;
 
@@ -166,3 +166,38 @@ void BibData::guessAuthors (Glib::ustring const &raw_)
 void BibData::guessTitle (Glib::ustring const &raw)
 {
 }
+
+
+/*
+ * Try to guess the DOI of the paper from the raw text
+ */
+void BibData::guessDoi (Glib::ustring const &raw_)
+{
+	std::string const &raw = raw_;
+	std::string doistring;
+
+//	boost::regex expression("\\WDOI: (.*)\\W");
+		boost::regex expression("[Dd][Oo][Ii]: ?([^[ \\n]]*)[ \\n]");  
+
+	std::string::const_iterator start, end;
+	start = raw.begin();
+	end = raw.end(); 
+	boost::match_results<std::string::const_iterator> what; 
+	boost::match_flag_type flags = boost::match_default; 
+	while(regex_search(start, end, what, expression, flags)) 
+	{ 
+		doistring = what[1];
+		std::cerr << "BibData::guessDoi: got '" << doistring << "'\n";
+	  // update search position: 
+	  start = what[0].second; 
+	  // update flags: 
+	  flags |= boost::match_prev_avail; 
+	  flags |= boost::match_not_bob; 
+	}
+	
+	// And use whatever we got last... which is probably a bad idea
+	// if we're reading the refs at the end of a paper
+	Glib::ustring gstr = doistring;
+	setDoi (gstr);
+}
+
