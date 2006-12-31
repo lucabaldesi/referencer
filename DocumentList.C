@@ -394,7 +394,7 @@ void Document::readPDF ()
 	fwrite (text.c_str(), 1, strlen(cppdump.c_str()), out);
 	fclose (out);
 
-	bib->print();
+	bib->print();*/
 
-	delete doc;*/
+	delete doc;
 }

@@ -78,8 +78,6 @@ void TagList::deleteTag (int uid)
 
 
 
-
-
 using Glib::Markup::escape_text;
 
 

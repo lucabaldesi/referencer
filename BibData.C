@@ -111,8 +111,7 @@ void BibData::guessYear (Glib::ustring const &raw_)
 	end = raw.end(); 
 	boost::match_results<std::string::const_iterator> what; 
 	boost::match_flag_type flags = boost::match_default; 
-	while(regex_search(start, end, what, expression, flags)) 
-	{ 
+	while(regex_search(start, end, what, expression, flags)) { 
 		std::string yearstring = what[0];
 		int yearval = atoi(yearstring.c_str());
 		if (yearval > dawn_of_ejournals && yearval < present_day) {
@@ -175,7 +174,8 @@ void BibData::guessDoi (Glib::ustring const &raw_)
 {
 	std::string const &raw = raw_;
 
-	boost::regex expression("[Dd][Oo][Ii]: ?([^ \\n]*)");
+	//boost::regex expression("[Dd][Oo][Ii]: ?([^ \\n]*)");
+	boost::regex expression("[Dd][Oo][Ii]: ?([0-9a-zA-Z\\.\\/]*)");
 
 	std::string::const_iterator start, end;
 	start = raw.begin();
