@@ -18,6 +18,3 @@ $(TARGET): $(OBJECTS)
 clean:
 	rm -f $(TARGET)
 	rm -f $(OBJECTS)
-
-pdfdivine: main.o BibData.o
-	$(CC) $(LIBS) main.o BibData.o -o pdfdivine
