@@ -133,10 +133,15 @@ void TagWindow::constructUI ()
 	
 	taggerbox_ = taggervbox;
 
+
+
+
 	// The iconview side
+	Gtk::HBox *hbox = Gtk::manage (new Gtk::HBox());
 	vbox = Gtk::manage(new Gtk::VBox);
 	Gtk::Frame *iconsframe = new Gtk::Frame ();
-	iconsframe->add(*vbox);
+	hbox->pack_start (*vbox, true, true, 0);
+	iconsframe->add (*hbox);
 	hpaned->pack2(*iconsframe, Gtk::EXPAND);
 
 	// Create the store for the document icons
@@ -170,14 +175,18 @@ void TagWindow::constructUI ()
 	Gtk::ScrolledWindow *scroll = Gtk::manage(new Gtk::ScrolledWindow());
 	scroll->add(*icons);
 	scroll->set_policy (Gtk::POLICY_NEVER, Gtk::POLICY_AUTOMATIC);
-
-
 	vbox->pack_start(*scroll, true, true, 0);	
 
 	Gtk::Toolbar& docbar = (Gtk::Toolbar&) *uimanager_->get_widget("/DocBar");
 	vbox->pack_start (docbar, false, false, 0);
 	docbar.set_toolbar_style (Gtk::TOOLBAR_ICONS);
 	docbar.set_show_arrow (false);
+	
+	Gtk::Expander *bibexpander =
+		Gtk::manage (new Gtk::Expander("_Metadata", true));
+	Gtk::Label *explabel = (Gtk::Label*)bibexpander->get_label_widget();
+	explabel->set_angle (90);
+	hbox->pack_start (*bibexpander, false, false, 0);
 }
 
 
