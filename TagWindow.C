@@ -137,11 +137,9 @@ void TagWindow::constructUI ()
 
 
 	// The iconview side
-	Gtk::HBox *hbox = Gtk::manage (new Gtk::HBox());
 	vbox = Gtk::manage(new Gtk::VBox);
 	Gtk::Frame *iconsframe = new Gtk::Frame ();
-	hbox->pack_start (*vbox, true, true, 0);
-	iconsframe->add (*hbox);
+	iconsframe->add (*vbox);
 	hpaned->pack2(*iconsframe, Gtk::EXPAND);
 
 	// Create the store for the document icons
@@ -167,8 +165,8 @@ void TagWindow::constructUI ()
 	icons->set_selection_mode (Gtk::SELECTION_MULTIPLE);
 	
 	/*icons->set_column_spacing (50);
-	icons->set_icon_width (10);
-	icons->set_columns (3);*/
+	icons->set_icon_width (10);*/
+	icons->set_columns (-1);
 	
 	docsview_ = icons;
 
@@ -177,16 +175,15 @@ void TagWindow::constructUI ()
 	scroll->set_policy (Gtk::POLICY_NEVER, Gtk::POLICY_AUTOMATIC);
 	vbox->pack_start(*scroll, true, true, 0);	
 
+	Gtk::Expander *bibexpander =
+		Gtk::manage (new Gtk::Expander("_Bibliographic information", true));
+	vbox->pack_start (*bibexpander, false, false, 0);
+	Gtk::Table *bibtable = Gtk::manage (new Gtk::Table (3, 4, false));
+
 	Gtk::Toolbar& docbar = (Gtk::Toolbar&) *uimanager_->get_widget("/DocBar");
 	vbox->pack_start (docbar, false, false, 0);
 	docbar.set_toolbar_style (Gtk::TOOLBAR_ICONS);
 	docbar.set_show_arrow (false);
-	
-	Gtk::Expander *bibexpander =
-		Gtk::manage (new Gtk::Expander("_Metadata", true));
-	Gtk::Label *explabel = (Gtk::Label*)bibexpander->get_label_widget();
-	explabel->set_angle (90);
-	hbox->pack_start (*bibexpander, false, false, 0);
 }
 
 
@@ -219,6 +216,12 @@ void TagWindow::constructMenu ()
 	actiongroup_->add( Gtk::Action::create(
 		"AddDocFolder", Gtk::Stock::ADD, "_Add Folder..."),
   	sigc::mem_fun(*this, &TagWindow::onAddDocFolder));
+ 	actiongroup_->add( Gtk::Action::create(
+		"AddDocEmpty", Gtk::Stock::ADD, "_Add Empty Reference"),
+  	sigc::mem_fun(*this, &TagWindow::onAddDocByName));
+	actiongroup_->add( Gtk::Action::create(
+		"AddDocDoi", Gtk::Stock::ADD, "_Add Reference with Doi..."),
+  	sigc::mem_fun(*this, &TagWindow::onAddDocByDoi));
 	actiongroup_->add( Gtk::Action::create(
 		"RemoveDoc", Gtk::Stock::REMOVE, "_Remove"),
   	sigc::mem_fun(*this, &TagWindow::onRemoveDoc));
@@ -256,6 +259,8 @@ void TagWindow::constructMenu ()
 
 		"      <menuitem action='AddDocFile'/>"
 		"      <menuitem action='AddDocFolder'/>"
+		"      <menuitem action='AddDocDoi'/>"
+		"      <menuitem action='AddDocEmpty'/>"
 		"      <separator/>"
 		"      <menuitem action='RemoveDoc'/>"
 		"      <menuitem action='DoiLookupDoc'/>"
@@ -806,7 +811,7 @@ void TagWindow::addDocFiles (std::vector<Glib::ustring> const &filenames)
 	std::vector<Glib::ustring>::const_iterator it = filenames.begin();
 	std::vector<Glib::ustring>::const_iterator const end = filenames.end();
 	for (; it != end; ++it) {
-		doclist_->newDoc(*it);
+		doclist_->newDocWithFile(*it);
 	}
 	
 	if (!filenames.empty()) {
@@ -816,6 +821,18 @@ void TagWindow::addDocFiles (std::vector<Glib::ustring> const &filenames)
 		populateDocIcons ();
 	}
 	
+}
+
+
+void TagWindow::onAddDocByName ()
+{
+	doclist_->newDocWithName ("Mong");
+}
+
+
+void TagWindow::onAddDocByDoi ()
+{
+	doclist_->newDocWithDoi ("");
 }
 
 

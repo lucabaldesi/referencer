@@ -64,6 +64,8 @@ class TagWindow {
 		void onCreateTag ();
 		void onDeleteTag ();
 		void onRenameTag ();
+		void onAddDocByName ();
+		void onAddDocByDoi ();
 		void onAddDocFile ();
 		void onAddDocFolder ();
 		void addDocFiles (std::vector<Glib::ustring> const &filenames);

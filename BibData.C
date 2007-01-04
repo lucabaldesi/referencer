@@ -52,7 +52,7 @@ void BibData::guessJournal (Glib::ustring const &raw)
 		"J. Appl. Phys."
 	};
 
-	for (unsigned int i = 0; i < n_titles; ++i) {
+	for (int i = 0; i < n_titles; ++i) {
 		// TODO: we would like a fast, case insensitive, 
 		// encoding-correct search.
 		if (strstr (raw.c_str(), search_titles[i].c_str())) {
@@ -90,21 +90,24 @@ void BibData::guessVolumeNumberPage (Glib::ustring const &raw)
 void BibData::guessYear (Glib::ustring const &raw_)
 {
 	/*
-	 * Take the first four-letter numeric which is between
+	 * Take the greatest four-letter numeric which is between
 	 * 1990 and the current year.  This will occasionally 
 	 * pick up a 'number' or 'page' instead, but should
-	 * almost always be the year
+	 * almost always be the year.
 	 */
+
 
 	std::string const &raw = raw_;
 
 	boost::regex expression("\\W([0-9][0-9][0-9][0-9])\\W"); 
+	
+	int latestyear = 0;
+	Glib::ustring latestyear_str;
 
 	int const dawn_of_ejournals = 1990;
-	time_t const time = time(NULL);
-	struct tm UTC;
-	gmtime_r(&time, &UTC);
-	int const present_day = UTC.tm_year;
+	time_t const timesecs = time(NULL);
+	struct tm *UTC = gmtime (&timesecs);
+	int const present_day = UTC->tm_year + 1900;
 
 	std::string::const_iterator start, end; 
 	start = raw.begin();
@@ -112,11 +115,13 @@ void BibData::guessYear (Glib::ustring const &raw_)
 	boost::match_results<std::string::const_iterator> what; 
 	boost::match_flag_type flags = boost::match_default; 
 	while(regex_search(start, end, what, expression, flags)) { 
-		std::string yearstring = what[0];
+		Glib::ustring yearstring = std::string(what[1]);
 		int yearval = atoi(yearstring.c_str());
-		if (yearval > dawn_of_ejournals && yearval < present_day) {
-			year_ = yearstring;
-			break;
+		if (yearval > dawn_of_ejournals && yearval <= present_day) {
+			if (yearval > latestyear) {
+				latestyear = yearval;
+				latestyear_str = yearstring;
+			}
 		}
 	  // update search position: 
 	  start = what[0].second; 
@@ -124,20 +129,17 @@ void BibData::guessYear (Glib::ustring const &raw_)
 	  flags |= boost::match_prev_avail; 
 	  flags |= boost::match_not_bob; 
 	}
+	
+	if (latestyear)
+		setYear (latestyear_str);
 }
+
 
 /*
  * Try to guess the authors of the paper from the raw text
  */
 void BibData::guessAuthors (Glib::ustring const &raw_)
 {
-	/*
-	 * Take the first four-letter numeric which is between
-	 * 1990 and the current year.  This will occasionally 
-	 * pick up a 'number' or 'page' instead, but should
-	 * almost always be the year
-	 */
-
 	std::string const &raw = raw_;
 
 	boost::regex expression("^(\\D{5,}\n\\D{5,})$"); 
@@ -148,8 +150,10 @@ void BibData::guessAuthors (Glib::ustring const &raw_)
 	boost::match_results<std::string::const_iterator> what; 
 	boost::match_flag_type flags = boost::match_default; 
 	while(regex_search(start, end, what, expression, flags)) { 
-		std::string authors = what[0];
-		std::cout << authors << std::endl;
+		Glib::ustring authors = std::string(what[1]);
+		std::cout << "Got authors = '" << authors << "'\n" << std::endl;
+		setAuthors (authors);
+		return;
 
 	  // update search position: 
 	  start = what[0].second; 

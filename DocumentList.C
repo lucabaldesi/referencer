@@ -27,11 +27,19 @@ Document::Document (Glib::ustring const &filename)
 	displayname_ =
 		Gnome::Vfs::unescape_string_for_display (
 			Glib::path_get_basename (filename));
-	int const maxlen = 12;
+	unsigned int const maxlen = 12;
 	if (displayname_.size() > maxlen) {
 		displayname_ = displayname_.substr(0, maxlen) + "...";
 	}
 }
+
+
+Document::Document ()
+{
+	// Pick up the default thumbnail
+	setupThumbnail ();
+}
+
 
 Document::Document (
 	Glib::ustring const &filename,
@@ -134,6 +142,23 @@ Glib::ustring& Document::getFileName()
 }
 
 
+
+// Unused?
+/*
+void Document::setFileName (Glib::ustring &filename)
+{
+	filename_ = filename;
+	setupThumbnail ();
+}
+*/
+
+
+void Document::setDisplayName (Glib::ustring const &displayname)
+{
+	displayname_ = displayname;
+}
+
+
 std::vector<int>& Document::getTags()
 {
 	return tagUids_;
@@ -207,9 +232,28 @@ std::vector<Document>& DocumentList::getDocs ()
 }
 
 
-Document* DocumentList::newDoc (Glib::ustring const &filename)
+Document* DocumentList::newDocWithFile (Glib::ustring const &filename)
 {
 	Document newdoc(filename);
+	docs_.push_back(newdoc);
+	return &(docs_.back());
+}
+
+
+Document* DocumentList::newDocWithName (Glib::ustring const &displayname)
+{
+	Document newdoc;
+	newdoc.setDisplayName (displayname);
+	docs_.push_back(newdoc);
+	return &(docs_.back());
+}
+
+
+Document* DocumentList::newDocWithDoi (Glib::ustring const &doi)
+{
+	Document newdoc;
+	newdoc.getBibData().setDoi(doi);
+	// Should get crossref metadata from the doi
 	docs_.push_back(newdoc);
 	return &(docs_.back());
 }
@@ -337,24 +381,19 @@ static void *textfunc (void *stream, char *text, int len)
 void Document::readPDF () 
 {
 	if (filename_.empty()) {
-		std::cerr << "Warning: Document::readFile: has no filename\n";
+		std::cerr << "Document::readPDF: has no filename\n";
 		return;
 	}
 
 	GooString *filename = new GooString (
 		Gnome::Vfs::get_local_path_from_uri(filename_).c_str());
-	PDFDoc *doc = new PDFDoc (filename, NULL, NULL);
-	if (doc->isOk()) {
-		std::cerr << "Loaded '" << filename->getCString() << "' successfully, "
-			<< doc->getNumPages() << " pages.\n";
-	} else {
-		std::cerr << "Failed to load '" << filename->getCString() << "'\n";
+	PDFDoc *popplerdoc = new PDFDoc (filename, NULL, NULL);
+	if (!popplerdoc->isOk()) {
+		std::cerr << "Document::readPDF: Failed to load '"
+			<< filename->getCString() << "'\n";
 		return;
 	}
 
-	int firstpage = 1;
-	//int lastpage = doc->getNumPages();
-	int lastpage = 1;
 	GBool physLayout = gFalse;
 	GBool rawOrder = gFalse;
 
@@ -366,35 +405,22 @@ void Document::readPDF ()
 		rawOrder);
 
 	if (output->isOk()) {
-		g_message ("Extracting text...");
-		doc->displayPages(output, firstpage, lastpage, 72, 72, 0,
+		std::cerr << "Document::readPDF: Loaded, extracting text...\n";
+		int const firstpage = 1;
+		int const lastpage = 1;
+		popplerdoc->displayPages(output, firstpage, lastpage, 72, 72, 0,
 			gTrue, gFalse, gFalse);
-		delete output;	
-	} else {
-		delete output;
-		g_error ("Could not create text output device");
 	}
 
-	if (!textdump.empty())
-		g_message ("Got text.");
-	else
-		g_message ("No text found.");
+	delete output;
+	delete popplerdoc;
 
-	bib_.guessDoi (textdump);
-
-	/*BibData *bib = new BibData();
-
-	bib->guessYear (textdump);
-	bib->guessAuthors (textdump);
-
-	bib->guessJournal (textdump);
-	bib->guessVolumeNumberPage (textdump);
-
-	FILE *out = fopen("dump.txt", "w");
-	fwrite (text.c_str(), 1, strlen(cppdump.c_str()), out);
-	fclose (out);
-
-	bib->print();*/
-
-	delete doc;
+	if (!textdump.empty()) {		
+		bib_.guessDoi (textdump);
+		//bib_.guessAuthors (textdump);
+		bib_.guessYear (textdump);
+	} else {
+		std::cerr << "Document::ReadPDF: Could not extract text from '"
+			<< filename_ << "'\n";
+	}
 }
