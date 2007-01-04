@@ -27,7 +27,7 @@ Document::Document (Glib::ustring const &filename)
 	displayname_ =
 		Gnome::Vfs::unescape_string_for_display (
 			Glib::path_get_basename (filename));
-	int const maxlen = 35;
+	int const maxlen = 12;
 	if (displayname_.size() > maxlen) {
 		displayname_ = displayname_.substr(0, maxlen) + "...";
 	}

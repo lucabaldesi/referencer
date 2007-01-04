@@ -167,8 +167,8 @@ void TagWindow::constructUI ()
 	icons->set_selection_mode (Gtk::SELECTION_MULTIPLE);
 	
 	/*icons->set_column_spacing (50);
-	icons->set_icon_width (10);*/
-	icons->set_columns (3);
+	icons->set_icon_width (10);
+	icons->set_columns (3);*/
 	
 	docsview_ = icons;
 
@@ -385,23 +385,34 @@ void TagWindow::taggerCheckToggled (Gtk::CheckButton *check, int taguid)
 {
 	if (ignoretaggerchecktoggled_)
 		return;
-
-	Gtk::IconView::ArrayHandle_TreePaths paths = docsview_->get_selected_items ();
+	
+	std::vector<Document*> selecteddocs = getSelectedDocs ();
 
 	bool active = check->get_active ();
 	check->set_inconsistent (false);
 
-	Gtk::IconView::ArrayHandle_TreePaths::iterator it = paths.begin ();
-	Gtk::IconView::ArrayHandle_TreePaths::iterator const end = paths.end ();
+	bool tagsremoved = false;
+
+	std::vector<Document*>::iterator it = selecteddocs.begin ();
+	std::vector<Document*>::iterator const end = selecteddocs.end ();
 	for (; it != end; it++) {
-		Gtk::TreePath path = (*it);
-		Gtk::ListStore::iterator iter = iconstore_->get_iter (path);
-		Document *doc = (*iter)[docpointercol_];
-		if (active)
+		Document *doc = (*it);
+		if (active) {
 			doc->setTag (taguid);
-		else
+		} else {
 			doc->clearTag (taguid);
+			tagsremoved = true;
+		}
 	}
+	
+	// If we've untagged something it might no longer be visible
+	if (tagsremoved
+	    && (*filtertags_.begin()) != ALL_TAGS_UID) {
+	  // Should check if the tag we removed is in filtertags ideally
+	  // This is quite annoying when we don't save which document is selected
+		populateDocIcons ();
+	}
+		
 }
 
 
@@ -845,8 +856,12 @@ std::vector<Glib::ustring> _filestoadd;
 
 bool onAddDocFolderRecurse (const Glib::ustring& rel_path, const Glib::RefPtr<const Gnome::Vfs::FileInfo>& info, bool recursing_will_loop, bool& recurse)
 {
+	// We escape to be consistent with the escaped URI that FileChooser
+	// gave us for basepath
 	Glib::ustring fullname =
-		Glib::build_filename (_basepath, info->get_name());
+		Glib::build_filename (
+			_basepath, Gnome::Vfs::escape_string(info->get_name()));
+	std::cerr << "onAddDocFolderRecurse: fullpath = '" << fullname << "'\n";
 
 	if (info->get_type () == Gnome::Vfs::FILE_TYPE_DIRECTORY) {
 		Gnome::Vfs::DirectoryHandle dir;

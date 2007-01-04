@@ -60,7 +60,7 @@ class TagWindow {
 		bool docClicked (GdkEventButton* event);
 		void tagClicked (GdkEventButton* event);
 		void tagNameEdited (Glib::ustring const &text1, Glib::ustring const &text2);
-		void onQuit (/*GdkEventAny *ev*/);
+		void onQuit ();
 		void onCreateTag ();
 		void onDeleteTag ();
 		void onRenameTag ();
