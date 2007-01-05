@@ -45,6 +45,8 @@ class Document {
 	void setBibData (BibData& bib){bib_ = bib;}
 
 	static Glib::RefPtr<Gdk::Pixbuf> defaultthumb_;
+	
+	Glib::ustring displayNameFromFileName ();
 };
 
 class DocumentList {
@@ -53,9 +55,12 @@ class DocumentList {
 	
 	public:
 	std::vector<Document>& getDocs ();
+	Document* getDoc (Glib::ustring const &name);
 	Document* newDocWithFile (Glib::ustring const &filename);
 	Document* newDocWithName (Glib::ustring const &displayname);
 	Document* newDocWithDoi (Glib::ustring const &doi);
+	Document* newDocUnnamed ();
+	Glib::ustring uniqueDisplayName (Glib::ustring const &basename);
 	void removeDoc (Glib::ustring const &displayname);
 	void loadDoc (
 		Glib::ustring const &filename,

@@ -180,10 +180,10 @@ void TagWindow::constructUI ()
 	vbox->pack_start (*bibexpander, false, false, 0);
 	Gtk::Table *bibtable = Gtk::manage (new Gtk::Table (3, 4, false));
 
-	Gtk::Toolbar& docbar = (Gtk::Toolbar&) *uimanager_->get_widget("/DocBar");
+	/*Gtk::Toolbar& docbar = (Gtk::Toolbar&) *uimanager_->get_widget("/DocBar");
 	vbox->pack_start (docbar, false, false, 0);
 	docbar.set_toolbar_style (Gtk::TOOLBAR_ICONS);
-	docbar.set_show_arrow (false);
+	docbar.set_show_arrow (false);*/
 }
 
 
@@ -217,8 +217,8 @@ void TagWindow::constructMenu ()
 		"AddDocFolder", Gtk::Stock::ADD, "_Add Folder..."),
   	sigc::mem_fun(*this, &TagWindow::onAddDocFolder));
  	actiongroup_->add( Gtk::Action::create(
-		"AddDocEmpty", Gtk::Stock::ADD, "_Add Empty Reference"),
-  	sigc::mem_fun(*this, &TagWindow::onAddDocByName));
+		"AddDocUnnamed", Gtk::Stock::ADD, "_Add Empty Reference"),
+  	sigc::mem_fun(*this, &TagWindow::onAddDocUnnamed));
 	actiongroup_->add( Gtk::Action::create(
 		"AddDocDoi", Gtk::Stock::ADD, "_Add Reference with Doi..."),
   	sigc::mem_fun(*this, &TagWindow::onAddDocByDoi));
@@ -260,7 +260,7 @@ void TagWindow::constructMenu ()
 		"      <menuitem action='AddDocFile'/>"
 		"      <menuitem action='AddDocFolder'/>"
 		"      <menuitem action='AddDocDoi'/>"
-		"      <menuitem action='AddDocEmpty'/>"
+		"      <menuitem action='AddDocUnnamed'/>"
 		"      <separator/>"
 		"      <menuitem action='RemoveDoc'/>"
 		"      <menuitem action='DoiLookupDoc'/>"
@@ -824,9 +824,10 @@ void TagWindow::addDocFiles (std::vector<Glib::ustring> const &filenames)
 }
 
 
-void TagWindow::onAddDocByName ()
+void TagWindow::onAddDocUnnamed ()
 {
-	doclist_->newDocWithName ("Mong");
+	doclist_->newDocUnnamed ();
+	populateDocIcons ();
 }
 
 

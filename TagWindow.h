@@ -64,7 +64,7 @@ class TagWindow {
 		void onCreateTag ();
 		void onDeleteTag ();
 		void onRenameTag ();
-		void onAddDocByName ();
+		void onAddDocUnnamed ();
 		void onAddDocByDoi ();
 		void onAddDocFile ();
 		void onAddDocFolder ();

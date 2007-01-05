@@ -24,13 +24,21 @@ Document::Document (Glib::ustring const &filename)
 {
 	filename_ = filename;
 	setupThumbnail ();
-	displayname_ =
+}
+
+
+Glib::ustring Document::displayNameFromFileName ()
+{
+	Glib::ustring displayname;
+	displayname =
 		Gnome::Vfs::unescape_string_for_display (
-			Glib::path_get_basename (filename));
+			Glib::path_get_basename (filename_));
 	unsigned int const maxlen = 12;
-	if (displayname_.size() > maxlen) {
-		displayname_ = displayname_.substr(0, maxlen) + "...";
+	if (displayname.size() > maxlen) {
+		displayname = displayname.substr(0, maxlen) + "...";
 	}
+	
+	return displayname;
 }
 
 
@@ -235,8 +243,54 @@ std::vector<Document>& DocumentList::getDocs ()
 Document* DocumentList::newDocWithFile (Glib::ustring const &filename)
 {
 	Document newdoc(filename);
+	newdoc.setDisplayName (
+		uniqueDisplayName (
+			newdoc.displayNameFromFileName()));
 	docs_.push_back(newdoc);
 	return &(docs_.back());
+}
+
+
+Document* DocumentList::newDocUnnamed ()
+{
+	Document newdoc;
+	newdoc.setDisplayName (
+		uniqueDisplayName ("Unnamed"));
+	docs_.push_back(newdoc);
+	return &(docs_.back());
+}
+
+
+Glib::ustring DocumentList::uniqueDisplayName (Glib::ustring const &basename)
+{
+	std::ostringstream name;
+	int extension = -1;
+	do {
+		++extension;
+		name.str ("") ;
+		name << basename;
+		if (extension)
+			name << "-" << extension;
+	} while (getDoc(name.str()));
+
+	return name.str();
+}
+
+
+Document* DocumentList::getDoc (Glib::ustring const &name)
+{
+	std::vector<Document>::iterator it = docs_.begin ();
+	std::vector<Document>::iterator const end = docs_.end ();
+	for (; it != end; ++it) {
+		if ((*it).getDisplayName() == name) {
+			return &(*it);
+		}
+	}
+	
+	// Fall through
+	std::cerr << "Warning: DocumentList::getDoc: couldn't find"
+		" doc with name '" << name << "'\n";
+	return NULL;
 }
 
 
