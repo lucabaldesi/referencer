@@ -867,7 +867,7 @@ void TagWindow::onAddDocByDoi ()
 	
 	Gtk::VBox *vbox = dialog.get_vbox ();
 	
-	Gtk::Hbox hbox;
+	Gtk::HBox hbox;
 	hbox.set_spacing (12);
 	vbox->pack_start (hbox, true, true, 0);
 	
