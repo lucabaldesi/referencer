@@ -5,6 +5,7 @@
 #include <gtkmm.h>
 #include "DocumentList.h"
 #include "TagList.h"
+#include "BibData.h"
 
 class LibraryParser : public Glib::Markup::Parser {
 
@@ -22,11 +23,15 @@ class LibraryParser : public Glib::Markup::Parser {
 	bool inDisplayName_;
 	bool inFileName_;
 	bool inTagged_;
+	bool inBibItem_;
 
 	Glib::ustring newDocDisplayName_;
 	Glib::ustring newDocFileName_;
 	Glib::ustring newDocTag_;
 	std::vector<int> newDocTags_;
+	Glib::ustring bibText_;
+	
+	BibData newDocBib_;
 
 	public:
 	LibraryParser (TagList &taglist, DocumentList &doclist)
@@ -40,6 +45,7 @@ class LibraryParser : public Glib::Markup::Parser {
 		inDisplayName_ = false;
 		inFileName_ = false;
 		inTagged_ = false;
+		inBibItem_ = false;
 	}
 
 	private:
@@ -70,6 +76,20 @@ class LibraryParser : public Glib::Markup::Parser {
 			inDisplayName_ = true;
 		} else if (inDoc_ && element_name == "tagged") {
 			inTagged_ = true;
+
+
+		} else if (element_name == "bib_doi"
+		           || element_name == "bib_title"
+		           || element_name == "bib_authors"
+		           || element_name == "bib_journal"
+		           || element_name == "bib_volume"
+		           || element_name == "bib_number"
+		           || element_name == "bib_pages"
+		           || element_name == "bib_year"
+		           || element_name == ""        
+		) {
+			inBibItem_ = true;
+			bibText_ = "";
 		}
 	}
 	
@@ -89,7 +109,8 @@ class LibraryParser : public Glib::Markup::Parser {
 		}
 		else if (element_name == "doc") {
 			inDoc_ = false;
-			doclist_.loadDoc (newDocFileName_, newDocDisplayName_, newDocTags_);
+			doclist_.loadDoc (
+				newDocFileName_, newDocDisplayName_, newDocTags_, newDocBib_);
 		} else if (inDoc_ && element_name == "filename") {
 			inFileName_ = false;
 		} else if (inDoc_ && element_name == "displayname") {
@@ -98,9 +119,33 @@ class LibraryParser : public Glib::Markup::Parser {
 			inTagged_ = false;
 			newDocTags_.push_back(atoi(newDocTag_.c_str()));
 			newDocTag_ = "";
+		} else if (element_name == "bib_doi") {
+			inBibItem_ = false;
+			newDocBib_.setDoi (bibText_);
+		} else if (element_name == "bib_title") {
+			inBibItem_ = false;
+			newDocBib_.setTitle (bibText_);
+		} else if (element_name == "bib_authors") {
+			inBibItem_ = false;
+			newDocBib_.setAuthors (bibText_);
+		} else if (element_name == "bib_journal") {
+			inBibItem_ = false;
+			newDocBib_.setJournal (bibText_);
+		} else if (element_name == "bib_volume") {
+			inBibItem_ = false;
+			newDocBib_.setVolume (bibText_);
+		} else if (element_name == "bib_number") {
+			inBibItem_ = false;
+			newDocBib_.setNumber (bibText_);
+		} else if (element_name == "bib_pages") {
+			inBibItem_ = false;
+			newDocBib_.setPages (bibText_);
+		} else if (element_name == "bib_year") {
+			inBibItem_ = false;
+			newDocBib_.setYear (bibText_);
 		}
 	}
-	
+
  	// Called on error, including one thrown by an overridden virtual method. 
 	virtual void on_error (
 		Glib::Markup::ParseContext& context,
@@ -113,7 +158,6 @@ class LibraryParser : public Glib::Markup::Parser {
 		Glib::Markup::ParseContext& context,
 		const Glib::ustring& text)
 	{
-		//std::cerr << "\"" << text << "\"\n";
 		if (inUid_)
 			newTagUid_ += text;
 		else if (inTagName_)
@@ -126,6 +170,8 @@ class LibraryParser : public Glib::Markup::Parser {
 			newDocDisplayName_ += text;
 		else if (inTagged_)
 			newDocTag_ += text;
+		else if (inBibItem_)
+			bibText_ += text;
 	}
  	
  	/*

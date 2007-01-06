@@ -10,6 +10,7 @@
 #include "TagWindow.h"
 #include "TagList.h"
 #include "DocumentList.h"
+#include "Document.h"
 
 #include "LibraryParser.h"
 
@@ -808,10 +809,39 @@ void TagWindow::onAbout ()
 
 void TagWindow::addDocFiles (std::vector<Glib::ustring> const &filenames)
 {
+
+	Gtk::Dialog dialog ("Add Document Files", true, false);
+	
+	Gtk::VBox *vbox = dialog.get_vbox ();
+	vbox->set_spacing (12);
+	
+	Glib::ustring messagetext =
+		"<b><big>Adding document files</big></b>\n\n"
+		"This process may take some time as the bibliographic\n"
+		" information for each document is looked up.";
+	
+	Gtk::Label label ("", false);
+	label.set_markup (messagetext);
+	
+	
+	vbox->pack_start (label, true, true, 0);
+	
+	Gtk::ProgressBar progress;
+	
+	vbox->pack_start (progress, false, false, 0);
+	
+	dialog.show_all ();
+	vbox->set_border_width (12);
+
+	int n = 0;
 	std::vector<Glib::ustring>::const_iterator it = filenames.begin();
 	std::vector<Glib::ustring>::const_iterator const end = filenames.end();
 	for (; it != end; ++it) {
+		progress.set_fraction ((float)n / (float)filenames.size());
+		while (Gnome::Main::events_pending())
+			Gnome::Main::iteration ();
 		doclist_->newDocWithFile(*it);
+		++n;
 	}
 	
 	if (!filenames.empty()) {
@@ -833,7 +863,23 @@ void TagWindow::onAddDocUnnamed ()
 
 void TagWindow::onAddDocByDoi ()
 {
-	doclist_->newDocWithDoi ("");
+	Gtk::Dialog dialog ("Add Document with DOI", true, false);
+	
+	Gtk::VBox *vbox = dialog.get_vbox ();
+	
+	Gtk::Hbox hbox;
+	hbox.set_spacing (12);
+	vbox->pack_start (hbox, true, true, 0);
+	
+	Gtk::Label label ("DOI:", false);
+	hbox.pack_start (label, false, false, 0);
+	
+	dialog.add_button (Gtk::Stock::OK, 1);
+	dialog.add_button (Gtk::Stock::CANCEL, 0);
+	
+	if (dialog.run ()) {
+		doclist_->newDocWithDoi ("");
+	}
 }
 
 
@@ -1147,7 +1193,8 @@ void TagWindow::onDivine ()
 	std::vector<Document*>::iterator it = docpointers.begin ();
 	std::vector<Document*>::iterator const end = docpointers.end ();
 	for (; it != end; ++it) {
-		(*it)->readPDF ();
+		//(*it)->readPDF ();
+		(*it)->getBibData().getCrossRef ();
 		(*it)->getBibData().print();
 	}
 }

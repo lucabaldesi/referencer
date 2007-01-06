@@ -12,7 +12,7 @@ class Gtk::TreePath;
 class Glib::ustring;
 
 #define ALL_TAGS_UID -1
-#define PROGRAM_NAME "TagWindow"
+#define PROGRAM_NAME "Referencer"
 #define VERSION "0.0"
 
 class TagWindow {

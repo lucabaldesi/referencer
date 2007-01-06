@@ -7,6 +7,10 @@
 #include <time.h>
 #include <boost/regex.hpp>
 
+#include <libgnomevfsmm.h>
+
+#include "CrossRefParser.h"
+
 /*
  * Dump all fields to standard out
  */
@@ -20,6 +24,46 @@ void BibData::print ()
 	std::cout << "Number: " << number_ << std::endl;	
 	std::cout << "Pages: " << pages_ << std::endl;	
 	std::cout << "Year: " << year_ << std::endl;	
+}
+
+using Glib::Markup::escape_text;
+
+void BibData::writeXML (std::ostringstream &out)
+{
+	out << "    <bib_doi>" << escape_text(doi_) << "</bib_doi>\n";
+	out << "    <bib_title>" << escape_text(title_) << "</bib_title>\n";
+	out << "    <bib_authors>" << escape_text(authors_) << "</bib_authors>\n";
+	out << "    <bib_journal>" << escape_text(journal_) << "</bib_journal>\n";
+	out << "    <bib_volume>" << escape_text(volume_) << "</bib_volume>\n";
+	out << "    <bib_number>" << escape_text(number_) << "</bib_number>\n";
+	out << "    <bib_pages>" << escape_text(pages_) << "</bib_pages>\n";
+	out << "    <bib_year>" << escape_text(year_) << "</bib_year>\n";
+}
+
+
+void BibData::parseCrossRefXML (Glib::ustring const &xml)
+{
+	CrossRefParser parser (*this);
+	Glib::Markup::ParseContext context (parser);
+	try {
+		context.parse (xml);
+	} catch (Glib::MarkupError const ex) {
+		std::cerr << "Exception on line " << context.get_line_number () << ", character " << context.get_char_number () << ", code ";
+		switch (ex.code()) {
+			case Glib::MarkupError::BAD_UTF8:
+				std::cerr << "Bad UTF8\n";
+				break;
+			case Glib::MarkupError::EMPTY:
+				std::cerr << "Empty\n";
+				break;
+			case Glib::MarkupError::PARSE:
+				std::cerr << "Parse error\n";
+				break;
+			default:
+				std::cerr << (int)ex.code() << "\n";
+		}
+	}
+	context.end_parse ();
 }
 
 
@@ -193,3 +237,52 @@ void BibData::guessDoi (Glib::ustring const &raw_)
 	}
 }
 
+
+void BibData::getCrossRef ()
+{
+	Gnome::Vfs::Handle bibfile;
+	
+	/*http://www.crossref.org/openurl/?id=doi:10.1103/PhysRevB.73.014404&noredirect=true*/
+	
+	Glib::ustring bibfilename =
+		"http://www.crossref.org/openurl/?id=doi:"
+		+ doi_
+		+ "&noredirect=true";
+	//"/home/jcspray/Projects/pdfdivine/crossref_eg.xml";
+		
+	Glib::RefPtr<Gnome::Vfs::Uri> biburi = Gnome::Vfs::Uri::create (bibfilename);
+	
+	bool exists = biburi->uri_exists ();
+	if (!exists) {
+		std::cerr << "BibData::getCrossRef: bib XML file '" <<
+			bibfilename << "' not found\n";
+		return;
+	}
+	
+	bibfile.open (bibfilename, Gnome::Vfs::OPEN_READ);
+
+	Glib::RefPtr<Gnome::Vfs::FileInfo> fileinfo;
+	fileinfo = bibfile.get_file_info ();
+	
+	char *buffer = (char *) malloc (sizeof(char) * (fileinfo->get_size() + 1));
+	bibfile.read (buffer, fileinfo->get_size());
+	buffer[fileinfo->get_size()] = 0;
+	
+	Glib::ustring rawtext = buffer;
+	free (buffer);
+	bibfile.close ();
+	parseCrossRefXML (rawtext);
+}
+
+
+void BibData::clear ()
+{
+	doi_ = "";
+	volume_ = "";
+	number_ = "";
+	pages_ = "";
+	authors_ = "";
+	journal_ = "";
+	title_ = "";
+	year_ = "";
+}

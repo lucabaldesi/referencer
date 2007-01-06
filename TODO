@@ -5,16 +5,17 @@ DONE need to update tagger when rename tag
 DONE need to update docicons when tagging file (time to be more efficient)
 LookupDoi and Open should really handle multiple documents.
 
-A View menu which allows hiding of "Tag Bar"
+A View menu which allows hiding of tagging sidebar
 
 Drag and drop to add by filename
 Add by DOI
-Add by nothing but displayname
+DONE Add by nothing but displayname
+	In fact by nothing at all
 Progressbar when adding (many or one, both can be slow)
 
-We should write to file and then copy into place (prevent crash blanking file)
+Should write to file and then copy into place (prevent crash blanking file)
 
-Need to do bibdata XML IO
+DONE Need to do bibdata XML IO
 
 DONE Default thumbnail for unthumbnailable things
 	DONE Although it relies on unknown.png in current path, should get from iconfactory
@@ -24,8 +25,12 @@ DONE When thumbnailing fails, save the failure so that we don't try again
 
 DONE Fix paths like "'file:///home/jcspray/Work/MPhys%20Dissertation/Papers/Papers (Spin glass EB)/2005: Spin-Glass-Like behaviour in CoO Nanoparticles and the origin of EB in layered COO-ferromagnet structures (Gruyters).pdf" when adding folder
 
-http://www.crossref.org/openurl/?id=doi:10.1103/PhysRevB.73.014404&noredirect=true
-
+To support an extra entry in the bibdata, one needs to update:
+	class BibData
+	BibData::writeXML
+	class LibraryParser::on_start/end_element
+	class CrossRefParser
+	
 
 Competition on Science biblio export:
 	EndNote
