@@ -184,10 +184,10 @@ void TagWindow::constructUI ()
 	scroll->set_policy (Gtk::POLICY_NEVER, Gtk::POLICY_AUTOMATIC);
 	vbox->pack_start(*scroll, true, true, 0);	
 
-	Gtk::Expander *bibexpander =
+	/*Gtk::Expander *bibexpander =
 		Gtk::manage (new Gtk::Expander("_Bibliographic information", true));
 	vbox->pack_start (*bibexpander, false, false, 0);
-	Gtk::Table *bibtable = Gtk::manage (new Gtk::Table (3, 4, false));
+	Gtk::Table *bibtable = Gtk::manage (new Gtk::Table (3, 4, false));*/
 
 	/*Gtk::Toolbar& docbar = (Gtk::Toolbar&) *uimanager_->get_widget("/DocBar");
 	vbox->pack_start (docbar, false, false, 0);
@@ -298,7 +298,7 @@ void TagWindow::constructMenu ()
 		"    <menuitem action='RemoveDoc'/>"
 		"    <menuitem action='DoiLookupDoc'/>"
 		"    <menuitem action='OpenDoc'/>"
-		"    <menuitem action='Divine'/>"
+		//"    <menuitem action='Divine'/>"
 		"    <menuitem action='DocProperties'/>"
 		"  </popup>"
 		"  <popup name='TagPopup'>"
@@ -319,7 +319,12 @@ void TagWindow::populateDocIcons ()
 {
 	std::cerr << "TagWindow::populateDocIcons >>\n";
 
-	// Should save selection and restore at end
+	// Save initial selection
+	Gtk::TreePath initialpath;
+	Gtk::IconView::ArrayHandle_TreePaths paths = docsview_->get_selected_items ();
+	if (paths.size () > 0)
+		initialpath = (*paths.begin());
+
 	iconstore_->clear ();
 
 	// Populate from doclist_
@@ -347,17 +352,21 @@ void TagWindow::populateDocIcons ()
 		(*item)[docthumbnailcol_] = (*docit).getThumbnail();
 	}
 	
-	// Should restore initial selection here
-	
+	// Restore initial selection
+	docsview_->select_path (initialpath);
 }
 
 
 void TagWindow::populateTagList ()
 {
+	Gtk::TreeSelection::ListHandle_Path paths =
+			tagselection_->get_selected_rows ();
+	Gtk::TreePath initialpath;
+	if (paths.size() > 0)
+		initialpath = *paths.begin ();
+
 	tagselectionignore_ = true;
 	tagstore_->clear();
-
-	// Should save selection and restore at end
 
 	Gtk::TreeModel::iterator all = tagstore_->append();
 	(*all)[taguidcol_] = ALL_TAGS_UID;
@@ -390,10 +399,14 @@ void TagWindow::populateTagList ()
 	
 	taggerbox_->show_all ();
 
-	// Should restore original selection
-	// instead just select first row
+	// Restore initial selection or selected first row
 	tagselectionignore_ = false;
-	tagselection_->select (tagstore_->children().begin());
+	if (initialpath.empty())
+		tagselection_->select (tagstore_->children().begin());
+	else
+		tagselection_->select (initialpath);
+
+
 
 	// To update taggerbox
 	docSelectionChanged ();	
@@ -528,7 +541,9 @@ void TagWindow::docSelectionChanged ()
 	bool const onlyoneselected = selectcount == 1;
 
 	actiongroup_->get_action("RemoveDoc")->set_sensitive (somethingselected);
+	actiongroup_->get_action("DocProperties")->set_sensitive (onlyoneselected);
 	taggerbox_->set_sensitive (somethingselected);
+
 
 	actiongroup_->get_action("DoiLookupDoc")->set_sensitive (
 		onlyoneselected
@@ -536,6 +551,7 @@ void TagWindow::docSelectionChanged ()
 	actiongroup_->get_action("OpenDoc")->set_sensitive (
 		onlyoneselected
 		&& !getSelectedDoc()->getFileName().empty());
+
 
 
 	
@@ -1228,6 +1244,7 @@ void TagWindow::onDocProperties ()
 	if (doc) {
 		if (!docpropertiesdialog_)
 			docpropertiesdialog_ = new DocumentProperties;
-		docpropertiesdialog_->show (doc);
+		if (docpropertiesdialog_->show (doc))
+			populateDocIcons ();
 	}
 }

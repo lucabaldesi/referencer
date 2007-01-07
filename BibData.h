@@ -8,7 +8,7 @@ class BibData {
 	private:
 	Glib::ustring doi_;
 	Glib::ustring volume_;
-	Glib::ustring number_;
+	Glib::ustring issue_;
 	Glib::ustring pages_;
 	Glib::ustring authors_;
 	Glib::ustring journal_;
@@ -38,8 +38,8 @@ class BibData {
 
 	void setVolume (Glib::ustring const &vol) {volume_ = vol;}
 	Glib::ustring getVolume () {return volume_;}
-	void setNumber (Glib::ustring const &num) {number_ = num;}
-	Glib::ustring getNumber () {return number_;}
+	void setIssue (Glib::ustring const &issue) {issue_ = issue;}
+	Glib::ustring getIssue () {return issue_;}
 	void setPages (Glib::ustring const &pages) {pages_ = pages;}
 	Glib::ustring getPages () {return pages_;}
 	void setAuthors (Glib::ustring const &authors) {authors_ = authors;}

@@ -45,7 +45,7 @@ class CrossRefParser : public Glib::Markup::Parser {
 		} else if (element == "volume") {
 			bib_.setVolume (text_);
 		} else if (element == "issue") {
-			bib_.setNumber (text_);
+			bib_.setIssue (text_);
 		} else if (element == "first_page") {
 			bib_.setPages (text_);
 		} else if (element == "year") {

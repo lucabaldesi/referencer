@@ -7,26 +7,95 @@
 DocumentProperties::DocumentProperties ()
 {
 	xml_ = Gnome::Glade::Xml::create ("documentproperties.glade");
+
+	dialog_ = (Gtk::Dialog *) xml_->get_widget ("DocumentProperties");
+	filechooser_ = (Gtk::FileChooserButton *) xml_->get_widget ("File");
+	doientry_ = (Gtk::Entry *) xml_->get_widget ("Doi");
+	keyentry_ = (Gtk::Entry *) xml_->get_widget ("Key");
+	titleentry_ = (Gtk::Entry *) xml_->get_widget ("Title");
+	authorsentry_ = (Gtk::Entry *) xml_->get_widget ("Authors");
+	journalentry_ = (Gtk::Entry *) xml_->get_widget ("Journal");
+	volumeentry_ = (Gtk::Entry *) xml_->get_widget ("Volume");
+	issueentry_ = (Gtk::Entry *) xml_->get_widget ("Issue");
+	pagesentry_ = (Gtk::Entry *) xml_->get_widget ("Pages");
+	yearentry_ = (Gtk::Entry *) xml_->get_widget ("Year");
+
+	Gtk::Button *button = (Gtk::Button *) xml_->get_widget ("CrossRefLookup");
+	button->signal_clicked().connect(
+		sigc::mem_fun (*this, &DocumentProperties::onCrossRefLookup));
 }
 
 
-void DocumentProperties::show (Document *doc)
+bool DocumentProperties::show (Document *doc)
 {
 	if (!doc) {
 		std::cerr << "DocumentProperties::show: NULL doc pointer\n";
-		return;
+		return false;
 	}
 
-	dialog_ = (Gtk::Dialog *) xml_->get_widget ("DocumentProperties");
+	doc_ = doc;
 
-	BibData &bib = doc->getBibData();
+	update ();
 
-	doientry_ = (Gtk::Entry *) xml_->get_widget ("Doi");
-	doientry_->set_text (bib.getDoi());
-	keyentry_ = (Gtk::Entry *) xml_->get_widget ("Key");
-	keyentry_->set_text (doc->getDisplayName());
+	int result = dialog_->run ();
 
-	dialog_->run ();
+	if (result == Gtk::RESPONSE_OK) {
+		save ();
+	}
 
 	dialog_->hide ();
+
+	if (result == Gtk::RESPONSE_OK)
+		return true;
+	else
+		return false;
+}
+
+
+void DocumentProperties::update ()
+{
+	BibData &bib = doc_->getBibData();
+
+	filechooser_->set_uri (doc_->getFileName());
+
+	doientry_->set_text (bib.getDoi());
+	keyentry_->set_text (doc_->getDisplayName());
+
+	titleentry_->set_text (bib.getTitle());
+	authorsentry_->set_text (bib.getAuthors());
+	journalentry_->set_text (bib.getJournal());
+	volumeentry_->set_text (bib.getVolume());
+	issueentry_->set_text (bib.getIssue());
+	pagesentry_->set_text (bib.getPages());
+	yearentry_->set_text (bib.getYear());
+}
+
+
+void DocumentProperties::save ()
+{
+	BibData &bib = doc_->getBibData();
+
+	Glib::ustring filename = filechooser_->get_uri ();
+	doc_->setFileName (filename);
+	doc_->setDisplayName (keyentry_->get_text ());
+
+	bib.setTitle (titleentry_->get_text ());
+	bib.setAuthors (authorsentry_->get_text ());
+	bib.setJournal (journalentry_->get_text ());
+	bib.setVolume (volumeentry_->get_text ());
+	bib.setIssue (issueentry_->get_text ());
+	bib.setPages (pagesentry_->get_text ());
+	bib.setYear (yearentry_->get_text ());
+}
+
+
+void DocumentProperties::onCrossRefLookup ()
+{
+	Document *orig = doc_;
+	Document spoof = *doc_;
+	spoof.getBibData().getCrossRef ();
+	doc_ = &spoof;
+	doc_->getBibData().getCrossRef ();
+	update ();
+	doc_ = orig;
 }

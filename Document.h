@@ -26,8 +26,7 @@ class Document {
 		BibData const &bib);
 	Glib::ustring& getDisplayName();
 	Glib::ustring& getFileName();
-	// Unused?
-	//void setFileName (Glib::ustring &filename);
+	void setFileName (Glib::ustring &filename);
 	void setDisplayName (Glib::ustring const &displayname);
 	Glib::RefPtr<Gdk::Pixbuf> getThumbnail () {return thumbnail_;}
 	std::vector<int>& getTags ();

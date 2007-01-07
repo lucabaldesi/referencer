@@ -136,7 +136,7 @@ class LibraryParser : public Glib::Markup::Parser {
 			newDocBib_.setVolume (bibText_);
 		} else if (element_name == "bib_number") {
 			inBibItem_ = false;
-			newDocBib_.setNumber (bibText_);
+			newDocBib_.setIssue (bibText_);
 		} else if (element_name == "bib_pages") {
 			inBibItem_ = false;
 			newDocBib_.setPages (bibText_);

@@ -7,6 +7,8 @@ LookupDoi and Open should really handle multiple documents.
 
 A View menu which allows hiding of tagging sidebar
 
+Should be able to select multiple tags for ANDing instead of ORing document selection
+
 Drag and drop to add by filename
 Add by DOI
 DONE Add by nothing but displayname
@@ -30,6 +32,10 @@ To support an extra entry in the bibdata, one needs to update:
 	BibData::writeXML
 	class LibraryParser::on_start/end_element
 	class CrossRefParser
+	DocumentProperties::DocumentProperties
+	DocumentProperties::update
+	DocumentProperties::save
+	documentproperties.glade
 	
 
 Competition on Science biblio export:

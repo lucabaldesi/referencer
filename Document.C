@@ -148,15 +148,13 @@ Glib::ustring& Document::getFileName()
 }
 
 
-
-// Unused?
-/*
 void Document::setFileName (Glib::ustring &filename)
 {
+	if (filename == filename_)
+		return;
 	filename_ = filename;
 	setupThumbnail ();
 }
-*/
 
 
 void Document::setDisplayName (Glib::ustring const &displayname)
@@ -225,7 +223,7 @@ void Document::writeBibtex (std::ostringstream& out)
 	out << writeBibKey ("title",   bib_.getTitle()) << ",\n";
 	out << writeBibKey ("journal", bib_.getJournal()) << ",\n";
 	out << writeBibKey ("volume",  bib_.getVolume()) << ",\n";
-	out << writeBibKey ("number",  bib_.getNumber()) << ",\n";
+	out << writeBibKey ("number",  bib_.getIssue()) << ",\n";
 	out << writeBibKey ("pages",   bib_.getPages()) << ",\n";
 	out << writeBibKey ("year",    bib_.getYear()) << "\n";
 	out << "}\n\n";

@@ -21,7 +21,7 @@ void BibData::print ()
 	std::cout << "Authors: " << authors_ << std::endl;	
 	std::cout << "Journal: " << journal_ << std::endl;	
 	std::cout << "Volume: " << volume_ << std::endl;	
-	std::cout << "Number: " << number_ << std::endl;	
+	std::cout << "Number: " << issue_ << std::endl;	
 	std::cout << "Pages: " << pages_ << std::endl;	
 	std::cout << "Year: " << year_ << std::endl;	
 }
@@ -35,7 +35,7 @@ void BibData::writeXML (std::ostringstream &out)
 	out << "    <bib_authors>" << escape_text(authors_) << "</bib_authors>\n";
 	out << "    <bib_journal>" << escape_text(journal_) << "</bib_journal>\n";
 	out << "    <bib_volume>" << escape_text(volume_) << "</bib_volume>\n";
-	out << "    <bib_number>" << escape_text(number_) << "</bib_number>\n";
+	out << "    <bib_number>" << escape_text(issue_) << "</bib_number>\n";
 	out << "    <bib_pages>" << escape_text(pages_) << "</bib_pages>\n";
 	out << "    <bib_year>" << escape_text(year_) << "</bib_year>\n";
 }
@@ -241,14 +241,11 @@ void BibData::guessDoi (Glib::ustring const &raw_)
 void BibData::getCrossRef ()
 {
 	Gnome::Vfs::Handle bibfile;
-	
-	/*http://www.crossref.org/openurl/?id=doi:10.1103/PhysRevB.73.014404&noredirect=true*/
-	
+
 	Glib::ustring bibfilename =
 		"http://www.crossref.org/openurl/?id=doi:"
 		+ doi_
 		+ "&noredirect=true";
-	//"/home/jcspray/Projects/pdfdivine/crossref_eg.xml";
 		
 	Glib::RefPtr<Gnome::Vfs::Uri> biburi = Gnome::Vfs::Uri::create (bibfilename);
 	
@@ -259,6 +256,7 @@ void BibData::getCrossRef ()
 		return;
 	}
 	
+
 	bibfile.open (bibfilename, Gnome::Vfs::OPEN_READ);
 
 	Glib::RefPtr<Gnome::Vfs::FileInfo> fileinfo;
@@ -280,7 +278,7 @@ void BibData::clear ()
 {
 	doi_ = "";
 	volume_ = "";
-	number_ = "";
+	issue_ = "";
 	pages_ = "";
 	authors_ = "";
 	journal_ = "";

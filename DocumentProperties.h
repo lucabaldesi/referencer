@@ -11,8 +11,9 @@ class DocumentProperties {
 	private:
 	Glib::RefPtr<Gnome::Glade::Xml> xml_;
 
-	Gtk::Dialog *dialog_;
+	Document *doc_;
 
+	Gtk::Dialog *dialog_;
 	Gtk::Entry *doientry_;
 	Gtk::Entry *keyentry_;
 	Gtk::Entry *titleentry_;
@@ -22,9 +23,14 @@ class DocumentProperties {
 	Gtk::Entry *issueentry_;
 	Gtk::Entry *pagesentry_;
 	Gtk::Entry *yearentry_;
+	Gtk::FileChooserButton *filechooser_;
+
+	void update ();
+	void save ();
+	void onCrossRefLookup ();
 
 	public:
-		void show (Document *doc);
+		bool show (Document *doc);
 		DocumentProperties ();
 };
 
