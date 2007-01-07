@@ -235,7 +235,7 @@ void TagWindow::constructMenu ()
 		"RemoveDoc", Gtk::Stock::REMOVE, "_Remove"),
   	sigc::mem_fun(*this, &TagWindow::onRemoveDoc));
 	actiongroup_->add( Gtk::Action::create(
-		"DoiLookupDoc", Gtk::Stock::CONNECT, "_Lookup DOI..."),
+		"DoiLookupDoc", Gtk::Stock::CONNECT, "_Web Link (DOI)..."),
   	sigc::mem_fun(*this, &TagWindow::onDoiLookupDoc));
 	actiongroup_->add( Gtk::Action::create(
 		"OpenDoc", Gtk::Stock::OPEN, "_Open..."),
@@ -869,7 +869,13 @@ void TagWindow::addDocFiles (std::vector<Glib::ustring> const &filenames)
 		progress.set_fraction ((float)n / (float)filenames.size());
 		while (Gnome::Main::events_pending())
 			Gnome::Main::iteration ();
-		doclist_->newDocWithFile(*it);
+		Document *newdoc = doclist_->newDocWithFile(*it);
+		newdoc->readPDF ();
+		if (!newdoc->getBibData().getDoi().empty())
+			newdoc->getBibData().getCrossRef ();
+		
+		newdoc->setDisplayName (newdoc->generateKey ());
+
 		++n;
 	}
 	
@@ -885,7 +891,9 @@ void TagWindow::addDocFiles (std::vector<Glib::ustring> const &filenames)
 
 void TagWindow::onAddDocUnnamed ()
 {
-	doclist_->newDocUnnamed ();
+	Document *newdoc = doclist_->newDocUnnamed ();
+	newdoc->setDisplayName (newdoc->generateKey ());
+	docpropertiesdialog_->show (newdoc);
 	populateDocIcons ();
 }
 
@@ -903,11 +911,22 @@ void TagWindow::onAddDocByDoi ()
 	Gtk::Label label ("DOI:", false);
 	hbox.pack_start (label, false, false, 0);
 	
-	dialog.add_button (Gtk::Stock::OK, 1);
+	Gtk::Entry entry;
+	hbox.pack_start (entry, true, true, 0);
+	
 	dialog.add_button (Gtk::Stock::CANCEL, 0);
+	dialog.add_button (Gtk::Stock::OK, 1);
+
+	dialog.show_all ();
+	vbox->set_border_width (12);
 	
 	if (dialog.run ()) {
-		doclist_->newDocWithDoi ("");
+		Document *newdoc = doclist_->newDocWithDoi (entry.get_text ());
+		
+		newdoc->getBibData().getCrossRef ();
+		newdoc->setDisplayName (newdoc->generateKey ());
+		
+		populateDocIcons ();
 	}
 }
 

@@ -10,7 +10,7 @@ A View menu which allows hiding of tagging sidebar
 Should be able to select multiple tags for ANDing instead of ORing document selection
 
 Drag and drop to add by filename
-Add by DOI
+DONE Add by DOI
 DONE Add by nothing but displayname
 	In fact by nothing at all
 Progressbar when adding (many or one, both can be slow)

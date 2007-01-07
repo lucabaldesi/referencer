@@ -24,7 +24,7 @@ class CrossRefParser : public Glib::Markup::Parser {
 		const Glib::ustring& element_name,
 		const Glib::Markup::Parser::AttributeMap& attributes)
 	{
-		std::cerr << "CrossRefParser: Started element '" << element_name << "'\n";
+		//std::cerr << "CrossRefParser: Started element '" << element_name << "'\n";
 		text_ = "";
 	}
 	
@@ -32,7 +32,7 @@ class CrossRefParser : public Glib::Markup::Parser {
 		Glib::Markup::ParseContext& context,
 		const Glib::ustring& element)
 	{
-		std::cerr << "CrossRefParser: Ended element '" << element << "'\n";
+		//std::cerr << "CrossRefParser: Ended element '" << element << "'\n";
 		if (element == "doi") {
 			bib_.setDoi (text_);
 		} else if (element == "article_title") {

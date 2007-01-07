@@ -269,7 +269,7 @@ void BibData::getCrossRef ()
 	Glib::ustring rawtext = buffer;
 	free (buffer);
 	bibfile.close ();
-	std::cerr << "\n" << rawtext << "\n";
+	//std::cerr << "\n" << rawtext << "\n";
 	parseCrossRefXML (rawtext);
 }
 

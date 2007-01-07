@@ -17,10 +17,9 @@ std::vector<Document>& DocumentList::getDocs ()
 Document* DocumentList::newDocWithFile (Glib::ustring const &filename)
 {
 	Document newdoc(filename);
-	newdoc.setDisplayName (
+	/*newdoc.setDisplayName (
 		uniqueDisplayName (
-			newdoc.displayNameFromFileName()));
-	newdoc.readPDF ();
+			newdoc.generateKey()));*/
 	docs_.push_back(newdoc);
 	return &(docs_.back());
 }
@@ -29,9 +28,17 @@ Document* DocumentList::newDocWithFile (Glib::ustring const &filename)
 Document* DocumentList::newDocUnnamed ()
 {
 	Document newdoc;
-	newdoc.setDisplayName (
-		uniqueDisplayName ("Unnamed"));
+	/*newdoc.setDisplayName (
+		uniqueDisplayName ("Unnamed"));*/
 	docs_.push_back(newdoc);
+	return &(docs_.back());
+}
+
+
+Document* DocumentList::newDocWithDoi (Glib::ustring const &doi)
+{
+	Document *newdoc = newDocUnnamed ();
+	newdoc->getBibData().setDoi (doi);
 	return &(docs_.back());
 }
 
@@ -73,16 +80,6 @@ Document* DocumentList::newDocWithName (Glib::ustring const &displayname)
 {
 	Document newdoc;
 	newdoc.setDisplayName (displayname);
-	docs_.push_back(newdoc);
-	return &(docs_.back());
-}
-
-
-Document* DocumentList::newDocWithDoi (Glib::ustring const &doi)
-{
-	Document newdoc;
-	newdoc.getBibData().setDoi(doi);
-	// Should get crossref metadata from the doi
 	docs_.push_back(newdoc);
 	return &(docs_.back());
 }

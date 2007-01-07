@@ -25,21 +25,6 @@ Document::Document (Glib::ustring const &filename)
 }
 
 
-Glib::ustring Document::displayNameFromFileName ()
-{
-	Glib::ustring displayname;
-	displayname =
-		Gnome::Vfs::unescape_string_for_display (
-			Glib::path_get_basename (filename_));
-	unsigned int const maxlen = 12;
-	if (displayname.size() > maxlen) {
-		displayname = displayname.substr(0, maxlen) + "...";
-	}
-	
-	return displayname;
-}
-
-
 Document::Document ()
 {
 	// Pick up the default thumbnail
@@ -58,6 +43,34 @@ Document::Document (
 	displayname_ = displayname;
 	tagUids_ = tagUids;
 	bib_ = bib;
+}
+
+
+Glib::ustring Document::generateKey ()
+{
+	// Ideally Chambers06
+	// If not then pap104
+	// If not then Unnamed-5
+	Glib::ustring name;
+
+	if (!bib_.getAuthors().empty ()) {
+		Glib::ustring year = bib_.getYear ();
+		if (year.size() == 4)
+			year = year.substr (2,3);
+		name = bib_.getAuthors () + year;
+	} else if (!filename_.empty ()) {
+		name = Gnome::Vfs::unescape_string_for_display (
+			Glib::path_get_basename (filename_));
+	} else {
+		name = "Unnamed";
+	}
+
+	unsigned int const maxlen = 12;
+	if (name.size() > maxlen) {
+		name = name.substr(0, maxlen) + "...";
+	}
+	
+	return name;
 }
 
 

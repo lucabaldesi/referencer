@@ -44,7 +44,7 @@ class Document {
 
 	static Glib::RefPtr<Gdk::Pixbuf> defaultthumb_;
 	
-	Glib::ustring displayNameFromFileName ();
+	Glib::ustring generateKey ();
 };
 
 #endif
