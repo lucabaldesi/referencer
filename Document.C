@@ -57,10 +57,25 @@ Glib::ustring Document::generateKey ()
 		Glib::ustring year = bib_.getYear ();
 		if (year.size() == 4)
 			year = year.substr (2,3);
-		name = bib_.getAuthors () + year;
+
+		Glib::ustring authors = bib_.getAuthors ();
+
+		// Should:
+		// Strip spaces from authors
+		// Truncate it at the first "et al", "and", or ","
+
+		name = authors + year;
 	} else if (!filename_.empty ()) {
-		name = Gnome::Vfs::unescape_string_for_display (
+		Glib::ustring filename = Gnome::Vfs::unescape_string_for_display (
 			Glib::path_get_basename (filename_));
+
+		unsigned int periodpos = filename.find_last_of (".");
+		if (periodpos != std::string::npos) {
+			filename = filename.substr (0, periodpos);
+		}
+
+		name = filename;
+
 	} else {
 		name = "Unnamed";
 	}

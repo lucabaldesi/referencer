@@ -813,11 +813,6 @@ void TagWindow::onExportBibtex ()
 		
 		bibfile.close ();
 	}
-	
-	// Prompt for location
-	// overwrite schitt
-	// open file
-	// ask doclist_ to write into it.
 }
 
 
@@ -846,8 +841,8 @@ void TagWindow::addDocFiles (std::vector<Glib::ustring> const &filenames)
 	
 	Glib::ustring messagetext =
 		"<b><big>Adding document files</big></b>\n\n"
-		"This process may take some time as the bibliographic\n"
-		" information for each document is looked up.";
+		"This process may take some time as the bibliographic \n"
+		"information for each document is looked up.";
 	
 	Gtk::Label label ("", false);
 	label.set_markup (messagetext);
@@ -874,7 +869,7 @@ void TagWindow::addDocFiles (std::vector<Glib::ustring> const &filenames)
 		if (!newdoc->getBibData().getDoi().empty())
 			newdoc->getBibData().getCrossRef ();
 		
-		newdoc->setDisplayName (newdoc->generateKey ());
+		newdoc->setDisplayName (doclist_->uniqueDisplayName (newdoc->generateKey ()));
 
 		++n;
 	}
@@ -892,7 +887,7 @@ void TagWindow::addDocFiles (std::vector<Glib::ustring> const &filenames)
 void TagWindow::onAddDocUnnamed ()
 {
 	Document *newdoc = doclist_->newDocUnnamed ();
-	newdoc->setDisplayName (newdoc->generateKey ());
+	newdoc->setDisplayName (doclist_->uniqueDisplayName (newdoc->generateKey ()));
 	docpropertiesdialog_->show (newdoc);
 	populateDocIcons ();
 }
@@ -924,7 +919,7 @@ void TagWindow::onAddDocByDoi ()
 		Document *newdoc = doclist_->newDocWithDoi (entry.get_text ());
 		
 		newdoc->getBibData().getCrossRef ();
-		newdoc->setDisplayName (newdoc->generateKey ());
+		newdoc->setDisplayName (doclist_->uniqueDisplayName (newdoc->generateKey ()));
 		
 		populateDocIcons ();
 	}
