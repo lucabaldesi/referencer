@@ -32,6 +32,7 @@ class BibData {
 	void writeXML (std::ostringstream &out);
 	void parseCrossRefXML (Glib::ustring const &xml);
 	void getCrossRef ();
+	void fetcherThread ();
 
 	void setDoi (Glib::ustring const &doi) {doi_ = doi;} 
 	Glib::ustring getDoi () {return doi_;}

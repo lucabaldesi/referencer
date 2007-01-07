@@ -833,7 +833,6 @@ void TagWindow::onAbout ()
 
 void TagWindow::addDocFiles (std::vector<Glib::ustring> const &filenames)
 {
-
 	Gtk::Dialog dialog ("Add Document Files", true, false);
 	
 	Gtk::VBox *vbox = dialog.get_vbox ();

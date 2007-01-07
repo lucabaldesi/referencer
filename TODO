@@ -9,6 +9,12 @@ A View menu which allows hiding of tagging sidebar
 
 Should be able to select multiple tags for ANDing instead of ORing document selection
 
+Conversion of accented characters into LaTeX when exporting bibtex
+
+Crash when adding unnamed?
+
+read PS files to search for DOIs as well as reading PDFs
+
 Drag and drop to add by filename
 DONE Add by DOI
 DONE Add by nothing but displayname

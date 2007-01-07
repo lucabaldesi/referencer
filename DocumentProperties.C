@@ -79,6 +79,7 @@ void DocumentProperties::save ()
 	doc_->setFileName (filename);
 	doc_->setDisplayName (keyentry_->get_text ());
 
+	bib.setDoi (doientry_->get_text ());
 	bib.setTitle (titleentry_->get_text ());
 	bib.setAuthors (authorsentry_->get_text ());
 	bib.setJournal (journalentry_->get_text ());
@@ -93,9 +94,9 @@ void DocumentProperties::onCrossRefLookup ()
 {
 	Document *orig = doc_;
 	Document spoof = *doc_;
+	spoof.getBibData().setDoi (doientry_->get_text ());
 	spoof.getBibData().getCrossRef ();
 	doc_ = &spoof;
-	doc_->getBibData().getCrossRef ();
 	update ();
 	doc_ = orig;
 }

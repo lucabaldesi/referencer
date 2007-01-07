@@ -7,6 +7,7 @@
 #include <time.h>
 #include <boost/regex.hpp>
 
+#include <libgnomeuimm.h>
 #include <libgnomevfsmm.h>
 
 #include "CrossRefParser.h"
@@ -237,8 +238,64 @@ void BibData::guessDoi (Glib::ustring const &raw_)
 	}
 }
 
+static bool transfercomplete;
+static Glib::ustring transferresults;
 
 void BibData::getCrossRef ()
+{
+	std::cerr << ">> BibData::getCrossRef\n";
+	if (doi_.empty())
+		return;
+
+	Gtk::Dialog dialog ("Retrieving Metadata", true, false);
+	
+	Gtk::VBox *vbox = dialog.get_vbox ();
+	vbox->set_spacing (12);
+	
+	Glib::ustring messagetext =
+		"<b><big>Retrieving metadata</big></b>\n\n"
+		"Contacting crossref.org to retrieve metadata for '"
+		+ doi_ + "'\n";
+	
+	Gtk::Label label ("", false);
+	label.set_markup (messagetext);
+	
+	vbox->pack_start (label, true, true, 0);
+	
+	Gtk::ProgressBar progress;
+	
+	vbox->pack_start (progress, false, false, 0);
+	
+	dialog.add_button (Gtk::Stock::CANCEL, 0);
+
+	dialog.show_all ();
+	vbox->set_border_width (12);
+
+	Glib::Thread *fetcher = Glib::Thread::create (
+		sigc::mem_fun (*this, &BibData::fetcherThread), true);
+
+	Glib::Timer timeout;
+	timeout.start ();
+
+	while (transfercomplete == false) {
+		progress.pulse ();
+		while (Gnome::Main::events_pending())
+			Gnome::Main::iteration ();
+		Glib::usleep (100000);
+
+		if (timeout.elapsed () > 10) {
+			transfercomplete = true;
+			break;
+		}
+	}
+
+	fetcher->join ();	
+
+	parseCrossRefXML (transferresults);
+}
+
+
+void BibData::fetcherThread ()
 {
 	Gnome::Vfs::Handle bibfile;
 
@@ -249,28 +306,32 @@ void BibData::getCrossRef ()
 		
 	Glib::RefPtr<Gnome::Vfs::Uri> biburi = Gnome::Vfs::Uri::create (bibfilename);
 	
+
 	bool exists = biburi->uri_exists ();
 	if (!exists) {
 		std::cerr << "BibData::getCrossRef: bib XML file '" <<
 			bibfilename << "' not found\n";
 		return;
 	}
-	
 
 	bibfile.open (bibfilename, Gnome::Vfs::OPEN_READ);
 
 	Glib::RefPtr<Gnome::Vfs::FileInfo> fileinfo;
+
 	fileinfo = bibfile.get_file_info ();
+
+	transfercomplete = false;
 	
 	char *buffer = (char *) malloc (sizeof(char) * (fileinfo->get_size() + 1));
+
 	bibfile.read (buffer, fileinfo->get_size());
 	buffer[fileinfo->get_size()] = 0;
 	
-	Glib::ustring rawtext = buffer;
+	transferresults = buffer;
 	free (buffer);
 	bibfile.close ();
-	//std::cerr << "\n" << rawtext << "\n";
-	parseCrossRefXML (rawtext);
+
+	transfercomplete = true;
 }
 
 
