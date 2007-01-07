@@ -7,6 +7,7 @@
 
 class Document;
 class DocumentList;
+class DocumentProperties;
 class TagList;
 class Gtk::TreePath;
 class Glib::ustring;
@@ -53,6 +54,8 @@ class TagWindow {
 		Glib::RefPtr<Gtk::UIManager> uimanager_;
 		Glib::RefPtr<Gtk::ActionGroup> actiongroup_;
 
+		DocumentProperties *docpropertiesdialog_;
+
 		void taggerCheckToggled (Gtk::CheckButton *check, int taguid);
 		void docActivated (const Gtk::TreePath& path);
 		void tagSelectionChanged ();
@@ -72,6 +75,7 @@ class TagWindow {
 		void onRemoveDoc ();
 		void onDoiLookupDoc ();
 		void onOpenDoc ();
+		void onDocProperties ();
 		void onExportBibtex ();
 		void onAbout ();
 		

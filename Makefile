@@ -1,11 +1,11 @@
 
 
 CC = g++ -g -Wall #-pedantic
-CFLAGS = `pkg-config --cflags poppler gtkmm-2.4 libgnomeuimm-2.6 gnome-vfsmm-2.6`
-LIBS = `pkg-config --libs poppler gtkmm-2.4 libgnomeuimm-2.6 gnome-vfsmm-2.6` -lboost_regex
+CFLAGS = `pkg-config --cflags poppler gtkmm-2.4 libgnomeuimm-2.6 gnome-vfsmm-2.6 libglademm-2.4`
+LIBS = `pkg-config --libs poppler gtkmm-2.4 libgnomeuimm-2.6 gnome-vfsmm-2.6 libglademm-2.4` -lboost_regex
 
 TARGET = tagwindow
-OBJECTS = TagWindow.o TagList.o  DocumentList.o Document.o BibData.o
+OBJECTS = TagWindow.o TagList.o  DocumentList.o Document.o BibData.o DocumentProperties.o
 
 .C.o: ${patsubst %.C, %.h, $<}
 	$(CC) $(CFLAGS) -o ${patsubst %.C, %.o, $<} -c $<

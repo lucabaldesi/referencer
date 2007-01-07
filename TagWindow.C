@@ -11,6 +11,7 @@
 #include "TagList.h"
 #include "DocumentList.h"
 #include "Document.h"
+#include "DocumentProperties.h"
 
 #include "LibraryParser.h"
 
@@ -46,12 +47,19 @@ TagWindow::TagWindow ()
 	tagselectionignore_ = false;
 	ignoretaggerchecktoggled_ = false;
 	docselectionignore_ = false;
+
+	docpropertiesdialog_ = NULL;
 }
 
 
 TagWindow::~TagWindow ()
 {
 	saveLibrary ();
+
+	delete taglist_;
+	delete doclist_;
+	if (docpropertiesdialog_)
+		delete docpropertiesdialog_;
 }
 
 
@@ -233,6 +241,9 @@ void TagWindow::constructMenu ()
 		"OpenDoc", Gtk::Stock::OPEN, "_Open..."),
   	sigc::mem_fun(*this, &TagWindow::onOpenDoc));
 	actiongroup_->add( Gtk::Action::create(
+		"DocProperties", Gtk::Stock::PROPERTIES),
+  	sigc::mem_fun(*this, &TagWindow::onDocProperties));
+	actiongroup_->add( Gtk::Action::create(
 		"Divine", "_Divine..."),
   	sigc::mem_fun(*this, &TagWindow::onDivine));
   	
@@ -266,6 +277,7 @@ void TagWindow::constructMenu ()
 		"      <menuitem action='RemoveDoc'/>"
 		"      <menuitem action='DoiLookupDoc'/>"
 		"      <menuitem action='OpenDoc'/>"
+		"      <menuitem action='DocProperties'/>"
 		"    </menu>"
 		"    <menu action='HelpMenu'>"
 		"      <menuitem action='About'/>"
@@ -287,6 +299,7 @@ void TagWindow::constructMenu ()
 		"    <menuitem action='DoiLookupDoc'/>"
 		"    <menuitem action='OpenDoc'/>"
 		"    <menuitem action='Divine'/>"
+		"    <menuitem action='DocProperties'/>"
 		"  </popup>"
 		"  <popup name='TagPopup'>"
 		"    <menuitem action='CreateTag'/>"
@@ -1208,3 +1221,13 @@ void TagWindow::onOpenDoc ()
 	}
 }
 
+
+void TagWindow::onDocProperties ()
+{
+	Document *doc = getSelectedDoc ();
+	if (doc) {
+		if (!docpropertiesdialog_)
+			docpropertiesdialog_ = new DocumentProperties;
+		docpropertiesdialog_->show (doc);
+	}
+}
