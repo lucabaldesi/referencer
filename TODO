@@ -1,8 +1,6 @@
 
 taglist and tagger need to be in scrolledwindows
-DONE need to update tagger when rename tag
-	tagging and tag create/delete seems a bit buggy still
-DONE need to update docicons when tagging file (time to be more efficient)
+tagging and tag create/delete seems a bit buggy?
 LookupDoi and Open should really handle multiple documents.
 
 A View menu which allows hiding of tagging sidebar
@@ -16,24 +14,14 @@ Crash when adding unnamed?
 read PS files to search for DOIs as well as reading PDFs
 
 Drag and drop to add by filename
-DONE Add by DOI
-DONE Add by nothing but displayname
-	In fact by nothing at all
+
 Progressbar when adding (many or one, both can be slow)
 
 Should write to file and then copy into place (prevent crash blanking file)
 
 Should complain when adding files we already have
 
-DONE Need to do bibdata XML IO
-
-DONE Default thumbnail for unthumbnailable things
-	DONE Although it relies on unknown.png in current path, should get from iconfactory
-DONE Thumbnail generation
-	Now do it in the background?
-DONE When thumbnailing fails, save the failure so that we don't try again
-
-DONE Fix paths like "'file:///home/jcspray/Work/MPhys%20Dissertation/Papers/Papers (Spin glass EB)/2005: Spin-Glass-Like behaviour in CoO Nanoparticles and the origin of EB in layered COO-ferromagnet structures (Gruyters).pdf" when adding folder
+Thumbnail generation is done in main thread and freezes UI
 
 To support an extra entry in the bibdata, one needs to update:
 	class BibData
