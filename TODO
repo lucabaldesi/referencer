@@ -23,6 +23,8 @@ Progressbar when adding (many or one, both can be slow)
 
 Should write to file and then copy into place (prevent crash blanking file)
 
+Should complain when adding files we already have
+
 DONE Need to do bibdata XML IO
 
 DONE Default thumbnail for unthumbnailable things
@@ -49,3 +51,4 @@ Competition on Science biblio export:
 	Reference Manager
 	ProCite
 	RefWorks
+also: Zotero
