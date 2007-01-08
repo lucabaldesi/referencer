@@ -239,6 +239,7 @@ void BibData::guessDoi (Glib::ustring const &raw_)
 }
 
 static bool transfercomplete;
+static bool transferfail;
 static Glib::ustring transferresults;
 
 void BibData::getCrossRef ()
@@ -271,65 +272,168 @@ void BibData::getCrossRef ()
 	dialog.show_all ();
 	vbox->set_border_width (12);
 
+	transfercomplete = false;
+	transferfail = false;
+
 	Glib::Thread *fetcher = Glib::Thread::create (
 		sigc::mem_fun (*this, &BibData::fetcherThread), true);
 
 	Glib::Timer timeout;
 	timeout.start ();
 
-	while (transfercomplete == false) {
+	double const max_timeout = 10.0;
+	while (transfercomplete == false && transferfail == false) {
 		progress.pulse ();
 		while (Gnome::Main::events_pending())
 			Gnome::Main::iteration ();
 		Glib::usleep (100000);
 
-		if (timeout.elapsed () > 10) {
-			transfercomplete = true;
+		if (timeout.elapsed () > max_timeout) {
+			transferfail = true;
 			break;
 		}
 	}
 
 	fetcher->join ();	
 
-	parseCrossRefXML (transferresults);
+	if (!transferfail)
+		parseCrossRefXML (transferresults);
+}
+
+
+static bool advance;
+Gnome::Vfs::Async::Handle bibfile;
+
+void openCB (
+	Gnome::Vfs::Async::Handle const &handle,
+	Gnome::Vfs::Result result)
+{
+	if (result == Gnome::Vfs::OK) {
+		std::cerr << "openCB: result OK, opened\n";
+		advance = true;
+	} else {
+		std::cerr << "openCB: result not OK\n";
+		transferfail = true;
+	}
+}
+
+
+void readCB (
+	Gnome::Vfs::Async::Handle const &handle,
+	Gnome::Vfs::Result result,
+	gpointer buffer,
+	Gnome::Vfs::FileSize requested,
+	Gnome::Vfs::FileSize reallyread)
+{
+	std::cerr << "Woo, read " << reallyread << " bytes\n";
+	char *charbuf = (char *) buffer;
+	charbuf [reallyread] = 0;
+	if (result == Gnome::Vfs::OK) {
+		std::cerr << "readCB: result OK, read\n";
+		advance = true;
+	} else {
+		std::cerr << "readCB: result not OK\n";
+		transferfail = true;
+	}
+} 
+
+
+void closeCB (
+	Gnome::Vfs::Async::Handle const &handle,
+	Gnome::Vfs::Result result)
+{
+	if (result == Gnome::Vfs::OK) {
+		std::cerr << "readCB: result OK, closed\n";
+	} else {
+		// Can't really do much about this
+		std::cerr << "closeCB: warning: result not OK\n";
+	}
+
+	advance = true;
+}
+
+
+// Return true if all is well
+// Return false if we should give up and go home
+static bool waitForFlag (bool &flag)
+{
+	while (flag == false) {
+		std::cerr << "Waiting...\n";
+		Glib::usleep (100000);
+		if (transferfail) {
+			// The parent decided we've timed out and should give up
+			//     libgnomevfsmm-WARNING **: gnome-vfsmm Async::Handle::cancel():
+			//     This method currently leaks memory
+			bibfile.cancel ();
+			// Should close it if it's open
+			std::cerr << "waitForFlag completed due to transferfail\n";
+			return true;
+		}
+	}
+	std::cerr << "Done!\n";
+	return false;
 }
 
 
 void BibData::fetcherThread ()
 {
-	Gnome::Vfs::Handle bibfile;
-
 	Glib::ustring bibfilename =
 		"http://www.crossref.org/openurl/?id=doi:"
 		+ doi_
 		+ "&noredirect=true";
 		
 	Glib::RefPtr<Gnome::Vfs::Uri> biburi = Gnome::Vfs::Uri::create (bibfilename);
-	
 
-	bool exists = biburi->uri_exists ();
-	if (!exists) {
-		std::cerr << "BibData::getCrossRef: bib XML file '" <<
-			bibfilename << "' not found\n";
+	advance = false;
+	try {
+		bibfile.open (bibfilename,
+		              Gnome::Vfs::OPEN_READ,
+		              0, 
+		              sigc::ptr_fun(&openCB));
+	} catch (const Gnome::Vfs::exception ex) {
+		std::cerr << "Got an exception from open\n";
+		transferfail = true;
 		return;
 	}
-
-	bibfile.open (bibfilename, Gnome::Vfs::OPEN_READ);
-
-	Glib::RefPtr<Gnome::Vfs::FileInfo> fileinfo;
-
-	fileinfo = bibfile.get_file_info ();
-
-	transfercomplete = false;
 	
-	char *buffer = (char *) malloc (sizeof(char) * (fileinfo->get_size() + 1));
+	if (waitForFlag (advance))
+		// Opening failed
+		return;
 
-	bibfile.read (buffer, fileinfo->get_size());
-	buffer[fileinfo->get_size()] = 0;
+	// Crossref can fuck off if it thinks the metadata for a
+	// paper is more than 256kB.  If it really is then we will
+	// later try and parse incomplete XML, and should will quietly
+	// there probably.
+	int const maxsize = 1024 * 256;
+	char *buffer = (char *) malloc (sizeof (char) * maxsize);
+	
+	advance = false;
+	try {
+		bibfile.read (buffer, maxsize, sigc::ptr_fun (&readCB));
+	} catch (const Gnome::Vfs::exception ex) {
+		std::cerr << "Got an exception from read\n";
+		// should close handle?
+		transferfail = true;
+		return;
+	}
+	
+	if (waitForFlag (advance))
+		// Aargh shouldn't we be closing?
+		return;
 	
 	transferresults = buffer;
 	free (buffer);
-	bibfile.close ();
+	advance = false;
+	try {
+		bibfile.close (sigc::ptr_fun (&closeCB));
+	} catch (const Gnome::Vfs::exception ex) {
+		std::cerr << "Got an exception from close\n";
+		transferfail = true;
+		return;
+	}
+	
+	if (waitForFlag (advance))
+		return;
 
 	transfercomplete = true;
 }
