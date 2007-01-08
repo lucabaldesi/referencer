@@ -43,7 +43,7 @@ void TagList::renameTag (int uid, Glib::ustring newname)
 			return;
 		}
 	}
-	
+
 	std::cerr << "Warning: TagList::renameTag: uid " << uid << "not found\n";
 }
 
@@ -71,7 +71,7 @@ void TagList::deleteTag (int uid)
 			return;
 		}
 	}
-	
+
 	std::cerr << "Warning:: TagList::deleteTag: tag uid "
 		<< uid << "not found\n";
 }

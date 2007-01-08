@@ -17,14 +17,14 @@
  */
 void BibData::print ()
 {
-	std::cout << "DOI: " << doi_ << std::endl;	
-	std::cout << "Title: " << title_ << std::endl;	
-	std::cout << "Authors: " << authors_ << std::endl;	
-	std::cout << "Journal: " << journal_ << std::endl;	
-	std::cout << "Volume: " << volume_ << std::endl;	
-	std::cout << "Number: " << issue_ << std::endl;	
-	std::cout << "Pages: " << pages_ << std::endl;	
-	std::cout << "Year: " << year_ << std::endl;	
+	std::cout << "DOI: " << doi_ << std::endl;
+	std::cout << "Title: " << title_ << std::endl;
+	std::cout << "Authors: " << authors_ << std::endl;
+	std::cout << "Journal: " << journal_ << std::endl;
+	std::cout << "Volume: " << volume_ << std::endl;
+	std::cout << "Number: " << issue_ << std::endl;
+	std::cout << "Pages: " << pages_ << std::endl;
+	std::cout << "Year: " << year_ << std::endl;
 }
 
 using Glib::Markup::escape_text;
@@ -82,7 +82,7 @@ void BibData::parseMetadata (Glib::ustring const &meta, FieldMask mask)
  *  using the corresponding short form.
  *
  *  Citations always use the short form, so by searching
- *  for the long form we should only pick up the name 
+ *  for the long form we should only pick up the name
  *  of this paper's journal.
  */
 void BibData::guessJournal (Glib::ustring const &raw)
@@ -98,7 +98,7 @@ void BibData::guessJournal (Glib::ustring const &raw)
 	};
 
 	for (int i = 0; i < n_titles; ++i) {
-		// TODO: we would like a fast, case insensitive, 
+		// TODO: we would like a fast, case insensitive,
 		// encoding-correct search.
 		if (strstr (raw.c_str(), search_titles[i].c_str())) {
 			setJournal (bib_titles[i]);
@@ -109,7 +109,7 @@ void BibData::guessJournal (Glib::ustring const &raw)
 
 /*
  * Try to fill the volume, number and pages fields
- * using the raw text -- these are lumped together 
+ * using the raw text -- these are lumped together
  * because in some cases our search expressions
  * may include all three.
  *
@@ -117,14 +117,14 @@ void BibData::guessJournal (Glib::ustring const &raw)
  */
 void BibData::guessVolumeNumberPage (Glib::ustring const &raw)
 {
-		/* 
+		/*
 		 * Do regex magic to learn what we can
 		 * Interested in strings like:
 		 * "VOLUME 95, NUMBER 3"
 		 * "PHYSICAL REVIEW B 71, 064413"
 		 *
 		 * When searching for abbreviations like Vol. 1, No. 2
-		 * we must be very careful not to pick up citations 
+		 * we must be very careful not to pick up citations
 		 * by accident
 		 */
 }
@@ -136,7 +136,7 @@ void BibData::guessYear (Glib::ustring const &raw_)
 {
 	/*
 	 * Take the greatest four-letter numeric which is between
-	 * 1990 and the current year.  This will occasionally 
+	 * 1990 and the current year.  This will occasionally
 	 * pick up a 'number' or 'page' instead, but should
 	 * almost always be the year.
 	 */
@@ -144,8 +144,8 @@ void BibData::guessYear (Glib::ustring const &raw_)
 
 	std::string const &raw = raw_;
 
-	boost::regex expression("\\W([0-9][0-9][0-9][0-9])\\W"); 
-	
+	boost::regex expression("\\W([0-9][0-9][0-9][0-9])\\W");
+
 	int latestyear = 0;
 	Glib::ustring latestyear_str;
 
@@ -154,12 +154,12 @@ void BibData::guessYear (Glib::ustring const &raw_)
 	struct tm *UTC = gmtime (&timesecs);
 	int const present_day = UTC->tm_year + 1900;
 
-	std::string::const_iterator start, end; 
+	std::string::const_iterator start, end;
 	start = raw.begin();
-	end = raw.end(); 
-	boost::match_results<std::string::const_iterator> what; 
-	boost::match_flag_type flags = boost::match_default; 
-	while(regex_search(start, end, what, expression, flags)) { 
+	end = raw.end();
+	boost::match_results<std::string::const_iterator> what;
+	boost::match_flag_type flags = boost::match_default;
+	while(regex_search(start, end, what, expression, flags)) {
 		Glib::ustring yearstring = std::string(what[1]);
 		int yearval = atoi(yearstring.c_str());
 		if (yearval > dawn_of_ejournals && yearval <= present_day) {
@@ -168,13 +168,13 @@ void BibData::guessYear (Glib::ustring const &raw_)
 				latestyear_str = yearstring;
 			}
 		}
-	  // update search position: 
-	  start = what[0].second; 
-	  // update flags: 
-	  flags |= boost::match_prev_avail; 
-	  flags |= boost::match_not_bob; 
+	  // update search position:
+	  start = what[0].second;
+	  // update flags:
+	  flags |= boost::match_prev_avail;
+	  flags |= boost::match_not_bob;
 	}
-	
+
 	if (latestyear)
 		setYear (latestyear_str);
 }
@@ -187,24 +187,24 @@ void BibData::guessAuthors (Glib::ustring const &raw_)
 {
 	std::string const &raw = raw_;
 
-	boost::regex expression("^(\\D{5,}\n\\D{5,})$"); 
+	boost::regex expression("^(\\D{5,}\n\\D{5,})$");
 
-	std::string::const_iterator start, end; 
+	std::string::const_iterator start, end;
 	start = raw.begin();
-	end = raw.end(); 
-	boost::match_results<std::string::const_iterator> what; 
-	boost::match_flag_type flags = boost::match_default; 
-	while(regex_search(start, end, what, expression, flags)) { 
+	end = raw.end();
+	boost::match_results<std::string::const_iterator> what;
+	boost::match_flag_type flags = boost::match_default;
+	while(regex_search(start, end, what, expression, flags)) {
 		Glib::ustring authors = std::string(what[1]);
 		std::cout << "Got authors = '" << authors << "'\n" << std::endl;
 		setAuthors (authors);
 		return;
 
-	  // update search position: 
-	  start = what[0].second; 
-	  // update flags: 
-	  flags |= boost::match_prev_avail; 
-	  flags |= boost::match_not_bob; 
+	  // update search position:
+	  start = what[0].second;
+	  // update flags:
+	  flags |= boost::match_prev_avail;
+	  flags |= boost::match_not_bob;
 	}
 }
 
@@ -228,10 +228,10 @@ void BibData::guessDoi (Glib::ustring const &raw_)
 
 	std::string::const_iterator start, end;
 	start = raw.begin();
-	end = raw.end(); 
-	boost::match_results<std::string::const_iterator> what; 
-	boost::match_flag_type flags = boost::match_default; 
-	while(regex_search(start, end, what, expression, flags)) { 
+	end = raw.end();
+	boost::match_results<std::string::const_iterator> what;
+	boost::match_flag_type flags = boost::match_default;
+	while(regex_search(start, end, what, expression, flags)) {
 		Glib::ustring gstr = std::string(what[1]);
 		setDoi (gstr);
 		return;
@@ -249,24 +249,24 @@ void BibData::getCrossRef ()
 		return;
 
 	Gtk::Dialog dialog ("Retrieving Metadata", true, false);
-	
+
 	Gtk::VBox *vbox = dialog.get_vbox ();
 	vbox->set_spacing (12);
-	
+
 	Glib::ustring messagetext =
 		"<b><big>Retrieving metadata</big></b>\n\n"
 		"Contacting crossref.org to retrieve metadata for '"
 		+ doi_ + "'\n";
-	
+
 	Gtk::Label label ("", false);
 	label.set_markup (messagetext);
-	
+
 	vbox->pack_start (label, true, true, 0);
-	
+
 	Gtk::ProgressBar progress;
-	
+
 	vbox->pack_start (progress, false, false, 0);
-	
+
 	dialog.add_button (Gtk::Stock::CANCEL, 0);
 
 	dialog.show_all ();
@@ -294,7 +294,7 @@ void BibData::getCrossRef ()
 		}
 	}
 
-	fetcher->join ();	
+	fetcher->join ();
 
 	if (!transferfail)
 		parseCrossRefXML (transferresults);
@@ -335,7 +335,7 @@ void readCB (
 		std::cerr << "readCB: result not OK\n";
 		transferfail = true;
 	}
-} 
+}
 
 
 void closeCB (
@@ -381,21 +381,21 @@ void BibData::fetcherThread ()
 		"http://www.crossref.org/openurl/?id=doi:"
 		+ doi_
 		+ "&noredirect=true";
-		
+
 	Glib::RefPtr<Gnome::Vfs::Uri> biburi = Gnome::Vfs::Uri::create (bibfilename);
 
 	advance = false;
 	try {
 		bibfile.open (bibfilename,
 		              Gnome::Vfs::OPEN_READ,
-		              0, 
+		              0,
 		              sigc::ptr_fun(&openCB));
 	} catch (const Gnome::Vfs::exception ex) {
 		std::cerr << "Got an exception from open\n";
 		transferfail = true;
 		return;
 	}
-	
+
 	if (waitForFlag (advance))
 		// Opening failed
 		return;
@@ -406,7 +406,7 @@ void BibData::fetcherThread ()
 	// there probably.
 	int const maxsize = 1024 * 256;
 	char *buffer = (char *) malloc (sizeof (char) * maxsize);
-	
+
 	advance = false;
 	try {
 		bibfile.read (buffer, maxsize, sigc::ptr_fun (&readCB));
@@ -416,11 +416,11 @@ void BibData::fetcherThread ()
 		transferfail = true;
 		return;
 	}
-	
+
 	if (waitForFlag (advance))
 		// Aargh shouldn't we be closing?
 		return;
-	
+
 	transferresults = buffer;
 	free (buffer);
 	advance = false;
@@ -431,7 +431,7 @@ void BibData::fetcherThread ()
 		transferfail = true;
 		return;
 	}
-	
+
 	if (waitForFlag (advance))
 		return;
 

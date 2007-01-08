@@ -23,7 +23,7 @@ class TagList {
 	int uidCounter_;
 	private:
 	std::vector<Tag> tags_;
-	
+
 	public:
 	TagList() {
 		uidCounter_ = 0;
@@ -36,7 +36,7 @@ class TagList {
 	void deleteTag (int uid);
 	void writeXML (std::ostringstream& out);
 	void clear () {tags_.clear ();}
-	
+
 };
 
 #endif

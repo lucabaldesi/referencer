@@ -84,7 +84,7 @@ Glib::ustring Document::generateKey ()
 	if (name.size() > maxlen) {
 		name = name.substr(0, maxlen) + "...";
 	}
-	
+
 	return name;
 }
 
@@ -102,7 +102,7 @@ Glib::RefPtr<Gdk::Pixbuf> Document::getThemeIcon(Glib::ustring const &iconname)
 			return theme->load_icon(iconname, 48, Gtk::ICON_LOOKUP_FORCE_SVG);
 		}
 	}
-	
+
 	// Fall through on failure
 	return Glib::RefPtr<Gdk::Pixbuf> (NULL);
 }
@@ -114,13 +114,13 @@ void Document::setupThumbnail ()
 	if (uri->uri_exists()) {
 		Glib::RefPtr<Gnome::Vfs::FileInfo> fileinfo = uri->get_file_info ();
 		time_t mtime = fileinfo->get_modification_time ();
-		
-		Glib::RefPtr<Gnome::UI::ThumbnailFactory> thumbfac = 
+
+		Glib::RefPtr<Gnome::UI::ThumbnailFactory> thumbfac =
 			Gnome::UI::ThumbnailFactory::create (Gnome::UI::THUMBNAIL_SIZE_NORMAL);
-		
+
 		Glib::ustring thumbfile;
 		thumbfile = thumbfac->lookup (filename_, mtime);
-		
+
 		// Should we be using Gnome::UI::icon_lookup_sync?
 		if (thumbfile.empty()) {
 			std::cerr << "Couldn't find thumbnail:'" << filename_ << "'\n";
@@ -142,7 +142,7 @@ void Document::setupThumbnail ()
 			thumbnail_ = Gdk::Pixbuf::create_from_file (thumbfile);
 		}
 	}
-	
+
 	if (!thumbnail_) {
 		// Should use one global pixbuf for this instead of loading
 		// it separately for each doc
@@ -272,9 +272,9 @@ void Document::writeXML (std::ostringstream &out)
 		   it != docvec.end(); ++it) {
 		out << "    <tagged>" << (*it) << "</tagged>\n";
 	}
-	
+
 	getBibData().writeXML (out);
-	
+
 	out << "  </doc>\n";
 }
 
@@ -287,7 +287,7 @@ static void *textfunc (void *stream, char *text, int len)
 	if (size < 1)
 		return NULL;
 
-	// Note ustring DOESN'T WORK for addition, I think because the units of 
+	// Note ustring DOESN'T WORK for addition, I think because the units of
 	// len are unicode characters and not bytes, or vice versa
 	// This should break eventually and get really fixed.
 	//Glib::ustring addition (text, size);
@@ -295,13 +295,13 @@ static void *textfunc (void *stream, char *text, int len)
 	//std::cerr << "addition = '" << addition << "'\n";
 	//str->append(text, len - 1);
 	*str += addition;
-	
+
 	// What is this retval used for?
 	return NULL;
 }
 
 
-void Document::readPDF () 
+void Document::readPDF ()
 {
 	if (filename_.empty()) {
 		std::cerr << "Document::readPDF: has no filename\n";
@@ -338,7 +338,7 @@ void Document::readPDF ()
 	delete output;
 	delete popplerdoc;
 
-	if (!textdump.empty()) {		
+	if (!textdump.empty()) {
 		bib_.guessDoi (textdump);
 		//bib_.guessAuthors (textdump);
 		bib_.guessYear (textdump);

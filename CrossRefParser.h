@@ -27,7 +27,7 @@ class CrossRefParser : public Glib::Markup::Parser {
 		//std::cerr << "CrossRefParser: Started element '" << element_name << "'\n";
 		text_ = "";
 	}
-	
+
 	virtual void	on_end_element (
 		Glib::Markup::ParseContext& context,
 		const Glib::ustring& element)
@@ -52,15 +52,15 @@ class CrossRefParser : public Glib::Markup::Parser {
 			bib_.setYear (text_);
 		}
 	}
-	
- 	// Called on error, including one thrown by an overridden virtual method. 
+
+ 	// Called on error, including one thrown by an overridden virtual method.
 	virtual void on_error (
 		Glib::Markup::ParseContext& context,
 		const Glib::MarkupError& error)
 	{
 		std::cerr << "CrossRefParser: Parse Error!\n";
-	}	
- 
+	}
+
 	virtual void on_text (
 		Glib::Markup::ParseContext& context,
 		const Glib::ustring& text)

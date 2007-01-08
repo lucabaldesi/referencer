@@ -10,7 +10,7 @@ class Document {
 	Glib::ustring displayname_;
 	std::vector<int> tagUids_;
 	Glib::RefPtr<Gdk::Pixbuf> thumbnail_;
-	
+
 	void setupThumbnail ();
 	static Glib::RefPtr<Gdk::Pixbuf> getThemeIcon(Glib::ustring const &iconname);
 
@@ -34,16 +34,16 @@ class Document {
 	void clearTag (int uid);
 	void clearTags ();
 	bool hasTag (int uid);
-	
+
 	void writeBibtex (std::ostringstream& out);
 	void writeXML (std::ostringstream &out);
 	void readPDF ();
-	
+
 	BibData& getBibData () {return bib_;}
 	void setBibData (BibData& bib){bib_ = bib;}
 
 	static Glib::RefPtr<Gdk::Pixbuf> defaultthumb_;
-	
+
 	Glib::ustring generateKey ();
 };
 

@@ -68,7 +68,7 @@ Document* DocumentList::getDoc (Glib::ustring const &name)
 			return &(*it);
 		}
 	}
-	
+
 	// Fall through
 	std::cerr << "Warning: DocumentList::getDoc: couldn't find"
 		" doc with name '" << name << "'\n";
@@ -106,7 +106,7 @@ void DocumentList::removeDoc (Glib::ustring const &displayname)
 			return;
 		}
 	}
-	
+
 	std::cerr << "Warning: DocumentList::removeDoc: couldn't find '"
 		<< displayname << "' to erase it\n";
 }
@@ -146,7 +146,7 @@ void DocumentList::clearTag (int uid)
 	for (; it != end; it++) {
 		(*it).clearTag(uid);
 	}
-}	
+}
 
 
 void DocumentList::writeXML (std::ostringstream& out)

@@ -11,7 +11,7 @@
 class DocumentList {
 	private:
 	std::vector<Document> docs_;
-	
+
 	public:
 	std::vector<Document>& getDocs ();
 	Document* getDoc (Glib::ustring const &name);

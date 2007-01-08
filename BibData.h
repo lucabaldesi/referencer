@@ -34,7 +34,7 @@ class BibData {
 	void getCrossRef ();
 	void fetcherThread ();
 
-	void setDoi (Glib::ustring const &doi) {doi_ = doi;} 
+	void setDoi (Glib::ustring const &doi) {doi_ = doi;}
 	Glib::ustring getDoi () {return doi_;}
 
 	void setVolume (Glib::ustring const &vol) {volume_ = vol;}
@@ -53,9 +53,9 @@ class BibData {
 	Glib::ustring getYear () {return year_;}
 
 	void print ();
-	
+
 	void clear ();
-	
+
 	void parseMetadata (Glib::ustring const &meta, FieldMask mask);
 	void guessJournal (Glib::ustring const &raw);
 	void guessVolumeNumberPage (Glib::ustring const &raw);

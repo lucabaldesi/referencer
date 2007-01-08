@@ -11,14 +11,14 @@ class LibraryParser : public Glib::Markup::Parser {
 
 	DocumentList &doclist_;
 	TagList &taglist_;
-	
+
 	bool inTag_;
 	bool inUid_;
 	bool inTagName_;
 
 	Glib::ustring newTagUid_;
 	Glib::ustring newTagName_;
-	
+
 	bool inDoc_;
 	bool inDisplayName_;
 	bool inFileName_;
@@ -30,7 +30,7 @@ class LibraryParser : public Glib::Markup::Parser {
 	Glib::ustring newDocTag_;
 	std::vector<int> newDocTags_;
 	Glib::ustring bibText_;
-	
+
 	BibData newDocBib_;
 
 	public:
@@ -40,7 +40,7 @@ class LibraryParser : public Glib::Markup::Parser {
 		inTag_ = false;
 		inUid_ = false;
 		inTagName_ = false;
-		
+
 		inDoc_ = false;
 		inDisplayName_ = false;
 		inFileName_ = false;
@@ -86,13 +86,13 @@ class LibraryParser : public Glib::Markup::Parser {
 		           || element_name == "bib_number"
 		           || element_name == "bib_pages"
 		           || element_name == "bib_year"
-		           || element_name == ""        
+		           || element_name == ""
 		) {
 			inBibItem_ = true;
 			bibText_ = "";
 		}
 	}
-	
+
 	virtual void	on_end_element (
 		Glib::Markup::ParseContext& context,
 		const Glib::ustring& element_name)
@@ -146,14 +146,14 @@ class LibraryParser : public Glib::Markup::Parser {
 		}
 	}
 
- 	// Called on error, including one thrown by an overridden virtual method. 
+ 	// Called on error, including one thrown by an overridden virtual method.
 	virtual void on_error (
 		Glib::Markup::ParseContext& context,
 		const Glib::MarkupError& error)
 	{
 		std::cerr << "LibraryParser: Parse Error!\n";
-	}	
- 
+	}
+
 	virtual void on_text (
 		Glib::Markup::ParseContext& context,
 		const Glib::ustring& text)
@@ -162,7 +162,7 @@ class LibraryParser : public Glib::Markup::Parser {
 			newTagUid_ += text;
 		else if (inTagName_)
 			newTagName_ += text;
-	
+
 		else if (inFileName_) {
 			newDocFileName_ += text;
 		}
@@ -173,7 +173,7 @@ class LibraryParser : public Glib::Markup::Parser {
 		else if (inBibItem_)
 			bibText_ += text;
 	}
- 	
+
  	/*
  	//Called for strings that should be re-saved verbatim in this same
  	//position, but are not otherwise interpretable.

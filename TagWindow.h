@@ -24,33 +24,33 @@ class TagWindow {
 		void populateTagList ();
 		void constructUI ();
 		void constructMenu ();
-		
+
 
 		DocumentList *doclist_;
 		TagList *taglist_;
-		
+
 		Gtk::TreeModelColumn<int> taguidcol_;
 		Gtk::TreeModelColumn<Glib::ustring> tagnamecol_;
 
-		Gtk::TreeModelColumn<Document*> docpointercol_;		
+		Gtk::TreeModelColumn<Document*> docpointercol_;
 		Gtk::TreeModelColumn<Glib::ustring> docnamecol_;
 		Gtk::TreeModelColumn<Glib::RefPtr<Gdk::Pixbuf> > docthumbnailcol_;
-		
+
 		Glib::RefPtr<Gtk::ListStore> tagstore_;
 		Glib::RefPtr<Gtk::ListStore> iconstore_;
-		
+
 		Gtk::IconView *docsview_;
 		Gtk::VBox *taggerbox_;
 		std::map<int, Gtk::CheckButton*> taggerchecks_;
 		bool ignoretaggerchecktoggled_;
 		Gtk::Window *window_;
-		
+
 		Glib::RefPtr<Gtk::TreeSelection> tagselection_;
 		Gtk::TreeView *tagview_;
 		bool tagselectionignore_;
 		bool docselectionignore_;
 		std::vector<int> filtertags_;
-		
+
 		Glib::RefPtr<Gtk::UIManager> uimanager_;
 		Glib::RefPtr<Gtk::ActionGroup> actiongroup_;
 
@@ -78,17 +78,17 @@ class TagWindow {
 		void onDocProperties ();
 		void onExportBibtex ();
 		void onAbout ();
-		
+
 		void onDivine ();
-		
+
 		Gtk::Menu doccontextmenu_;
-		
+
 		typedef enum {
 			NO = 0,
 			YES,
 			MAYBE
 		} YesNoMaybe;
-		
+
 		YesNoMaybe selectedDocsHaveTag (int uid);
 		Document *getSelectedDoc ();
 		std::vector<Document*> getSelectedDocs ();
@@ -97,11 +97,11 @@ class TagWindow {
 		void readXML (Glib::ustring XML);
 		void loadLibrary ();
 		void saveLibrary ();
-		
+
 		// Memory of where the user added files from
 		Glib::ustring addfolder_;
 		Glib::ustring exportfolder_;
-		
+
 	public:
 		TagWindow ();
 		~TagWindow ();
