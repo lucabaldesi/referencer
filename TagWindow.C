@@ -856,11 +856,16 @@ void TagWindow::addDocFiles (std::vector<Glib::ustring> const &filenames)
 	dialog.show_all ();
 	vbox->set_border_width (12);
 
+	std::ostringstream progresstext;
+
 	int n = 0;
 	std::vector<Glib::ustring>::const_iterator it = filenames.begin();
 	std::vector<Glib::ustring>::const_iterator const end = filenames.end();
 	for (; it != end; ++it) {
 		progress.set_fraction ((float)n / (float)filenames.size());
+		progresstext.str ("");
+		progresstext << n << " of " << filenames.size() << " documents";
+		progress.set_text (progresstext.str());
 		while (Gnome::Main::events_pending())
 			Gnome::Main::iteration ();
 		Document *newdoc = doclist_->newDocWithFile(*it);
