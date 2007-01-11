@@ -1,27 +1,27 @@
 
-taglist and tagger need to be in scrolledwindows
-tagging and tag create/delete seems a bit buggy?
-LookupDoi and Open should really handle multiple documents.
+Essential:
+	Conversion of accented characters into LaTeX when exporting (and importing?) bibtex
+	Should write to file and then copy into place (prevent crash blanking file)
+	'Work offline'
 
-A View menu which allows hiding of tagging sidebar
+Niceties:
+	LookupDoi and Open should really handle multiple documents.
+	A View menu which allows hiding of tagging sidebar
 
-Should be able to select multiple tags for ANDing instead of ORing document selection
+Functionality wishlist:
+	Should be able to select multiple tags for ANDing instead of ORing document selection
+	read PS files to search for DOIs as well as reading PDFs
+	Drag and drop to add by filename
+	Should complain when adding files we already have
+	Thumbnail generation is done in main thread and freezes UI
+	"Manage BibTeX File" as well as one-off export
+	BibTeX import (and merging with metadata-less PDFs?)
+	Configuration of lookup URLs
+	Configuration of proxy server for non-GNOMEers
 
-Conversion of accented characters into LaTeX when exporting bibtex
-
-Crash when adding unnamed?
-
-read PS files to search for DOIs as well as reading PDFs
-
-Drag and drop to add by filename
-
-Progressbar when adding (many or one, both can be slow)
-
-Should write to file and then copy into place (prevent crash blanking file)
-
-Should complain when adding files we already have
-
-Thumbnail generation is done in main thread and freezes UI
+Bugs:
+	Crash when adding unnamed?
+	Tagger's scrolledwindow seems to have a shadow/border even though we ask it not to
 
 To support an extra entry in the bibdata, one needs to update:
 	class BibData
