@@ -95,7 +95,7 @@ void TagWindow::constructUI ()
 		Gtk::manage (new Gtk::Expander ("Tag _filter", true));
 	filterexpander->set_expanded (true);
 	filterexpander->add (*filtervbox);
-	vbox->pack_start (*filterexpander, false, true, 0);
+	vbox->pack_start (*filterexpander, true, true, 0);
 
 	// Create the store for the tag list
 	Gtk::TreeModel::ColumnRecord tagcols;
@@ -118,9 +118,14 @@ void TagWindow::constructUI ()
 		sigc::mem_fun (*this, &TagWindow::tagClicked));
 	tags->set_headers_visible (false);
 
-	tagview_ = tags;
+	Gtk::ScrolledWindow *tagsscroll = Gtk::manage(new Gtk::ScrolledWindow());
+	tagsscroll->set_policy (Gtk::POLICY_NEVER, Gtk::POLICY_AUTOMATIC);
+	tagsscroll->set_shadow_type (Gtk::SHADOW_NONE);
+	tagsscroll->add (*tags);
 
-	filtervbox->pack_start(*tags, true, true, 0);
+	filtervbox->pack_start(*tagsscroll, true, true, 0);
+
+	tagview_ = tags;
 
 	tagselection_ = tags->get_selection();
 	tagselection_->signal_changed().connect_notify (
@@ -132,17 +137,23 @@ void TagWindow::constructUI ()
 	tagbar.set_show_arrow (false);
 	filtervbox->pack_start (tagbar, false, false, 0);
 
+	// The tagger box
 	Gtk::VBox *taggervbox = Gtk::manage (new Gtk::VBox);
 	taggervbox->set_border_width(6);
+
+	Gtk::ScrolledWindow *taggerscroll = Gtk::manage(new Gtk::ScrolledWindow());
+
+	taggerscroll->set_shadow_type (Gtk::SHADOW_NONE);
+	taggerscroll->add (*taggervbox);
+	taggerscroll->set_policy (Gtk::POLICY_NEVER, Gtk::POLICY_AUTOMATIC);
+
 	Gtk::Expander *taggerexpander =
 		Gtk::manage (new Gtk::Expander ("_Tagger", true));
 	taggerexpander->set_expanded (true);
-	taggerexpander->add (*taggervbox);
-	vbox->pack_start (*taggerexpander, false, true, 0);
+	taggerexpander->add (*taggerscroll);
+	vbox->pack_start (*taggerexpander, true, true, 0);
 
 	taggerbox_ = taggervbox;
-
-
 
 
 	// The iconview side
@@ -179,15 +190,10 @@ void TagWindow::constructUI ()
 
 	docsview_ = icons;
 
-	Gtk::ScrolledWindow *scroll = Gtk::manage(new Gtk::ScrolledWindow());
-	scroll->add(*icons);
-	scroll->set_policy (Gtk::POLICY_NEVER, Gtk::POLICY_AUTOMATIC);
-	vbox->pack_start(*scroll, true, true, 0);
-
-	/*Gtk::Expander *bibexpander =
-		Gtk::manage (new Gtk::Expander("_Bibliographic information", true));
-	vbox->pack_start (*bibexpander, false, false, 0);
-	Gtk::Table *bibtable = Gtk::manage (new Gtk::Table (3, 4, false));*/
+	Gtk::ScrolledWindow *iconsscroll = Gtk::manage(new Gtk::ScrolledWindow());
+	iconsscroll->add(*icons);
+	iconsscroll->set_policy (Gtk::POLICY_NEVER, Gtk::POLICY_AUTOMATIC);
+	vbox->pack_start(*iconsscroll, true, true, 0);
 
 	/*Gtk::Toolbar& docbar = (Gtk::Toolbar&) *uimanager_->get_widget("/DocBar");
 	vbox->pack_start (docbar, false, false, 0);
