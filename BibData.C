@@ -242,6 +242,11 @@ static bool transfercomplete;
 static bool transferfail;
 static Glib::ustring transferresults;
 
+void BibData::onCrossRefCancel ()
+{
+	transferfail = true;
+}
+
 void BibData::getCrossRef ()
 {
 	std::cerr << ">> BibData::getCrossRef\n";
@@ -267,7 +272,9 @@ void BibData::getCrossRef ()
 
 	vbox->pack_start (progress, false, false, 0);
 
-	dialog.add_button (Gtk::Stock::CANCEL, 0);
+	Gtk::Button *cancelbutton = dialog.add_button (Gtk::Stock::CANCEL, 0);
+	cancelbutton->signal_clicked().connect(
+		sigc::mem_fun (*this, &BibData::onCrossRefCancel));
 
 	dialog.show_all ();
 	vbox->set_border_width (12);
@@ -296,8 +303,34 @@ void BibData::getCrossRef ()
 
 	fetcher->join ();
 
-	if (!transferfail)
+	if (!transferfail) {
 		parseCrossRefXML (transferresults);
+	} else {
+		messagetext = "<b><big>Work offline?</big></b>\n\n"
+			"There was a problem while retrieving metadata, would you like \n"
+			"to work offline so that no further network operations are attempted?";
+			// Should have a note here about how to go back online
+		Gtk::MessageDialog faildialog (
+			messagetext,
+			true,
+			Gtk::MESSAGE_WARNING,
+			Gtk::BUTTONS_NONE);
+
+		Gtk::Button *online = faildialog.add_button ("_Stay Online", 0);
+		Gtk::Button *offline = faildialog.add_button ("_Go Offline", 1);
+		faildialog.set_default_response (1);
+
+		Gtk::Image *onlineicon = Gtk::manage (
+			new Gtk::Image (Gtk::Stock::CONNECT, Gtk::ICON_SIZE_BUTTON));
+		online->set_image (*onlineicon);
+		Gtk::Image *offlineicon = Gtk::manage (
+			new Gtk::Image (Gtk::Stock::DISCONNECT, Gtk::ICON_SIZE_BUTTON));
+		offline->set_image (*offlineicon);
+		
+		if (faildialog.run ()) {
+			// Right, let's go offline
+		};
+	}
 }
 
 
@@ -361,7 +394,7 @@ static bool waitForFlag (bool &flag)
 		std::cerr << "Waiting...\n";
 		Glib::usleep (100000);
 		if (transferfail) {
-			// The parent decided we've timed out and should give up
+			// The parent decided we've timed out or cancelled and should give up
 			//     libgnomevfsmm-WARNING **: gnome-vfsmm Async::Handle::cancel():
 			//     This method currently leaks memory
 			bibfile.cancel ();
