@@ -3,6 +3,7 @@ Essential:
 	Conversion of accented characters into LaTeX when exporting (and importing?) bibtex
 	Should write to file and then copy into place (prevent crash blanking file)
 	'Work offline'
+	Finding glade files in installed paths
 
 Niceties:
 	LookupDoi and Open should really handle multiple documents.
@@ -18,6 +19,8 @@ Functionality wishlist:
 	BibTeX import (and merging with metadata-less PDFs?)
 	Configuration of lookup URLs
 	Configuration of proxy server for non-GNOMEers
+	Configuration of max_timeout in BibData::getCrossRef
+	Tell user how to go back online when asking to go offline in BibData
 
 Bugs:
 	Crash when adding unnamed?
