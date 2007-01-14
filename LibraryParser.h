@@ -173,16 +173,6 @@ class LibraryParser : public Glib::Markup::Parser {
 		else if (inBibItem_)
 			bibText_ += text;
 	}
-
- 	/*
- 	//Called for strings that should be re-saved verbatim in this same
- 	//position, but are not otherwise interpretable.
-	virtual void on_passthrough (
-		ParseContext& context,
-		const Glib::ustring& passthrough_text)
-	{
-	}
-	*/
 };
 
 #endif
