@@ -229,9 +229,9 @@ void BibData::guessDoi (Glib::ustring const &raw_)
 	boost::regex expression(
 		"[Dd][Oo][Ii]:? *"
 		"("
-		"[^\\.]+"
+		"[^\\.\\s]+"
 		"\\."
-		"[^\\/]+"
+		"[^\\/\\s]+"
 		"\\/"
 		"[^\\s]+"
 		")"
