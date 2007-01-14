@@ -323,8 +323,9 @@ void BibData::getCrossRef ()
 	} else {
 		messagetext = "<b><big>Work offline?</big></b>\n\n"
 			"There was a problem while retrieving metadata, would you like \n"
-			"to work offline so that no further network operations are attempted?";
-			// Should have a note here about how to go back online
+			"to work offline?  If you choose to work offline, no further network "
+			"operations will be attempted until you choose to work online again "
+			"in the Preferences dialog.";
 		Gtk::MessageDialog faildialog (
 			messagetext,
 			true,
@@ -425,10 +426,12 @@ static bool waitForFlag (bool &flag)
 
 void BibData::fetcherThread ()
 {
+	Utility::StringPair ends = _global_prefs->getMetadataLookup ();
+
 	Glib::ustring bibfilename =
-		"http://www.crossref.org/openurl/?id=doi:"
+		ends.first
 		+ doi_
-		+ "&noredirect=true";
+		+ ends.second;
 
 	Glib::RefPtr<Gnome::Vfs::Uri> biburi = Gnome::Vfs::Uri::create (bibfilename);
 

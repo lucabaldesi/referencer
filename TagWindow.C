@@ -1242,10 +1242,10 @@ void TagWindow::onDoiLookupDoc ()
 {
 	Document *doc = getSelectedDoc ();
 	if (doc) {
-		Glib::ustring prefix = "http://dx.doi.org/";
+		Utility::StringPair ends = _global_prefs->getDoiLaunch ();
 		Glib::ustring doi = doc->getBibData().getDoi();
 
-		Gnome::Vfs::url_show (prefix + doi);
+		Gnome::Vfs::url_show (ends.first + doi + ends.second);
 	} else {
 		std::cerr << "Warning: TagWindow::onDoiLookupDoc: can't get doc\n";
 	}
