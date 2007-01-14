@@ -13,6 +13,25 @@ Preferences *_global_prefs;
 Preferences::Preferences ()
 {
 	confclient_ = Gnome::Conf::Client::get_default_client ();
+
+	workoffline_ = confclient_->get_entry (CONF_PATH "/workoffline");
+	doilaunch_ = confclient_->get_entry (CONF_PATH "/doilaunch");
+	metadatalookup_ = confclient_->get_entry (CONF_PATH "/metadatalookup");
+
+	doilaunchdefault_ = "http://dx.doi.org/<!DOI!>";
+	metadatalookupdefault_ =
+		"http://www.crossref.org/openurl/?id=doi:<!DOI!>&noredirect=true";
+
+	if (!confclient_->dir_exists (CONF_PATH)) {
+		std::cerr << "Preferences::Preferences: CONF_PATH "
+			"doesn't exist, setting it up\n";
+
+		setWorkOffline (false);
+		setDoiLaunch (doilaunchdefault_);
+		setMetadataLookup (metadatalookupdefault_);
+	
+	};
+
 	confclient_->add_dir (
 		CONF_PATH,
 		Gnome::Conf::CLIENT_PRELOAD_ONELEVEL);
@@ -21,9 +40,7 @@ Preferences::Preferences ()
 		CONF_PATH,
 		sigc::mem_fun (*this, &Preferences::onConfChange));
 
-	workoffline_ = confclient_->get_entry (CONF_PATH "/workoffline");
-	doilaunch_ = confclient_->get_entry (CONF_PATH "/doilaunch");
-	metadatalookup_ = confclient_->get_entry (CONF_PATH "/metadatalookup");
+
 
 	xml_ = Gnome::Glade::Xml::create ("preferences.glade");
 
@@ -43,9 +60,7 @@ Preferences::Preferences ()
 	button->signal_clicked().connect (
 		sigc::mem_fun (*this, &Preferences::onResetToDefaults));
 
-	doilaunchdefault_ = "http://dx.doi.org/<!DOI!>";
-	metadatalookupdefault_ =
-		"http://www.crossref.org/openurl/?id=doi:<!DOI!>&noredirect=true";
+
 
 	ignorechanges_ = false;
 }
@@ -155,10 +170,11 @@ StringPair Preferences::getDoiLaunch ()
 		"<!DOI!>");
 }
 
-// Unused?
-/*void Preferences::setDoiLaunch (Glib::ustring const &doilaunch)
+
+void Preferences::setDoiLaunch (Glib::ustring const &doilaunch)
 {
-}*/
+	confclient_->set (doilaunch_.get_key(), doilaunch);
+}
 
 
 StringPair Preferences::getMetadataLookup ()
@@ -168,8 +184,9 @@ StringPair Preferences::getMetadataLookup ()
 		"<!DOI!>");
 }
 
-// Unused?
-/*void Preferences::setMetadataLookup (Glib::ustring const &metadatalookup)
+
+void Preferences::setMetadataLookup (Glib::ustring const &metadatalookup)
 {
-}*/
+	confclient_->set (metadatalookup_.get_key(), metadatalookup);
+}
 
