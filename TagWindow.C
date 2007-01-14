@@ -36,6 +36,12 @@ int main (int argc, char **argv)
 
 TagWindow::TagWindow ()
 {
+	tagselectionignore_ = false;
+	ignoretaggerchecktoggled_ = false;
+	docselectionignore_ = false;
+
+	docpropertiesdialog_ = NULL;
+
 	taglist_ = new TagList();
 	doclist_ = new DocumentList();
 	loadLibrary ();
@@ -46,14 +52,6 @@ TagWindow::TagWindow ()
 	populateDocIcons ();
 	populateTagList ();
 	window_->show_all ();
-
-	tagselectionignore_ = false;
-	ignoretaggerchecktoggled_ = false;
-	docselectionignore_ = false;
-
-	docpropertiesdialog_ = NULL;
-
-
 }
 
 
@@ -190,7 +188,6 @@ void TagWindow::constructUI ()
 		sigc::mem_fun (*this, &TagWindow::docSelectionChanged));
 
 	icons->set_selection_mode (Gtk::SELECTION_MULTIPLE);
-
 	/*icons->set_column_spacing (50);
 	icons->set_icon_width (10);*/
 	icons->set_columns (-1);
@@ -420,11 +417,12 @@ void TagWindow::populateTagList ()
 
 	// Restore initial selection or selected first row
 	tagselectionignore_ = false;
-	if (initialpath.empty())
-		tagselection_->select (tagstore_->children().begin());
-	else
+	if (!initialpath.empty())
 		tagselection_->select (initialpath);
 
+	// If that didn't get anything, select All
+	if (tagselection_->get_selected_rows ().size () == 0)
+		tagselection_->select (tagstore_->children().begin());
 
 
 	// To update taggerbox
@@ -600,19 +598,13 @@ bool TagWindow::docClicked (GdkEventButton* event)
 		Gtk::TreeModel::Path clickedpath =
 			docsview_->get_path_at_pos ((int)event->x, (int)event->y);
 
-		if (clickedpath.empty()) {
-			if (docsview_->get_selected_items().empty()) {
-				std::cerr << "Nothing clicked, nothing selected\n";
-				return true;
-			}
-		} else {
+		if (!clickedpath.empty()) {
 			if (!docsview_->path_is_selected (clickedpath)) {
 				docsview_->unselect_all ();
 				docsview_->select_path (clickedpath);
 			}
 		}
-		// Should also check if we're currently multiple-item selected
-		// in which case don't reset selection
+
 		Gtk::Menu *popupmenu =
 			(Gtk::Menu*)uimanager_->get_widget("/DocPopup");
 		popupmenu->popup (event->button, event->time);
