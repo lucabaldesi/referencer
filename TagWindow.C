@@ -500,7 +500,13 @@ void TagWindow::docActivated (const Gtk::TreeModel::Path& path)
 {
 	Gtk::ListStore::iterator it = iconstore_->get_iter (path);
 	Document *doc = (*it)[docpointercol_];
-	Gnome::Vfs::url_show (doc->getFileName());
+	// The methods we're calling should fail out safely and quietly
+	// if the number of docs selected != 1
+	if (!doc->getFileName ().empty ()) {
+		onOpenDoc ();
+	} else if (!doc->getBibData ().getDoi ().empty ()) {
+		onDoiLookupDoc ();
+	}
 }
 
 
