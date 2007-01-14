@@ -4,6 +4,8 @@
 #include "Document.h"
 #include "DocumentProperties.h"
 
+#include "Preferences.h"
+
 DocumentProperties::DocumentProperties ()
 {
 	xml_ = Gnome::Glade::Xml::create ("documentproperties.glade");
@@ -20,8 +22,8 @@ DocumentProperties::DocumentProperties ()
 	pagesentry_ = (Gtk::Entry *) xml_->get_widget ("Pages");
 	yearentry_ = (Gtk::Entry *) xml_->get_widget ("Year");
 
-	Gtk::Button *button = (Gtk::Button *) xml_->get_widget ("CrossRefLookup");
-	button->signal_clicked().connect(
+	crossrefbutton_ = (Gtk::Button *) xml_->get_widget ("CrossRefLookup");
+	crossrefbutton_->signal_clicked().connect(
 		sigc::mem_fun (*this, &DocumentProperties::onCrossRefLookup));
 }
 
@@ -68,6 +70,8 @@ void DocumentProperties::update ()
 	issueentry_->set_text (bib.getIssue());
 	pagesentry_->set_text (bib.getPages());
 	yearentry_->set_text (bib.getYear());
+
+	crossrefbutton_->set_sensitive (!_global_prefs->getWorkOffline ());
 }
 
 
