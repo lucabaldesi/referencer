@@ -10,7 +10,10 @@
 #include <libgnomeuimm.h>
 #include <libgnomevfsmm.h>
 
+#include "Preferences.h"
+
 #include "CrossRefParser.h"
+
 
 /*
  * Dump all fields to standard out
@@ -262,7 +265,7 @@ void BibData::onCrossRefCancel ()
 void BibData::getCrossRef ()
 {
 	std::cerr << ">> BibData::getCrossRef\n";
-	if (doi_.empty())
+	if (doi_.empty() || _global_prefs->getWorkOffline())
 		return;
 
 	Gtk::Dialog dialog ("Retrieving Metadata", true, false);
@@ -340,7 +343,7 @@ void BibData::getCrossRef ()
 		offline->set_image (*offlineicon);
 		
 		if (faildialog.run ()) {
-			// Right, let's go offline
+			_global_prefs->setWorkOffline (true);
 		};
 	}
 }
