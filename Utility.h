@@ -8,6 +8,7 @@
 
 #include <gtkmm.h>
 #include <libglademm.h>
+#include <libgnomevfsmm.h>
 
 namespace Utility {
 	typedef std::pair <Glib::ustring, Glib::ustring> StringPair;
