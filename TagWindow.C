@@ -1182,9 +1182,7 @@ void TagWindow::loadLibrary ()
 {
 	Gnome::Vfs::Handle libfile;
 
-	/*Glib::ustring libfilename =
-		Gnome::Vfs::expand_initial_tilde("~/.pdfdivine.lib");*/
-	Glib::ustring libfilename = "/home/jcspray/.pdfdivine.lib";
+	Glib::ustring libfilename = Glib::get_home_dir () + "/.referencer.lib";
 
 	Glib::RefPtr<Gnome::Vfs::Uri> liburi = Gnome::Vfs::Uri::create (libfilename);
 
