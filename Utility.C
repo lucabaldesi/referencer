@@ -1,4 +1,8 @@
 
+#include <iostream>
+
+#include <libgnomevfsmm.h>
+
 #include "Utility.h"
 
 namespace Utility {
@@ -51,6 +55,66 @@ Glib::ustring ensureExtension (
 	else {
 		return filename + "." + extension;
 	}
+}
+
+
+Glib::RefPtr<Gnome::Glade::Xml> openGlade (
+	Glib::ustring const &filename)
+{
+	Glib::RefPtr<Gnome::Glade::Xml> xml;
+
+	// Make the path absolute only so we can use uri_exists -- glade itself
+	// doesn't care if it's relative.
+	Glib::ustring localfile;
+	if (Glib::path_is_absolute (filename)) {
+		localfile = filename;
+	} else {
+		localfile = Glib::build_filename (Glib::get_current_dir (), filename);
+	}
+
+	Glib::RefPtr<Gnome::Vfs::Uri> uri = Gnome::Vfs::Uri::create (localfile);
+
+	if (uri->uri_exists ()) {
+		return Gnome::Glade::Xml::create (localfile);
+	} else {
+		Glib::ustring const installedfile = Glib::build_filename (DATADIR, filename);
+		uri = Gnome::Vfs::Uri::create (installedfile);
+		if (uri->uri_exists ()) {
+			return Gnome::Glade::Xml::create (installedfile);
+		}
+	}
+
+	// Fall through
+	std::cerr << "Utility::openGlade: couldn't "
+		"find glade file '" << filename << "'\n";
+	return Glib::RefPtr<Gnome::Glade::Xml> (NULL);
+}
+
+
+void exceptionDialog (
+	Glib::Exception const *ex, Glib::ustring const &context)
+{
+	/*Glib::ustring message =
+		"<big><b>Exception!</b></big>\n\n"
+		"A problem was encountered while "
+		+ context
+		+ ".  The problem was '"
+		+ ex->what ()
+		+ "'.";*/
+
+	Glib::ustring message =
+		"<big><b>" 
+		+ ex->what ()
+		+ "</b></big>\n\n"
+		"This problem was encountered while "
+		+ context
+		+ ".";
+
+	Gtk::MessageDialog dialog (
+		message, true,
+		Gtk::MESSAGE_ERROR, Gtk::BUTTONS_CLOSE, true);
+
+	dialog.run ();
 }
 
 }

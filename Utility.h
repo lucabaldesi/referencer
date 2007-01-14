@@ -4,6 +4,7 @@
 #define UTILITY_H
 
 #include <gtkmm.h>
+#include <libglademm.h>
 #include <utility>
 
 namespace Utility {
@@ -23,6 +24,12 @@ namespace Utility {
 	Glib::ustring ensureExtension (
 		Glib::ustring const &filename,
 		Glib::ustring const &extension);
+
+	Glib::RefPtr<Gnome::Glade::Xml> openGlade (
+		Glib::ustring const &filename);
+
+	void exceptionDialog (
+		Glib::Exception const *ex, Glib::ustring const &context);
 }
 
 #endif
