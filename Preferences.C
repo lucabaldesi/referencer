@@ -1,11 +1,30 @@
 
 #include <iostream>
 
+#include "Utility.h"
+
 #include "Preferences.h"
 
 
+Preferences *_global_prefs;
+
+#define CONF_PATH "/apps/referencer"
+
 Preferences::Preferences ()
 {
+	confclient_ = Gnome::Conf::Client::get_default_client ();
+	confclient_->add_dir (
+		CONF_PATH,
+		Gnome::Conf::CLIENT_PRELOAD_ONELEVEL);
+
+	confclient_->notify_add (
+		CONF_PATH,
+		sigc::mem_fun (*this, &Preferences::onConfChange));
+
+	workoffline_ = confclient_->get_entry (CONF_PATH "/workoffline");
+	doilaunch_ = confclient_->get_entry (CONF_PATH "/doilaunch");
+	metadatalookup_ = confclient_->get_entry (CONF_PATH "/metadatalookup");
+
 	xml_ = Gnome::Glade::Xml::create ("preferences.glade");
 
 	dialog_ = (Gtk::Dialog *) xml_->get_widget ("Preferences");
@@ -28,36 +47,129 @@ Preferences::Preferences ()
 	metadatalookupdefault_ =
 		"http://www.crossref.org/openurl/?id=doi:<!DOI!>&noredirect=true";
 
+	ignorechanges_ = false;
 }
 
 
+Preferences::~Preferences ()
+{
+
+}
+
+void Preferences::onConfChange (int number, Gnome::Conf::Entry entry)
+{
+	std::cerr << "onConfChange: '" << entry.get_key () << "'\n";
+
+	ignorechanges_ = true;
+
+	Glib::ustring key = entry.get_key ();
+	if (key == CONF_PATH "/workoffline") {
+		workofflinecheck_->set_active (
+			entry.get_value ().get_bool ());
+		workofflinesignal_.emit ();
+	} else if (key == CONF_PATH "/doilaunch") {
+		doilaunchentry_->set_text (
+			entry.get_value ().get_string ());
+	} else if (key == CONF_PATH "/metadatalookup") {
+		metadatalookupentry_->set_text (
+			entry.get_value ().get_string ());
+	}
+
+	ignorechanges_ = false;
+}
+
 void Preferences::showDialog ()
 {
-	workofflinecheck_->set_active (workoffline_);
-	doilaunchentry_->set_text (doilaunch_);
-	metadatalookupentry_->set_text (metadatalookup_);
+	ignorechanges_ = true;
+
+	workofflinecheck_->set_active (
+		confclient_->get_bool (workoffline_.get_key()));
+	doilaunchentry_->set_text (
+		confclient_->get_string (doilaunch_.get_key()));
+	metadatalookupentry_->set_text (
+		confclient_->get_string (metadatalookup_.get_key()));
+
+	ignorechanges_ = false;
 
 	dialog_->run ();
+	dialog_->hide ();
 }
 
 
 void Preferences::onWorkOfflineToggled ()
 {
-	workoffline_ = workofflinecheck_->get_active ();
-	std::cerr << "Preferences: workoffline_ = " << workoffline_ << "\n";
+	if (ignorechanges_) return;
+
+	confclient_->set (
+		workoffline_.get_key(), workofflinecheck_->get_active());
 }
 
 
+using Utility::DOIURLValid;
+
 void Preferences::onURLChanged ()
 {
-	// Should check these for validity
-	doilaunch_ = doilaunchentry_->get_text ();
-	metadatalookup_ = metadatalookupentry_->get_text ();
+	if (ignorechanges_) return;
+
+	// Should we be telling gconf to ignore us for a minute, since
+	// these operations cause a useless callback to onConfChange?
+
+	// Silently don't remember bad settings for now -- should prompt the 
+	// user when the dialog closes if they still haven't entered something valid
+	if (DOIURLValid (doilaunchentry_->get_text ())) {
+		confclient_->set (
+			doilaunch_.get_key(), doilaunchentry_->get_text ());
+	}
+
+	if (DOIURLValid (metadatalookupentry_->get_text ())) {
+		confclient_->set (
+			metadatalookup_.get_key(), metadatalookupentry_->get_text ());
+	}
 }
 
 
 void Preferences::onResetToDefaults ()
 {
-	doilaunch_ = doilaunchdefault_;
-	metadatalookup_ = metadatalookupdefault_;
+	doilaunchentry_->set_text (doilaunchdefault_);
+	metadatalookupentry_->set_text (metadatalookupdefault_);
 }
+
+
+bool Preferences::getWorkOffline ()
+{
+	return confclient_->get_bool (workoffline_.get_key());
+}
+
+void Preferences::setWorkOffline (bool const &offline)
+{
+	confclient_->set (workoffline_.get_key(), offline);
+}
+
+using Utility::StringPair;
+using Utility::twoWaySplit;
+
+StringPair Preferences::getDoiLaunch ()
+{
+	return twoWaySplit (
+		confclient_->get_string (doilaunch_.get_key()),
+		"<!DOI!>");
+}
+
+// Unused?
+/*void Preferences::setDoiLaunch (Glib::ustring const &doilaunch)
+{
+}*/
+
+
+StringPair Preferences::getMetadataLookup ()
+{
+	return twoWaySplit (
+		confclient_->get_string (metadatalookup_.get_key()),
+		"<!DOI!>");
+}
+
+// Unused?
+/*void Preferences::setMetadataLookup (Glib::ustring const &metadatalookup)
+{
+}*/
+
