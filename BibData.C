@@ -440,6 +440,7 @@ void BibData::fetcherThread ()
 	} catch (const Gnome::Vfs::exception ex) {
 		std::cerr << "Got an exception from open\n";
 		transferfail = true;
+		Utility::exceptionDialog (&ex, "opening file on server");
 		return;
 	}
 
@@ -461,6 +462,7 @@ void BibData::fetcherThread ()
 		std::cerr << "Got an exception from read\n";
 		// should close handle?
 		transferfail = true;
+		Utility::exceptionDialog (&ex, "reading from file on server");
 		return;
 	}
 
@@ -476,6 +478,7 @@ void BibData::fetcherThread ()
 	} catch (const Gnome::Vfs::exception ex) {
 		std::cerr << "Got an exception from close\n";
 		transferfail = true;
+		Utility::exceptionDialog (&ex, "closing file on server");
 		return;
 	}
 

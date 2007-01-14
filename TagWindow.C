@@ -824,13 +824,20 @@ void TagWindow::onExportBibtex ()
 		} catch (const Gnome::Vfs::exception ex) {
 			std::cerr << "TagWindow::onExportBibtex: "
 				"exception in create '" << ex.what() << "'\n";
+			Utility::exceptionDialog (&ex, "opening BibTex file");
 			return;
 		}
 
 		std::ostringstream bibtext;
 		doclist_->writeBibtex (bibtext);
 
-		bibfile.write (bibtext.str().c_str(), strlen(bibtext.str().c_str()));
+		try {
+			bibfile.write (bibtext.str().c_str(), strlen(bibtext.str().c_str()));
+		} catch (const Gnome::Vfs::exception ex) {
+			Utility::exceptionDialog (&ex, "writing to BibTex file");
+			bibfile.close ();
+			return;
+		}
 
 		bibfile.close ();
 

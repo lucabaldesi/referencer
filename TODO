@@ -1,8 +1,6 @@
 
 Essential:
 	Conversion of accented characters into LaTeX when exporting (and importing?) bibtex
-	Should write to file and then copy into place (prevent crash blanking file)
-	Finding glade files in installed paths
 
 
 Niceties:
