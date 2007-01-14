@@ -343,7 +343,7 @@ void Document::readPDF ()
 	if (output->isOk()) {
 		std::cerr << "Document::readPDF: Loaded, extracting text...\n";
 		int const firstpage = 1;
-		int const lastpage = 1;
+		int const lastpage = popplerdoc->getNumPages ();
 		popplerdoc->displayPages(output, firstpage, lastpage, 72, 72, 0,
 			gTrue, gFalse, gFalse);
 	}
