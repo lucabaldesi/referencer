@@ -78,6 +78,7 @@ class TagWindow {
 		void onDocProperties ();
 		void onExportBibtex ();
 		void onAbout ();
+		void onPreferences ();
 
 		void onDivine ();
 

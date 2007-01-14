@@ -12,6 +12,7 @@
 #include "DocumentList.h"
 #include "Document.h"
 #include "DocumentProperties.h"
+#include "Preferences.h"
 
 #include "LibraryParser.h"
 
@@ -39,6 +40,8 @@ TagWindow::TagWindow ()
 	doclist_ = new DocumentList();
 	loadLibrary ();
 
+	_global_prefs = new Preferences();
+
 	constructUI ();
 	populateDocIcons ();
 	populateTagList ();
@@ -49,6 +52,8 @@ TagWindow::TagWindow ()
 	docselectionignore_ = false;
 
 	docpropertiesdialog_ = NULL;
+
+
 }
 
 
@@ -60,6 +65,8 @@ TagWindow::~TagWindow ()
 	delete doclist_;
 	if (docpropertiesdialog_)
 		delete docpropertiesdialog_;
+
+	delete _global_prefs;
 }
 
 
@@ -210,6 +217,9 @@ void TagWindow::constructMenu ()
 	actiongroup_->add( Gtk::Action::create("ExportBibtex",
 		Gtk::Stock::CONVERT, "E_xport to BibTeX"),
   	sigc::mem_fun(*this, &TagWindow::onExportBibtex));
+	actiongroup_->add( Gtk::Action::create("Preferences",
+		Gtk::Stock::PREFERENCES),
+  	sigc::mem_fun(*this, &TagWindow::onPreferences));
 	actiongroup_->add( Gtk::Action::create("Quit", Gtk::Stock::QUIT),
   	sigc::mem_fun(*this, &TagWindow::onQuit));
 
@@ -265,6 +275,9 @@ void TagWindow::constructMenu ()
 		"  <menubar name='MenuBar'>"
 		"    <menu action='LibraryMenu'>"
 		"      <menuitem action='ExportBibtex'/>"
+		"      <separator/>"
+		"      <menuitem action='Preferences'/>"
+		"      <separator/>"
 		"      <menuitem action='Quit'/>"
 		"    </menu>"
 		"    <menu action='TagMenu'>"
@@ -1271,4 +1284,10 @@ void TagWindow::onDocProperties ()
 		if (docpropertiesdialog_->show (doc))
 			populateDocIcons ();
 	}
+}
+
+
+void TagWindow::onPreferences ()
+{
+	_global_prefs->showDialog ();
 }
