@@ -20,7 +20,7 @@ StringPair twoWaySplit (
 {
 	StringPair retval;
 	int pos = str.find (divider);
-	if (pos == Glib::ustring::npos) {
+	if (pos == (int)Glib::ustring::npos) {
 		retval.first = str;
 	} else {
 		retval.first = str.substr (0, pos);	
@@ -115,6 +115,81 @@ void exceptionDialog (
 		Gtk::MESSAGE_ERROR, Gtk::BUTTONS_CLOSE, true);
 
 	dialog.run ();
+}
+
+
+static Glib::ustring _basepath;
+std::vector<Glib::ustring> _filestoadd;
+
+bool onAddDocFolderRecurse (const Glib::ustring& rel_path, const Glib::RefPtr<const Gnome::Vfs::FileInfo>& info, bool recursing_will_loop, bool& recurse)
+{
+	// We escape to be consistent with the escaped URI that FileChooser
+	// gave us for basepath
+	Glib::ustring fullname =
+		Glib::build_filename (
+			_basepath, Gnome::Vfs::escape_string(info->get_name()));
+
+	if (info->get_type () == Gnome::Vfs::FILE_TYPE_DIRECTORY) {
+		Gnome::Vfs::DirectoryHandle dir;
+		Glib::ustring tmp = _basepath;
+		_basepath = fullname;
+		dir.visit (
+			fullname,
+			Gnome::Vfs::FILE_INFO_DEFAULT,
+			Gnome::Vfs::DIRECTORY_VISIT_DEFAULT,
+			&onAddDocFolderRecurse);
+		_basepath = tmp;
+	} else {
+		_filestoadd.push_back (fullname);
+	}
+
+	// What does this retval do?
+	return true;
+}
+
+std::vector<Glib::ustring> recurseFolder (
+	Glib::ustring const &rootfoldername)
+{
+	Gnome::Vfs::DirectoryHandle dir;
+	_basepath = rootfoldername;
+	_filestoadd.clear();
+	dir.visit (
+		rootfoldername,
+		Gnome::Vfs::FILE_INFO_DEFAULT,
+		Gnome::Vfs::DIRECTORY_VISIT_DEFAULT,
+		&onAddDocFolderRecurse);
+
+	// A hurtful copy to avoid _filestoadd sticking around afterwards.
+	std::vector<Glib::ustring> filescopy;
+	filescopy = _filestoadd;
+	_filestoadd.clear ();
+
+	return filescopy;
+}
+
+
+std::vector<Glib::RefPtr<Gnome::Vfs::Uri> > parseUriList (
+	char *listtxt)
+{
+  GList *list = NULL;
+  GList *p = NULL;
+
+  list = gnome_vfs_uri_list_parse (listtxt);
+  p = list;
+
+	std::vector<Glib::RefPtr<Gnome::Vfs::Uri> > uris;
+
+  while (p != NULL) {
+		Glib::RefPtr<Gnome::Vfs::Uri> uri =
+			Glib::wrap ((GnomeVFSURI*)(p->data), true);
+		uris.push_back (uri);
+
+    p = g_list_next (p);
+  }
+
+  gnome_vfs_uri_list_free (list);
+
+	return uris;
 }
 
 }

@@ -192,6 +192,20 @@ void TagWindow::constructUI ()
 	icons->set_icon_width (10);*/
 	icons->set_columns (-1);
 
+	std::vector<Gtk::TargetEntry> dragtypes;
+	Gtk::TargetEntry urilist;
+	urilist.set_info (0);
+	urilist.set_target ("text/uri-list");
+	dragtypes.push_back (urilist);
+
+	icons->drag_dest_set (
+		dragtypes,
+		Gtk::DEST_DEFAULT_ALL,
+		Gdk::ACTION_COPY | Gdk::ACTION_MOVE | Gdk::ACTION_LINK);
+
+	icons->signal_drag_data_received ().connect (
+		sigc::mem_fun (*this, &TagWindow::onIconsDragData));
+
 	docsview_ = icons;
 
 	Gtk::ScrolledWindow *iconsscroll = Gtk::manage(new Gtk::ScrolledWindow());
@@ -805,6 +819,9 @@ void TagWindow::onExportBibtex ()
 	chooser.set_default_response (Gtk::RESPONSE_ACCEPT);
 	chooser.set_do_overwrite_confirmation (true);
 
+	// Browsing to remote hosts not working for some reason
+	//chooser.set_local_only (false);
+
 	if (!exportfolder_.empty())
 		chooser.set_current_folder (exportfolder_);
 
@@ -990,40 +1007,6 @@ void TagWindow::onAddDocFile ()
 }
 
 
-
-// For recursing through directories to add all documents from a folder
-
-static Glib::ustring _basepath;
-std::vector<Glib::ustring> _filestoadd;
-
-bool onAddDocFolderRecurse (const Glib::ustring& rel_path, const Glib::RefPtr<const Gnome::Vfs::FileInfo>& info, bool recursing_will_loop, bool& recurse)
-{
-	// We escape to be consistent with the escaped URI that FileChooser
-	// gave us for basepath
-	Glib::ustring fullname =
-		Glib::build_filename (
-			_basepath, Gnome::Vfs::escape_string(info->get_name()));
-	std::cerr << "onAddDocFolderRecurse: fullpath = '" << fullname << "'\n";
-
-	if (info->get_type () == Gnome::Vfs::FILE_TYPE_DIRECTORY) {
-		Gnome::Vfs::DirectoryHandle dir;
-		Glib::ustring tmp = _basepath;
-		_basepath = fullname;
-		dir.visit (
-			fullname,
-			Gnome::Vfs::FILE_INFO_DEFAULT,
-			Gnome::Vfs::DIRECTORY_VISIT_DEFAULT,
-			&onAddDocFolderRecurse);
-		_basepath = tmp;
-	} else {
-		_filestoadd.push_back (fullname);
-	}
-
-	// What does this retval do?
-	return true;
-}
-
-
 void TagWindow::onAddDocFolder ()
 {
 	Gtk::FileChooserDialog chooser(
@@ -1042,18 +1025,8 @@ void TagWindow::onAddDocFolder ()
 	if (chooser.run () == Gtk::RESPONSE_ACCEPT) {
 		addfolder_ = Glib::path_get_dirname(chooser.get_filename());
 		Glib::ustring rootfoldername = chooser.get_uri();
-		std::cerr << "Adding folder '" << rootfoldername << "'\n";
-		Gnome::Vfs::DirectoryHandle dir;
-		_basepath = rootfoldername;
-		_filestoadd.clear();
-		dir.visit (
-			rootfoldername,
-			Gnome::Vfs::FILE_INFO_DEFAULT,
-			Gnome::Vfs::DIRECTORY_VISIT_DEFAULT,
-			&onAddDocFolderRecurse);
-
-
-		addDocFiles (_filestoadd);
+		std::vector<Glib::ustring> files = Utility::recurseFolder (rootfoldername);
+		addDocFiles (files);
 	}
 }
 
@@ -1207,13 +1180,23 @@ void TagWindow::loadLibrary ()
 		return;
 	}
 
-	libfile.open (libfilename, Gnome::Vfs::OPEN_READ);
+	try {
+		libfile.open (libfilename, Gnome::Vfs::OPEN_READ);
+	} catch (const Gnome::Vfs::exception ex) {
+		Utility::exceptionDialog (&ex, "opening library");
+		return;
+	}
 
 	Glib::RefPtr<Gnome::Vfs::FileInfo> fileinfo;
 	fileinfo = libfile.get_file_info ();
 
 	char *buffer = (char *) malloc (sizeof(char) * (fileinfo->get_size() + 1));
-	libfile.read (buffer, fileinfo->get_size());
+	try {
+		libfile.read (buffer, fileinfo->get_size());
+	} catch (const Gnome::Vfs::exception ex) {
+		Utility::exceptionDialog (&ex, "reading library");
+		return;
+	}
 	buffer[fileinfo->get_size()] = 0;
 
 	Glib::ustring rawtext = buffer;
@@ -1303,3 +1286,44 @@ void TagWindow::onPreferences ()
 {
 	_global_prefs->showDialog ();
 }
+
+
+void TagWindow::onIconsDragData (
+	const Glib::RefPtr <Gdk::DragContext> &context,
+	int n1, int n2, const Gtk::SelectionData &sel, guint n3, guint n4)
+{
+	std::cerr << "onIconsDragData: got '" << sel.get_data () << "'\n";
+
+	std::vector<Glib::ustring> files;
+
+	typedef std::vector <Glib::RefPtr <Gnome::Vfs::Uri> > urilist;
+	urilist uris;
+	uris = Utility::parseUriList ((char*) sel.get_data());
+	
+	urilist::iterator it = uris.begin ();
+	urilist::iterator const end = uris.end ();
+	for (; it != end; ++it) {
+		Glib::RefPtr<Gnome::Vfs::FileInfo> info;
+		try {
+			 info = (*it)->get_file_info ();
+		} catch (const Gnome::Vfs::exception ex) {
+			Utility::exceptionDialog (&ex,
+				"getting info for file '" + (*it)->to_string () + "'");
+			return;
+		}
+
+		if (info->get_type() == Gnome::Vfs::FILE_TYPE_DIRECTORY) {
+			std::vector<Glib::ustring> morefiles = Utility::recurseFolder ((*it)->to_string ());
+			std::vector<Glib::ustring>::iterator it;
+			for (it = morefiles.begin(); it != morefiles.end(); ++it) {
+				files.push_back (*it);
+			}
+		} else {
+			files.push_back ((*it)->to_string ());
+		}
+	}
+
+	addDocFiles (files);
+}
+
+

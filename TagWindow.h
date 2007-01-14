@@ -79,6 +79,9 @@ class TagWindow {
 		void onExportBibtex ();
 		void onAbout ();
 		void onPreferences ();
+		void onIconsDragData (
+			const Glib::RefPtr <Gdk::DragContext> &context,
+			int n1, int n2, const Gtk::SelectionData &sel, guint n3, guint n4);
 
 		void onDivine ();
 

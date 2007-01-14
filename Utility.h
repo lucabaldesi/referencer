@@ -3,9 +3,11 @@
 #ifndef UTILITY_H
 #define UTILITY_H
 
+#include <utility>
+#include <vector>
+
 #include <gtkmm.h>
 #include <libglademm.h>
-#include <utility>
 
 namespace Utility {
 	typedef std::pair <Glib::ustring, Glib::ustring> StringPair;
@@ -30,6 +32,12 @@ namespace Utility {
 
 	void exceptionDialog (
 		Glib::Exception const *ex, Glib::ustring const &context);
+
+	std::vector<Glib::ustring> recurseFolder (
+		Glib::ustring const &rootfoldername);
+
+	std::vector<Glib::RefPtr<Gnome::Vfs::Uri> > parseUriList (
+		char *list);
 }
 
 #endif
