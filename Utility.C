@@ -21,4 +21,16 @@ StringPair twoWaySplit (Glib::ustring const &str, Glib::ustring const &divider)
 	return retval;
 }
 
+Glib::ustring strip (Glib::ustring const &victim, Glib::ustring const &unwanted)
+{
+	Glib::ustring stripped = victim;
+	while (stripped.find (unwanted) != Glib::ustring::npos) {
+		int pos = stripped.find (unwanted);
+		stripped = stripped.substr (0, pos)
+			+ stripped.substr (pos + unwanted.length (), stripped.length ());
+	}
+
+	return stripped;
+}
+
 }

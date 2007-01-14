@@ -11,8 +11,7 @@ namespace Utility {
 
 	bool DOIURLValid (Glib::ustring const &url);
 	StringPair twoWaySplit (Glib::ustring const &str, Glib::ustring const &divider);
-
-
+	Glib::ustring strip (Glib::ustring const &victim, Glib::ustring const &unwanted);
 }
 
 #endif

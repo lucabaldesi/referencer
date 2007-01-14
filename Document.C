@@ -1,6 +1,4 @@
 
-#include "Document.h"
-
 #include <iostream>
 #include <sstream>
 
@@ -15,6 +13,9 @@
 #include <GlobalParams.h>
 #include <TextOutputDev.h>
 
+#include "Utility.h"
+
+#include "Document.h"
 
 Glib::RefPtr<Gdk::Pixbuf> Document::defaultthumb_;
 
@@ -79,6 +80,16 @@ Glib::ustring Document::generateKey ()
 	} else {
 		name = "Unnamed";
 	}
+
+	// Don't confuse LaTeX
+	name = Utility::strip (name, " ");
+	name = Utility::strip (name, "&");
+	name = Utility::strip (name, "$");
+	name = Utility::strip (name, "%");
+	name = Utility::strip (name, "#");
+	name = Utility::strip (name, "_");
+	name = Utility::strip (name, "{");
+	name = Utility::strip (name, "}");
 
 	unsigned int const maxlen = 12;
 	if (name.size() > maxlen) {
