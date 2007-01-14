@@ -811,14 +811,15 @@ void TagWindow::onExportBibtex ()
 	if (chooser.run() == Gtk::RESPONSE_ACCEPT) {
 		exportfolder_ = Glib::path_get_dirname(chooser.get_filename());
 		Glib::ustring bibfilename = chooser.get_uri();
-
-		std::ostringstream bibtext;
-		doclist_->writeBibtex (bibtext);
+		// Really we shouldn't add the extension if the user has chosen an
+		// existing file rather than typing in a name themselves.
+		bibfilename = Utility::ensureExtension (bibfilename, "bib");
+		Glib::ustring tmpbibfilename = bibfilename + ".tmp";
 
 		Gnome::Vfs::Handle bibfile;
 
 		try {
-			bibfile.create (bibfilename, Gnome::Vfs::OPEN_WRITE,
+			bibfile.create (tmpbibfilename, Gnome::Vfs::OPEN_WRITE,
 				false, Gnome::Vfs::PERM_USER_READ | Gnome::Vfs::PERM_USER_WRITE);
 		} catch (const Gnome::Vfs::exception ex) {
 			std::cerr << "TagWindow::onExportBibtex: "
@@ -826,9 +827,15 @@ void TagWindow::onExportBibtex ()
 			return;
 		}
 
+		std::ostringstream bibtext;
+		doclist_->writeBibtex (bibtext);
+
 		bibfile.write (bibtext.str().c_str(), strlen(bibtext.str().c_str()));
 
 		bibfile.close ();
+
+		// Forcefully move our tmp file into its real position
+		Gnome::Vfs::Handle::move (tmpbibfilename, bibfilename, true);
 	}
 }
 
@@ -1213,12 +1220,11 @@ void TagWindow::saveLibrary ()
 {
 	Gnome::Vfs::Handle libfile;
 
-	/*Glib::ustring libfilename =
-		Gnome::Vfs::expand_initial_tilde("~/.pdfdivine.lib");*/
-	Glib::ustring libfilename = "/home/jcspray/.pdfdivine.lib";
+	Glib::ustring libfilename = Glib::get_home_dir () + "/.referencer.lib";
+	Glib::ustring tmplibfilename = Glib::get_home_dir () + "/.referencer.lib" + ".tmp";
 
 	try {
-		libfile.create (libfilename, Gnome::Vfs::OPEN_WRITE,
+		libfile.create (tmplibfilename, Gnome::Vfs::OPEN_WRITE,
 			false, Gnome::Vfs::PERM_USER_READ | Gnome::Vfs::PERM_USER_WRITE);
 	} catch (const Gnome::Vfs::exception ex) {
 		std::cerr << "TagWindow::saveLibrary: "
@@ -1231,6 +1237,9 @@ void TagWindow::saveLibrary ()
 	libfile.write (rawtext.c_str(), strlen(rawtext.c_str()));
 
 	libfile.close ();
+
+	// Forcefully move our tmp file into its real position
+	Gnome::Vfs::Handle::move (tmplibfilename, libfilename, true);
 }
 
 

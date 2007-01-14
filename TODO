@@ -28,6 +28,7 @@ Functionality wishlist:
 	Somehow know when to add et. al. to authors
 	Table view as well as icon view
 	When generating keys from authorYEAR, should get rid of LaTeX unfriendly accented characters
+	Where we use ".tmp" in writing files, we should use something more unique
 
 Bugs:
 	Crash when adding unnamed?

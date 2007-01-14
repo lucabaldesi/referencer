@@ -9,9 +9,20 @@
 namespace Utility {
 	typedef std::pair <Glib::ustring, Glib::ustring> StringPair;
 
-	bool DOIURLValid (Glib::ustring const &url);
-	StringPair twoWaySplit (Glib::ustring const &str, Glib::ustring const &divider);
-	Glib::ustring strip (Glib::ustring const &victim, Glib::ustring const &unwanted);
+	bool DOIURLValid (
+		Glib::ustring const &url);
+
+	StringPair twoWaySplit (
+		Glib::ustring const &str,
+		Glib::ustring const &divider);
+
+	Glib::ustring strip (
+		Glib::ustring const &victim,
+		Glib::ustring const &unwanted);
+
+	Glib::ustring ensureExtension (
+		Glib::ustring const &filename,
+		Glib::ustring const &extension);
 }
 
 #endif
