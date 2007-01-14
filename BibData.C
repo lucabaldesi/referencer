@@ -226,7 +226,6 @@ void BibData::guessDoi (Glib::ustring const &raw_)
 {
 	std::string const &raw = raw_;
 
-	//boost::regex expression("[Dd][Oo][Ii]:? *([a-z0-9A-Z\\.\\/]*)");
 	boost::regex expression(
 		"[Dd][Oo][Ii]:? *"
 		"("
@@ -234,12 +233,9 @@ void BibData::guessDoi (Glib::ustring const &raw_)
 		"\\."
 		"[^\\/]+"
 		"\\/"
-		//"[0-9a-zA-Z\\.]+"
 		"[^\\s]+"
 		")"
 	);
-
-	// Doesn't work on Noble - The rise of comp...
 
 	std::string::const_iterator start, end;
 	start = raw.begin();
