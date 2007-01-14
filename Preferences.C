@@ -42,7 +42,7 @@ Preferences::Preferences ()
 
 
 
-	xml_ = Gnome::Glade::Xml::create ("preferences.glade");
+	xml_ = Utility::openGlade ("preferences.glade");
 
 	dialog_ = (Gtk::Dialog *) xml_->get_widget ("Preferences");
 	workofflinecheck_ = (Gtk::CheckButton *) xml_->get_widget ("WorkOffline");
