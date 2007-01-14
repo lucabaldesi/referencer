@@ -2,8 +2,8 @@
 Essential:
 	Conversion of accented characters into LaTeX when exporting (and importing?) bibtex
 	Should write to file and then copy into place (prevent crash blanking file)
-	'Work offline'
 	Finding glade files in installed paths
+
 
 Niceties:
 	LookupDoi and Open should really handle multiple documents.
@@ -13,6 +13,9 @@ Functionality wishlist:
 	Should be able to select multiple tags for ANDing instead of ORing document selection
 	read PS files to search for DOIs as well as reading PDFs
 	Drag and drop to add by filename
+	Drag and drop to make LaTeX citations
+	Drag and drop to copy file
+	Copy document key to clipboard
 	Should complain when adding files we already have
 	Thumbnail generation is done in main thread and freezes UI
 	"Manage BibTeX File" as well as one-off export
@@ -21,6 +24,9 @@ Functionality wishlist:
 	Configuration of proxy server for non-GNOMEers
 	Configuration of max_timeout in BibData::getCrossRef
 	Tell user how to go back online when asking to go offline in BibData
+	gconf schema
+	Somehow know when to add et. al. to authors
+	Table view as well as icon view
 
 Bugs:
 	Crash when adding unnamed?
