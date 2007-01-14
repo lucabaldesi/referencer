@@ -240,6 +240,7 @@ static Glib::ustring writeBibKey (Glib::ustring key, Glib::ustring const & value
 	return key + " = {" + value + "}";
 }
 
+
 void Document::writeBibtex (std::ostringstream& out)
 {
 	// BibTeX values cannot be larger than 1000 characters - should make sure of this
@@ -256,6 +257,7 @@ void Document::writeBibtex (std::ostringstream& out)
 	out << writeBibKey ("year",    bib_.getYear()) << "\n";
 	out << "}\n\n";
 }
+
 
 using Glib::Markup::escape_text;
 
