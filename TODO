@@ -27,6 +27,7 @@ Functionality wishlist:
 	gconf schema
 	Somehow know when to add et. al. to authors
 	Table view as well as icon view
+	When generating keys from authorYEAR, should get rid of LaTeX unfriendly accented characters
 
 Bugs:
 	Crash when adding unnamed?
