@@ -40,13 +40,15 @@ TagWindow::TagWindow ()
 	ignoretaggerchecktoggled_ = false;
 	docselectionignore_ = false;
 
-	docpropertiesdialog_ = NULL;
+
 
 	taglist_ = new TagList();
 	doclist_ = new DocumentList();
 	loadLibrary ();
 
 	_global_prefs = new Preferences();
+
+	docpropertiesdialog_ = new DocumentProperties ();
 
 	constructUI ();
 	populateDocIcons ();
@@ -61,8 +63,7 @@ TagWindow::~TagWindow ()
 
 	delete taglist_;
 	delete doclist_;
-	if (docpropertiesdialog_)
-		delete docpropertiesdialog_;
+	delete docpropertiesdialog_;
 
 	delete _global_prefs;
 }
@@ -1274,10 +1275,9 @@ void TagWindow::onDocProperties ()
 {
 	Document *doc = getSelectedDoc ();
 	if (doc) {
-		if (!docpropertiesdialog_)
-			docpropertiesdialog_ = new DocumentProperties;
-		if (docpropertiesdialog_->show (doc))
+		if (docpropertiesdialog_->show (doc)) {
 			populateDocIcons ();
+		}
 	}
 }
 
