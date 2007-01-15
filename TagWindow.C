@@ -201,6 +201,8 @@ void TagWindow::constructUI ()
 	urilist.set_info (0);
 	urilist.set_target ("text/uri-list");
 	dragtypes.push_back (urilist);
+	urilist.set_target ("text/x-moz-url-data");
+	dragtypes.push_back (urilist);
 
 	icons->drag_dest_set (
 		dragtypes,
@@ -898,7 +900,6 @@ void TagWindow::addDocFiles (std::vector<Glib::ustring> const &filenames)
 	Gtk::Label label ("", false);
 	label.set_markup (messagetext);
 
-
 	vbox->pack_start (label, true, true, 0);
 
 	Gtk::ProgressBar progress;
@@ -920,6 +921,13 @@ void TagWindow::addDocFiles (std::vector<Glib::ustring> const &filenames)
 		progress.set_text (progresstext.str());
 		while (Gnome::Main::events_pending())
 			Gnome::Main::iteration ();
+		
+		Glib::RefPtr<Gnome::Vfs::Uri> uri = Gnome::Vfs::Uri::create (*it);
+		if (!uri->is_local ()) {
+			// Prompt the user to download the file
+			std::cerr << "Ooh, a remote uri\n";
+		}
+		
 		Document *newdoc = doclist_->newDocWithFile(*it);
 		newdoc->readPDF ();
 		if (!newdoc->getBibData().getDoi().empty())
@@ -1295,34 +1303,54 @@ void TagWindow::onIconsDragData (
 	const Glib::RefPtr <Gdk::DragContext> &context,
 	int n1, int n2, const Gtk::SelectionData &sel, guint n3, guint n4)
 {
-	std::cerr << "onIconsDragData: got '" << sel.get_data () << "'\n";
+	std::cerr << "onIconsDragData: got '" << sel.get_data_as_string () << "'\n";
+	std::cerr << "\tOf type '" << sel.get_data_type () << "'\n";
 
 	std::vector<Glib::ustring> files;
 
-	typedef std::vector <Glib::RefPtr <Gnome::Vfs::Uri> > urilist;
+	typedef std::vector <Glib::ustring> urilist;
 	urilist uris;
-	uris = Utility::parseUriList ((char*) sel.get_data());
+	
+	if (sel.get_data_type () == "text/uri-list") {
+		uris = sel.get_uris ();
+	} else if (sel.get_data_type () == "text/x-moz-url-data") {
+
+		gchar *utf8;
+
+		utf8 = g_utf16_to_utf8((gunichar2 *) sel.get_data(),
+				(glong) sel.get_length(),
+				NULL, NULL, NULL);
+
+		uris.push_back (utf8);
+		g_free(utf8);
+	}
 	
 	urilist::iterator it = uris.begin ();
 	urilist::iterator const end = uris.end ();
 	for (; it != end; ++it) {
+		bool is_dir = false;
+		Glib::RefPtr<Gnome::Vfs::Uri> uri = Gnome::Vfs::Uri::create (*it);
+		//if (uri->is_local()) {
 		Glib::RefPtr<Gnome::Vfs::FileInfo> info;
 		try {
-			 info = (*it)->get_file_info ();
+			 info = uri->get_file_info ();
 		} catch (const Gnome::Vfs::exception ex) {
 			Utility::exceptionDialog (&ex,
-				"getting info for file '" + (*it)->to_string () + "'");
+				"getting info for file '" + uri->to_string () + "'");
 			return;
 		}
+		if (info->get_type() == Gnome::Vfs::FILE_TYPE_DIRECTORY)
+			is_dir = true;
+		//}
 
-		if (info->get_type() == Gnome::Vfs::FILE_TYPE_DIRECTORY) {
-			std::vector<Glib::ustring> morefiles = Utility::recurseFolder ((*it)->to_string ());
-			std::vector<Glib::ustring>::iterator it;
-			for (it = morefiles.begin(); it != morefiles.end(); ++it) {
-				files.push_back (*it);
+		if (is_dir) {
+			std::vector<Glib::ustring> morefiles = Utility::recurseFolder (*it);
+			std::vector<Glib::ustring>::iterator it2;
+			for (it2 = morefiles.begin(); it2 != morefiles.end(); ++it2) {
+				files.push_back (*it2);
 			}
 		} else {
-			files.push_back ((*it)->to_string ());
+			files.push_back (*it);
 		}
 	}
 
