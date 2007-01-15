@@ -166,26 +166,6 @@ std::vector<Glib::ustring> recurseFolder (
 }
 
 
-std::vector<Glib::RefPtr<Gnome::Vfs::Uri> > parseUriList (
-	char *listtxt)
-{
-  GList *list = gnome_vfs_uri_list_parse (listtxt);
-	std::vector<Glib::RefPtr<Gnome::Vfs::Uri> > uris;
-
-  for (GList *p = list; p != NULL; p = g_list_next (p)) {
-		Glib::RefPtr<Gnome::Vfs::Uri> uri =
-			Glib::wrap ((GnomeVFSURI*)(p->data), true);
-		uris.push_back (uri);
-
-    p = g_list_next (p);
-  }
-
-  gnome_vfs_uri_list_free (list);
-
-	return uris;
-}
-
-
 Glib::ustring escapeBibtexAccents (
 	Glib::ustring target)
 {

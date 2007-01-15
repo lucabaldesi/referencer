@@ -36,9 +36,6 @@ namespace Utility {
 
 	std::vector<Glib::ustring> recurseFolder (
 		Glib::ustring const &rootfoldername);
-
-	std::vector<Glib::RefPtr<Gnome::Vfs::Uri> > parseUriList (
-		char *list);
 		
 	Glib::ustring escapeBibtexAccents (
 		Glib::ustring target);
