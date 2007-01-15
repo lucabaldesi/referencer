@@ -1,7 +1,8 @@
 
 Essential:
 	Conversion of accented characters into LaTeX when exporting (and importing?) bibtex
-
+  Different doc types -- books as well as articles at least
+  Extra fields
 
 Niceties:
 	LookupDoi and Open should really handle multiple documents.
@@ -27,9 +28,9 @@ Functionality wishlist:
 	Table view as well as icon view
 	When generating keys from authorYEAR, should get rid of LaTeX unfriendly accented characters
 	Where we use ".tmp" in writing files, we should use something more unique
+	Do something with PDF-embedded metadata if there is any
 
 Bugs:
-	Crash when adding unnamed?
 	Tagger's scrolledwindow seems to have a shadow/border even though we ask it not to
 
 To support an extra entry in the bibdata, one needs to update:
