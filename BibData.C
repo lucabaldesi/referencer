@@ -72,14 +72,6 @@ void BibData::parseCrossRefXML (Glib::ustring const &xml)
 
 
 /*
- * Parse the XML metadata embedded in some PDFs
- * in the hopes it contains some interesting fields
- */
-void BibData::parseMetadata (Glib::ustring const &meta, FieldMask mask)
-{
-}
-
-/*
  *  Try to fill the journal field by doing a text search
  *  for a known long form of a journal name and then
  *  using the corresponding short form.

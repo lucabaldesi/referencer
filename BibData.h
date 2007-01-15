@@ -46,7 +46,6 @@ class BibData {
 
 	void clear ();
 
-	void parseMetadata (Glib::ustring const &meta, FieldMask mask);
 	void guessJournal (Glib::ustring const &raw);
 	void guessVolumeNumberPage (Glib::ustring const &raw);
 	void guessYear (Glib::ustring const &raw);
