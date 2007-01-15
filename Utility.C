@@ -191,7 +191,8 @@ Glib::ustring escapeBibtexAccents (
 }
 
 
-/* w00t, copied and pasted from AbiWord */
+/* w00t, copied and pasted from AbiWord
+	and then iso8859-1 stuff added */
 
 #undef printf
 #define printf(x) out = (x); 
@@ -221,26 +222,299 @@ int wvConvertUnicodeToLaTeX(gunichar char16, Glib::ustring &out)
 	{
 	switch(char16)
 		{
-		/* Fix up these as math characters: */
-		case 0xb1:
-			printf("$\\pm$");
-			return(1);
-		case 0xb2:
-			printf("$\\mathtwosuperior$");
-			return(1);
-		case 0xb3:
-			printf("$\\maththreesuperior$");
-			return(1);
-		case 0xb5:
-			printf("$\\mu$");
-			return(1);
-		case 0xb9:
-			printf("$\\mathonesuperior$");
-			return(1);
-		case 0xdc:
+		// I don't see how 0xdc ("U) should be ldots...
+		/*case 0xdc:
 			printf("\\ldots{}");
 			return(1);
-		}
+		}*/
+		case 0xA0:
+			printf("~"); /* NO-BREAK (SPACE ) */
+			return(1);
+		case 0xA1:
+			printf("!`"); /* ¡ (INVERTED EXCLAMATION MARK ) */
+			return(1);
+		case 0xA2:
+			printf(""); /* ¢ (CENT SIGN ) */
+			return(1);
+		case 0xA3:
+			printf(""); /* £ (POUND SIGN ) */
+			return(1);
+		case 0xA4:
+			printf(""); /* ¤ (CURRENCY SIGN ) */
+			return(1);
+		case 0xA5:
+			printf(""); /* ¥ (YEN SIGN ) */
+			return(1);
+		case 0xA6:
+			printf(""); /* ¦ (BROKEN BAR ) */
+			return(1);
+		case 0xA7:
+			printf(""); /* § (SECTION SIGN ) */
+			return(1);
+		case 0xA8:
+			printf(""); /* ¨ (DIAERESIS ) */
+			return(1);
+		case 0xA9:
+			printf(""); /* © (COPYRIGHT SIGN ) */
+			return(1);
+		case 0xAA:
+			printf(""); /* ª (FEMININE ORDINAL INDICATOR ) */
+			return(1);
+		case 0xAB:
+			printf(""); /* « (LEFT-POINTING DOUBLE ANGLE QUOTATION MARK ) */
+			return(1);
+		case 0xAC:
+			printf(""); /* ¬ (NOT SIGN ) */
+			return(1);
+		case 0xAD:
+			printf(""); /* ­ (SOFT HYPHEN ) */
+			return(1);
+		case 0xAE:
+			printf(""); /* ® (REGISTERED SIGN ) */
+			return(1);
+		case 0xAF:
+			printf(""); /* ¯ (MACRON ) */
+			return(1);
+		case 0xB0:
+			printf(""); /* ° (DEGREE SIGN ) */
+			return(1);
+		case 0xB1:
+			printf("$\\pm$"); /* ± (PLUS-MINUS SIGN ) */
+			return(1);
+		case 0xB2:
+			printf("$\\mathtwosuperior$"); /* ² (SUPERSCRIPT TWO ) */
+			return(1);
+		case 0xB3:
+			printf("$\\maththreesuperior$"); /* ³ (SUPERSCRIPT THREE ) */
+			return(1);
+		case 0xB4:
+			printf(""); /* ´ (ACUTE ACCENT ) */
+			return(1);
+		case 0xB5:
+			printf("$\\mu$"); /* µ (MICRO SIGN ) */
+			return(1);
+		case 0xB6:
+			printf(""); /* ¶ (PILCROW SIGN ) */
+			return(1);
+		case 0xB7:
+			printf(""); /* · (MIDDLE DOT ) */
+			return(1);
+		case 0xB8:
+			printf(""); /* ¸ (CEDILLA ) */
+			return(1);
+		case 0xB9:
+			printf("$\\mathonesuperior$"); /* ¹ (SUPERSCRIPT ONE ) */
+			return(1);
+		case 0xBA:
+			printf(""); /* º (MASCULINE ORDINAL INDICATOR ) */
+			return(1);
+		case 0xBB:
+			printf(""); /* » (RIGHT-POINTING DOUBLE ANGLE QUOTATION MARK ) */
+			return(1);
+		case 0xBC:
+			printf(""); /* ¼ (VULGAR FRACTION ONE QUARTER) */
+			return(1);
+		case 0xBD:
+			printf(""); /* ½ (VULGAR FRACTION ONE HALF) */
+			return(1);
+		case 0xBE:
+			printf(""); /* ¾ (VULGAR FRACTION THREE QUARTERS) */
+			return(1);
+		case 0xBF:
+			printf(""); /* ¿ (INVERTED QUESTION MARK ) */
+			return(1);
+		case 0xC0:
+			printf(""); /* À (LATIN CAPITAL LETTER A WITH GRAVE ) */
+			return(1);
+		case 0xC1:
+			printf(""); /* Á (LATIN CAPITAL LETTER A WITH ACUTE ) */
+			return(1);
+		case 0xC2:
+			printf(""); /* Â (LATIN CAPITAL LETTER A WITH CIRCUMFLEX ) */
+			return(1);
+		case 0xC3:
+			printf(""); /* Ã (LATIN CAPITAL LETTER A WITH TILDE ) */
+			return(1);
+		case 0xC4:
+			printf(""); /* Ä (LATIN CAPITAL LETTER A WITH DIAERESIS ) */
+			return(1);
+		case 0xC5:
+			printf(""); /* Å (LATIN CAPITAL LETTER A WITH RING ABOVE ) */
+			return(1);
+		case 0xC6:
+			printf(""); /* Æ (LATIN CAPITAL LETTER AE) */
+			return(1);
+		case 0xC7:
+			printf(""); /* Ç (LATIN CAPITAL LETTER C WITH CEDILLA ) */
+			return(1);
+		case 0xC8:
+			printf(""); /* È (LATIN CAPITAL LETTER E WITH GRAVE ) */
+			return(1);
+		case 0xC9:
+			printf(""); /* É (LATIN CAPITAL LETTER E WITH ACUTE ) */
+			return(1);
+		case 0xCA:
+			printf(""); /* Ê (LATIN CAPITAL LETTER E WITH CIRCUMFLEX ) */
+			return(1);
+		case 0xCB:
+			printf(""); /* Ë (LATIN CAPITAL LETTER E WITH DIAERESIS ) */
+			return(1);
+		case 0xCC:
+			printf(""); /* Ì (LATIN CAPITAL LETTER I WITH GRAVE ) */
+			return(1);
+		case 0xCD:
+			printf(""); /* Í (LATIN CAPITAL LETTER I WITH ACUTE ) */
+			return(1);
+		case 0xCE:
+			printf(""); /* Î (LATIN CAPITAL LETTER I WITH CIRCUMFLEX ) */
+			return(1);
+		case 0xCF:
+			printf(""); /* Ï (LATIN CAPITAL LETTER I WITH DIAERESIS ) */
+			return(1);
+		case 0xD0:
+			printf(""); /* Ð (LATIN CAPITAL LETTER ETH) */
+			return(1);
+		case 0xD1:
+			printf(""); /* Ñ (LATIN CAPITAL LETTER N WITH TILDE ) */
+			return(1);
+		case 0xD2:
+			printf(""); /* Ò (LATIN CAPITAL LETTER O WITH GRAVE ) */
+			return(1);
+		case 0xD3:
+			printf(""); /* Ó (LATIN CAPITAL LETTER O WITH ACUTE ) */
+			return(1);
+		case 0xD4:
+			printf(""); /* Ô (LATIN CAPITAL LETTER O WITH CIRCUMFLEX ) */
+			return(1);
+		case 0xD5:
+			printf(""); /* Õ (LATIN CAPITAL LETTER O WITH TILDE ) */
+			return(1);
+		case 0xD6:
+			printf(""); /* Ö (LATIN CAPITAL LETTER O WITH DIAERESIS ) */
+			return(1);
+		case 0xD7:
+			printf(""); /* × (MULTIPLICATION SIGN ) */
+			return(1);
+		case 0xD8:
+			printf(""); /* Ø (LATIN CAPITAL LETTER O WITH STROKE ) */
+			return(1);
+		case 0xD9:
+			printf(""); /* Ù (LATIN CAPITAL LETTER U WITH GRAVE ) */
+			return(1);
+		case 0xDA:
+			printf(""); /* Ú (LATIN CAPITAL LETTER U WITH ACUTE ) */
+			return(1);
+		case 0xDB:
+			printf(""); /* Û (LATIN CAPITAL LETTER U WITH CIRCUMFLEX ) */
+			return(1);
+		case 0xDC:
+			printf(""); /* Ü (LATIN CAPITAL LETTER U WITH DIAERESIS ) */
+			return(1);
+		case 0xDD:
+			printf(""); /* Ý (LATIN CAPITAL LETTER Y WITH ACUTE ) */
+			return(1);
+		case 0xDE:
+			printf(""); /* Þ (LATIN CAPITAL LETTER THORN) */
+			return(1);
+		case 0xDF:
+			printf(""); /* ß (LATIN SMALL LETTER SHARP S ) */
+			return(1);
+		case 0xE0:
+			printf(""); /* à (LATIN SMALL LETTER A WITH GRAVE ) */
+			return(1);
+		case 0xE1:
+			printf(""); /* á (LATIN SMALL LETTER A WITH ACUTE ) */
+			return(1);
+		case 0xE2:
+			printf(""); /* â (LATIN SMALL LETTER A WITH CIRCUMFLEX ) */
+			return(1);
+		case 0xE3:
+			printf(""); /* ã (LATIN SMALL LETTER A WITH TILDE ) */
+			return(1);
+		case 0xE4:
+			printf(""); /* ä (LATIN SMALL LETTER A WITH DIAERESIS ) */
+			return(1);
+		case 0xE5:
+			printf(""); /* å (LATIN SMALL LETTER A WITH RING ABOVE ) */
+			return(1);
+		case 0xE6:
+			printf(""); /* æ (LATIN SMALL LETTER AE) */
+			return(1);
+		case 0xE7:
+			printf(""); /* ç (LATIN SMALL LETTER C WITH CEDILLA ) */
+			return(1);
+		case 0xE8:
+			printf(""); /* è (LATIN SMALL LETTER E WITH GRAVE ) */
+			return(1);
+		case 0xE9:
+			printf(""); /* é (LATIN SMALL LETTER E WITH ACUTE ) */
+			return(1);
+		case 0xEA:
+			printf(""); /* ê (LATIN SMALL LETTER E WITH CIRCUMFLEX ) */
+			return(1);
+		case 0xEB:
+			printf(""); /* ë (LATIN SMALL LETTER E WITH DIAERESIS ) */
+			return(1);
+		case 0xEC:
+			printf(""); /* ì (LATIN SMALL LETTER I WITH GRAVE ) */
+			return(1);
+		case 0xED:
+			printf(""); /* í (LATIN SMALL LETTER I WITH ACUTE ) */
+			return(1);
+		case 0xEE:
+			printf(""); /* î (LATIN SMALL LETTER I WITH CIRCUMFLEX ) */
+			return(1);
+		case 0xEF:
+			printf(""); /* ï (LATIN SMALL LETTER I WITH DIAERESIS ) */
+			return(1);
+		case 0xF0:
+			printf(""); /* ð (LATIN SMALL LETTER ETH) */
+			return(1);
+		case 0xF1:
+			printf(""); /* ñ (LATIN SMALL LETTER N WITH TILDE ) */
+			return(1);
+		case 0xF2:
+			printf(""); /* ò (LATIN SMALL LETTER O WITH GRAVE ) */
+			return(1);
+		case 0xF3:
+			printf(""); /* ó (LATIN SMALL LETTER O WITH ACUTE ) */
+			return(1);
+		case 0xF4:
+			printf(""); /* ô (LATIN SMALL LETTER O WITH CIRCUMFLEX ) */
+			return(1);
+		case 0xF5:
+			printf(""); /* õ (LATIN SMALL LETTER O WITH TILDE ) */
+			return(1);
+		case 0xF6:
+			printf(""); /* ö (LATIN SMALL LETTER O WITH DIAERESIS ) */
+			return(1);
+		case 0xF7:
+			printf(""); /* ÷ (DIVISION SIGN ) */
+			return(1);
+		case 0xF8:
+			printf(""); /* ø (LATIN SMALL LETTER O WITH STROKE ) */
+			return(1);
+		case 0xF9:
+			printf(""); /* ù (LATIN SMALL LETTER U WITH GRAVE ) */
+			return(1);
+		case 0xFA:
+			printf(""); /* ú (LATIN SMALL LETTER U WITH ACUTE ) */
+			return(1);
+		case 0xFB:
+			printf(""); /* û (LATIN SMALL LETTER U WITH CIRCUMFLEX ) */
+			return(1);
+		case 0xFC:
+			printf(""); /* ü (LATIN SMALL LETTER U WITH DIAERESIS ) */
+			return(1);
+		case 0xFD:
+			printf(""); /* ý (LATIN SMALL LETTER Y WITH ACUTE ) */
+			return(1);
+		case 0xFE:
+			printf(""); /* þ (LATIN SMALL LETTER THORN) */
+			return(1);
+		case 0xFF:
+			printf(""); /* ÿ (LATIN SMALL LETTER Y WITH DIAERESIS ) */
+			return(1);		
 		return(0);
 	}
 	switch(char16)
