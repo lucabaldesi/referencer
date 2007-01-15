@@ -16,17 +16,6 @@ class BibData {
 	Glib::ustring year_;
 
 	public:
-	typedef enum {
-		FIELD_VOLUME = 1<<0,
-		FIELD_NUMBER = 1<<1,
-		FIELD_PAGES = 1<<2,
-		FIELD_AUTHORS = 1<<3,
-		FIELD_JOURNAL = 1<<4,
-		FIELD_TITLE = 1<<5,
-		FIELD_YEAR = 1<<6,
-		FIELD_ALL = 1<<7
-	} FieldMask;
-
 	BibData () {}
 
 	void writeXML (std::ostringstream &out);
