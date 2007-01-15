@@ -18,6 +18,9 @@ class BibData {
 	public:
 	BibData () {}
 
+	void print ();
+	void clear ();
+
 	void writeXML (std::ostringstream &out);
 	void parseCrossRefXML (Glib::ustring const &xml);
 	void getCrossRef ();
@@ -26,7 +29,6 @@ class BibData {
 
 	void setDoi (Glib::ustring const &doi) {doi_ = doi;}
 	Glib::ustring getDoi () {return doi_;}
-
 	void setVolume (Glib::ustring const &vol) {volume_ = vol;}
 	Glib::ustring getVolume () {return volume_;}
 	void setIssue (Glib::ustring const &issue) {issue_ = issue;}
@@ -41,10 +43,6 @@ class BibData {
 	Glib::ustring getTitle () {return title_;}
 	void setYear (Glib::ustring const &year) {year_ = year;}
 	Glib::ustring getYear () {return year_;}
-
-	void print ();
-
-	void clear ();
 
 	void guessJournal (Glib::ustring const &raw);
 	void guessVolumeNumberPage (Glib::ustring const &raw);

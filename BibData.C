@@ -30,6 +30,20 @@ void BibData::print ()
 	std::cout << "Year: " << year_ << std::endl;
 }
 
+
+void BibData::clear ()
+{
+	doi_ = "";
+	volume_ = "";
+	issue_ = "";
+	pages_ = "";
+	authors_ = "";
+	journal_ = "";
+	title_ = "";
+	year_ = "";
+}
+
+
 using Glib::Markup::escape_text;
 
 void BibData::writeXML (std::ostringstream &out)
@@ -52,20 +66,8 @@ void BibData::parseCrossRefXML (Glib::ustring const &xml)
 	try {
 		context.parse (xml);
 	} catch (Glib::MarkupError const ex) {
-		std::cerr << "Exception on line " << context.get_line_number () << ", character " << context.get_char_number () << ", code ";
-		switch (ex.code()) {
-			case Glib::MarkupError::BAD_UTF8:
-				std::cerr << "Bad UTF8\n";
-				break;
-			case Glib::MarkupError::EMPTY:
-				std::cerr << "Empty\n";
-				break;
-			case Glib::MarkupError::PARSE:
-				std::cerr << "Parse error\n";
-				break;
-			default:
-				std::cerr << (int)ex.code() << "\n";
-		}
+		std::cerr << "Markuperror while parsing:\n'''\n" << xml << "\n'''\n";
+		Utility::exceptionDialog (&ex, "parsing CrossRef XML.  Could be an unknown DOI");
 	}
 	context.end_parse ();
 }
@@ -481,14 +483,4 @@ void BibData::fetcherThread ()
 }
 
 
-void BibData::clear ()
-{
-	doi_ = "";
-	volume_ = "";
-	issue_ = "";
-	pages_ = "";
-	authors_ = "";
-	journal_ = "";
-	title_ = "";
-	year_ = "";
-}
+
