@@ -1,6 +1,7 @@
 
 Essential:
 	Conversion of accented characters into LaTeX when exporting (and importing?) bibtex
+	 - we currently output stuff which needs latin1 package
   Different doc types -- books as well as articles at least
   Extra fields
   Appropriate copyright notice for abiword-stolen UC->Latex
@@ -22,7 +23,6 @@ Functionality wishlist:
 	Configuration of lookup URLs
 	Configuration of proxy server for non-GNOMEers
 	Configuration of max_timeout in BibData::getCrossRef
-	Tell user how to go back online when asking to go offline in BibData
 	gconf schema
 	Somehow know when to add et. al. to authors
 	Table view as well as icon view

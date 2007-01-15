@@ -189,32 +189,11 @@ std::vector<Glib::RefPtr<Gnome::Vfs::Uri> > parseUriList (
 Glib::ustring escapeBibtexAccents (
 	Glib::ustring target)
 {
-	/*static Glib::ustring replaceables;
-	if (replaceables.length() == 0) {
-		replaceables = "äöüÄÖÜß";
-	}
-
-	static std::vector<Glib::ustring> replacements;
-	if (replacements.size() == 0) {
-		replacements.push_back ("\"a");
-		replacements.push_back ("\"o");
-		replacements.push_back ("\"u");
-		replacements.push_back ("\"A");
-		replacements.push_back ("\"O");
-		replacements.push_back ("\"U");
-		replacements.push_back ("\"s");
-	}*/
-
 	for (int i = 0; i < target.length(); ++i) {
 		gunichar letter = target[i];
 		if (letter < 128) {
 			continue;
 		} else {
-			/*int pos = replaceables.find (letter);
-			if (pos != Glib::ustring::npos) {
-				target.erase (i, 1);
-				target.insert (i, replacements[pos]);
-			}*/
 			Glib::ustring replacement;
 			int gotone = wvConvertUnicodeToLaTeX (letter, replacement);
 			if (gotone) {
