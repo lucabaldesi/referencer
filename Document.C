@@ -247,8 +247,7 @@ bool Document::hasTag(int uid)
 // key is not ref because it gets initted from a const char*
 static Glib::ustring writeBibKey (Glib::ustring key, Glib::ustring const & value)
 {
-	// Should be doing lots of escaping here, going from UTF-8 to LaTeX
-	return key + " = {" + value + "}";
+	return key + " = {" + Utility::escapeBibtexAccents (value) + "}";
 }
 
 

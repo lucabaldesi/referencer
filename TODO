@@ -3,6 +3,7 @@ Essential:
 	Conversion of accented characters into LaTeX when exporting (and importing?) bibtex
   Different doc types -- books as well as articles at least
   Extra fields
+  Appropriate copyright notice for abiword-stolen UC->Latex
 
 Niceties:
 	LookupDoi and Open should really handle multiple documents.
@@ -11,7 +12,6 @@ Niceties:
 Functionality wishlist:
 	Should be able to select multiple tags for ANDing instead of ORing document selection
 	read PS files to search for DOIs as well as reading PDFs
-	Drag and drop to add by filename
 	Drag and drop to make LaTeX citations
 	Drag and drop to copy file
 	Copy document key to clipboard

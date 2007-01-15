@@ -39,6 +39,13 @@ namespace Utility {
 
 	std::vector<Glib::RefPtr<Gnome::Vfs::Uri> > parseUriList (
 		char *list);
+		
+	Glib::ustring escapeBibtexAccents (
+		Glib::ustring target);
+		
+	int wvConvertUnicodeToLaTeX(
+		gunichar char16,
+		Glib::ustring &out);
 }
 
 #endif

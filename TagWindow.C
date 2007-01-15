@@ -26,6 +26,9 @@ int main (int argc, char **argv)
 	// Initialise libpoppler
 	globalParams = new GlobalParams (NULL);
 
+  /*Utility::escapeBibtexAccents ("道GödelßĊ");
+  return 0;*/
+
 	TagWindow window;
 
 	window.run();
