@@ -34,9 +34,11 @@ class BibData {
 	void onCrossRefCancel ();
 	void fetcherThread ();
 
-	std::map <Glib::ustring, Glib::ustring> extras_;
+	typedef std::map <Glib::ustring, Glib::ustring> ExtrasMap;
+	ExtrasMap extras_;
 	void addExtra (Glib::ustring const &key, Glib::ustring const &value);
-	void BibData::clearExtra ();
+	void clearExtras ();
+	ExtrasMap getExtras () {return extras_;}
 
 	void setType (Glib::ustring const &type) {type_ = type;}
 	Glib::ustring getType () {return type_;}

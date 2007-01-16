@@ -68,7 +68,7 @@ void BibData::addExtra (Glib::ustring const &key, Glib::ustring const &value)
 }
 
 
-void BibData::clearExtra ()
+void BibData::clearExtras ()
 {
 	extras_.clear ();
 }
@@ -88,8 +88,8 @@ void BibData::writeXML (std::ostringstream &out)
 	out << "    <bib_pages>" << escape_text(pages_) << "</bib_pages>\n";
 	out << "    <bib_year>" << escape_text(year_) << "</bib_year>\n";
 	
-	std::map<Glib::ustring, Glib::ustring>::iterator it = extras_.begin ();
-	std::map<Glib::ustring, Glib::ustring>::iterator const end = extras_.end ();
+	ExtrasMap::iterator it = extras_.begin ();
+	ExtrasMap::iterator const end = extras_.end ();
 	for (; it != end; ++it) {
 		out << "    <bib_extra key=\""
 		    << escape_text((*it).first) << "\">"

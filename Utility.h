@@ -37,6 +37,10 @@ namespace Utility {
 	std::vector<Glib::ustring> recurseFolder (
 		Glib::ustring const &rootfoldername);
 		
+	Glib::ustring writeBibKey (
+		Glib::ustring key,
+		Glib::ustring const & value);
+		
 	Glib::ustring escapeBibtexAccents (
 		Glib::ustring target);
 		

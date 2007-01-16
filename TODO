@@ -1,8 +1,7 @@
 
 Essential:
-  Different doc types -- books as well as articles at least
-  Extra fields
   Appropriate copyright notice for abiword-stolen UC->Latex
+	BibTeX import (and merging with metadata-less PDFs?)
 
 Niceties:
 	LookupDoi and Open should really handle multiple documents.
@@ -17,7 +16,7 @@ Functionality wishlist:
 	Should complain when adding files we already have
 	Thumbnail generation is done in main thread and freezes UI
 	"Manage BibTeX File" as well as one-off export
-	BibTeX import (and merging with metadata-less PDFs?)
+	
 	Configuration of lookup URLs
 	Configuration of proxy server for non-GNOMEers
 	Configuration of max_timeout in BibData::getCrossRef

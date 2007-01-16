@@ -244,12 +244,7 @@ bool Document::hasTag(int uid)
 }
 
 
-// key is not ref because it gets initted from a const char*
-static Glib::ustring writeBibKey (Glib::ustring key, Glib::ustring const & value)
-{
-	return "\t" + key + " = {" + Utility::escapeBibtexAccents (value) + "}";
-}
-
+using Utility::writeBibKey;
 
 void Document::writeBibtex (std::ostringstream& out)
 {
@@ -257,6 +252,14 @@ void Document::writeBibtex (std::ostringstream& out)
 	// This doctype bit should be a variable
 	// We should strip illegal characters from displayname in a predictable way
 	out << "@" << bib_.getType() << "{" << displayname_ << "," << std::endl;
+
+	BibData::ExtrasMap extras = bib_.getExtras ();
+	BibData::ExtrasMap::iterator it = extras.begin ();
+	BibData::ExtrasMap::iterator const end = extras.end ();
+	for (; it != end; ++it) {
+		out << writeBibKey ((*it).first, (*it).second) << "\n";
+	}
+
 	out << writeBibKey ("author",  bib_.getAuthors()) << ",\n";
 	out << writeBibKey ("title",   bib_.getTitle()) << ",\n";
 	out << writeBibKey ("journal", bib_.getJournal()) << ",\n";
@@ -264,6 +267,7 @@ void Document::writeBibtex (std::ostringstream& out)
 	out << writeBibKey ("number",  bib_.getIssue()) << ",\n";
 	out << writeBibKey ("pages",   bib_.getPages()) << ",\n";
 	out << writeBibKey ("year",    bib_.getYear()) << "\n";
+	
 	out << "}\n\n";
 }
 

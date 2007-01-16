@@ -166,6 +166,13 @@ std::vector<Glib::ustring> recurseFolder (
 }
 
 
+// key is not ref because it gets initted from a const char*
+Glib::ustring writeBibKey (Glib::ustring key, Glib::ustring const & value)
+{
+	return "\t" + key + " = {" + escapeBibtexAccents (value) + "}";
+}
+
+
 Glib::ustring escapeBibtexAccents (
 	Glib::ustring target)
 {
