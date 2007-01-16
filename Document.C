@@ -257,7 +257,7 @@ void Document::writeBibtex (std::ostringstream& out)
 	BibData::ExtrasMap::iterator it = extras.begin ();
 	BibData::ExtrasMap::iterator const end = extras.end ();
 	for (; it != end; ++it) {
-		out << writeBibKey ((*it).first, (*it).second) << "\n";
+		out << writeBibKey ((*it).first, (*it).second) << ",\n";
 	}
 
 	out << writeBibKey ("author",  bib_.getAuthors()) << ",\n";
