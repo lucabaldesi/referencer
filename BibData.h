@@ -2,6 +2,9 @@
 #ifndef BIBDATA_H
 #define BIBDATA_H
 
+#include <map>
+#include <vector>
+
 #include <gtkmm.h>
 
 class BibData {
@@ -15,7 +18,6 @@ class BibData {
 	Glib::ustring journal_;
 	Glib::ustring title_;
 	Glib::ustring year_;
-
 
 	public:
 	BibData ();
@@ -31,6 +33,10 @@ class BibData {
 	void getCrossRef ();
 	void onCrossRefCancel ();
 	void fetcherThread ();
+
+	std::map <Glib::ustring, Glib::ustring> extras_;
+	void addExtra (Glib::ustring const &key, Glib::ustring const &value);
+	void BibData::clearExtra ();
 
 	void setType (Glib::ustring const &type) {type_ = type;}
 	Glib::ustring getType () {return type_;}

@@ -60,6 +60,20 @@ void BibData::clear ()
 }
 
 
+void BibData::addExtra (Glib::ustring const &key, Glib::ustring const &value)
+{
+	// Should add something to our map of extra keys
+	std::cerr << "addExtra: '" << key << ":" << value << "'\n";
+	extras_[key] = value;
+}
+
+
+void BibData::clearExtra ()
+{
+	extras_.clear ();
+}
+
+
 using Glib::Markup::escape_text;
 
 void BibData::writeXML (std::ostringstream &out)
@@ -73,6 +87,14 @@ void BibData::writeXML (std::ostringstream &out)
 	out << "    <bib_number>" << escape_text(issue_) << "</bib_number>\n";
 	out << "    <bib_pages>" << escape_text(pages_) << "</bib_pages>\n";
 	out << "    <bib_year>" << escape_text(year_) << "</bib_year>\n";
+	
+	std::map<Glib::ustring, Glib::ustring>::iterator it = extras_.begin ();
+	std::map<Glib::ustring, Glib::ustring>::iterator const end = extras_.end ();
+	for (; it != end; ++it) {
+		out << "    <bib_extra key=\""
+		    << escape_text((*it).first) << "\">"
+		    << escape_text((*it).second) << "</bib_extra>\n";
+	}
 }
 
 

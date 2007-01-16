@@ -806,7 +806,7 @@
 	    <widget class="GtkExpander" id="expander1">
 	      <property name="visible">True</property>
 	      <property name="can_focus">True</property>
-	      <property name="expanded">False</property>
+	      <property name="expanded">True</property>
 	      <property name="spacing">0</property>
 
 	      <child>
@@ -824,7 +824,7 @@
 		      <property name="show_arrow">True</property>
 
 		      <child>
-			<widget class="GtkToolButton" id="toolbutton1">
+			<widget class="GtkToolButton" id="NewExtraField">
 			  <property name="visible">True</property>
 			  <property name="stock_id">gtk-new</property>
 			  <property name="visible_horizontal">True</property>
@@ -838,7 +838,7 @@
 		      </child>
 
 		      <child>
-			<widget class="GtkToolButton" id="toolbutton2">
+			<widget class="GtkToolButton" id="DeleteExtraField">
 			  <property name="visible">True</property>
 			  <property name="stock_id">gtk-delete</property>
 			  <property name="visible_horizontal">True</property>
@@ -868,7 +868,7 @@
 		      <property name="window_placement">GTK_CORNER_TOP_LEFT</property>
 
 		      <child>
-			<widget class="GtkTreeView" id="treeview1">
+			<widget class="GtkTreeView" id="ExtraFields">
 			  <property name="visible">True</property>
 			  <property name="can_focus">True</property>
 			  <property name="headers_visible">True</property>

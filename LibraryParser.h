@@ -30,6 +30,7 @@ class LibraryParser : public Glib::Markup::Parser {
 	Glib::ustring newDocTag_;
 	std::vector<int> newDocTags_;
 	Glib::ustring bibText_;
+	Glib::ustring bibExtraKey_;
 
 	BibData newDocBib_;
 
@@ -87,10 +88,15 @@ class LibraryParser : public Glib::Markup::Parser {
 		           || element_name == "bib_number"
 		           || element_name == "bib_pages"
 		           || element_name == "bib_year"
-		           || element_name == ""
-		) {
+		           || element_name == "") {
 			inBibItem_ = true;
 			bibText_ = "";
+		} else if (element_name == "bib_extra") {
+			inBibItem_ = true;
+			bibText_ = "";
+			Glib::Markup::Parser::AttributeMap::const_iterator foo = attributes.find ("key");
+			std::pair<Glib::ustring, Glib::ustring> item = *foo;
+			bibExtraKey_ = item.second;
 		}
 	}
 
@@ -147,6 +153,9 @@ class LibraryParser : public Glib::Markup::Parser {
 		} else if (element_name == "bib_year") {
 			inBibItem_ = false;
 			newDocBib_.setYear (bibText_);
+		} else if (element_name == "bib_extra") {
+			inBibItem_ = false;
+			newDocBib_.addExtra (bibExtraKey_, bibText_);
 		}
 	}
 
