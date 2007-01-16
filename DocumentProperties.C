@@ -74,6 +74,8 @@ void DocumentProperties::update ()
 	doientry_->set_text (bib.getDoi());
 	keyentry_->set_text (doc_->getDisplayName());
 	typecombo_->get_entry()->set_text (bib.getType());
+	std::cerr << "Loaded type as " << bib.getType() << "\n";
+	std::cerr << "Type was set in GUI as " << typecombo_->get_entry()->get_text () << "\n";
 
 	titleentry_->set_text (bib.getTitle());
 	authorsentry_->set_text (bib.getAuthors());

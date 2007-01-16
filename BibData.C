@@ -64,6 +64,7 @@ using Glib::Markup::escape_text;
 
 void BibData::writeXML (std::ostringstream &out)
 {
+	out << "    <bib_type>" << escape_text(type_) << "</bib_type>\n";
 	out << "    <bib_doi>" << escape_text(doi_) << "</bib_doi>\n";
 	out << "    <bib_title>" << escape_text(title_) << "</bib_title>\n";
 	out << "    <bib_authors>" << escape_text(authors_) << "</bib_authors>\n";

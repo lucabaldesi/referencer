@@ -79,6 +79,7 @@ class LibraryParser : public Glib::Markup::Parser {
 
 
 		} else if (element_name == "bib_doi"
+		           || element_name == "bib_type"
 		           || element_name == "bib_title"
 		           || element_name == "bib_authors"
 		           || element_name == "bib_journal"
@@ -125,6 +126,9 @@ class LibraryParser : public Glib::Markup::Parser {
 		} else if (element_name == "bib_title") {
 			inBibItem_ = false;
 			newDocBib_.setTitle (bibText_);
+		} else if (element_name == "bib_type") {
+			inBibItem_ = false;
+			newDocBib_.setType (bibText_);
 		} else if (element_name == "bib_authors") {
 			inBibItem_ = false;
 			newDocBib_.setAuthors (bibText_);
