@@ -14,6 +14,22 @@
 
 #include "CrossRefParser.h"
 
+std::vector<Glib::ustring> BibData::document_types;
+Glib::ustring BibData::default_document_type;
+
+
+BibData::BibData ()
+{
+	if (document_types.size() == 0) {
+		document_types.push_back ("Article");
+		document_types.push_back ("Book");
+		default_document_type = "Article";
+	}
+	
+	// The only key that actuallyy has a default value
+	type_ = default_document_type;
+}
+
 
 /*
  * Dump all fields to standard out

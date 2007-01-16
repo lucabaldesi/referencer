@@ -1,7 +1,5 @@
 
 Essential:
-	Conversion of accented characters into LaTeX when exporting (and importing?) bibtex
-	 - we currently output stuff which needs latin1 package
   Different doc types -- books as well as articles at least
   Extra fields
   Appropriate copyright notice for abiword-stolen UC->Latex
@@ -31,6 +29,7 @@ Functionality wishlist:
 	Do something with PDF-embedded metadata if there is any
 	Invalid DOIs should give more informative errors than XML parse failure
 	Selective bibtex output
+	Some kind of indication that arbitrary document type strings only work with bibtex output
 
 	
 

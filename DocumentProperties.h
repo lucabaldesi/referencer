@@ -25,6 +25,7 @@ class DocumentProperties {
 	Gtk::Entry *yearentry_;
 	Gtk::FileChooserButton *filechooser_;
 	Gtk::Button *crossrefbutton_;
+	Gtk::ComboBoxEntryText *typecombo_;
 
 	void update ();
 	void save ();

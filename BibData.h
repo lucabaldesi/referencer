@@ -6,6 +6,7 @@
 
 class BibData {
 	private:
+	Glib::ustring type_;
 	Glib::ustring doi_;
 	Glib::ustring volume_;
 	Glib::ustring issue_;
@@ -15,8 +16,12 @@ class BibData {
 	Glib::ustring title_;
 	Glib::ustring year_;
 
+
 	public:
-	BibData () {}
+	BibData ();
+	
+	static std::vector<Glib::ustring> document_types;
+	static Glib::ustring default_document_type;
 
 	void print ();
 	void clear ();
@@ -27,6 +32,8 @@ class BibData {
 	void onCrossRefCancel ();
 	void fetcherThread ();
 
+	void setType (Glib::ustring const &type) {type_ = type;}
+	Glib::ustring getType () {return type_;}
 	void setDoi (Glib::ustring const &doi) {doi_ = doi;}
 	Glib::ustring getDoi () {return doi_;}
 	void setVolume (Glib::ustring const &vol) {volume_ = vol;}

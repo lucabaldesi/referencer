@@ -22,6 +22,17 @@ DocumentProperties::DocumentProperties ()
 	pagesentry_ = (Gtk::Entry *) xml_->get_widget ("Pages");
 	yearentry_ = (Gtk::Entry *) xml_->get_widget ("Year");
 
+	Gtk::VBox *box = (Gtk::VBox *) xml_->get_widget ("Type");
+	typecombo_ = Gtk::manage (new Gtk::ComboBoxEntryText);
+	box->pack_start (*typecombo_, true, true, 0);
+	box->show_all ();
+	
+	std::vector<Glib::ustring>::iterator it = BibData::document_types.begin();
+	for (; it != BibData::document_types.end(); ++it) {
+		typecombo_->append_text (*it);
+	}
+	typecombo_->set_active_text (BibData::default_document_type);
+
 	crossrefbutton_ = (Gtk::Button *) xml_->get_widget ("CrossRefLookup");
 	crossrefbutton_->signal_clicked().connect(
 		sigc::mem_fun (*this, &DocumentProperties::onCrossRefLookup));
@@ -62,6 +73,7 @@ void DocumentProperties::update ()
 
 	doientry_->set_text (bib.getDoi());
 	keyentry_->set_text (doc_->getDisplayName());
+	typecombo_->get_entry()->set_text (bib.getType());
 
 	titleentry_->set_text (bib.getTitle());
 	authorsentry_->set_text (bib.getAuthors());
@@ -83,6 +95,7 @@ void DocumentProperties::save ()
 	doc_->setFileName (filename);
 	doc_->setDisplayName (keyentry_->get_text ());
 
+	bib.setType (typecombo_->get_entry()->get_text());
 	bib.setDoi (doientry_->get_text ());
 	bib.setTitle (titleentry_->get_text ());
 	bib.setAuthors (authorsentry_->get_text ());
