@@ -36,6 +36,7 @@ Functionality wishlist:
 	
 
 Bugs:
+	DocumentProperties should shrink when extra fields is collapsed, it doesn't.
 	Tagger's scrolledwindow seems to have a shadow/border even though we ask it not to
 	In TagWindow::onIconsDragData, we do get_file_info on remote URIs synchronously
 		in order to support directory recursion on remote filesystems -- this is a 
