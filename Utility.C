@@ -176,7 +176,7 @@ Glib::ustring writeBibKey (Glib::ustring key, Glib::ustring const & value)
 Glib::ustring escapeBibtexAccents (
 	Glib::ustring target)
 {
-	for (int i = 0; i < target.length(); ++i) {
+	for (unsigned int i = 0; i < target.length(); ++i) {
 		gunichar letter = target[i];
 		if (letter < 128) {
 			continue;
