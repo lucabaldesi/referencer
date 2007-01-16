@@ -181,11 +181,7 @@ Glib::ustring escapeBibtexAccents (
 				target.insert (i, replacement);
 			}
 		}
-		
-		std::cerr << letter << "\n";
 	}
-
-	std::cerr << "Final target = " << target << "\n";
 
 	return target;
 }
@@ -239,7 +235,7 @@ int wvConvertUnicodeToLaTeX(gunichar char16, Glib::ustring &out)
 			return(1);
 #endif
 		case 0xA3:
-			printf("\pounds"); /* £ (POUND SIGN ) */
+			printf("\\pounds"); /* £ (POUND SIGN ) */
 			return(1);
 #if 0
 		case 0xA4:
@@ -738,7 +734,6 @@ int wvConvertUnicodeToLaTeX(gunichar char16, Glib::ustring &out)
 		case 0x013E:
 			printf("\\v{l}");  /* l with caron */
 			return(1);
-
 		case 0x0141:
 			printf("\\L{}");  /* L with stroke */
 			return(1);
