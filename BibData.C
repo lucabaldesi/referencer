@@ -106,7 +106,7 @@ void BibData::parseCrossRefXML (Glib::ustring const &xml)
 		context.parse (xml);
 	} catch (Glib::MarkupError const ex) {
 		std::cerr << "Markuperror while parsing:\n'''\n" << xml << "\n'''\n";
-		Utility::exceptionDialog (&ex, "parsing CrossRef XML.  Could be an unknown DOI");
+		Utility::exceptionDialog (&ex, "parsing CrossRef XML.  The DOI could be invalid, or not known to crossref.org");
 	}
 	context.end_parse ();
 }

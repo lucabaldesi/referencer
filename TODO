@@ -22,6 +22,7 @@ Functionality wishlist:
 	Configuration of max_timeout in BibData::getCrossRef
 	gconf schema
 	Somehow know when to add et. al. to authors
+	Don't add all crossref.org'd docs as Article, they tell us 'journal_article' or so
 	Table view as well as icon view
 	When generating keys from authorYEAR, should get rid of LaTeX unfriendly accented characters
 	Where we use ".tmp" in writing files, we should use something more unique
@@ -29,6 +30,8 @@ Functionality wishlist:
 	Invalid DOIs should give more informative errors than XML parse failure
 	Selective bibtex output
 	Some kind of indication that arbitrary document type strings only work with bibtex output
+	Google scholar?
+
 
 	
 
