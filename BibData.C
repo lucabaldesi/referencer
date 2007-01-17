@@ -23,6 +23,19 @@ BibData::BibData ()
 	if (document_types.size() == 0) {
 		document_types.push_back ("Article");
 		document_types.push_back ("Book");
+		document_types.push_back ("Booklet");
+		document_types.push_back ("Conference");
+		document_types.push_back ("InBook");
+		document_types.push_back ("InCollection");
+		document_types.push_back ("InProceedings");
+		document_types.push_back ("Manual");
+		document_types.push_back ("MastersThesis");
+		document_types.push_back ("Misc");
+		document_types.push_back ("PhDThesis");
+		document_types.push_back ("Proceedings");
+		document_types.push_back ("TechReport");
+		document_types.push_back ("Unpublished");
+		
 		default_document_type = "Article";
 	}
 	
