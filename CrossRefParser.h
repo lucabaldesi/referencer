@@ -24,7 +24,7 @@ class CrossRefParser : public Glib::Markup::Parser {
 		const Glib::ustring& element_name,
 		const Glib::Markup::Parser::AttributeMap& attributes)
 	{
-		std::cerr << "CrossRefParser: Started element '" << element_name << "'\n";
+		//std::cerr << "CrossRefParser: Started element '" << element_name << "'\n";
 		text_ = "";
 		// Should use a more reliable check than this
 		if (element_name == "html" || element_name == "HTML") {
