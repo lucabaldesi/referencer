@@ -362,7 +362,7 @@ void TagWindow::constructMenu ()
 
 void TagWindow::populateDocIcons ()
 {
-	std::cerr << "TagWindow::populateDocIcons >>\n";
+	//std::cerr << "TagWindow::populateDocIcons >>\n";
 
 	// Save initial selection
 	Gtk::TreePath initialpath;
