@@ -2,6 +2,7 @@
 Essential:
   Appropriate copyright notice for abiword-stolen UC->Latex
 	BibTeX import (and merging with metadata-less PDFs?)
+	arXiv support: http://www.citebase.org/openurl?svc_id=bibtex&rft_id=oai%3AarXiv.org%3Ahep-lat%2F0306023
 
 Niceties:
 	LookupDoi and Open should really handle multiple documents.
