@@ -91,6 +91,7 @@ void TagWindow::constructUI ()
 	window_->add (*vbox);
 
 	vbox->pack_start (*uimanager_->get_widget("/MenuBar"), false, false, 0);
+	//vbox->pack_start (*uimanager_->get_widget("/ToolBar"), false, false, 0);
 	Gtk::HPaned *hpaned = Gtk::manage(new Gtk::HPaned());
 	vbox->pack_start (*hpaned, true, true, 6);
 
@@ -304,7 +305,6 @@ void TagWindow::constructMenu ()
 		"      <menuitem action='RenameTag'/>"
 		"    </menu>"
 		"    <menu action='DocMenu'>"
-
 		"      <menuitem action='AddDocFile'/>"
 		"      <menuitem action='AddDocFolder'/>"
 		"      <menuitem action='AddDocDoi'/>"
@@ -319,6 +319,15 @@ void TagWindow::constructMenu ()
 		"      <menuitem action='About'/>"
 		"    </menu>"
 		"  </menubar>"
+		"  <toolbar name='ToolBar'>"
+		"    <toolitem action='ExportBibtex'/>"
+		"    <toolitem action='Preferences'/>"
+		"    <separator/>"
+		"    <toolitem action='RemoveDoc'/>"
+		"    <toolitem action='DoiLookupDoc'/>"
+		"    <toolitem action='OpenDoc'/>"
+		"    <toolitem action='DocProperties'/>"
+		"  </toolbar>"
 		"  <toolbar name='TagBar'>"
 		"    <toolitem action='CreateTag'/>"
 		"    <toolitem action='DeleteTag'/>"
@@ -576,7 +585,7 @@ void TagWindow::docSelectionChanged ()
 	if (docselectionignore_)
 		return;
 
-	std::cerr << "TagWindow::docSelectionChanged >>\n";
+	//std::cerr << "TagWindow::docSelectionChanged >>\n";
 
 	int selectcount = getSelectedDocCount ();
 
@@ -924,7 +933,7 @@ void TagWindow::addDocFiles (std::vector<Glib::ustring> const &filenames)
 		
 		Glib::RefPtr<Gnome::Vfs::Uri> uri = Gnome::Vfs::Uri::create (*it);
 		if (!uri->is_local ()) {
-			// Prompt the user to download the file
+			// Should prompt the user to download the file
 			std::cerr << "Ooh, a remote uri\n";
 		}
 		
