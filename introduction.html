@@ -1,0 +1,51 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Strict//EN">
+
+<html>
+
+<head>
+<title>Introduction to Referencer</title>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<h1>Introduction to Referencer</h1>
+<p><i>Author: John Spray <jcspray at icculus.org></i></p>
+</head>
+
+<body>
+
+<h2>Overview</h2>
+<p>Referencer is a tool to help you manage your collection of documents, and to use them to generate a bibliography.  It is designed with the scientist/researcher in mind, and "document" may be taken to mean "paper" in general, although Referencer can deal with any kind of document that BibTeX can.</p>
+<p>At it's most basic, Referencer may be used for editing your documents and bibliography data (<i>library</i>).  However, it also includes useful time-saving features.  Chief amongst these is the automatic acquisition of bibliographic information (<i>metadata</i>) for some kinds of document.  When you add a PDF file to your Referencer library, it will automatically be searched for key identifiers such as a DOI code or arXiv identifier.  If either of these is found, Referencer uses your internet connection to retrieve the metadata for the document.  If you've got a collection of already-downloaded PDFs of papers, this can <b>save you a lot of typing!</b></p>
+<p>Referencer also uses its knowledge of papers to provide handy functions such as opening the web page associated with the article, or opening the document itself.  Additionally, you can attach <i>tags</i> to documents to catgorise them, and then browse documents more easily by filtering them by tag.</p>
+<p>Referencer is intended to be extremely user-friendly, but to help you get up and running as smoothly as possible, the following sections explain how to use Referencer in more detail.</p>
+
+<h2>How do I...</h2>
+<h3>use Referencer with BibTeX?</h3>
+<p>Referencer maintains its own library of your documents, rather than loading an editing a BibTeX file.  As such, when you're ready to use your library in your LaTeX document, you can have Referencer generate a BibTeX file (<i>Library->Export to BibTeX</i>).  Referencer will automatically handle conversion of special characters (e.g. ß) to their LaTeX equivalents (e.g. \ss).
+</p>
+<h3>add documents?</h3>
+<ul>
+	<li><p><b>By file/folder:</b>  <i>Documents->Add File...</i><br>
+	If you have some document files you'd like Referencer to know about, you can add one or more files, or a whole folder (<i>Documents->Add Folder..</i>), and Referencer will create entries for each file.  PDF files will be read, and Referencer will do its best to fill out the metadata for you.</p>
+	</li>
+	<li><p><b>By DOI code:</b>  <i>Documents->Add Document with DOI...</i><br>
+	If you have the DOI code for a paper, you can save yourself the effort of inputting its metadata by simply giving Referencer the DOI and letting it look up the metadata for you.</p>
+	</li>
+	<li><p><b>By hand:</b>  <i>Documents->Add Empty Reference...</i><br>
+	As a last resort, Referencer provides a simple interface for manually creating a document and inputting metadata.  A document with no information is created, and the properties window is opened for you to enter a name for the document and some metadata.
+	</p></li>
+</ul>
+<h3>use different document types/fields?</h3>
+<p>Referencer's user interface is optimised for dealing with scientific papers.  As such, the document type is "Article" by default and fields such as Title, Authors, Journal and Volume are shown.  Other types of document may be selected in the properties window (<i>Documents->Properties...</i>).  If you don't see the BibTeX type you want, simply type it in and it will be passed through verbatim when exporting to your BibTeX file.  Some document types may require additional metadata fields, for example "Book" documents should have an "Editor" field.  You can add this by expanding the <i>Extra Fields</i> section of the properties window, and clicking the <i>New</i> icon.  To enter some data into your new field, select it and click the <i>Edit</i> icon.
+</p>
+
+<h2>Tagging and Searching</h2>
+<p>Creating tags blah blah Setting tags blah blah
+</p>
+
+<p>Once you've tagged some documents, you may want to filter your documents by tag.  You can do this by
+</p>
+
+</body>
+
+</html>
+
+
