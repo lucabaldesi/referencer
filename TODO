@@ -2,40 +2,42 @@
 Essential:
   Appropriate copyright notice for abiword-stolen UC->Latex
 	BibTeX import (and merging with metadata-less PDFs?)
-	arXiv support: http://www.citebase.org/openurl?svc_id=bibtex&rft_id=oai%3AarXiv.org%3Ahep-lat%2F0306023
-	Search bar
 
 Niceties:
 	LookupDoi and Open should really handle multiple documents.
 	A View menu which allows hiding of tagging sidebar
 
-Functionality wishlist:
-	Should be able to select multiple tags for ANDing instead of ORing document selection
-	read PS files to search for DOIs as well as reading PDFs
-	Drag and drop to make LaTeX citations
-	Drag and drop to copy (download) file
-	Copy document key to clipboard
-	Should complain when adding files we already have
-	Thumbnail generation is done in main thread and freezes UI
-	"Manage BibTeX File" as well as one-off export
-	
-	Configuration of lookup URLs
-	Configuration of proxy server for non-GNOMEers
-	Configuration of max_timeout in BibData::getCrossRef
-	gconf schema
-	Somehow know when to add et. al. to authors
-	Don't add all crossref.org'd docs as Article, they tell us 'journal_article' or so
+Big functionality wishlist:
+	arXiv support:
+		regex the code out the PDF
+		http://www.citebase.org/openurl?svc_id=bibtex&rft_id=oai%3AarXiv.org%3Ahep-lat%2F0306023
+		Alternatively OAI support for arXiv and CrossRef (and possibly many others)
+	Search bar
 	Table view as well as icon view
+	Google scholar link?  Arbitrary links?
+	read PS files to search for DOIs as well as reading PDFs
+	Copy added (remote?) files into a local directory
+	Save and load libraries to arbitrary locations
+	"Manage BibTeX File" as well as one-off export
+
+Little functionality wishlist:
+	gconf schema
+	Get document type from crossref XML instead of assuming Article
 	When generating keys from authorYEAR, should get rid of LaTeX unfriendly accented characters
 	Where we use ".tmp" in writing files, we should use something more unique
 	Do something with PDF-embedded metadata if there is any
-	Invalid DOIs should give more informative errors than XML parse failure
+
+UI wishlist:
+	Should be able to select multiple tags for ANDing instead of ORing document selection
+	Drag and drop to make LaTeX citations
+	Drag and drop to import bibtex snippets
+	Copy document key to clipboard
+	Should complain when adding files we already have
+	Thumbnail generation is done in main thread and freezes UI
+	Configuration of proxy server for non-GNOMEers
+	Configuration of max_timeout in BibData::getCrossRef
+	Somehow know when to add et. al. to authors
 	Selective bibtex output
-	Some kind of indication that arbitrary document type strings only work with bibtex output
-	Google scholar?
-
-
-	
 
 Bugs:
 	DocumentProperties should shrink when extra fields is collapsed, it doesn't.
@@ -44,18 +46,8 @@ Bugs:
 		in order to support directory recursion on remote filesystems -- this is a 
 		bad thing when adding stuff from really remote things like websites
 
-To support an extra entry in the bibdata, one needs to update:
-	class BibData
-	BibData::writeXML
-	class LibraryParser::on_start/end_element
-	class CrossRefParser
-	DocumentProperties::DocumentProperties
-	DocumentProperties::update
-	DocumentProperties::save
-	documentproperties.glade
-	
-EndNote is also DOI aware, dx.doi.org URLs generated when importing reference from eg INSPEC
-Take heart, endnote is slow and wank and easy to be better than
+EndNote is also somewhat DOI aware, dx.doi.org URLs generated when importing reference from eg INSPEC
+Take heart, endnote is slow and crummy and easy to be better than for simple bibtex use
 
 Competition on Science biblio export:
 	EndNote
