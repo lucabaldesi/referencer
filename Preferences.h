@@ -24,8 +24,10 @@ private:
 	Gnome::Conf::Entry workoffline_;
 	Gnome::Conf::Entry doilaunch_;
 	Gnome::Conf::Entry metadatalookup_;
+	Gnome::Conf::Entry uselistview_;
 
 	sigc::signal<void> workofflinesignal_;
+	sigc::signal<void> uselistviewsignal_;
 
 	Glib::ustring doilaunchdefault_;
 	Glib::ustring metadatalookupdefault_;
@@ -44,6 +46,10 @@ public:
 	bool getWorkOffline ();
 	void setWorkOffline (bool const &offline);
 	sigc::signal<void> getWorkOfflineSignal ();
+	
+	bool getUseListView ();
+	void setUseListView (bool const &uselistview);
+	sigc::signal<void> getUseListViewSignal ();
 
 	typedef std::pair<Glib::ustring, Glib::ustring> StringPair;
 	

@@ -15,6 +15,7 @@ Preferences::Preferences ()
 	confclient_ = Gnome::Conf::Client::get_default_client ();
 
 	workoffline_ = confclient_->get_entry (CONF_PATH "/workoffline");
+	uselistview_ = confclient_->get_entry (CONF_PATH "/uselistview");
 	doilaunch_ = confclient_->get_entry (CONF_PATH "/doilaunch");
 	metadatalookup_ = confclient_->get_entry (CONF_PATH "/metadatalookup");
 
@@ -26,10 +27,10 @@ Preferences::Preferences ()
 		std::cerr << "Preferences::Preferences: CONF_PATH "
 			"doesn't exist, setting it up\n";
 
+		setUseListView (false);
 		setWorkOffline (false);
 		setDoiLaunch (doilaunchdefault_);
 		setMetadataLookup (metadatalookupdefault_);
-	
 	};
 
 	confclient_->add_dir (
@@ -155,10 +156,24 @@ bool Preferences::getWorkOffline ()
 	return confclient_->get_bool (workoffline_.get_key());
 }
 
+
 void Preferences::setWorkOffline (bool const &offline)
 {
 	confclient_->set (workoffline_.get_key(), offline);
 }
+
+
+bool Preferences::getUseListView ()
+{
+	return confclient_->get_bool (uselistview_.get_key());
+}
+
+
+void Preferences::setUseListView (bool const &uselistview)
+{
+	confclient_->set (uselistview_.get_key(), uselistview);
+}
+
 
 using Utility::StringPair;
 using Utility::twoWaySplit;
