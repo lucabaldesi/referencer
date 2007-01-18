@@ -260,7 +260,7 @@ void TagWindow::constructMenu ()
 		"AddDocFolder", Gtk::Stock::ADD, "_Add Folder..."),
   	sigc::mem_fun(*this, &TagWindow::onAddDocFolder));
  	actiongroup_->add( Gtk::Action::create(
-		"AddDocUnnamed", Gtk::Stock::ADD, "_Add Empty Reference"),
+		"AddDocUnnamed", Gtk::Stock::ADD, "_Add Empty Reference..."),
   	sigc::mem_fun(*this, &TagWindow::onAddDocUnnamed));
 	actiongroup_->add( Gtk::Action::create(
 		"AddDocDoi", Gtk::Stock::ADD, "_Add Reference with DOI..."),
