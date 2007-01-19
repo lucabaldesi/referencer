@@ -1,7 +1,9 @@
 
 Essential:
-  Appropriate copyright notice for abiword-stolen UC->Latex
+	Appropriate copyright notice for abiword-stolen UC->Latex
 	BibTeX import (and merging with metadata-less PDFs?)
+	Save and load libraries to arbitrary locations
+	List view as functional as icon view
 
 Big functionality wishlist:
 	arXiv support:
@@ -9,11 +11,9 @@ Big functionality wishlist:
 		http://www.citebase.org/openurl?svc_id=bibtex&rft_id=oai%3AarXiv.org%3Ahep-lat%2F0306023
 		Alternatively OAI support for arXiv and CrossRef (and possibly many others)
 	Search bar
-	Table view as well as icon view
 	Google scholar link?  Arbitrary links?
 	read PS files to search for DOIs as well as reading PDFs
 	Copy added (remote?) files into a local directory
-	Save and load libraries to arbitrary locations
 	"Manage BibTeX File" as well as one-off export
 
 Little functionality wishlist:
