@@ -28,6 +28,7 @@ Little functionality wishlist:
 	Do something with PDF-embedded metadata if there is any
 
 UI wishlist:
+	Save in Preferences the sorting of the list view.
 	An "Untagged" special tag like All
 	Should be able to select multiple tags for ANDing instead of ORing document selection
 	Drag and drop to make LaTeX citations

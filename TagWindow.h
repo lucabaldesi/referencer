@@ -44,13 +44,14 @@ class TagWindow {
 
 		Gtk::IconView *docsiconview_;
 		Gtk::TreeView *docslistview_;
-		// Hold on to these for controlling visibility
-		Gtk::ScrolledWindow *docsiconscroll_;
-		Gtk::ScrolledWindow *docslistscroll_;
 		Gtk::VBox *taggerbox_;
 		std::map<int, Gtk::CheckButton*> taggerchecks_;
 		bool ignoretaggerchecktoggled_;
 		Gtk::Window *window_;
+		// Hold on to these for controlling visibility
+		Gtk::ScrolledWindow *docsiconscroll_;
+		Gtk::ScrolledWindow *docslistscroll_;
+		Gtk::Widget *tagpane_;
 
 		Glib::RefPtr<Gtk::TreeSelection> tagselection_;
 		Gtk::TreeView *tagview_;
@@ -72,6 +73,7 @@ class TagWindow {
 		void tagNameEdited (Glib::ustring const &text1, Glib::ustring const &text2);
 		void onQuit ();
 		void onUseListViewToggled ();
+		void onShowTagPaneToggled ();
 		void onCreateTag ();
 		void onDeleteTag ();
 		void onRenameTag ();
@@ -90,7 +92,10 @@ class TagWindow {
 		void onIconsDragData (
 			const Glib::RefPtr <Gdk::DragContext> &context,
 			int n1, int n2, const Gtk::SelectionData &sel, guint n3, guint n4);
+
+		void onShowTagPanePrefChanged ();
 		void onUseListViewPrefChanged ();
+		bool onDelete (GdkEventAny *ev);
 
 		void onDivine ();
 

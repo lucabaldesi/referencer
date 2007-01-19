@@ -16,6 +16,7 @@ Preferences::Preferences ()
 
 	workoffline_ = confclient_->get_entry (CONF_PATH "/workoffline");
 	uselistview_ = confclient_->get_entry (CONF_PATH "/uselistview");
+	showtagpane_ = confclient_->get_entry (CONF_PATH "/showtagpane");
 	doilaunch_ = confclient_->get_entry (CONF_PATH "/doilaunch");
 	metadatalookup_ = confclient_->get_entry (CONF_PATH "/metadatalookup");
 
@@ -27,6 +28,7 @@ Preferences::Preferences ()
 		std::cerr << "Preferences::Preferences: CONF_PATH "
 			"doesn't exist, setting it up\n";
 
+		setShowTagPane (true);
 		setUseListView (false);
 		setWorkOffline (false);
 		setDoiLaunch (doilaunchdefault_);
@@ -61,8 +63,6 @@ Preferences::Preferences ()
 	button->signal_clicked().connect (
 		sigc::mem_fun (*this, &Preferences::onResetToDefaults));
 
-
-
 	ignorechanges_ = false;
 }
 
@@ -85,6 +85,8 @@ void Preferences::onConfChange (int number, Gnome::Conf::Entry entry)
 		workofflinesignal_.emit ();
 	} else if (key == CONF_PATH "/uselistview") {
 		uselistviewsignal_.emit ();
+	} else if (key == CONF_PATH "/showtagpane") {
+		showtagpanesignal_.emit ();
 	} else if (key == CONF_PATH "/doilaunch") {
 		doilaunchentry_->set_text (
 			entry.get_value ().get_string ());
@@ -180,6 +182,24 @@ void Preferences::setUseListView (bool const &uselistview)
 sigc::signal<void>& Preferences::getUseListViewSignal ()
 {
 	return uselistviewsignal_;
+}
+
+
+bool Preferences::getShowTagPane ()
+{
+	return confclient_->get_bool (showtagpane_.get_key());
+}
+
+
+void Preferences::setShowTagPane (bool const &showtagpane)
+{
+	confclient_->set (showtagpane_.get_key(), showtagpane);
+}
+
+
+sigc::signal<void>& Preferences::getShowTagPaneSignal ()
+{
+	return showtagpanesignal_;
 }
 
 

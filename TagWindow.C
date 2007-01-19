@@ -58,8 +58,6 @@ TagWindow::TagWindow ()
 
 TagWindow::~TagWindow ()
 {
-	saveLibrary ();
-
 	delete taglist_;
 	delete doclist_;
 	delete docpropertiesdialog_;
@@ -78,8 +76,8 @@ void TagWindow::constructUI ()
 {
 	window_ = new Gtk::Window(Gtk::WINDOW_TOPLEVEL);
 	window_->set_default_size (700, 500);
-	/*window_->signal_delete_event().connect (
-		sigc::mem_fun (*this, &TagWindow::onQuit));*/
+	window_->signal_delete_event().connect (
+		sigc::mem_fun (*this, &TagWindow::onDelete));
 
 	constructMenu ();
 
@@ -95,6 +93,8 @@ void TagWindow::constructUI ()
 	Gtk::Frame *tagsframe = new Gtk::Frame ();
 	tagsframe->add(*vbox);
 	hpaned->pack1(*tagsframe, Gtk::FILL);
+
+	tagpane_ = tagsframe;
 
 	Gtk::VBox *filtervbox = Gtk::manage (new Gtk::VBox);
 	Gtk::Expander *filterexpander =
@@ -267,10 +267,32 @@ void TagWindow::constructUI ()
 
 	window_->show_all ();
 
+	// Initialise and listen for prefs change or user input
+	Glib::RefPtr <Gtk::RadioAction>::cast_static(
+			actiongroup_->get_action ("UseListView"))->set_active(
+				_global_prefs->getUseListView ());
+	Glib::RefPtr <Gtk::RadioAction>::cast_static(
+			actiongroup_->get_action ("UseIconView"))->set_active(
+				!_global_prefs->getUseListView ());
 	onUseListViewPrefChanged ();
-
 	_global_prefs->getUseListViewSignal ().connect (
 		sigc::mem_fun (*this, &TagWindow::onUseListViewPrefChanged));
+	
+	Glib::RefPtr <Gtk::RadioAction>::cast_static(
+		actiongroup_->get_action ("UseListView"))->signal_toggled ().connect (
+			sigc::mem_fun(*this, &TagWindow::onUseListViewToggled));
+
+	// Initialise and listen for prefs change or user input
+	Glib::RefPtr <Gtk::ToggleAction>::cast_static(
+			actiongroup_->get_action ("ShowTagPane"))->set_active(
+				_global_prefs->getShowTagPane ());
+	onShowTagPanePrefChanged ();
+	_global_prefs->getShowTagPaneSignal ().connect (
+		sigc::mem_fun (*this, &TagWindow::onShowTagPanePrefChanged));
+		
+	Glib::RefPtr <Gtk::ToggleAction>::cast_static(
+			actiongroup_->get_action ("ShowTagPane"))->signal_toggled ().connect (
+				sigc::mem_fun(*this, &TagWindow::onShowTagPaneToggled));
 }
 
 
@@ -291,11 +313,11 @@ void TagWindow::constructMenu ()
 	actiongroup_->add ( Gtk::Action::create("ViewMenu", "_View") );
 	Gtk::RadioButtonGroup group;
 	actiongroup_->add( Gtk::RadioAction::create(group, "UseListView",
-		"Use _List View"),
-  	sigc::mem_fun(*this, &TagWindow::onUseListViewToggled));
+		"Use _List View"));
 	actiongroup_->add( Gtk::RadioAction::create(group, "UseIconView",
 		"Use _Icon View"));
-
+	actiongroup_->add( Gtk::ToggleAction::create("ShowTagPane",
+		"_Show Tag Pane"));
 
 	actiongroup_->add ( Gtk::Action::create("TagMenu", "_Tags") );
 	actiongroup_->add( Gtk::Action::create(
@@ -357,6 +379,8 @@ void TagWindow::constructMenu ()
 		"    <menu action='ViewMenu'>"
 		"      <menuitem action='UseListView'/>"
 		"      <menuitem action='UseIconView'/>"
+		"      <separator/>"
+		"      <menuitem action='ShowTagPane'/>"
 		"    </menu>"
 		"    <menu action='TagMenu'>"
 		"      <menuitem action='CreateTag'/>"
@@ -770,11 +794,18 @@ void TagWindow::tagClicked (GdkEventButton* event)
 }
 
 
-void TagWindow::onQuit (/*GdkEventAny *ev*/)
+void TagWindow::onQuit ()
 {
+	saveLibrary ();
 	Gnome::Main::quit ();
 }
 
+
+bool TagWindow::onDelete (GdkEventAny *ev)
+{
+	onQuit ();
+	return true;
+}
 
 void TagWindow::onCreateTag  ()
 {
@@ -1448,3 +1479,22 @@ void TagWindow::onUseListViewPrefChanged ()
 		docsiconscroll_->show ();
 	}
 }
+
+
+void TagWindow::onShowTagPaneToggled ()
+{
+	_global_prefs->setShowTagPane (
+		Glib::RefPtr <Gtk::ToggleAction>::cast_static(
+			actiongroup_->get_action ("ShowTagPane"))->get_active ());
+}
+
+
+void TagWindow::onShowTagPanePrefChanged ()
+{
+	if (_global_prefs->getShowTagPane ()) {
+		tagpane_->show ();
+	} else {
+		tagpane_->hide ();
+	}
+}
+

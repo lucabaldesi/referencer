@@ -25,9 +25,11 @@ private:
 	Gnome::Conf::Entry doilaunch_;
 	Gnome::Conf::Entry metadatalookup_;
 	Gnome::Conf::Entry uselistview_;
+	Gnome::Conf::Entry showtagpane_;
 
 	sigc::signal<void> workofflinesignal_;
 	sigc::signal<void> uselistviewsignal_;
+	sigc::signal<void> showtagpanesignal_;
 
 	Glib::ustring doilaunchdefault_;
 	Glib::ustring metadatalookupdefault_;
@@ -41,6 +43,7 @@ public:
 	~Preferences ();
 	void showDialog ();
 
+	// Nothing uses this, hopefully nothing will
 	//Glib::RefPtr<Gnome::Conf::Client> getConfClient () {return confclient_;}
 
 	bool getWorkOffline ();
@@ -50,6 +53,10 @@ public:
 	bool getUseListView ();
 	void setUseListView (bool const &uselistview);
 	sigc::signal<void>& getUseListViewSignal ();
+	
+	bool getShowTagPane ();
+	void setShowTagPane (bool const &showtagpane);
+	sigc::signal<void>& getShowTagPaneSignal ();
 
 	typedef std::pair<Glib::ustring, Glib::ustring> StringPair;
 
