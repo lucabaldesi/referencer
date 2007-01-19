@@ -35,10 +35,10 @@ BibData::BibData ()
 		document_types.push_back ("Proceedings");
 		document_types.push_back ("TechReport");
 		document_types.push_back ("Unpublished");
-		
+
 		default_document_type = "Article";
 	}
-	
+
 	// The only key that actuallyy has a default value
 	type_ = default_document_type;
 }
@@ -100,7 +100,7 @@ void BibData::writeXML (std::ostringstream &out)
 	out << "    <bib_number>" << escape_text(issue_) << "</bib_number>\n";
 	out << "    <bib_pages>" << escape_text(pages_) << "</bib_pages>\n";
 	out << "    <bib_year>" << escape_text(year_) << "</bib_year>\n";
-	
+
 	ExtrasMap::iterator it = extras_.begin ();
 	ExtrasMap::iterator const end = extras_.end ();
 	for (; it != end; ++it) {
@@ -384,7 +384,7 @@ void BibData::getCrossRef ()
 		Gtk::Image *offlineicon = Gtk::manage (
 			new Gtk::Image (Gtk::Stock::DISCONNECT, Gtk::ICON_SIZE_BUTTON));
 		offline->set_image (*offlineicon);
-		
+
 		if (faildialog.run ()) {
 			_global_prefs->setWorkOffline (true);
 		};

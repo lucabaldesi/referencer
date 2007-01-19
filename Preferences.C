@@ -132,7 +132,7 @@ void Preferences::onURLChanged ()
 	// Should we be telling gconf to ignore us for a minute, since
 	// these operations cause a useless callback to onConfChange?
 
-	// Silently don't remember bad settings for now -- should prompt the 
+	// Silently don't remember bad settings for now -- should prompt the
 	// user when the dialog closes if they still haven't entered something valid
 	if (DOIURLValid (doilaunchentry_->get_text ())) {
 		confclient_->set (

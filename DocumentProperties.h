@@ -44,7 +44,7 @@ class DocumentProperties {
 	void onDeleteExtraField ();
 	void onEditExtraField ();
 	void onExtraFieldsSelectionChanged ();
-	
+
 	public:
 		bool show (Document *doc);
 		DocumentProperties ();

@@ -26,7 +26,7 @@ DocumentProperties::DocumentProperties ()
 	typecombo_ = Gtk::manage (new Gtk::ComboBoxEntryText);
 	box->pack_start (*typecombo_, true, true, 0);
 	box->show_all ();
-	
+
 	std::vector<Glib::ustring>::iterator it = BibData::document_types.begin();
 	for (; it != BibData::document_types.end(); ++it) {
 		typecombo_->append_text (*it);
@@ -36,30 +36,30 @@ DocumentProperties::DocumentProperties ()
 	crossrefbutton_ = (Gtk::Button *) xml_->get_widget ("CrossRefLookup");
 	crossrefbutton_->signal_clicked().connect(
 		sigc::mem_fun (*this, &DocumentProperties::onCrossRefLookup));
-		
+
 	newextrafieldbutton_ = (Gtk::Button *) xml_->get_widget ("NewExtraField");
 	deleteextrafieldbutton_ = (Gtk::Button *) xml_->get_widget ("DeleteExtraField");
 	editextrafieldbutton_ = (Gtk::Button *) xml_->get_widget ("EditExtraField");
-	
+
 	newextrafieldbutton_->signal_clicked ().connect (
 		sigc::mem_fun (*this, &DocumentProperties::onNewExtraField));
 
 	deleteextrafieldbutton_->signal_clicked ().connect (
 		sigc::mem_fun (*this, &DocumentProperties::onDeleteExtraField));
-		
+
 	editextrafieldbutton_->signal_clicked ().connect (
 		sigc::mem_fun (*this, &DocumentProperties::onEditExtraField));
 
 	extrafieldsview_ = (Gtk::TreeView *) xml_->get_widget ("ExtraFields");
 	cols_.add (extrakeycol_);
 	cols_.add (extravalcol_);
-	
+
 	extrafieldssel_ = extrafieldsview_->get_selection ();
 	extrafieldssel_->signal_changed ().connect (
 		sigc::mem_fun (*this, &DocumentProperties::onExtraFieldsSelectionChanged));
 
 	extrafieldsstore_ = Gtk::ListStore::create (cols_);
-	
+
 	extrafieldsview_->set_model (extrafieldsstore_);
 	extrafieldsview_->append_column ("Name", extrakeycol_);
 	extrafieldsview_->append_column_editable ("Value", extravalcol_);
@@ -141,7 +141,7 @@ void DocumentProperties::save ()
 	bib.setIssue (issueentry_->get_text ());
 	bib.setPages (pagesentry_->get_text ());
 	bib.setYear (yearentry_->get_text ());
-	
+
 	bib.clearExtras ();
 	Gtk::ListStore::iterator it = extrafieldsstore_->children().begin ();
 	Gtk::ListStore::iterator const end = extrafieldsstore_->children().end ();
@@ -168,7 +168,7 @@ void DocumentProperties::onNewExtraField ()
 	Gtk::Dialog dialog ("New Field", true, false);
 
 	Gtk::VBox *vbox = dialog.get_vbox ();
-	
+
 
 	Gtk::HBox hbox;
 	hbox.set_spacing (12);
@@ -179,7 +179,7 @@ void DocumentProperties::onNewExtraField ()
 
 	Gtk::Entry entry;
 	hbox.pack_start (entry, true, true, 0);
-	
+
 	dialog.add_button (Gtk::Stock::CANCEL, 0);
 	dialog.add_button (Gtk::Stock::OK, 1);
 

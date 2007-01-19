@@ -21,7 +21,7 @@ class BibData {
 
 	public:
 	BibData ();
-	
+
 	static std::vector<Glib::ustring> document_types;
 	static Glib::ustring default_document_type;
 

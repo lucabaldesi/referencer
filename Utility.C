@@ -21,7 +21,7 @@ StringPair twoWaySplit (
 	if (pos == (int)Glib::ustring::npos) {
 		retval.first = str;
 	} else {
-		retval.first = str.substr (0, pos);	
+		retval.first = str.substr (0, pos);
 		retval.second = str.substr (pos + divider.length(), str.length ());
 	}
 
@@ -101,7 +101,7 @@ void exceptionDialog (
 		+ "'.";*/
 
 	Glib::ustring message =
-		"<big><b>" 
+		"<big><b>"
 		+ ex->what ()
 		+ "</b></big>\n\n"
 		"This problem was encountered while "
@@ -198,30 +198,30 @@ Glib::ustring escapeBibtexAccents (
 	and then iso8859-1 stuff added */
 
 #undef printf
-#define printf(x) out = ("{" x "}"); 
+#define printf(x) out = ("{" x "}");
 
 int wvConvertUnicodeToLaTeX(gunichar char16, Glib::ustring &out)
 	{
 	//DEBUG: printf("%d,%c\n",char16,char16);
 
-	/* 
-	german and scandinavian characters, MV 1.7.2000 
+	/*
+	german and scandinavian characters, MV 1.7.2000
 	See man iso_8859_1
 
  	This requires the inputencoding latin1 package,
  	see latin1.def. Chars in range 160...255 are just
 	put through as these are legal iso-8859-1 symbols.
 	(see above)
-	
-	Best way to do it until LaTeX is Unicode enabled 
+
+	Best way to do it until LaTeX is Unicode enabled
 	(Omega project).
 	-- MV 4.7.2000
- 
+
 	We use a separate if-statement here ... the 'case range'
 	construct is gcc specific :-(  -- MV 13/07/2000
 	*/
 
-	if ( (char16 >= 0xa0) && (char16 <= 0xff) ) 
+	if ( (char16 >= 0xa0) && (char16 <= 0xff) )
 	{
 	switch(char16)
 		{
@@ -525,7 +525,7 @@ int wvConvertUnicodeToLaTeX(gunichar char16, Glib::ustring &out)
 			return(1);
 		case 0xFF:
 			printf("\\\"{y}"); /* ÿ (LATIN SMALL LETTER Y WITH DIAERESIS ) */
-			return(1);		
+			return(1);
 		return(0);
 	}
 	}
@@ -539,7 +539,7 @@ int wvConvertUnicodeToLaTeX(gunichar char16, Glib::ustring &out)
 			return(1);
 		case 30:
 		case 31:
-		
+
 		case 12:
 		case 13:
 		case 14:
@@ -567,7 +567,7 @@ int wvConvertUnicodeToLaTeX(gunichar char16, Glib::ustring &out)
 			printf("$>$");
 			return(1);
 
-		case 0xF8E7:	
+		case 0xF8E7:
 		/* without this, things should work in theory, but not for me */
 			printf("_");
 			return(1);
@@ -1272,22 +1272,22 @@ int wvConvertUnicodeToLaTeX(gunichar char16, Glib::ustring &out)
 			printf("--"); /* figure dash (similar to en-dash) */
 			return(1);
 		case 0x2013:
-			/* 
-			soft-hyphen? Or en-dash? I find that making 
+			/*
+			soft-hyphen? Or en-dash? I find that making
 			this a soft-hyphen works very well, but makes
-			the occasional "hard" word-connection hyphen 
+			the occasional "hard" word-connection hyphen
 			(like the "-" in roller-coaster) disappear.
 			(Are these actually en-dashes? Dunno.)
 			How does MS Word distinguish between the 0x2013's
 			that signify soft hyphens and those that signify
 			word-connection hyphens? wvware should be able
 			to as well. -- MV 8.7.2000
-	
+
 			U+2013 is the en-dash character and not a soft
 			hyphen. Soft hyphen is U+00AD. Changing to
 			"--". -- 2000-08-11 huftis@bigfoot.com
 			*/
-			printf("--"); 
+			printf("--");
 			return(1);
 
 		case 0x016B:
@@ -1346,7 +1346,7 @@ int wvConvertUnicodeToLaTeX(gunichar char16, Glib::ustring &out)
 			printf("\\v{z}");  /* z with caron */
 			return(1);
 
-	/* Windows specials (MV 4.7.2000). More could be added. 
+	/* Windows specials (MV 4.7.2000). More could be added.
 	See http://www.hut.fi/u/jkorpela/www/windows-chars.html
 	*/
 
@@ -1419,7 +1419,7 @@ int wvConvertUnicodeToLaTeX(gunichar char16, Glib::ustring &out)
 
 			TODO
                         Shouldn't we use the package 'eurofont'?
-                        -- 2000-08-15 huftis@bigfoot.com 
+                        -- 2000-08-15 huftis@bigfoot.com
                         */
 			return(1);
 

@@ -213,12 +213,12 @@ void TagWindow::constructUI ()
 		sigc::mem_fun (*this, &TagWindow::onIconsDragData));
 
 	docsiconview_ = icons;
-	
+
 	Gtk::ScrolledWindow *iconsscroll = Gtk::manage(new Gtk::ScrolledWindow());
 	iconsscroll->add(*icons);
 	iconsscroll->set_policy (Gtk::POLICY_NEVER, Gtk::POLICY_AUTOMATIC);
 	vbox->pack_start(*iconsscroll, true, true, 0);
-	
+
 	docsiconscroll_ = iconsscroll;
 
 
@@ -226,12 +226,12 @@ void TagWindow::constructUI ()
 	vbox->pack_start (docbar, false, false, 0);
 	docbar.set_toolbar_style (Gtk::TOOLBAR_ICONS);
 	docbar.set_show_arrow (false);*/
-	
+
 	// The TreeView for the document table
 	Gtk::TreeView *table = Gtk::manage (new Gtk::TreeView(iconstore_));
 	table->set_enable_search (true);
 	table->set_search_column (1);
-	
+
 	// Er, we're actually passing this as reference, is this the right way
 	// to create it?  Will the treeview actually copy it?
 	Gtk::TreeViewColumn *col =
@@ -255,20 +255,20 @@ void TagWindow::constructUI ()
 	col->set_resizable (true);
 	col->set_sort_column (docyearcol_);
 	table->append_column (*col);
-	
+
 	docslistview_ = table;
-	
+
 	Gtk::ScrolledWindow *tablescroll = Gtk::manage(new Gtk::ScrolledWindow());
 	tablescroll->add(*table);
 	tablescroll->set_policy (Gtk::POLICY_NEVER, Gtk::POLICY_AUTOMATIC);
 	vbox->pack_start(*tablescroll, true, true, 0);
-	
+
 	docslistscroll_ = tablescroll;
-	
+
 	window_->show_all ();
 
 	onUseListViewPrefChanged ();
-	
+
 	_global_prefs->getUseListViewSignal ().connect (
 		sigc::mem_fun (*this, &TagWindow::onUseListViewPrefChanged));
 }
@@ -295,7 +295,7 @@ void TagWindow::constructMenu ()
   	sigc::mem_fun(*this, &TagWindow::onUseListViewToggled));
 	actiongroup_->add( Gtk::RadioAction::create(group, "UseIconView",
 		"Use _Icon View"));
-	
+
 
 	actiongroup_->add ( Gtk::Action::create("TagMenu", "_Tags") );
 	actiongroup_->add( Gtk::Action::create(
@@ -993,13 +993,13 @@ void TagWindow::addDocFiles (std::vector<Glib::ustring> const &filenames)
 		progress.set_text (progresstext.str());
 		while (Gnome::Main::events_pending())
 			Gnome::Main::iteration ();
-		
+
 		Glib::RefPtr<Gnome::Vfs::Uri> uri = Gnome::Vfs::Uri::create (*it);
 		if (!uri->is_local ()) {
 			// Should prompt the user to download the file
 			std::cerr << "Ooh, a remote uri\n";
 		}
-		
+
 		Document *newdoc = doclist_->newDocWithFile(*it);
 		newdoc->readPDF ();
 		if (!newdoc->getBibData().getDoi().empty())
@@ -1382,7 +1382,7 @@ void TagWindow::onIconsDragData (
 
 	typedef std::vector <Glib::ustring> urilist;
 	urilist uris;
-	
+
 	if (sel.get_data_type () == "text/uri-list") {
 		uris = sel.get_uris ();
 	} else if (sel.get_data_type () == "text/x-moz-url-data") {
@@ -1396,7 +1396,7 @@ void TagWindow::onIconsDragData (
 		uris.push_back (utf8);
 		g_free(utf8);
 	}
-	
+
 	urilist::iterator it = uris.begin ();
 	urilist::iterator const end = uris.end ();
 	for (; it != end; ++it) {

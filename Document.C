@@ -267,7 +267,7 @@ void Document::writeBibtex (std::ostringstream& out)
 	out << writeBibKey ("number",  bib_.getIssue()) << ",\n";
 	out << writeBibKey ("pages",   bib_.getPages()) << ",\n";
 	out << writeBibKey ("year",    bib_.getYear()) << "\n";
-	
+
 	out << "}\n\n";
 }
 
