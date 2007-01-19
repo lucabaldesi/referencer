@@ -45,11 +45,11 @@ public:
 
 	bool getWorkOffline ();
 	void setWorkOffline (bool const &offline);
-	sigc::signal<void> getWorkOfflineSignal ();
+	sigc::signal<void>& getWorkOfflineSignal ();
 	
 	bool getUseListView ();
 	void setUseListView (bool const &uselistview);
-	sigc::signal<void> getUseListViewSignal ();
+	sigc::signal<void>& getUseListViewSignal ();
 
 	typedef std::pair<Glib::ustring, Glib::ustring> StringPair;
 	

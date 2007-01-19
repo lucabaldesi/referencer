@@ -5,7 +5,7 @@ Essential:
 
 Niceties:
 	LookupDoi and Open should really handle multiple documents.
-	A View menu which allows hiding of tagging sidebar
+	Allow hiding of tagging sidebar in View menu
 
 Big functionality wishlist:
 	arXiv support:
@@ -28,6 +28,7 @@ Little functionality wishlist:
 	Do something with PDF-embedded metadata if there is any
 
 UI wishlist:
+	An "Untagged" special tag like All
 	Should be able to select multiple tags for ANDing instead of ORing document selection
 	Drag and drop to make LaTeX citations
 	Drag and drop to import bibtex snippets

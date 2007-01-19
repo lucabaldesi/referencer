@@ -83,6 +83,8 @@ void Preferences::onConfChange (int number, Gnome::Conf::Entry entry)
 		workofflinecheck_->set_active (
 			entry.get_value ().get_bool ());
 		workofflinesignal_.emit ();
+	} else if (key == CONF_PATH "/uselistview") {
+		uselistviewsignal_.emit ();
 	} else if (key == CONF_PATH "/doilaunch") {
 		doilaunchentry_->set_text (
 			entry.get_value ().get_string ());
@@ -172,6 +174,12 @@ bool Preferences::getUseListView ()
 void Preferences::setUseListView (bool const &uselistview)
 {
 	confclient_->set (uselistview_.get_key(), uselistview);
+}
+
+
+sigc::signal<void>& Preferences::getUseListViewSignal ()
+{
+	return uselistviewsignal_;
 }
 
 

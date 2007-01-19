@@ -26,9 +26,6 @@ int main (int argc, char **argv)
 	// Initialise libpoppler
 	globalParams = new GlobalParams (NULL);
 
-  /*Utility::escapeBibtexAccents ("道GödelßĊ");
-  return 0;*/
-
 	TagWindow window;
 
 	window.run();
@@ -56,7 +53,6 @@ TagWindow::TagWindow ()
 	constructUI ();
 	populateDocIcons ();
 	populateTagList ();
-	window_->show_all ();
 }
 
 
@@ -175,13 +171,16 @@ void TagWindow::constructUI ()
 	// Create the store for the document icons
 	Gtk::TreeModel::ColumnRecord iconcols;
 	iconcols.add(docpointercol_);
-	iconcols.add(docnamecol_);
+	iconcols.add(dockeycol_);
+	iconcols.add(doctitlecol_);
+	iconcols.add(docauthorscol_);
+	iconcols.add(docyearcol_);
 	iconcols.add(docthumbnailcol_);
 	iconstore_ = Gtk::ListStore::create(iconcols);
 
 	// Create the IconView for the document icons
 	Gtk::IconView *icons = Gtk::manage(new Gtk::IconView(iconstore_));
-	icons->set_text_column(docnamecol_);
+	icons->set_text_column(dockeycol_);
 	icons->set_pixbuf_column(docthumbnailcol_);
 	icons->signal_item_activated().connect (
 		sigc::mem_fun (*this, &TagWindow::docActivated));
@@ -213,17 +212,65 @@ void TagWindow::constructUI ()
 	icons->signal_drag_data_received ().connect (
 		sigc::mem_fun (*this, &TagWindow::onIconsDragData));
 
-	docsview_ = icons;
-
+	docsiconview_ = icons;
+	
 	Gtk::ScrolledWindow *iconsscroll = Gtk::manage(new Gtk::ScrolledWindow());
 	iconsscroll->add(*icons);
 	iconsscroll->set_policy (Gtk::POLICY_NEVER, Gtk::POLICY_AUTOMATIC);
 	vbox->pack_start(*iconsscroll, true, true, 0);
+	
+	docsiconscroll_ = iconsscroll;
+
 
 	/*Gtk::Toolbar& docbar = (Gtk::Toolbar&) *uimanager_->get_widget("/DocBar");
 	vbox->pack_start (docbar, false, false, 0);
 	docbar.set_toolbar_style (Gtk::TOOLBAR_ICONS);
 	docbar.set_show_arrow (false);*/
+	
+	// The TreeView for the document table
+	Gtk::TreeView *table = Gtk::manage (new Gtk::TreeView(iconstore_));
+	table->set_enable_search (true);
+	table->set_search_column (1);
+	
+	// Er, we're actually passing this as reference, is this the right way
+	// to create it?  Will the treeview actually copy it?
+	Gtk::TreeViewColumn *col =
+		Gtk::manage (new Gtk::TreeViewColumn ("Key", dockeycol_));
+	col->set_resizable (true);
+	col->set_sort_column (dockeycol_);
+	table->append_column (*col);
+	col = Gtk::manage (new Gtk::TreeViewColumn ("Title", doctitlecol_));
+	col->set_resizable (true);
+	col->set_expand (true);
+	col->set_sort_column (doctitlecol_);
+	Gtk::CellRendererText * cell =
+		(Gtk::CellRendererText *) col->get_first_cell_renderer ();
+	cell->property_ellipsize () = Pango::ELLIPSIZE_END;
+	table->append_column (*col);
+	col = Gtk::manage (new Gtk::TreeViewColumn ("Authors", docauthorscol_));
+	col->set_resizable (true);
+	col->set_sort_column (docauthorscol_);
+	table->append_column (*col);
+	col = Gtk::manage (new Gtk::TreeViewColumn ("Year  ", docyearcol_));
+	col->set_resizable (true);
+	col->set_sort_column (docyearcol_);
+	table->append_column (*col);
+	
+	docslistview_ = table;
+	
+	Gtk::ScrolledWindow *tablescroll = Gtk::manage(new Gtk::ScrolledWindow());
+	tablescroll->add(*table);
+	tablescroll->set_policy (Gtk::POLICY_NEVER, Gtk::POLICY_AUTOMATIC);
+	vbox->pack_start(*tablescroll, true, true, 0);
+	
+	docslistscroll_ = tablescroll;
+	
+	window_->show_all ();
+
+	onUseListViewPrefChanged ();
+	
+	_global_prefs->getUseListViewSignal ().connect (
+		sigc::mem_fun (*this, &TagWindow::onUseListViewPrefChanged));
 }
 
 
@@ -240,6 +287,15 @@ void TagWindow::constructMenu ()
   	sigc::mem_fun(*this, &TagWindow::onPreferences));
 	actiongroup_->add( Gtk::Action::create("Quit", Gtk::Stock::QUIT),
   	sigc::mem_fun(*this, &TagWindow::onQuit));
+
+	actiongroup_->add ( Gtk::Action::create("ViewMenu", "_View") );
+	Gtk::RadioButtonGroup group;
+	actiongroup_->add( Gtk::RadioAction::create(group, "UseListView",
+		"Use _List View"),
+  	sigc::mem_fun(*this, &TagWindow::onUseListViewToggled));
+	actiongroup_->add( Gtk::RadioAction::create(group, "UseIconView",
+		"Use _Icon View"));
+	
 
 	actiongroup_->add ( Gtk::Action::create("TagMenu", "_Tags") );
 	actiongroup_->add( Gtk::Action::create(
@@ -297,6 +353,10 @@ void TagWindow::constructMenu ()
 		"      <menuitem action='Preferences'/>"
 		"      <separator/>"
 		"      <menuitem action='Quit'/>"
+		"    </menu>"
+		"    <menu action='ViewMenu'>"
+		"      <menuitem action='UseListView'/>"
+		"      <menuitem action='UseIconView'/>"
 		"    </menu>"
 		"    <menu action='TagMenu'>"
 		"      <menuitem action='CreateTag'/>"
@@ -366,7 +426,7 @@ void TagWindow::populateDocIcons ()
 
 	// Save initial selection
 	Gtk::TreePath initialpath;
-	Gtk::IconView::ArrayHandle_TreePaths paths = docsview_->get_selected_items ();
+	Gtk::IconView::ArrayHandle_TreePaths paths = docsiconview_->get_selected_items ();
 	if (paths.size () > 0)
 		initialpath = (*paths.begin());
 
@@ -389,16 +449,19 @@ void TagWindow::populateDocIcons ()
 			continue;
 
 		Gtk::TreeModel::iterator item = iconstore_->append();
-		(*item)[docnamecol_] = (*docit).getDisplayName();
+		(*item)[dockeycol_] = (*docit).getDisplayName();
 		// PROGRAM CRASHING THIS HOLIDAY SEASON?
 		// THIS LINE DID IT!
 		// WHEE!  LOOK AT THIS LINE OF CODE!
 		(*item)[docpointercol_] = &(*docit);
 		(*item)[docthumbnailcol_] = (*docit).getThumbnail();
+		(*item)[doctitlecol_] = (*docit).getBibData().getTitle ();
+		(*item)[docauthorscol_] = (*docit).getBibData().getAuthors ();
+		(*item)[docyearcol_] = (*docit).getBibData().getYear ();
 	}
 
 	// Restore initial selection
-	docsview_->select_path (initialpath);
+	docsiconview_->select_path (initialpath);
 }
 
 
@@ -631,12 +694,12 @@ bool TagWindow::docClicked (GdkEventButton* event)
 {
   if((event->type == GDK_BUTTON_PRESS) && (event->button == 3)) {
 		Gtk::TreeModel::Path clickedpath =
-			docsview_->get_path_at_pos ((int)event->x, (int)event->y);
+			docsiconview_->get_path_at_pos ((int)event->x, (int)event->y);
 
 		if (!clickedpath.empty()) {
-			if (!docsview_->path_is_selected (clickedpath)) {
-				docsview_->unselect_all ();
-				docsview_->select_path (clickedpath);
+			if (!docsiconview_->path_is_selected (clickedpath)) {
+				docsiconview_->unselect_all ();
+				docsiconview_->select_path (clickedpath);
 			}
 		}
 
@@ -656,7 +719,7 @@ TagWindow::YesNoMaybe TagWindow::selectedDocsHaveTag (int uid)
 	bool alltrue = true;
 	bool allfalse = true;
 
-	Gtk::IconView::ArrayHandle_TreePaths paths = docsview_->get_selected_items ();
+	Gtk::IconView::ArrayHandle_TreePaths paths = docsiconview_->get_selected_items ();
 
 	Gtk::IconView::ArrayHandle_TreePaths::iterator it = paths.begin ();
 	Gtk::IconView::ArrayHandle_TreePaths::iterator const end = paths.end ();
@@ -684,12 +747,12 @@ TagWindow::YesNoMaybe TagWindow::selectedDocsHaveTag (int uid)
 
 Document *TagWindow::getSelectedDoc ()
 {
-	if (docsview_->get_selected_items ().size() != 1) {
+	if (docsiconview_->get_selected_items ().size() != 1) {
 		std::cerr << "Warning: TagWindow::getSelectedDoc: size != 1\n";
 		return false;
 	}
 
-	Gtk::IconView::ArrayHandle_TreePaths paths = docsview_->get_selected_items ();
+	Gtk::IconView::ArrayHandle_TreePaths paths = docsiconview_->get_selected_items ();
 
 	Gtk::TreePath path = (*paths.begin ());
 	Gtk::ListStore::iterator iter = iconstore_->get_iter (path);
@@ -1057,7 +1120,7 @@ std::vector<Document*> TagWindow::getSelectedDocs ()
 	std::vector<Document*> docpointers;
 
 	Gtk::IconView::ArrayHandle_TreePaths paths =
-		docsview_->get_selected_items ();
+		docsiconview_->get_selected_items ();
 
 	Gtk::IconView::ArrayHandle_TreePaths::iterator it = paths.begin ();
 	Gtk::IconView::ArrayHandle_TreePaths::iterator const end = paths.end ();
@@ -1073,13 +1136,13 @@ std::vector<Document*> TagWindow::getSelectedDocs ()
 
 int TagWindow::getSelectedDocCount ()
 {
-	return docsview_->get_selected_items().size();
+	return docsiconview_->get_selected_items().size();
 }
 
 
 void TagWindow::onRemoveDoc ()
 {
-	Gtk::IconView::ArrayHandle_TreePaths paths = docsview_->get_selected_items ();
+	Gtk::IconView::ArrayHandle_TreePaths paths = docsiconview_->get_selected_items ();
 
 	bool const multiple = paths.size() > 1;
 
@@ -1112,7 +1175,7 @@ void TagWindow::onRemoveDoc ()
 		Gtk::ListStore::iterator iter = iconstore_->get_iter (path);
 		if (!multiple) {
 			Glib::ustring message = "<b><big>Are you sure you want to remove '" +
-				(*iter)[docnamecol_] + "'?</big></b>\n\nAll tag "
+				(*iter)[dockeycol_] + "'?</big></b>\n\nAll tag "
 				"associations and metadata for the document will be permanently lost.";
 			Gtk::MessageDialog confirmdialog (
 				message, true, Gtk::MESSAGE_QUESTION,
@@ -1127,8 +1190,8 @@ void TagWindow::onRemoveDoc ()
 			}
 		}
 
-		std::cerr << "TagWindow::onRemoveDoc: removeDoc on '" << (*iter)[docnamecol_] << "'\n";
-		doclist_->removeDoc((*iter)[docnamecol_]);
+		std::cerr << "TagWindow::onRemoveDoc: removeDoc on '" << (*iter)[dockeycol_] << "'\n";
+		doclist_->removeDoc((*iter)[dockeycol_]);
 		doclistdirty = true;
 	}
 
@@ -1367,3 +1430,21 @@ void TagWindow::onIconsDragData (
 }
 
 
+void TagWindow::onUseListViewToggled ()
+{
+	_global_prefs->setUseListView (
+		Glib::RefPtr <Gtk::RadioAction>::cast_static(
+			actiongroup_->get_action ("UseListView"))->get_active ());
+}
+
+
+void TagWindow::onUseListViewPrefChanged ()
+{
+	if (_global_prefs->getUseListView ()) {
+		docsiconscroll_->hide ();
+		docslistscroll_->show ();
+	} else {
+		docslistscroll_->hide ();
+		docsiconscroll_->show ();
+	}
+}

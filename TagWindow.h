@@ -33,13 +33,20 @@ class TagWindow {
 		Gtk::TreeModelColumn<Glib::ustring> tagnamecol_;
 
 		Gtk::TreeModelColumn<Document*> docpointercol_;
-		Gtk::TreeModelColumn<Glib::ustring> docnamecol_;
+		Gtk::TreeModelColumn<Glib::ustring> dockeycol_;
+		Gtk::TreeModelColumn<Glib::ustring> doctitlecol_;
+		Gtk::TreeModelColumn<Glib::ustring> docauthorscol_;
+		Gtk::TreeModelColumn<Glib::ustring> docyearcol_;
 		Gtk::TreeModelColumn<Glib::RefPtr<Gdk::Pixbuf> > docthumbnailcol_;
 
 		Glib::RefPtr<Gtk::ListStore> tagstore_;
 		Glib::RefPtr<Gtk::ListStore> iconstore_;
 
-		Gtk::IconView *docsview_;
+		Gtk::IconView *docsiconview_;
+		Gtk::TreeView *docslistview_;
+		// Hold on to these for controlling visibility
+		Gtk::ScrolledWindow *docsiconscroll_;
+		Gtk::ScrolledWindow *docslistscroll_;
 		Gtk::VBox *taggerbox_;
 		std::map<int, Gtk::CheckButton*> taggerchecks_;
 		bool ignoretaggerchecktoggled_;
@@ -64,6 +71,7 @@ class TagWindow {
 		void tagClicked (GdkEventButton* event);
 		void tagNameEdited (Glib::ustring const &text1, Glib::ustring const &text2);
 		void onQuit ();
+		void onUseListViewToggled ();
 		void onCreateTag ();
 		void onDeleteTag ();
 		void onRenameTag ();
@@ -82,6 +90,7 @@ class TagWindow {
 		void onIconsDragData (
 			const Glib::RefPtr <Gdk::DragContext> &context,
 			int n1, int n2, const Gtk::SelectionData &sel, guint n3, guint n4);
+		void onUseListViewPrefChanged ();
 
 		void onDivine ();
 
