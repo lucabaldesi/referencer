@@ -3,10 +3,6 @@ Essential:
   Appropriate copyright notice for abiword-stolen UC->Latex
 	BibTeX import (and merging with metadata-less PDFs?)
 
-Niceties:
-	LookupDoi and Open should really handle multiple documents.
-	Allow hiding of tagging sidebar in View menu
-
 Big functionality wishlist:
 	arXiv support:
 		regex the code out the PDF
@@ -28,6 +24,7 @@ Little functionality wishlist:
 	Do something with PDF-embedded metadata if there is any
 
 UI wishlist:
+	LookupDoi and Open should really handle multiple documents.
 	Save in Preferences the sorting of the list view.
 	An "Untagged" special tag like All
 	Should be able to select multiple tags for ANDing instead of ORing document selection
