@@ -52,7 +52,7 @@ TagWindow::TagWindow ()
 	docpropertiesdialog_ = new DocumentProperties ();
 
 	constructUI ();
-	populateDocIcons ();
+	populateDocStore ();
 	populateTagList ();
 }
 
@@ -461,15 +461,23 @@ void TagWindow::constructMenu ()
 }
 
 
-void TagWindow::populateDocIcons ()
+void TagWindow::populateDocStore ()
 {
-	//std::cerr << "TagWindow::populateDocIcons >>\n";
+	//std::cerr << "TagWindow::populateDocStore >>\n";
 
 	// Save initial selection
 	Gtk::TreePath initialpath;
-	Gtk::IconView::ArrayHandle_TreePaths paths = docsiconview_->get_selected_items ();
-	if (paths.size () > 0)
-		initialpath = (*paths.begin());
+	if (usinglistview_) {
+		Gtk::TreeSelection::ListHandle_Path paths =
+			docslistselection_->get_selected_rows ();
+		if (paths.size () > 0)
+			initialpath = (*paths.begin());
+	} else {
+		Gtk::IconView::ArrayHandle_TreePaths paths =
+			docsiconview_->get_selected_items ();
+		if (paths.size () > 0)
+			initialpath = (*paths.begin());
+	}
 
 	docstore_->clear ();
 
@@ -502,7 +510,11 @@ void TagWindow::populateDocIcons ()
 	}
 
 	// Restore initial selection
-	docsiconview_->select_path (initialpath);
+	if (usinglistview_) {
+		docslistselection_->select (initialpath);
+	} else {
+		docsiconview_->select_path (initialpath);
+	}
 }
 
 
@@ -592,7 +604,7 @@ void TagWindow::taggerCheckToggled (Gtk::CheckButton *check, int taguid)
 	    && (*filtertags_.begin()) != ALL_TAGS_UID) {
 	  // Should check if the tag we removed is in filtertags ideally
 	  // This is quite annoying when we don't save which document is selected
-		populateDocIcons ();
+		populateDocStore ();
 	}
 
 }
@@ -680,7 +692,7 @@ void TagWindow::tagSelectionChanged ()
 	actiongroup_->get_action("RenameTag")->set_sensitive (
 		paths.size() == 1 && !allselected);
 
-	populateDocIcons ();
+	populateDocStore ();
 }
 
 
@@ -755,8 +767,6 @@ TagWindow::YesNoMaybe TagWindow::selectedDocsHaveTag (int uid)
 {
 	bool alltrue = true;
 	bool allfalse = true;
-
-	Gtk::IconView::ArrayHandle_TreePaths paths = docsiconview_->get_selected_items ();
 
 	std::vector<Document*> docs = getSelectedDocs ();
 
@@ -1046,7 +1056,7 @@ void TagWindow::addDocFiles (std::vector<Glib::ustring> const &filenames)
 		// We added something
 		// Should check if we actually added something in case a newDoc
 		// failed, eg if the doc was already in there
-		populateDocIcons ();
+		populateDocStore ();
 	}
 
 }
@@ -1057,7 +1067,7 @@ void TagWindow::onAddDocUnnamed ()
 	Document *newdoc = doclist_->newDocUnnamed ();
 	newdoc->setDisplayName (doclist_->uniqueDisplayName (newdoc->generateKey ()));
 	docpropertiesdialog_->show (newdoc);
-	populateDocIcons ();
+	populateDocStore ();
 }
 
 
@@ -1089,7 +1099,7 @@ void TagWindow::onAddDocByDoi ()
 		newdoc->getBibData().getCrossRef ();
 		newdoc->setDisplayName (doclist_->uniqueDisplayName (newdoc->generateKey ()));
 
-		populateDocIcons ();
+		populateDocStore ();
 	}
 }
 
@@ -1275,11 +1285,11 @@ void TagWindow::onRemoveDoc ()
 	}
 
 	if (doclistdirty) {
-		std::cerr << "TagWindow::onRemoveDoc: dirty, calling populateDocIcons\n";
+		std::cerr << "TagWindow::onRemoveDoc: dirty, calling populateDocStore\n";
 		// We disable docSelectionChanged because otherwise it gets called N
 		// times for deleting N items
 		docselectionignore_ = true;
-		populateDocIcons ();
+		populateDocStore ();
 		docselectionignore_ = false;
 		docSelectionChanged ();
 	} else {
@@ -1438,7 +1448,7 @@ void TagWindow::onDocProperties ()
 	Document *doc = getSelectedDoc ();
 	if (doc) {
 		if (docpropertiesdialog_->show (doc)) {
-			populateDocIcons ();
+			populateDocStore ();
 		}
 	}
 }

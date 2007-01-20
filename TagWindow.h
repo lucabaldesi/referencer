@@ -20,7 +20,7 @@ class TagWindow {
 
 	private:
 		int memberint;
-		void populateDocIcons ();
+		void populateDocStore ();
 		void populateTagList ();
 		void constructUI ();
 		void constructMenu ();
