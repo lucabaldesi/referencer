@@ -40,10 +40,15 @@ class TagWindow {
 		Gtk::TreeModelColumn<Glib::RefPtr<Gdk::Pixbuf> > docthumbnailcol_;
 
 		Glib::RefPtr<Gtk::ListStore> tagstore_;
-		Glib::RefPtr<Gtk::ListStore> iconstore_;
+		Glib::RefPtr<Gtk::ListStore> docstore_;
+
+		// Keep an up-to-date local copy of this, since it's
+		// used so often
+		bool usinglistview_;
 
 		Gtk::IconView *docsiconview_;
 		Gtk::TreeView *docslistview_;
+		Glib::RefPtr<Gtk::TreeSelection> docslistselection_;
 		Gtk::VBox *taggerbox_;
 		std::map<int, Gtk::CheckButton*> taggerchecks_;
 		bool ignoretaggerchecktoggled_;
@@ -66,6 +71,10 @@ class TagWindow {
 
 		void taggerCheckToggled (Gtk::CheckButton *check, int taguid);
 		void docActivated (const Gtk::TreePath& path);
+		// treeviews want a different prototype for the signal
+		void docListActivated (const Gtk::TreePath& path, Gtk::TreeViewColumn*) {
+			docActivated (path);
+		}
 		void tagSelectionChanged ();
 		void docSelectionChanged ();
 		bool docClicked (GdkEventButton* event);

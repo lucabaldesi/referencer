@@ -47,6 +47,7 @@ TagWindow::TagWindow ()
 	loadLibrary ();
 
 	_global_prefs = new Preferences();
+	usinglistview_ = _global_prefs->getUseListView ();
 
 	docpropertiesdialog_ = new DocumentProperties ();
 
@@ -161,7 +162,6 @@ void TagWindow::constructUI ()
 
 	taggerbox_ = taggervbox;
 
-
 	// The iconview side
 	vbox = Gtk::manage(new Gtk::VBox);
 	Gtk::Frame *iconsframe = new Gtk::Frame ();
@@ -176,10 +176,10 @@ void TagWindow::constructUI ()
 	iconcols.add(docauthorscol_);
 	iconcols.add(docyearcol_);
 	iconcols.add(docthumbnailcol_);
-	iconstore_ = Gtk::ListStore::create(iconcols);
+	docstore_ = Gtk::ListStore::create(iconcols);
 
 	// Create the IconView for the document icons
-	Gtk::IconView *icons = Gtk::manage(new Gtk::IconView(iconstore_));
+	Gtk::IconView *icons = Gtk::manage(new Gtk::IconView(docstore_));
 	icons->set_text_column(dockeycol_);
 	icons->set_pixbuf_column(docthumbnailcol_);
 	icons->signal_item_activated().connect (
@@ -221,21 +221,36 @@ void TagWindow::constructUI ()
 
 	docsiconscroll_ = iconsscroll;
 
-
 	/*Gtk::Toolbar& docbar = (Gtk::Toolbar&) *uimanager_->get_widget("/DocBar");
 	vbox->pack_start (docbar, false, false, 0);
 	docbar.set_toolbar_style (Gtk::TOOLBAR_ICONS);
 	docbar.set_show_arrow (false);*/
 
-	// The TreeView for the document table
-	Gtk::TreeView *table = Gtk::manage (new Gtk::TreeView(iconstore_));
+	// The TreeView for the document list
+	Gtk::TreeView *table = Gtk::manage (new Gtk::TreeView(docstore_));
 	table->set_enable_search (true);
 	table->set_search_column (1);
+	
+	table->drag_dest_set (
+	dragtypes,
+	Gtk::DEST_DEFAULT_ALL,
+	Gdk::ACTION_COPY | Gdk::ACTION_MOVE | Gdk::ACTION_LINK);
+
+	table->signal_drag_data_received ().connect (
+		sigc::mem_fun (*this, &TagWindow::onIconsDragData));
+
+	table->signal_row_activated ().connect (
+		sigc::mem_fun (*this, &TagWindow::docListActivated));
+		
+	docslistselection_ = table->get_selection ();
+	docslistselection_->set_mode (Gtk::SELECTION_MULTIPLE);
+	docslistselection_->signal_changed ().connect (
+		sigc::mem_fun (*this, &TagWindow::docSelectionChanged));		
 
 	// Er, we're actually passing this as reference, is this the right way
 	// to create it?  Will the treeview actually copy it?
 	Gtk::TreeViewColumn *col =
-		Gtk::manage (new Gtk::TreeViewColumn ("Key", dockeycol_));
+	Gtk::manage (new Gtk::TreeViewColumn ("Key", dockeycol_));
 	col->set_resizable (true);
 	col->set_sort_column (dockeycol_);
 	table->append_column (*col);
@@ -267,13 +282,15 @@ void TagWindow::constructUI ()
 
 	window_->show_all ();
 
-	// Initialise and listen for prefs change or user input
+
+	// usinglistview_ was initialised immediately after new Preferences
+	// Initialise widgets and listen for prefs change or user input
 	Glib::RefPtr <Gtk::RadioAction>::cast_static(
 			actiongroup_->get_action ("UseListView"))->set_active(
-				_global_prefs->getUseListView ());
+				usinglistview_);
 	Glib::RefPtr <Gtk::RadioAction>::cast_static(
 			actiongroup_->get_action ("UseIconView"))->set_active(
-				!_global_prefs->getUseListView ());
+				!usinglistview_);
 	onUseListViewPrefChanged ();
 	_global_prefs->getUseListViewSignal ().connect (
 		sigc::mem_fun (*this, &TagWindow::onUseListViewPrefChanged));
@@ -454,7 +471,7 @@ void TagWindow::populateDocIcons ()
 	if (paths.size () > 0)
 		initialpath = (*paths.begin());
 
-	iconstore_->clear ();
+	docstore_->clear ();
 
 	// Populate from doclist_
 	std::vector<Document>& docvec = doclist_->getDocs();
@@ -472,7 +489,7 @@ void TagWindow::populateDocIcons ()
 		if (filtered)
 			continue;
 
-		Gtk::TreeModel::iterator item = iconstore_->append();
+		Gtk::TreeModel::iterator item = docstore_->append();
 		(*item)[dockeycol_] = (*docit).getDisplayName();
 		// PROGRAM CRASHING THIS HOLIDAY SEASON?
 		// THIS LINE DID IT!
@@ -614,7 +631,7 @@ void TagWindow::tagNameEdited (
 
 void TagWindow::docActivated (const Gtk::TreeModel::Path& path)
 {
-	Gtk::ListStore::iterator it = iconstore_->get_iter (path);
+	Gtk::ListStore::iterator it = docstore_->get_iter (path);
 	Document *doc = (*it)[docpointercol_];
 	// The methods we're calling should fail out safely and quietly
 	// if the number of docs selected != 1
@@ -672,7 +689,7 @@ void TagWindow::docSelectionChanged ()
 	if (docselectionignore_)
 		return;
 
-	//std::cerr << "TagWindow::docSelectionChanged >>\n";
+	std::cerr << "TagWindow::docSelectionChanged >>\n";
 
 	int selectcount = getSelectedDocCount ();
 
@@ -683,16 +700,12 @@ void TagWindow::docSelectionChanged ()
 	actiongroup_->get_action("DocProperties")->set_sensitive (onlyoneselected);
 	taggerbox_->set_sensitive (somethingselected);
 
-
 	actiongroup_->get_action("DoiLookupDoc")->set_sensitive (
 		onlyoneselected
 		&& !getSelectedDoc()->getBibData().getDoi().empty());
 	actiongroup_->get_action("OpenDoc")->set_sensitive (
 		onlyoneselected
 		&& !getSelectedDoc()->getFileName().empty());
-
-
-
 
 	ignoretaggerchecktoggled_ = true;
 	for (std::vector<Tag>::iterator tagit = taglist_->getTags().begin();
@@ -745,13 +758,12 @@ TagWindow::YesNoMaybe TagWindow::selectedDocsHaveTag (int uid)
 
 	Gtk::IconView::ArrayHandle_TreePaths paths = docsiconview_->get_selected_items ();
 
-	Gtk::IconView::ArrayHandle_TreePaths::iterator it = paths.begin ();
-	Gtk::IconView::ArrayHandle_TreePaths::iterator const end = paths.end ();
+	std::vector<Document*> docs = getSelectedDocs ();
+
+	std::vector<Document*>::iterator it = docs.begin ();
+	std::vector<Document*>::iterator const end = docs.end ();
 	for (; it != end; it++) {
-		Gtk::TreePath path = (*it);
-		Gtk::ListStore::iterator iter = iconstore_->get_iter (path);
-		Document *doc = (*iter)[docpointercol_];
-		if (doc->hasTag(uid)) {
+		if ((*it)->hasTag(uid)) {
 			allfalse = false;
 		} else {
 			alltrue = false;
@@ -766,21 +778,6 @@ TagWindow::YesNoMaybe TagWindow::selectedDocsHaveTag (int uid)
 		return MAYBE;
 	else
 		return NO;
-}
-
-
-Document *TagWindow::getSelectedDoc ()
-{
-	if (docsiconview_->get_selected_items ().size() != 1) {
-		std::cerr << "Warning: TagWindow::getSelectedDoc: size != 1\n";
-		return false;
-	}
-
-	Gtk::IconView::ArrayHandle_TreePaths paths = docsiconview_->get_selected_items ();
-
-	Gtk::TreePath path = (*paths.begin ());
-	Gtk::ListStore::iterator iter = iconstore_->get_iter (path);
-	return (*iter)[docpointercol_];
 }
 
 
@@ -1033,6 +1030,10 @@ void TagWindow::addDocFiles (std::vector<Glib::ustring> const &filenames)
 
 		Document *newdoc = doclist_->newDocWithFile(*it);
 		newdoc->readPDF ();
+
+		while (Gnome::Main::events_pending())
+			Gnome::Main::iteration ();
+
 		if (!newdoc->getBibData().getDoi().empty())
 			newdoc->getBibData().getCrossRef ();
 
@@ -1150,24 +1151,71 @@ std::vector<Document*> TagWindow::getSelectedDocs ()
 {
 	std::vector<Document*> docpointers;
 
-	Gtk::IconView::ArrayHandle_TreePaths paths =
-		docsiconview_->get_selected_items ();
+	if (usinglistview_) {
+		Gtk::TreeSelection::ListHandle_Path paths =
+			docslistselection_->get_selected_rows ();
 
-	Gtk::IconView::ArrayHandle_TreePaths::iterator it = paths.begin ();
-	Gtk::IconView::ArrayHandle_TreePaths::iterator const end = paths.end ();
-	for (; it != end; it++) {
-		Gtk::TreePath path = (*it);
-		Gtk::ListStore::iterator iter = iconstore_->get_iter (path);
-		docpointers.push_back((*iter)[docpointercol_]);
+		Gtk::TreeSelection::ListHandle_Path::iterator it = paths.begin ();
+		Gtk::TreeSelection::ListHandle_Path::iterator const end = paths.end ();
+		for (; it != end; it++) {
+			Gtk::TreePath path = (*it);
+			Gtk::ListStore::iterator iter = docstore_->get_iter (path);
+			docpointers.push_back((*iter)[docpointercol_]);
+		}
+	} else {
+		Gtk::IconView::ArrayHandle_TreePaths paths =
+			docsiconview_->get_selected_items ();
+
+		Gtk::IconView::ArrayHandle_TreePaths::iterator it = paths.begin ();
+		Gtk::IconView::ArrayHandle_TreePaths::iterator const end = paths.end ();
+		for (; it != end; it++) {
+			Gtk::TreePath path = (*it);
+			Gtk::ListStore::iterator iter = docstore_->get_iter (path);
+			docpointers.push_back((*iter)[docpointercol_]);
+		}
 	}
 
 	return docpointers;
 }
 
 
+Document *TagWindow::getSelectedDoc ()
+{
+	if (usinglistview_) {
+		Gtk::TreeSelection::ListHandle_Path paths = 
+			docslistselection_->get_selected_rows ();
+			
+		if (paths.size() != 1) {
+			std::cerr << "Warning: TagWindow::getSelectedDoc: size != 1\n";
+			return false;
+		}
+
+		Gtk::TreePath path = (*paths.begin ());
+		Gtk::ListStore::iterator iter = docstore_->get_iter (path);
+		return (*iter)[docpointercol_];
+		
+	} else {
+		Gtk::IconView::ArrayHandle_TreePaths paths = docsiconview_->get_selected_items ();
+		
+		if (paths.size() != 1) {
+			std::cerr << "Warning: TagWindow::getSelectedDoc: size != 1\n";
+			return false;
+		}
+
+		Gtk::TreePath path = (*paths.begin ());
+		Gtk::ListStore::iterator iter = docstore_->get_iter (path);
+		return (*iter)[docpointercol_];
+	}
+}
+
+
 int TagWindow::getSelectedDocCount ()
 {
-	return docsiconview_->get_selected_items().size();
+	if (usinglistview_) {
+		return docslistselection_->get_selected_rows().size ();
+	} else {
+		return docsiconview_->get_selected_items().size ();
+	}
 }
 
 
@@ -1203,7 +1251,7 @@ void TagWindow::onRemoveDoc ()
 	Gtk::IconView::ArrayHandle_TreePaths::iterator const end = paths.end ();
 	for (; it != end; it++) {
 		Gtk::TreePath path = (*it);
-		Gtk::ListStore::iterator iter = iconstore_->get_iter (path);
+		Gtk::ListStore::iterator iter = docstore_->get_iter (path);
 		if (!multiple) {
 			Glib::ustring message = "<b><big>Are you sure you want to remove '" +
 				(*iter)[dockeycol_] + "'?</big></b>\n\nAll tag "
@@ -1444,7 +1492,6 @@ void TagWindow::onIconsDragData (
 		}
 		if (info->get_type() == Gnome::Vfs::FILE_TYPE_DIRECTORY)
 			is_dir = true;
-		//}
 
 		if (is_dir) {
 			std::vector<Glib::ustring> morefiles = Utility::recurseFolder (*it);
@@ -1471,10 +1518,15 @@ void TagWindow::onUseListViewToggled ()
 
 void TagWindow::onUseListViewPrefChanged ()
 {
-	if (_global_prefs->getUseListView ()) {
+	usinglistview_ = _global_prefs->getUseListView ();
+	if (usinglistview_) {
+		Glib::RefPtr <Gtk::RadioAction>::cast_static(
+			actiongroup_->get_action ("UseListView"))->set_active (true);
 		docsiconscroll_->hide ();
 		docslistscroll_->show ();
 	} else {
+		Glib::RefPtr <Gtk::RadioAction>::cast_static(
+			actiongroup_->get_action ("UseIconView"))->set_active (true);
 		docslistscroll_->hide ();
 		docsiconscroll_->show ();
 	}
@@ -1491,7 +1543,10 @@ void TagWindow::onShowTagPaneToggled ()
 
 void TagWindow::onShowTagPanePrefChanged ()
 {
-	if (_global_prefs->getShowTagPane ()) {
+	bool const showtagpane = _global_prefs->getShowTagPane ();
+	Glib::RefPtr <Gtk::ToggleAction>::cast_static(
+		actiongroup_->get_action ("ShowTagPane"))->set_active (showtagpane);
+	if (showtagpane) {
 		tagpane_->show ();
 	} else {
 		tagpane_->hide ();
