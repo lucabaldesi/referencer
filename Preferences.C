@@ -33,7 +33,10 @@ Preferences::Preferences ()
 		setWorkOffline (false);
 		setDoiLaunch (doilaunchdefault_);
 		setMetadataLookup (metadatalookupdefault_);
-	};
+		firsttime_ = true;
+	} else {
+		firsttime_ = false;
+	}
 
 	confclient_->add_dir (
 		CONF_PATH,
