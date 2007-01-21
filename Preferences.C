@@ -14,6 +14,7 @@ Preferences::Preferences ()
 {
 	confclient_ = Gnome::Conf::Client::get_default_client ();
 
+	libraryfilename_ = confclient_->get_entry (CONF_PATH "/libraryfilename");
 	workoffline_ = confclient_->get_entry (CONF_PATH "/workoffline");
 	uselistview_ = confclient_->get_entry (CONF_PATH "/uselistview");
 	showtagpane_ = confclient_->get_entry (CONF_PATH "/showtagpane");
@@ -28,6 +29,7 @@ Preferences::Preferences ()
 		std::cerr << "Preferences::Preferences: CONF_PATH "
 			"doesn't exist, setting it up\n";
 
+		setLibraryFilename ("");
 		setShowTagPane (true);
 		setUseListView (false);
 		setWorkOffline (false);
@@ -45,8 +47,6 @@ Preferences::Preferences ()
 	confclient_->notify_add (
 		CONF_PATH,
 		sigc::mem_fun (*this, &Preferences::onConfChange));
-
-
 
 	xml_ = Utility::openGlade ("preferences.glade");
 
@@ -150,11 +150,23 @@ void Preferences::onURLChanged ()
 	}
 }
 
-
+// This is just for the button in the dialog!
 void Preferences::onResetToDefaults ()
 {
 	doilaunchentry_->set_text (doilaunchdefault_);
 	metadatalookupentry_->set_text (metadatalookupdefault_);
+}
+
+
+Glib::ustring Preferences::getLibraryFilename ()
+{
+	return confclient_->get_string (libraryfilename_.get_key());
+}
+
+
+void Preferences::setLibraryFilename (Glib::ustring const &filename)
+{
+	return confclient_->set (libraryfilename_.get_key(), filename);
 }
 
 

@@ -17,6 +17,7 @@ private:
 	Gtk::Entry *metadatalookupentry_;
 	void onWorkOfflineToggled ();
 	void onURLChanged ();
+	// This is just for the button in the dialog!
 	void onResetToDefaults ();
 
 	void onConfChange (int number, Gnome::Conf::Entry entry);
@@ -26,6 +27,7 @@ private:
 	Gnome::Conf::Entry metadatalookup_;
 	Gnome::Conf::Entry uselistview_;
 	Gnome::Conf::Entry showtagpane_;
+	Gnome::Conf::Entry libraryfilename_;
 
 	sigc::signal<void> workofflinesignal_;
 	sigc::signal<void> uselistviewsignal_;
@@ -49,6 +51,9 @@ public:
 
 	// Nothing uses this, hopefully nothing will
 	//Glib::RefPtr<Gnome::Conf::Client> getConfClient () {return confclient_;}
+
+	Glib::ustring getLibraryFilename ();
+	void setLibraryFilename (Glib::ustring const &filename);
 
 	bool getWorkOffline ();
 	void setWorkOffline (bool const &offline);
