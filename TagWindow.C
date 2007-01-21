@@ -391,8 +391,8 @@ void TagWindow::constructMenu ()
 		"RemoveDoc", Gtk::Stock::REMOVE, "_Remove"),
   	sigc::mem_fun(*this, &TagWindow::onRemoveDoc));
 	actiongroup_->add( Gtk::Action::create(
-		"DoiLookupDoc", Gtk::Stock::CONNECT, "_Web Link (DOI)..."),
-  	sigc::mem_fun(*this, &TagWindow::onDoiLookupDoc));
+		"WebLinkDoc", Gtk::Stock::CONNECT, "_Web Link..."),
+  	sigc::mem_fun(*this, &TagWindow::onWebLinkDoc));
 	actiongroup_->add( Gtk::Action::create(
 		"OpenDoc", Gtk::Stock::OPEN, "_Open..."),
   	sigc::mem_fun(*this, &TagWindow::onOpenDoc));
@@ -444,7 +444,7 @@ void TagWindow::constructMenu ()
 		"      <menuitem action='AddDocUnnamed'/>"
 		"      <separator/>"
 		"      <menuitem action='RemoveDoc'/>"
-		"      <menuitem action='DoiLookupDoc'/>"
+		"      <menuitem action='WebLinkDoc'/>"
 		"      <menuitem action='OpenDoc'/>"
 		"      <menuitem action='DocProperties'/>"
 		"    </menu>"
@@ -457,7 +457,7 @@ void TagWindow::constructMenu ()
 		"    <toolitem action='Preferences'/>"
 		"    <separator/>"
 		"    <toolitem action='RemoveDoc'/>"
-		"    <toolitem action='DoiLookupDoc'/>"
+		"    <toolitem action='WebLinkDoc'/>"
 		"    <toolitem action='OpenDoc'/>"
 		"    <toolitem action='DocProperties'/>"
 		"  </toolbar>"
@@ -474,7 +474,7 @@ void TagWindow::constructMenu ()
 		"    <menuitem action='AddDocFolder'/>"
 		"    <separator/>"
 		"    <menuitem action='RemoveDoc'/>"
-		"    <menuitem action='DoiLookupDoc'/>"
+		"    <menuitem action='WebLinkDoc'/>"
 		"    <menuitem action='OpenDoc'/>"
 		//"    <menuitem action='Divine'/>"
 		"    <menuitem action='DocProperties'/>"
@@ -681,8 +681,8 @@ void TagWindow::docActivated (const Gtk::TreeModel::Path& path)
 	// if the number of docs selected != 1
 	if (!doc->getFileName ().empty ()) {
 		onOpenDoc ();
-	} else if (!doc->getBibData ().getDoi ().empty ()) {
-		onDoiLookupDoc ();
+	} else if (doc->canWebLink ()) {
+		onWebLinkDoc ();
 	}
 }
 
@@ -744,9 +744,9 @@ void TagWindow::docSelectionChanged ()
 	actiongroup_->get_action("DocProperties")->set_sensitive (onlyoneselected);
 	taggerbox_->set_sensitive (somethingselected);
 
-	actiongroup_->get_action("DoiLookupDoc")->set_sensitive (
+	actiongroup_->get_action("WebLinkDoc")->set_sensitive (
 		onlyoneselected
-		&& !getSelectedDoc()->getBibData().getDoi().empty());
+		&& getSelectedDoc()->canWebLink ());
 	actiongroup_->get_action("OpenDoc")->set_sensitive (
 		onlyoneselected
 		&& !getSelectedDoc()->getFileName().empty());
@@ -1572,16 +1572,22 @@ bool TagWindow::saveLibrary (Glib::ustring const &libfilename)
 }
 
 
-void TagWindow::onDoiLookupDoc ()
+void TagWindow::onWebLinkDoc ()
 {
 	Document *doc = getSelectedDoc ();
 	if (doc) {
-		Utility::StringPair ends = _global_prefs->getDoiLaunch ();
-		Glib::ustring doi = doc->getBibData().getDoi();
-
-		Gnome::Vfs::url_show (ends.first + doi + ends.second);
+		if (!doc->getBibData().getDoi().empty()) {
+			Utility::StringPair ends = _global_prefs->getDoiLaunch ();
+			Glib::ustring doi = doc->getBibData().getDoi();
+			Gnome::Vfs::url_show (ends.first + doi + ends.second);
+		} else if (!doc->getBibData().getExtras()["eprint"].empty()) {
+			Glib::ustring eprint = doc->getBibData().getExtras()["eprint"];
+			Gnome::Vfs::url_show ("http://arxiv.org/abs/" + eprint);
+		} else {
+			std::cerr << "Warning: TagWindow::onWebLinkDoc: nothing to link on\n";
+		}
 	} else {
-		std::cerr << "Warning: TagWindow::onDoiLookupDoc: can't get doc\n";
+		std::cerr << "Warning: TagWindow::onWebLinkDoc: can't get doc\n";
 	}
 }
 

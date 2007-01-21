@@ -34,6 +34,8 @@ class Document {
 	void clearTag (int uid);
 	void clearTags ();
 	bool hasTag (int uid);
+	
+	bool canWebLink ();
 
 	void writeBibtex (std::ostringstream& out);
 	void writeXML (std::ostringstream &out);

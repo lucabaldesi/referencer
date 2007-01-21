@@ -364,3 +364,19 @@ void Document::readPDF ()
 			<< filename_ << "'\n";
 	}
 }
+
+
+bool Document::canWebLink ()
+{
+	if (
+		   !bib_.getDoi ().empty ()
+		|| !bib_.getExtras ()["eprint"].empty()
+	   )
+	{
+		return true;
+	} else {
+		return false;
+	}
+}
+
+

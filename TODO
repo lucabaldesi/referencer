@@ -7,8 +7,7 @@ Essential:
 	Crash removing tags?
 
 Big functionality wishlist:
-	arXiv support:
-		regex the code out the PDF
+	arXiv metadata: ('eprint' extra field)
 		http://www.citebase.org/openurl?svc_id=bibtex&rft_id=oai%3AarXiv.org%3Ahep-lat%2F0306023
 		Alternatively OAI support for arXiv and CrossRef (and possibly many others)
 	Search bar

@@ -91,7 +91,7 @@ class TagWindow {
 		void onAddDocFolder ();
 		void addDocFiles (std::vector<Glib::ustring> const &filenames);
 		void onRemoveDoc ();
-		void onDoiLookupDoc ();
+		void onWebLinkDoc ();
 		void onOpenDoc ();
 		void onDocProperties ();
 		void onAbout ();
