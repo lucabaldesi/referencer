@@ -25,7 +25,6 @@ class TagWindow {
 		void constructUI ();
 		void constructMenu ();
 
-
 		DocumentList *doclist_;
 		TagList *taglist_;
 
@@ -95,8 +94,12 @@ class TagWindow {
 		void onDoiLookupDoc ();
 		void onOpenDoc ();
 		void onDocProperties ();
-		void onExportBibtex ();
 		void onAbout ();
+		void onNewLibrary ();
+		void onSaveLibrary ();
+		void onSaveAsLibrary ();
+		void onOpenLibrary ();
+		void onExportBibtex ();
 		void onPreferences ();
 		void onIconsDragData (
 			const Glib::RefPtr <Gdk::DragContext> &context,
@@ -105,6 +108,7 @@ class TagWindow {
 		void onShowTagPanePrefChanged ();
 		void onUseListViewPrefChanged ();
 		bool onDelete (GdkEventAny *ev);
+		bool tryQuit ();
 
 		void onDivine ();
 
@@ -122,12 +126,15 @@ class TagWindow {
 		int getSelectedDocCount ();
 		Glib::ustring writeXML ();
 		void readXML (Glib::ustring XML);
-		void loadLibrary ();
-		void saveLibrary ();
+		bool loadLibrary (Glib::ustring const &libfilename);
+		bool saveLibrary (Glib::ustring const &libfilename);
 
 		// Memory of where the user added files from
 		Glib::ustring addfolder_;
 		Glib::ustring exportfolder_;
+		Glib::ustring libraryfolder_;
+		
+		Glib::ustring openedlib_;
 
 	public:
 		TagWindow ();

@@ -26,6 +26,12 @@ int main (int argc, char **argv)
 	// Initialise libpoppler
 	globalParams = new GlobalParams (NULL);
 
+	_global_prefs = new Preferences();
+
+	if (argc > 1) {
+		_global_prefs->setLibraryFilename (argv[1]);
+	}
+
 	TagWindow window;
 
 	window.run();
@@ -42,10 +48,15 @@ TagWindow::TagWindow ()
 
 	taglist_ = new TagList();
 	doclist_ = new DocumentList();
-	loadLibrary ();
 
-	_global_prefs = new Preferences();
 	usinglistview_ = _global_prefs->getUseListView ();
+	
+	Glib::ustring const libfile = _global_prefs->getLibraryFilename ();
+	
+	if (!libfile.empty()) {
+		if (loadLibrary (libfile))
+			openedlib_ = libfile;
+	}
 
 	docpropertiesdialog_ = new DocumentProperties ();
 
@@ -57,6 +68,8 @@ TagWindow::TagWindow ()
 
 TagWindow::~TagWindow ()
 {
+	_global_prefs->setLibraryFilename (openedlib_);
+
 	delete taglist_;
 	delete doclist_;
 	delete docpropertiesdialog_;
@@ -86,7 +99,7 @@ void TagWindow::constructUI ()
 	vbox->pack_start (*uimanager_->get_widget("/MenuBar"), false, false, 0);
 	//vbox->pack_start (*uimanager_->get_widget("/ToolBar"), false, false, 0);
 	Gtk::HPaned *hpaned = Gtk::manage(new Gtk::HPaned());
-	vbox->pack_start (*hpaned, true, true, 6);
+	vbox->pack_start (*hpaned, true, true, 0);
 
 	vbox = Gtk::manage(new Gtk::VBox);
 	Gtk::Frame *tagsframe = new Gtk::Frame ();
@@ -320,6 +333,18 @@ void TagWindow::constructMenu ()
 	actiongroup_ = Gtk::ActionGroup::create();
 
 	actiongroup_->add ( Gtk::Action::create("LibraryMenu", "_Library") );
+	actiongroup_->add( Gtk::Action::create("NewLibrary",
+		Gtk::Stock::NEW),
+  	sigc::mem_fun(*this, &TagWindow::onNewLibrary));
+	actiongroup_->add( Gtk::Action::create("OpenLibrary",
+		Gtk::Stock::OPEN),
+  	sigc::mem_fun(*this, &TagWindow::onOpenLibrary));
+	actiongroup_->add( Gtk::Action::create("SaveLibrary",
+		Gtk::Stock::SAVE),
+  	sigc::mem_fun(*this, &TagWindow::onSaveLibrary));
+	actiongroup_->add( Gtk::Action::create("SaveAsLibrary",
+		Gtk::Stock::SAVE_AS),
+  	sigc::mem_fun(*this, &TagWindow::onSaveAsLibrary));
 	actiongroup_->add( Gtk::Action::create("ExportBibtex",
 		Gtk::Stock::CONVERT, "E_xport to BibTeX"),
   	sigc::mem_fun(*this, &TagWindow::onExportBibtex));
@@ -389,6 +414,11 @@ void TagWindow::constructMenu ()
 		"<ui>"
 		"  <menubar name='MenuBar'>"
 		"    <menu action='LibraryMenu'>"
+		"      <menuitem action='NewLibrary'/>"
+		"      <menuitem action='OpenLibrary'/>"
+		"      <separator/>"
+		"      <menuitem action='SaveLibrary'/>"
+		"      <menuitem action='SaveAsLibrary'/>"
 		"      <menuitem action='ExportBibtex'/>"
 		"      <separator/>"
 		"      <menuitem action='Preferences'/>"
@@ -753,7 +783,6 @@ bool TagWindow::docClicked (GdkEventButton* event)
 	  		(int)event->x, (int)event->y,
 	  		clickedpath, clickedcol,
 	  		cellx, celly);
-	  	std::cerr << "There are " << getSelectedDocCount () << "selected\n";
 			if (gotpath) {
 				if (!docslistselection_->is_selected (clickedpath)) {
 					docslistselection_->unselect_all ();
@@ -823,16 +852,37 @@ void TagWindow::tagClicked (GdkEventButton* event)
 
 void TagWindow::onQuit ()
 {
-	saveLibrary ();
-	Gnome::Main::quit ();
+	if (tryQuit ())
+		Gnome::Main::quit ();
 }
 
 
 bool TagWindow::onDelete (GdkEventAny *ev)
 {
-	onQuit ();
+	if (tryQuit ())
+		return true;
+	else
+		return false;
+}
+
+
+bool TagWindow::tryQuit ()
+{
+	if (openedlib_.empty ()) {
+		onSaveAsLibrary ();
+		if (openedlib_.empty ()) {
+			// The user cancelled
+			return false;
+		}
+	} else {
+		if (!saveLibrary (openedlib_)) {
+			// Don't lose data
+			return false;
+		}
+	}
 	return true;
 }
+
 
 void TagWindow::onCreateTag  ()
 {
@@ -883,7 +933,7 @@ void TagWindow::onDeleteTag ()
 		return;
 	}
 
-	bool somethingdeleted = false;
+	std::vector <int> uidstodelete;
 
 	Gtk::TreeSelection::ListHandle_Path::iterator it = paths.begin ();
 	Gtk::TreeSelection::ListHandle_Path::iterator const end = paths.end ();
@@ -913,15 +963,22 @@ void TagWindow::onDeleteTag ()
 		confirmdialog.set_default_response (0);
 
 		if (confirmdialog.run ()) {
-			// Remove tag from tagged documents
-			doclist_->clearTag ((*iter)[taguidcol_]);
-			// Delete tag
-			taglist_->deleteTag ((*iter)[taguidcol_]);
-			somethingdeleted = true;
+			std::cerr << "going to delete " << (*iter)[taguidcol_] << "\n";
+			uidstodelete.push_back ((*iter)[taguidcol_]);
 		}
 	}
-
-	if (somethingdeleted)
+	
+	std::vector<int>::iterator uidit = uidstodelete.begin ();
+	std::vector<int>::iterator const uidend = uidstodelete.end ();
+	for (; uidit != uidend; ++uidit) {
+		std::cerr << "Really deleting " << *uidit << "\n";
+		// Take it off any docs
+		doclist_->clearTag(*uidit);
+		// Remove it from the tag list
+		taglist_->deleteTag (*uidit);
+	}
+	
+	if (uidstodelete.size() > 0)
 		populateTagList ();
 }
 
@@ -996,6 +1053,90 @@ void TagWindow::onExportBibtex ()
 
 		// Forcefully move our tmp file into its real position
 		Gnome::Vfs::Handle::move (tmpbibfilename, bibfilename, true);
+	}
+}
+
+
+void TagWindow::onNewLibrary ()
+{
+	openedlib_ = "";
+	taglist_->clear();
+	doclist_->clear();
+	
+	populateDocStore ();
+	populateTagList ();
+}
+
+
+void TagWindow::onOpenLibrary ()
+{
+	Gtk::FileChooserDialog chooser(
+		"Open Library",
+		Gtk::FILE_CHOOSER_ACTION_OPEN);
+
+	// remote not working?
+	//chooser.set_local_only (false);
+
+	if (!libraryfolder_.empty())
+		chooser.set_current_folder (libraryfolder_);
+	chooser.add_button (Gtk::Stock::CANCEL, Gtk::RESPONSE_REJECT);
+	chooser.add_button (Gtk::Stock::ADD, Gtk::RESPONSE_ACCEPT);
+	chooser.set_default_response (Gtk::RESPONSE_ACCEPT);
+
+	if (chooser.run () == Gtk::RESPONSE_ACCEPT) {
+		libraryfolder_ = Glib::path_get_dirname(chooser.get_filename());
+		Glib::ustring libfile = chooser.get_uri ();
+		std::cerr << "Calling loadLibrary on " << libfile << "\n";
+		if (loadLibrary (libfile)) {
+			populateDocStore ();
+			populateTagList ();
+			openedlib_ = libfile;	
+		} else {
+			//loadLibrary would have shown an exception error dialog
+		}
+
+	}
+}
+
+
+void TagWindow::onSaveLibrary ()
+{
+	if (openedlib_.empty()) {
+		onSaveAsLibrary ();
+	} else {
+		saveLibrary (openedlib_);
+	}
+}
+
+
+void TagWindow::onSaveAsLibrary ()
+{
+	Gtk::FileChooserDialog chooser (
+		"Save Library As",
+		Gtk::FILE_CHOOSER_ACTION_SAVE);
+	chooser.add_button (Gtk::Stock::CANCEL, Gtk::RESPONSE_REJECT);
+	chooser.add_button (Gtk::Stock::SAVE, Gtk::RESPONSE_ACCEPT);
+	chooser.set_default_response (Gtk::RESPONSE_ACCEPT);
+	chooser.set_do_overwrite_confirmation (true);
+
+	// Browsing to remote hosts not working for some reason
+	//chooser.set_local_only (false);
+
+	if (!libraryfolder_.empty())
+		chooser.set_current_folder (libraryfolder_);
+
+	if (chooser.run() == Gtk::RESPONSE_ACCEPT) {
+		libraryfolder_ = Glib::path_get_dirname(chooser.get_filename());
+		Glib::ustring libfilename = chooser.get_uri();
+		// Really we shouldn't add the extension if the user has chosen an
+		// existing file rather than typing in a name themselves.
+		libfilename = Utility::ensureExtension (libfilename, "reflib");
+
+		if (saveLibrary (libfilename)) {
+			openedlib_ = libfilename;
+		} else {
+			// saveLibrary would have shown exception dialogs
+		}
 	}
 }
 
@@ -1358,26 +1499,18 @@ void TagWindow::readXML (Glib::ustring XMLtext)
 }
 
 
-void TagWindow::loadLibrary ()
+// True on success
+bool TagWindow::loadLibrary (Glib::ustring const &libfilename)
 {
 	Gnome::Vfs::Handle libfile;
 
-	Glib::ustring libfilename = Glib::get_home_dir () + "/.referencer.lib";
-
 	Glib::RefPtr<Gnome::Vfs::Uri> liburi = Gnome::Vfs::Uri::create (libfilename);
-
-	bool exists = liburi->uri_exists ();
-	if (!exists) {
-		std::cerr << "TagWindow::loadLibrary: Library file '" <<
-			libfilename << "' not found\n";
-		return;
-	}
 
 	try {
 		libfile.open (libfilename, Gnome::Vfs::OPEN_READ);
 	} catch (const Gnome::Vfs::exception ex) {
-		Utility::exceptionDialog (&ex, "opening library");
-		return;
+		Utility::exceptionDialog (&ex, "opening library '" + libfilename + "'");
+		return false;
 	}
 
 	Glib::RefPtr<Gnome::Vfs::FileInfo> fileinfo;
@@ -1387,8 +1520,8 @@ void TagWindow::loadLibrary ()
 	try {
 		libfile.read (buffer, fileinfo->get_size());
 	} catch (const Gnome::Vfs::exception ex) {
-		Utility::exceptionDialog (&ex, "reading library");
-		return;
+		Utility::exceptionDialog (&ex, "reading library '" + libfilename + "'");
+		return false;
 	}
 	buffer[fileinfo->get_size()] = 0;
 
@@ -1396,33 +1529,46 @@ void TagWindow::loadLibrary ()
 	free (buffer);
 	libfile.close ();
 	readXML (rawtext);
+	return true;
 }
 
 
-void TagWindow::saveLibrary ()
+// True on success
+bool TagWindow::saveLibrary (Glib::ustring const &libfilename)
 {
 	Gnome::Vfs::Handle libfile;
 
-	Glib::ustring libfilename = Glib::get_home_dir () + "/.referencer.lib";
 	Glib::ustring tmplibfilename = Glib::get_home_dir () + "/.referencer.lib" + ".tmp";
 
 	try {
 		libfile.create (tmplibfilename, Gnome::Vfs::OPEN_WRITE,
 			false, Gnome::Vfs::PERM_USER_READ | Gnome::Vfs::PERM_USER_WRITE);
 	} catch (const Gnome::Vfs::exception ex) {
-		std::cerr << "TagWindow::saveLibrary: "
-			"exception in create '" << ex.what() << "'\n";
-		return;
+		Utility::exceptionDialog (&ex, "opening file '" + tmplibfilename + "'");
+		return false;
 	}
 
 	Glib::ustring rawtext = writeXML ();
-
-	libfile.write (rawtext.c_str(), strlen(rawtext.c_str()));
+	
+	try {
+		libfile.write (rawtext.c_str(), strlen(rawtext.c_str()));
+	} catch (const Gnome::Vfs::exception ex) {
+		Utility::exceptionDialog (&ex, "writing to file '" + tmplibfilename + "'");
+		return false;
+	}
 
 	libfile.close ();
 
 	// Forcefully move our tmp file into its real position
-	Gnome::Vfs::Handle::move (tmplibfilename, libfilename, true);
+	try {
+		Gnome::Vfs::Handle::move (tmplibfilename, libfilename, true);
+	} catch (const Gnome::Vfs::exception ex) {
+		Utility::exceptionDialog (&ex, "moving '"
+			+ tmplibfilename + "' to '" + libfilename + "'");
+		return false;
+	}
+
+	return true;
 }
 
 
