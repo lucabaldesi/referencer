@@ -2,8 +2,9 @@
 Essential:
 	Appropriate copyright notice for abiword-stolen UC->Latex
 	BibTeX import (and merging with metadata-less PDFs?)
-	Save and load libraries to arbitrary locations
+	Store relative document file paths where possible
 	List view as functional as icon view
+	Crash removing tags?
 
 Big functionality wishlist:
 	arXiv support:

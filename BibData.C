@@ -299,6 +299,7 @@ void BibData::guessDoi (Glib::ustring const &raw_)
 /*
  * Try to extract the Arxiv eprint value of the paper from the raw text
  */
+// Should really only be looking on first page of doc for this one
 void BibData::guessArxiv (Glib::ustring const &raw_)
 {
 	std::string const &raw = raw_;
