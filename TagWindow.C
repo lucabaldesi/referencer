@@ -346,7 +346,7 @@ void TagWindow::constructMenu ()
 		Gtk::Stock::SAVE_AS),
   	sigc::mem_fun(*this, &TagWindow::onSaveAsLibrary));
 	actiongroup_->add( Gtk::Action::create("ExportBibtex",
-		Gtk::Stock::CONVERT, "E_xport to BibTeX"),
+		Gtk::Stock::CONVERT, "E_xport as BibTeX"),
   	sigc::mem_fun(*this, &TagWindow::onExportBibtex));
 	actiongroup_->add( Gtk::Action::create("Preferences",
 		Gtk::Stock::PREFERENCES),
