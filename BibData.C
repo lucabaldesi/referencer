@@ -295,6 +295,36 @@ void BibData::guessDoi (Glib::ustring const &raw_)
 	}
 }
 
+
+/*
+ * Try to extract the Arxiv eprint value of the paper from the raw text
+ */
+void BibData::guessArxiv (Glib::ustring const &raw_)
+{
+	std::string const &raw = raw_;
+
+	boost::regex expression(
+	"arXiv:"
+	"("
+	"[^\\/\\s]+"
+	"\\/"
+	"[^\\s]+"
+	")"
+	);
+
+	std::string::const_iterator start, end;
+	start = raw.begin();
+	end = raw.end();
+	boost::match_results<std::string::const_iterator> what;
+	boost::match_flag_type flags = boost::match_default;
+	while(regex_search(start, end, what, expression, flags)) {
+		Glib::ustring gstr = std::string(what[1]);
+		addExtra ("eprint", gstr);
+		return;
+	}
+}
+
+
 static bool transfercomplete;
 static bool transferfail;
 static Glib::ustring transferresults;

@@ -355,6 +355,8 @@ void Document::readPDF ()
 
 	if (!textdump.empty()) {
 		bib_.guessDoi (textdump);
+		if (bib_.getDoi().empty ())
+			bib_.guessArxiv (textdump);
 		//bib_.guessAuthors (textdump);
 		bib_.guessYear (textdump);
 	} else {

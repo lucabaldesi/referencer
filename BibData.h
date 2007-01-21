@@ -39,6 +39,7 @@ class BibData {
 	void addExtra (Glib::ustring const &key, Glib::ustring const &value);
 	void clearExtras ();
 	ExtrasMap getExtras () {return extras_;}
+	bool hasExtras () {return !extras_.empty();}
 
 	void setType (Glib::ustring const &type) {type_ = type;}
 	Glib::ustring getType () {return type_;}
@@ -65,7 +66,7 @@ class BibData {
 	void guessAuthors (Glib::ustring const &raw);
 	void guessTitle (Glib::ustring const &raw);
 	void guessDoi (Glib::ustring const &raw);
+	void guessArxiv (Glib::ustring const &raw_);
 };
-
 
 #endif
