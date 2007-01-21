@@ -37,6 +37,8 @@ DocumentProperties::DocumentProperties ()
 	crossrefbutton_->signal_clicked().connect(
 		sigc::mem_fun (*this, &DocumentProperties::onCrossRefLookup));
 
+	extrafieldsexpander_ =
+		(Gtk::Expander *) xml_->get_widget ("ExtraFieldsExpander");
 	newextrafieldbutton_ = (Gtk::Button *) xml_->get_widget ("NewExtraField");
 	deleteextrafieldbutton_ = (Gtk::Button *) xml_->get_widget ("DeleteExtraField");
 	editextrafieldbutton_ = (Gtk::Button *) xml_->get_widget ("EditExtraField");
@@ -76,6 +78,8 @@ bool DocumentProperties::show (Document *doc)
 	doc_ = doc;
 
 	update ();
+	
+	extrafieldsexpander_->set_expanded (doc->getBibData().hasExtras ());
 
 	int result = dialog_->run ();
 

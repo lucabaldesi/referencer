@@ -29,6 +29,7 @@ class DocumentProperties {
 	Gtk::Button *deleteextrafieldbutton_;
 	Gtk::Button *editextrafieldbutton_;
 	Gtk::ComboBoxEntryText *typecombo_;
+	Gtk::Expander *extrafieldsexpander_;
 	Gtk::TreeView *extrafieldsview_;
 	Glib::RefPtr<Gtk::TreeSelection> extrafieldssel_;
 
