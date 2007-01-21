@@ -40,8 +40,6 @@ TagWindow::TagWindow ()
 	ignoretaggerchecktoggled_ = false;
 	docselectionignore_ = false;
 
-
-
 	taglist_ = new TagList();
 	doclist_ = new DocumentList();
 	loadLibrary ();
@@ -186,7 +184,7 @@ void TagWindow::constructUI ()
 		sigc::mem_fun (*this, &TagWindow::docActivated));
 
 	icons->signal_button_press_event().connect(
-		sigc::mem_fun (*this, &TagWindow::docClicked));
+		sigc::mem_fun (*this, &TagWindow::docClicked), false);
 
 	icons->signal_selection_changed().connect(
 		sigc::mem_fun (*this, &TagWindow::docSelectionChanged));
@@ -230,11 +228,12 @@ void TagWindow::constructUI ()
 	Gtk::TreeView *table = Gtk::manage (new Gtk::TreeView(docstore_));
 	table->set_enable_search (true);
 	table->set_search_column (1);
+	table->set_rules_hint (true);
 	
 	table->drag_dest_set (
-	dragtypes,
-	Gtk::DEST_DEFAULT_ALL,
-	Gdk::ACTION_COPY | Gdk::ACTION_MOVE | Gdk::ACTION_LINK);
+		dragtypes,
+		Gtk::DEST_DEFAULT_ALL,
+		Gdk::ACTION_COPY | Gdk::ACTION_MOVE | Gdk::ACTION_LINK);
 
 	table->signal_drag_data_received ().connect (
 		sigc::mem_fun (*this, &TagWindow::onIconsDragData));
@@ -242,15 +241,18 @@ void TagWindow::constructUI ()
 	table->signal_row_activated ().connect (
 		sigc::mem_fun (*this, &TagWindow::docListActivated));
 		
+	table->signal_button_press_event().connect(
+		sigc::mem_fun (*this, &TagWindow::docClicked), false);
+		
 	docslistselection_ = table->get_selection ();
 	docslistselection_->set_mode (Gtk::SELECTION_MULTIPLE);
 	docslistselection_->signal_changed ().connect (
-		sigc::mem_fun (*this, &TagWindow::docSelectionChanged));		
+		sigc::mem_fun (*this, &TagWindow::docSelectionChanged));
 
 	// Er, we're actually passing this as reference, is this the right way
 	// to create it?  Will the treeview actually copy it?
-	Gtk::TreeViewColumn *col =
-	Gtk::manage (new Gtk::TreeViewColumn ("Key", dockeycol_));
+	Gtk::TreeViewColumn *col;
+	col = Gtk::manage (new Gtk::TreeViewColumn ("Key", dockeycol_));
 	col->set_resizable (true);
 	col->set_sort_column (dockeycol_);
 	table->append_column (*col);
@@ -394,8 +396,8 @@ void TagWindow::constructMenu ()
 		"      <menuitem action='Quit'/>"
 		"    </menu>"
 		"    <menu action='ViewMenu'>"
-		"      <menuitem action='UseListView'/>"
 		"      <menuitem action='UseIconView'/>"
+		"      <menuitem action='UseListView'/>"
 		"      <separator/>"
 		"      <menuitem action='ShowTagPane'/>"
 		"    </menu>"
@@ -742,13 +744,31 @@ void TagWindow::docSelectionChanged ()
 bool TagWindow::docClicked (GdkEventButton* event)
 {
   if((event->type == GDK_BUTTON_PRESS) && (event->button == 3)) {
-		Gtk::TreeModel::Path clickedpath =
-			docsiconview_->get_path_at_pos ((int)event->x, (int)event->y);
+  	if (usinglistview_) {
+		  Gtk::TreeModel::Path clickedpath;
+		  Gtk::TreeViewColumn *clickedcol;
+		  int cellx;
+		  int celly;
+	  	bool const gotpath = docslistview_->get_path_at_pos (
+	  		(int)event->x, (int)event->y,
+	  		clickedpath, clickedcol,
+	  		cellx, celly);
+	  	std::cerr << "There are " << getSelectedDocCount () << "selected\n";
+			if (gotpath) {
+				if (!docslistselection_->is_selected (clickedpath)) {
+					docslistselection_->unselect_all ();
+					docslistselection_->select (clickedpath);
+				}
+			}
+  	} else {  
+			Gtk::TreeModel::Path clickedpath =
+				docsiconview_->get_path_at_pos ((int)event->x, (int)event->y);
 
-		if (!clickedpath.empty()) {
-			if (!docsiconview_->path_is_selected (clickedpath)) {
-				docsiconview_->unselect_all ();
-				docsiconview_->select_path (clickedpath);
+			if (!clickedpath.empty()) {
+				if (!docsiconview_->path_is_selected (clickedpath)) {
+					docsiconview_->unselect_all ();
+					docsiconview_->select_path (clickedpath);
+				}
 			}
 		}
 
