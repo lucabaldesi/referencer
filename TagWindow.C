@@ -50,17 +50,19 @@ TagWindow::TagWindow ()
 	doclist_ = new DocumentList();
 
 	usinglistview_ = _global_prefs->getUseListView ();
-	
-	Glib::ustring const libfile = _global_prefs->getLibraryFilename ();
-	
-	if (!libfile.empty()) {
-		if (loadLibrary (libfile))
-			openedlib_ = libfile;
-	}
 
 	docpropertiesdialog_ = new DocumentProperties ();
 
 	constructUI ();
+	
+	Glib::ustring const libfile = _global_prefs->getLibraryFilename ();
+	
+	if (!libfile.empty() && loadLibrary (libfile)) {
+		setOpenedLib (libfile);
+	} else {
+		onNewLibrary ();
+	}
+	
 	populateDocStore ();
 	populateTagList ();
 }
@@ -108,12 +110,13 @@ void TagWindow::constructUI ()
 
 	tagpane_ = tagsframe;
 
+	Gtk::Label *tagslabel = Gtk::manage (new Gtk::Label (""));
+	tagslabel->set_markup ("<b> All Tags </b>");
+	tagslabel->set_alignment (0.0, 0.0);
+	vbox->pack_start (*tagslabel, false, true, 3);
+
 	Gtk::VBox *filtervbox = Gtk::manage (new Gtk::VBox);
-	Gtk::Expander *filterexpander =
-		Gtk::manage (new Gtk::Expander ("Tag _filter", true));
-	filterexpander->set_expanded (true);
-	filterexpander->add (*filtervbox);
-	vbox->pack_start (*filterexpander, true, true, 0);
+	vbox->pack_start (*filtervbox, true, true, 0);
 
 	// Create the store for the tag list
 	Gtk::TreeModel::ColumnRecord tagcols;
@@ -140,7 +143,6 @@ void TagWindow::constructUI ()
 	tagsscroll->set_policy (Gtk::POLICY_NEVER, Gtk::POLICY_AUTOMATIC);
 	tagsscroll->set_shadow_type (Gtk::SHADOW_NONE);
 	tagsscroll->add (*tags);
-
 	filtervbox->pack_start(*tagsscroll, true, true, 0);
 
 	tagview_ = tags;
@@ -155,21 +157,21 @@ void TagWindow::constructUI ()
 	tagbar.set_show_arrow (false);
 	filtervbox->pack_start (tagbar, false, false, 0);
 
+	Gtk::Label *taggerlabel = Gtk::manage (new Gtk::Label (""));
+	taggerlabel->set_markup ("<b> This Document </b>");
+	taggerlabel->set_alignment (0.0, 0.0);
+	vbox->pack_start (*taggerlabel, false, true, 3);
+
 	// The tagger box
 	Gtk::VBox *taggervbox = Gtk::manage (new Gtk::VBox);
 	taggervbox->set_border_width(6);
 
 	Gtk::ScrolledWindow *taggerscroll = Gtk::manage(new Gtk::ScrolledWindow());
-
+	taggerscroll->set_policy (Gtk::POLICY_NEVER, Gtk::POLICY_AUTOMATIC);
 	taggerscroll->set_shadow_type (Gtk::SHADOW_NONE);
 	taggerscroll->add (*taggervbox);
-	taggerscroll->set_policy (Gtk::POLICY_NEVER, Gtk::POLICY_AUTOMATIC);
-
-	Gtk::Expander *taggerexpander =
-		Gtk::manage (new Gtk::Expander ("_Tagger", true));
-	taggerexpander->set_expanded (true);
-	taggerexpander->add (*taggerscroll);
-	vbox->pack_start (*taggerexpander, true, true, 0);
+	((Gtk::Viewport *)(taggerscroll->get_child()))->set_shadow_type (Gtk::SHADOW_NONE);
+	vbox->pack_start (*taggerscroll, true, true, 0);
 
 	taggerbox_ = taggervbox;
 
@@ -868,19 +870,40 @@ bool TagWindow::onDelete (GdkEventAny *ev)
 
 bool TagWindow::tryQuit ()
 {
-	if (openedlib_.empty ()) {
-		onSaveAsLibrary ();
+
+	Gtk::MessageDialog dialog (
+		"<b><big>Save changes to library before closing?</big></b>",
+		true,
+		Gtk::MESSAGE_WARNING,
+		Gtk::BUTTONS_NONE,
+		true);
+	
+	dialog.add_button ("Close _without Saving", 0);
+	dialog.add_button (Gtk::Stock::CANCEL, 1);
+	dialog.add_button (Gtk::Stock::SAVE, 2);
+	
+	int const result = dialog.run ();
+	
+	if (result == 0) {
+		return true;
+	} else if (result == 1) {
+		return false;
+	} else /*if (result == 2)*/ {	
 		if (openedlib_.empty ()) {
-			// The user cancelled
-			return false;
+			onSaveAsLibrary ();
+			if (openedlib_.empty ()) {
+				// The user cancelled
+				return false;
+			}
+		} else {
+			if (!saveLibrary (openedlib_)) {
+				// Don't lose data
+				return false;
+			}
 		}
-	} else {
-		if (!saveLibrary (openedlib_)) {
-			// Don't lose data
-			return false;
-		}
+		
+		return true;
 	}
-	return true;
 }
 
 
@@ -1059,7 +1082,7 @@ void TagWindow::onExportBibtex ()
 
 void TagWindow::onNewLibrary ()
 {
-	openedlib_ = "";
+	setOpenedLib ("");
 	taglist_->clear();
 	doclist_->clear();
 	
@@ -1090,7 +1113,7 @@ void TagWindow::onOpenLibrary ()
 		if (loadLibrary (libfile)) {
 			populateDocStore ();
 			populateTagList ();
-			openedlib_ = libfile;	
+			setOpenedLib (libfile);	
 		} else {
 			//loadLibrary would have shown an exception error dialog
 		}
@@ -1133,7 +1156,7 @@ void TagWindow::onSaveAsLibrary ()
 		libfilename = Utility::ensureExtension (libfilename, "reflib");
 
 		if (saveLibrary (libfilename)) {
-			openedlib_ = libfilename;
+			setOpenedLib (libfilename);
 		} else {
 			// saveLibrary would have shown exception dialogs
 		}
@@ -1733,5 +1756,25 @@ void TagWindow::onShowTagPanePrefChanged ()
 	} else {
 		tagpane_->hide ();
 	}
+}
+
+
+void TagWindow::setOpenedLib (Glib::ustring const &openedlib)
+{
+	Glib::ustring filename;
+	if (openedlib.empty ()) {
+		filename = "Unnamed Library";
+	} else {
+		filename = Glib::path_get_basename (openedlib);
+		unsigned int pos = filename.find (".reflib");
+		if (pos != Glib::ustring::npos) {
+			filename = filename.substr (0, pos);
+		}
+	}
+	window_->set_title (
+		filename
+		+ " - "
+		+ PROGRAM_NAME);
+	openedlib_ = openedlib;
 }
 

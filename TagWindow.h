@@ -135,6 +135,7 @@ class TagWindow {
 		Glib::ustring libraryfolder_;
 		
 		Glib::ustring openedlib_;
+		void setOpenedLib (Glib::ustring const &openedlib);
 
 	public:
 		TagWindow ();
