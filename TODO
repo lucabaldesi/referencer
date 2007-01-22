@@ -46,6 +46,10 @@ Bugs:
 EndNote is also somewhat DOI aware, dx.doi.org URLs generated when importing reference from eg INSPEC
 Take heart, endnote is slow and crummy and easy to be better than for simple bibtex use
 
+Build deps on FC5:
+	gtkmm24-devel libgnomeuimm26-devel gnome-vfsmm26-devel libglademm24-devel gconfmm26-devel poppler-devel gcc-c++ boost-devel
+	AND the headers for poppler -- the poppler-devel package only includes the glib versions
+
 Competition on Science biblio export:
 	EndNote
 	Reference Manager
