@@ -45,6 +45,7 @@ TagWindow::TagWindow ()
 	tagselectionignore_ = false;
 	ignoretaggerchecktoggled_ = false;
 	docselectionignore_ = false;
+	dirty_ = false;
 
 	taglist_ = new TagList();
 	doclist_ = new DocumentList();
@@ -614,6 +615,8 @@ void TagWindow::taggerCheckToggled (Gtk::CheckButton *check, int taguid)
 	if (ignoretaggerchecktoggled_)
 		return;
 
+	setDirty (true);
+
 	std::vector<Document*> selecteddocs = getSelectedDocs ();
 
 	bool active = check->get_active ();
@@ -666,6 +669,7 @@ void TagWindow::tagNameEdited (
 	if ((*iter)[taguidcol_] == ALL_TAGS_UID)
 		return;
 
+	setDirty (true);
 
 	// Should escape this
 	Glib::ustring newname = text2;
@@ -854,54 +858,60 @@ void TagWindow::tagClicked (GdkEventButton* event)
 
 void TagWindow::onQuit ()
 {
-	if (tryQuit ())
+	if (ensureSaved ("closing"))
 		Gnome::Main::quit ();
 }
 
 
 bool TagWindow::onDelete (GdkEventAny *ev)
 {
-	if (tryQuit ())
-		return true;
-	else
+	if (ensureSaved ("closing"))
 		return false;
+	else
+		return true;
 }
 
 
-bool TagWindow::tryQuit ()
+// Prompts the user to save if necessary, and returns whether
+// it is save for the caller to proceed (false if the user 
+// says to cancel, or saving failed)
+bool TagWindow::ensureSaved (Glib::ustring const & action)
 {
-
-	Gtk::MessageDialog dialog (
-		"<b><big>Save changes to library before closing?</big></b>",
-		true,
-		Gtk::MESSAGE_WARNING,
-		Gtk::BUTTONS_NONE,
-		true);
-	
-	dialog.add_button ("Close _without Saving", 0);
-	dialog.add_button (Gtk::Stock::CANCEL, 1);
-	dialog.add_button (Gtk::Stock::SAVE, 2);
-	
-	int const result = dialog.run ();
-	
-	if (result == 0) {
-		return true;
-	} else if (result == 1) {
-		return false;
-	} else /*if (result == 2)*/ {	
-		if (openedlib_.empty ()) {
-			onSaveAsLibrary ();
-			if (openedlib_.empty ()) {
-				// The user cancelled
-				return false;
-			}
-		} else {
-			if (!saveLibrary (openedlib_)) {
-				// Don't lose data
-				return false;
-			}
-		}
+	if (getDirty ()) {
+		Gtk::MessageDialog dialog (
+			"<b><big>Save changes to library before " + action + "?</big></b>",
+			true,
+			Gtk::MESSAGE_WARNING,
+			Gtk::BUTTONS_NONE,
+			true);
 		
+		dialog.add_button ("Close _without Saving", 0);
+		dialog.add_button (Gtk::Stock::CANCEL, 1);
+		dialog.add_button (Gtk::Stock::SAVE, 2);
+		
+		int const result = dialog.run ();
+		
+		if (result == 0) {
+			return true;
+		} else if (result == 1) {
+			return false;
+		} else /*if (result == 2)*/ {	
+			if (openedlib_.empty ()) {
+				onSaveAsLibrary ();
+				if (openedlib_.empty ()) {
+					// The user cancelled
+					return false;
+				}
+			} else {
+				if (!saveLibrary (openedlib_)) {
+					// Don't lose data
+					return false;
+				}
+			}
+			
+			return true;
+		}
+	} else {
 		return true;
 	}
 }
@@ -936,6 +946,7 @@ void TagWindow::onCreateTag  ()
 			invalid = true;
 		} else {
 			invalid = false;
+			setDirty (true);
 			taglist_->newTag (newname, Tag::ATTACH);
 			populateTagList();
 		}
@@ -1001,8 +1012,10 @@ void TagWindow::onDeleteTag ()
 		taglist_->deleteTag (*uidit);
 	}
 	
-	if (uidstodelete.size() > 0)
+	if (uidstodelete.size() > 0) {
+		setDirty (true);
 		populateTagList ();
+	}
 }
 
 
@@ -1082,12 +1095,16 @@ void TagWindow::onExportBibtex ()
 
 void TagWindow::onNewLibrary ()
 {
-	setOpenedLib ("");
-	taglist_->clear();
-	doclist_->clear();
-	
-	populateDocStore ();
-	populateTagList ();
+	if (ensureSaved ("creating a new library")) {
+		setDirty (false);
+
+		setOpenedLib ("");
+		taglist_->clear();
+		doclist_->clear();
+		
+		populateDocStore ();
+		populateTagList ();
+	}
 }
 
 
@@ -1100,6 +1117,9 @@ void TagWindow::onOpenLibrary ()
 	// remote not working?
 	//chooser.set_local_only (false);
 
+	if (!ensureSaved ("opening another library"))
+		return;
+
 	if (!libraryfolder_.empty())
 		chooser.set_current_folder (libraryfolder_);
 	chooser.add_button (Gtk::Stock::CANCEL, Gtk::RESPONSE_REJECT);
@@ -1111,9 +1131,10 @@ void TagWindow::onOpenLibrary ()
 		Glib::ustring libfile = chooser.get_uri ();
 		std::cerr << "Calling loadLibrary on " << libfile << "\n";
 		if (loadLibrary (libfile)) {
+			setDirty (false);
 			populateDocStore ();
 			populateTagList ();
-			setOpenedLib (libfile);	
+			setOpenedLib (libfile);
 		} else {
 			//loadLibrary would have shown an exception error dialog
 		}
@@ -1127,7 +1148,8 @@ void TagWindow::onSaveLibrary ()
 	if (openedlib_.empty()) {
 		onSaveAsLibrary ();
 	} else {
-		saveLibrary (openedlib_);
+		if (saveLibrary (openedlib_))
+			setDirty (false);
 	}
 }
 
@@ -1156,6 +1178,7 @@ void TagWindow::onSaveAsLibrary ()
 		libfilename = Utility::ensureExtension (libfilename, "reflib");
 
 		if (saveLibrary (libfilename)) {
+			setDirty (false);
 			setOpenedLib (libfilename);
 		} else {
 			// saveLibrary would have shown exception dialogs
@@ -1240,6 +1263,7 @@ void TagWindow::addDocFiles (std::vector<Glib::ustring> const &filenames)
 		// We added something
 		// Should check if we actually added something in case a newDoc
 		// failed, eg if the doc was already in there
+		setDirty (true);
 		populateDocStore ();
 	}
 
@@ -1248,6 +1272,7 @@ void TagWindow::addDocFiles (std::vector<Glib::ustring> const &filenames)
 
 void TagWindow::onAddDocUnnamed ()
 {
+	setDirty (true);
 	Document *newdoc = doclist_->newDocUnnamed ();
 	newdoc->setDisplayName (doclist_->uniqueDisplayName (newdoc->generateKey ()));
 	docpropertiesdialog_->show (newdoc);
@@ -1257,6 +1282,7 @@ void TagWindow::onAddDocUnnamed ()
 
 void TagWindow::onAddDocByDoi ()
 {
+
 	Gtk::Dialog dialog ("Add Document with DOI", true, false);
 
 	Gtk::VBox *vbox = dialog.get_vbox ();
@@ -1278,6 +1304,7 @@ void TagWindow::onAddDocByDoi ()
 	vbox->set_border_width (12);
 
 	if (dialog.run ()) {
+		setDirty (true);
 		Document *newdoc = doclist_->newDocWithDoi (entry.get_text ());
 
 		newdoc->getBibData().getCrossRef ();
@@ -1304,6 +1331,7 @@ void TagWindow::onAddDocFile ()
 
 
 	if (chooser.run () == Gtk::RESPONSE_ACCEPT) {
+		// Dirty is set in adddocfiles
 		addfolder_ = Glib::path_get_dirname(chooser.get_filename());
 		std::vector<Glib::ustring> newfiles;
 		Glib::SListHandle<Glib::ustring> uris = chooser.get_uris ();
@@ -1333,6 +1361,7 @@ void TagWindow::onAddDocFolder ()
 	chooser.set_default_response (Gtk::RESPONSE_ACCEPT);
 
 	if (chooser.run () == Gtk::RESPONSE_ACCEPT) {
+		// Dirty is set in adddocfiles
 		addfolder_ = Glib::path_get_dirname(chooser.get_filename());
 		Glib::ustring rootfoldername = chooser.get_uri();
 		std::vector<Glib::ustring> files = Utility::recurseFolder (rootfoldername);
@@ -1469,6 +1498,7 @@ void TagWindow::onRemoveDoc ()
 	}
 
 	if (doclistdirty) {
+		setDirty (true);
 		std::cerr << "TagWindow::onRemoveDoc: dirty, calling populateDocStore\n";
 		// We disable docSelectionChanged because otherwise it gets called N
 		// times for deleting N items
@@ -1622,7 +1652,7 @@ void TagWindow::onDivine ()
 	std::vector<Document*>::iterator it = docpointers.begin ();
 	std::vector<Document*>::iterator const end = docpointers.end ();
 	for (; it != end; ++it) {
-		//(*it)->readPDF ();
+		setDirty (true);
 		(*it)->getBibData().getCrossRef ();
 		(*it)->getBibData().print();
 	}
@@ -1643,6 +1673,7 @@ void TagWindow::onDocProperties ()
 	Document *doc = getSelectedDoc ();
 	if (doc) {
 		if (docpropertiesdialog_->show (doc)) {
+			setDirty (true);
 			populateDocStore ();
 		}
 	}
@@ -1759,22 +1790,37 @@ void TagWindow::onShowTagPanePrefChanged ()
 }
 
 
-void TagWindow::setOpenedLib (Glib::ustring const &openedlib)
+void TagWindow::updateTitle ()
 {
 	Glib::ustring filename;
-	if (openedlib.empty ()) {
+	if (openedlib_.empty ()) {
 		filename = "Unnamed Library";
 	} else {
-		filename = Glib::path_get_basename (openedlib);
+		filename = Glib::path_get_basename (openedlib_);
 		unsigned int pos = filename.find (".reflib");
 		if (pos != Glib::ustring::npos) {
 			filename = filename.substr (0, pos);
 		}
 	}
 	window_->set_title (
-		filename
+		(getDirty () ? "*" : "")
+		+ filename
 		+ " - "
 		+ PROGRAM_NAME);
-	openedlib_ = openedlib;
 }
+
+
+void TagWindow::setOpenedLib (Glib::ustring const &openedlib)
+{
+	openedlib_ = openedlib;
+	updateTitle();
+}
+
+void TagWindow::setDirty (bool const &dirty)
+{
+	dirty_ = dirty;
+	updateTitle ();
+}
+
+
 

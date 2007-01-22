@@ -5,6 +5,8 @@ Essential:
 	Store relative document file paths where possible
 	List view as functional as icon view
 	Crash removing tags?
+	loadlibrary wipes current state before trying to load anything -- if it fails
+		we think we're still in the old lib but the data is gone -- DONT SAVE!
 
 Big functionality wishlist:
 	arXiv metadata: ('eprint' extra field)

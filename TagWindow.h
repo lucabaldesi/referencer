@@ -108,7 +108,7 @@ class TagWindow {
 		void onShowTagPanePrefChanged ();
 		void onUseListViewPrefChanged ();
 		bool onDelete (GdkEventAny *ev);
-		bool tryQuit ();
+		bool ensureSaved (Glib::ustring const &action);
 
 		void onDivine ();
 
@@ -133,7 +133,11 @@ class TagWindow {
 		Glib::ustring addfolder_;
 		Glib::ustring exportfolder_;
 		Glib::ustring libraryfolder_;
-		
+
+		void updateTitle ();
+		void setDirty (bool const &dirty);
+		bool getDirty () {return dirty_;}
+		bool dirty_;		
 		Glib::ustring openedlib_;
 		void setOpenedLib (Glib::ustring const &openedlib);
 
