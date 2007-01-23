@@ -128,7 +128,7 @@ class TagWindow {
 		std::vector<Document*> getSelectedDocs ();
 		int getSelectedDocCount ();
 		Glib::ustring writeXML ();
-		void readXML (Glib::ustring XML);
+		bool readXML (Glib::ustring XML);
 		bool loadLibrary (Glib::ustring const &libfilename);
 		bool saveLibrary (Glib::ustring const &libfilename);
 

@@ -1544,31 +1544,32 @@ Glib::ustring TagWindow::writeXML ()
 }
 
 
-void TagWindow::readXML (Glib::ustring XMLtext)
+bool TagWindow::readXML (Glib::ustring XMLtext)
 {
-	taglist_->clear();
-	doclist_->clear();
-	LibraryParser parser (*taglist_, *doclist_);
+	TagList *newtags = new TagList ();
+	DocumentList *newdocs = new DocumentList ();
+
+	LibraryParser parser (*newtags, *newdocs);
 	Glib::Markup::ParseContext context (parser);
 	try {
 		context.parse (XMLtext);
 	} catch (Glib::MarkupError const ex) {
-		std::cerr << "Exception on line " << context.get_line_number () << ", character " << context.get_char_number () << ", code ";
-		switch (ex.code()) {
-			case Glib::MarkupError::BAD_UTF8:
-				std::cerr << "Bad UTF8\n";
-				break;
-			case Glib::MarkupError::EMPTY:
-				std::cerr << "Empty\n";
-				break;
-			case Glib::MarkupError::PARSE:
-				std::cerr << "Parse error\n";
-				break;
-			default:
-				std::cerr << (int)ex.code() << "\n";
-		}
+		std::cerr << "Exception on line " << context.get_line_number () << ", character " << context.get_char_number () << ": '" << ex.what () << "'\n";
+
+		delete newtags;
+		delete newdocs;
+		return false;
 	}
+
 	context.end_parse ();
+
+	delete taglist_;
+	taglist_ = newtags;	
+
+	delete doclist_;
+	doclist_ = newdocs;
+
+	return true;
 }
 
 
@@ -1590,10 +1591,16 @@ bool TagWindow::loadLibrary (Glib::ustring const &libfilename)
 	fileinfo = libfile.get_file_info ();
 
 	char *buffer = (char *) malloc (sizeof(char) * (fileinfo->get_size() + 1));
+	if (!buffer) {
+		std::cerr << "Warning: TagWindow::loadLibrary: couldn't allocate buffer\n";
+		return false;
+	}
+
 	try {
 		libfile.read (buffer, fileinfo->get_size());
 	} catch (const Gnome::Vfs::exception ex) {
 		Utility::exceptionDialog (&ex, "reading library '" + libfilename + "'");
+		free (buffer);
 		return false;
 	}
 	buffer[fileinfo->get_size()] = 0;
@@ -1601,8 +1608,8 @@ bool TagWindow::loadLibrary (Glib::ustring const &libfilename)
 	Glib::ustring rawtext = buffer;
 	free (buffer);
 	libfile.close ();
-	readXML (rawtext);
-	return true;
+	
+	return readXML (rawtext);
 }
 
 

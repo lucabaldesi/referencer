@@ -7,8 +7,6 @@ Essential:
 	Removing documents is either depending on unique keys or needs some other UID, or needs to pass all pointers to target documents to DocumentList at once (when we remove one by pointers, the other pointers to delete get out of date)
 		even if we pass a key, our pointers to other documents to get keys from get out of date.  How upsetting.
 	Crash removing tags?
-	loadlibrary wipes current state before trying to load anything -- if it fails
-		we think we're still in the old lib but the data is gone -- DONT SAVE!
 
 Big functionality wishlist:
 	arXiv metadata: ('eprint' extra field)
@@ -46,6 +44,7 @@ Bugs:
 	In TagWindow::onIconsDragData, we do get_file_info on remote URIs synchronously
 		in order to support directory recursion on remote filesystems -- this is a 
 		bad thing when adding stuff from really remote things like websites
+	Bibutils breaks when there is junk outside of @whatever{} before a reference
 
 EndNote is also somewhat DOI aware, dx.doi.org URLs generated when importing reference from eg INSPEC
 Take heart, endnote is slow and crummy and easy to be better than for simple bibtex use
