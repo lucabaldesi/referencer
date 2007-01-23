@@ -79,6 +79,7 @@ class TagWindow {
 		bool docClicked (GdkEventButton* event);
 		void tagClicked (GdkEventButton* event);
 		void tagNameEdited (Glib::ustring const &text1, Glib::ustring const &text2);
+		void onWorkOfflineToggled ();
 		void onQuit ();
 		void onUseListViewToggled ();
 		void onShowTagPaneToggled ();
@@ -108,6 +109,7 @@ class TagWindow {
 
 		void onShowTagPanePrefChanged ();
 		void onUseListViewPrefChanged ();
+		void onWorkOfflinePrefChanged ();
 		bool onDelete (GdkEventAny *ev);
 		bool ensureSaved (Glib::ustring const &action);
 

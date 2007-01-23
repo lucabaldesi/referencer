@@ -330,6 +330,16 @@ void TagWindow::constructUI ()
 	Glib::RefPtr <Gtk::ToggleAction>::cast_static(
 			actiongroup_->get_action ("ShowTagPane"))->signal_toggled ().connect (
 				sigc::mem_fun(*this, &TagWindow::onShowTagPaneToggled));
+				
+	Glib::RefPtr <Gtk::ToggleAction>::cast_static(
+			actiongroup_->get_action ("WorkOffline"))->set_active(
+				_global_prefs->getWorkOffline());
+	_global_prefs->getWorkOfflineSignal ().connect (
+		sigc::mem_fun (*this, &TagWindow::onWorkOfflinePrefChanged));
+		
+	Glib::RefPtr <Gtk::ToggleAction>::cast_static(
+			actiongroup_->get_action ("WorkOffline"))->signal_toggled ().connect (
+				sigc::mem_fun(*this, &TagWindow::onWorkOfflineToggled));
 }
 
 
@@ -356,6 +366,8 @@ void TagWindow::constructMenu ()
 	actiongroup_->add( Gtk::Action::create("Import",
 		"_Import..."),
   	sigc::mem_fun(*this, &TagWindow::onImport));
+	actiongroup_->add( Gtk::ToggleAction::create("WorkOffline",
+		"_Work Offline"));
 	actiongroup_->add( Gtk::Action::create("Preferences",
 		Gtk::Stock::PREFERENCES),
   	sigc::mem_fun(*this, &TagWindow::onPreferences));
@@ -431,6 +443,7 @@ void TagWindow::constructMenu ()
 		"      <menuitem action='ExportBibtex'/>"
 		"      <menuitem action='Import'/>"
 		"      <separator/>"
+		"      <menuitem action='WorkOffline'/>"
 		"      <menuitem action='Preferences'/>"
 		"      <separator/>"
 		"      <menuitem action='Quit'/>"
@@ -1794,6 +1807,22 @@ void TagWindow::onShowTagPanePrefChanged ()
 	} else {
 		tagpane_->hide ();
 	}
+}
+
+
+void TagWindow::onWorkOfflineToggled ()
+{
+	_global_prefs->setWorkOffline (
+		Glib::RefPtr <Gtk::ToggleAction>::cast_static(
+			actiongroup_->get_action ("WorkOffline"))->get_active ());
+}
+
+
+void TagWindow::onWorkOfflinePrefChanged ()
+{
+	Glib::RefPtr <Gtk::ToggleAction>::cast_static(
+		actiongroup_->get_action ("WorkOffline"))->set_active (
+			_global_prefs->getWorkOffline ());
 }
 
 

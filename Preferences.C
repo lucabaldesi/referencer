@@ -182,6 +182,12 @@ void Preferences::setWorkOffline (bool const &offline)
 }
 
 
+sigc::signal<void>& Preferences::getWorkOfflineSignal ()
+{
+	return workofflinesignal_;
+}
+
+
 bool Preferences::getUseListView ()
 {
 	return confclient_->get_bool (uselistview_.get_key());
