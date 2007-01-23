@@ -527,7 +527,7 @@ void BibData::fetcherThread ()
 
 	// Crossref can fuck off if it thinks the metadata for a
 	// paper is more than 256kB.  If it really is then we will
-	// later try and parse incomplete XML, and should fail 
+	// later try and parse incomplete XML, and should fail
 	// there probably.
 	int const maxsize = 1024 * 256;
 	char *buffer = (char *) malloc (sizeof (char) * maxsize);

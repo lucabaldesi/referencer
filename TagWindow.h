@@ -140,7 +140,7 @@ class TagWindow {
 		void updateTitle ();
 		void setDirty (bool const &dirty);
 		bool getDirty () {return dirty_;}
-		bool dirty_;		
+		bool dirty_;
 		Glib::ustring openedlib_;
 		void setOpenedLib (Glib::ustring const &openedlib);
 

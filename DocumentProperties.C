@@ -78,7 +78,7 @@ bool DocumentProperties::show (Document *doc)
 	doc_ = doc;
 
 	update ();
-	
+
 	extrafieldsexpander_->set_expanded (doc->getBibData().hasExtras ());
 
 	int result = dialog_->run ();

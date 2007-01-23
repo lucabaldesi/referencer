@@ -55,15 +55,15 @@ TagWindow::TagWindow ()
 	docpropertiesdialog_ = new DocumentProperties ();
 
 	constructUI ();
-	
+
 	Glib::ustring const libfile = _global_prefs->getLibraryFilename ();
-	
+
 	if (!libfile.empty() && loadLibrary (libfile)) {
 		setOpenedLib (libfile);
 	} else {
 		onNewLibrary ();
 	}
-	
+
 	populateDocStore ();
 	populateTagList ();
 }
@@ -245,7 +245,7 @@ void TagWindow::constructUI ()
 	table->set_enable_search (true);
 	table->set_search_column (1);
 	table->set_rules_hint (true);
-	
+
 	table->drag_dest_set (
 		dragtypes,
 		Gtk::DEST_DEFAULT_ALL,
@@ -256,10 +256,10 @@ void TagWindow::constructUI ()
 
 	table->signal_row_activated ().connect (
 		sigc::mem_fun (*this, &TagWindow::docListActivated));
-		
+
 	table->signal_button_press_event().connect(
 		sigc::mem_fun (*this, &TagWindow::docClicked), false);
-		
+
 	docslistselection_ = table->get_selection ();
 	docslistselection_->set_mode (Gtk::SELECTION_MULTIPLE);
 	docslistselection_->signal_changed ().connect (
@@ -314,7 +314,7 @@ void TagWindow::constructUI ()
 	onUseListViewPrefChanged ();
 	_global_prefs->getUseListViewSignal ().connect (
 		sigc::mem_fun (*this, &TagWindow::onUseListViewPrefChanged));
-	
+
 	Glib::RefPtr <Gtk::RadioAction>::cast_static(
 		actiongroup_->get_action ("UseListView"))->signal_toggled ().connect (
 			sigc::mem_fun(*this, &TagWindow::onUseListViewToggled));
@@ -326,17 +326,17 @@ void TagWindow::constructUI ()
 	onShowTagPanePrefChanged ();
 	_global_prefs->getShowTagPaneSignal ().connect (
 		sigc::mem_fun (*this, &TagWindow::onShowTagPanePrefChanged));
-		
+
 	Glib::RefPtr <Gtk::ToggleAction>::cast_static(
 			actiongroup_->get_action ("ShowTagPane"))->signal_toggled ().connect (
 				sigc::mem_fun(*this, &TagWindow::onShowTagPaneToggled));
-				
+
 	Glib::RefPtr <Gtk::ToggleAction>::cast_static(
 			actiongroup_->get_action ("WorkOffline"))->set_active(
 				_global_prefs->getWorkOffline());
 	_global_prefs->getWorkOfflineSignal ().connect (
 		sigc::mem_fun (*this, &TagWindow::onWorkOfflinePrefChanged));
-		
+
 	Glib::RefPtr <Gtk::ToggleAction>::cast_static(
 			actiongroup_->get_action ("WorkOffline"))->signal_toggled ().connect (
 				sigc::mem_fun(*this, &TagWindow::onWorkOfflineToggled));
@@ -815,7 +815,7 @@ bool TagWindow::docClicked (GdkEventButton* event)
 					docslistselection_->select (clickedpath);
 				}
 			}
-  	} else {  
+  	} else {
 			Gtk::TreeModel::Path clickedpath =
 				docsiconview_->get_path_at_pos ((int)event->x, (int)event->y);
 
@@ -893,7 +893,7 @@ bool TagWindow::onDelete (GdkEventAny *ev)
 
 
 // Prompts the user to save if necessary, and returns whether
-// it is save for the caller to proceed (false if the user 
+// it is save for the caller to proceed (false if the user
 // says to cancel, or saving failed)
 bool TagWindow::ensureSaved (Glib::ustring const & action)
 {
@@ -904,18 +904,18 @@ bool TagWindow::ensureSaved (Glib::ustring const & action)
 			Gtk::MESSAGE_WARNING,
 			Gtk::BUTTONS_NONE,
 			true);
-		
+
 		dialog.add_button ("Close _without Saving", 0);
 		dialog.add_button (Gtk::Stock::CANCEL, 1);
 		dialog.add_button (Gtk::Stock::SAVE, 2);
-		
+
 		int const result = dialog.run ();
-		
+
 		if (result == 0) {
 			return true;
 		} else if (result == 1) {
 			return false;
-		} else /*if (result == 2)*/ {	
+		} else /*if (result == 2)*/ {
 			if (openedlib_.empty ()) {
 				onSaveAsLibrary ();
 				if (openedlib_.empty ()) {
@@ -928,7 +928,7 @@ bool TagWindow::ensureSaved (Glib::ustring const & action)
 					return false;
 				}
 			}
-			
+
 			return true;
 		}
 	} else {
@@ -1021,7 +1021,7 @@ void TagWindow::onDeleteTag ()
 			uidstodelete.push_back ((*iter)[taguidcol_]);
 		}
 	}
-	
+
 	std::vector<int>::iterator uidit = uidstodelete.begin ();
 	std::vector<int>::iterator const uidend = uidstodelete.end ();
 	for (; uidit != uidend; ++uidit) {
@@ -1031,7 +1031,7 @@ void TagWindow::onDeleteTag ()
 		// Remove it from the tag list
 		taglist_->deleteTag (*uidit);
 	}
-	
+
 	if (uidstodelete.size() > 0) {
 		setDirty (true);
 		populateTagList ();
@@ -1121,7 +1121,7 @@ void TagWindow::onNewLibrary ()
 		setOpenedLib ("");
 		taglist_->clear();
 		doclist_->clear();
-		
+
 		populateDocStore ();
 		populateTagList ();
 	}
@@ -1425,9 +1425,9 @@ std::vector<Document*> TagWindow::getSelectedDocs ()
 Document *TagWindow::getSelectedDoc ()
 {
 	if (usinglistview_) {
-		Gtk::TreeSelection::ListHandle_Path paths = 
+		Gtk::TreeSelection::ListHandle_Path paths =
 			docslistselection_->get_selected_rows ();
-			
+
 		if (paths.size() != 1) {
 			std::cerr << "Warning: TagWindow::getSelectedDoc: size != 1\n";
 			return false;
@@ -1436,10 +1436,10 @@ Document *TagWindow::getSelectedDoc ()
 		Gtk::TreePath path = (*paths.begin ());
 		Gtk::ListStore::iterator iter = docstore_->get_iter (path);
 		return (*iter)[docpointercol_];
-		
+
 	} else {
 		Gtk::IconView::ArrayHandle_TreePaths paths = docsiconview_->get_selected_items ();
-		
+
 		if (paths.size() != 1) {
 			std::cerr << "Warning: TagWindow::getSelectedDoc: size != 1\n";
 			return false;
@@ -1565,7 +1565,7 @@ bool TagWindow::readXML (Glib::ustring XMLtext)
 	context.end_parse ();
 
 	delete taglist_;
-	taglist_ = newtags;	
+	taglist_ = newtags;
 
 	delete doclist_;
 	doclist_ = newdocs;
@@ -1609,7 +1609,7 @@ bool TagWindow::loadLibrary (Glib::ustring const &libfilename)
 	Glib::ustring rawtext = buffer;
 	free (buffer);
 	libfile.close ();
-	
+
 	return readXML (rawtext);
 }
 
@@ -1630,7 +1630,7 @@ bool TagWindow::saveLibrary (Glib::ustring const &libfilename)
 	}
 
 	Glib::ustring rawtext = writeXML ();
-	
+
 	try {
 		libfile.write (rawtext.c_str(), strlen(rawtext.c_str()));
 	} catch (const Gnome::Vfs::exception ex) {
@@ -1887,9 +1887,9 @@ void TagWindow::onImport ()
 		libraryfolder_ = Glib::path_get_dirname(chooser.get_filename());
 		Glib::ustring filename = chooser.get_uri ();
 		setDirty (true);
-		
+
 		doclist_->import (filename);
-				
+
 		populateDocStore ();
 		populateTagList ();
 	}

@@ -39,8 +39,8 @@ private:
 	bool ignorechanges_;
 
 	Glib::RefPtr<Gnome::Conf::Client> confclient_;
-	
-	// Set when our gconf directory didn't exist, the first time the 
+
+	// Set when our gconf directory didn't exist, the first time the
 	// program is run
 	bool firsttime_;
 
@@ -62,7 +62,7 @@ public:
 	bool getUseListView ();
 	void setUseListView (bool const &uselistview);
 	sigc::signal<void>& getUseListViewSignal ();
-	
+
 	bool getShowTagPane ();
 	void setShowTagPane (bool const &showtagpane);
 	sigc::signal<void>& getShowTagPaneSignal ();
@@ -74,7 +74,7 @@ public:
 
 	Utility::StringPair getMetadataLookup ();
 	void setMetadataLookup (Glib::ustring const &metadatalookup);
-	
+
 	bool const getFirstTime () {return firsttime_;}
 };
 
