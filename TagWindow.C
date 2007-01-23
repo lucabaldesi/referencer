@@ -962,6 +962,8 @@ void TagWindow::onCreateTag  ()
 
 	while (invalid && dialog.run()) {
 		Glib::ustring newname = nameentry.get_text ();
+		// Later displayed in markup'd cellrenderer
+		newname = Glib::Markup::escape_text (newname);
 		if (newname.empty()) {
 			invalid = true;
 		} else {
@@ -972,8 +974,6 @@ void TagWindow::onCreateTag  ()
 		}
 
 	}
-
-	// When we add a tag we need to escape it to avoid markup
 }
 
 
@@ -1555,6 +1555,7 @@ bool TagWindow::readXML (Glib::ustring XMLtext)
 		context.parse (XMLtext);
 	} catch (Glib::MarkupError const ex) {
 		std::cerr << "Exception on line " << context.get_line_number () << ", character " << context.get_char_number () << ": '" << ex.what () << "'\n";
+		Utility::exceptionDialog (&ex, "parsing Library XML.");
 
 		delete newtags;
 		delete newdocs;
