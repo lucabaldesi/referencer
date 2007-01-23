@@ -92,17 +92,9 @@ Glib::RefPtr<Gnome::Glade::Xml> openGlade (
 void exceptionDialog (
 	Glib::Exception const *ex, Glib::ustring const &context)
 {
-	/*Glib::ustring message =
-		"<big><b>Exception!</b></big>\n\n"
-		"A problem was encountered while "
-		+ context
-		+ ".  The problem was '"
-		+ ex->what ()
-		+ "'.";*/
-
 	Glib::ustring message =
 		"<big><b>"
-		+ ex->what ()
+		+ Glib::Markup::escape_text (ex->what ())
 		+ "</b></big>\n\n"
 		"This problem was encountered while "
 		+ context
