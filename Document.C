@@ -122,7 +122,7 @@ Glib::RefPtr<Gdk::Pixbuf> Document::getThemeIcon(Glib::ustring const &iconname)
 void Document::setupThumbnail ()
 {
 	Glib::RefPtr<Gnome::Vfs::Uri> uri = Gnome::Vfs::Uri::create (filename_);
-	if (uri->is_local() && uri->uri_exists()) {
+	if (!filename_.empty () && uri->is_local() && uri->uri_exists()) {
 		Glib::RefPtr<Gnome::Vfs::FileInfo> fileinfo = uri->get_file_info ();
 		time_t mtime = fileinfo->get_modification_time ();
 
