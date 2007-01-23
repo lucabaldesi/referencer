@@ -6,7 +6,7 @@ LIBS = libbibutils/*.o `pkg-config --libs poppler gtkmm-2.4 libgnomeuimm-2.6 gno
 #LIBS = libbibutils/libbibutils.a libbibutils/libbibprogs.a `pkg-config --libs poppler gtkmm-2.4 libgnomeuimm-2.6 gnome-vfsmm-2.6 libglademm-2.4 gconfmm-2.6` -lboost_regex
 
 TARGET = referencer
-OBJECTS = TagWindow.o TagList.o  DocumentList.o Document.o BibData.o DocumentProperties.o Preferences.o Utility.o
+OBJECTS = TagWindow.o TagList.o  DocumentList.o Document.o BibData.o DocumentProperties.o Preferences.o Utility.o BibUtils.o
 
 PREFIX=/usr/local
 DATADIR=$(PREFIX)/share/$(TARGET)
