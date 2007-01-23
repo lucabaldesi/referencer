@@ -4,6 +4,8 @@ Essential:
 	BibTeX import (and merging with metadata-less PDFs?)
 	Store relative document file paths where possible
 	List view as functional as icon view
+	Removing documents is either depending on unique keys or needs some other UID, or needs to pass all pointers to target documents to DocumentList at once (when we remove one by pointers, the other pointers to delete get out of date)
+		even if we pass a key, our pointers to other documents to get keys from get out of date.  How upsetting.
 	Crash removing tags?
 	loadlibrary wipes current state before trying to load anything -- if it fails
 		we think we're still in the old lib but the data is gone -- DONT SAVE!
