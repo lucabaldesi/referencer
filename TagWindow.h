@@ -100,6 +100,7 @@ class TagWindow {
 		void onSaveAsLibrary ();
 		void onOpenLibrary ();
 		void onExportBibtex ();
+		void onImport ();
 		void onPreferences ();
 		void onIconsDragData (
 			const Glib::RefPtr <Gdk::DragContext> &context,

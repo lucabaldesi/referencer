@@ -32,6 +32,8 @@ class DocumentList {
 	void writeXML (std::ostringstream& out);
 	void clear () {docs_.clear ();}
 	void writeBibtex (std::ostringstream &out);
+	
+	bool import (Glib::ustring const &filename);
 };
 
 #endif
