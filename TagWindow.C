@@ -349,8 +349,11 @@ void TagWindow::constructMenu ()
 		Gtk::Stock::SAVE_AS),
   	sigc::mem_fun(*this, &TagWindow::onSaveAsLibrary));
 	actiongroup_->add( Gtk::Action::create("ExportBibtex",
-		Gtk::Stock::CONVERT, "E_xport as BibTeX"),
+		Gtk::Stock::CONVERT, "E_xport as BibTeX..."),
   	sigc::mem_fun(*this, &TagWindow::onExportBibtex));
+	actiongroup_->add( Gtk::Action::create("Import",
+		"_Import..."),
+  	sigc::mem_fun(*this, &TagWindow::onImport));
 	actiongroup_->add( Gtk::Action::create("Preferences",
 		Gtk::Stock::PREFERENCES),
   	sigc::mem_fun(*this, &TagWindow::onPreferences));
@@ -422,7 +425,9 @@ void TagWindow::constructMenu ()
 		"      <separator/>"
 		"      <menuitem action='SaveLibrary'/>"
 		"      <menuitem action='SaveAsLibrary'/>"
+		"      <separator/>"
 		"      <menuitem action='ExportBibtex'/>"
+		"      <menuitem action='Import'/>"
 		"      <separator/>"
 		"      <menuitem action='Preferences'/>"
 		"      <separator/>"
@@ -1123,7 +1128,7 @@ void TagWindow::onOpenLibrary ()
 	if (!libraryfolder_.empty())
 		chooser.set_current_folder (libraryfolder_);
 	chooser.add_button (Gtk::Stock::CANCEL, Gtk::RESPONSE_REJECT);
-	chooser.add_button (Gtk::Stock::ADD, Gtk::RESPONSE_ACCEPT);
+	chooser.add_button (Gtk::Stock::OPEN, Gtk::RESPONSE_ACCEPT);
 	chooser.set_default_response (Gtk::RESPONSE_ACCEPT);
 
 	if (chooser.run () == Gtk::RESPONSE_ACCEPT) {
@@ -1820,6 +1825,114 @@ void TagWindow::setDirty (bool const &dirty)
 {
 	dirty_ = dirty;
 	updateTitle ();
+}
+
+
+extern "C" {
+
+namespace BibUtils {
+
+#include "libbibutils/bibutils.h"
+
+char progname[] = "bib2xml";
+char help1[] = "Converts a Bibtex reference file into MODS XML\n\n";
+char help2[] = "bibtex_file";
+
+lists asis  = { 0, 0, NULL };
+lists corps = { 0, 0, NULL };
+
+}
+
+}
+
+using namespace BibUtils;
+
+void TagWindow::onImport ()
+{
+	Gtk::FileChooserDialog chooser(
+		"Import References",
+		Gtk::FILE_CHOOSER_ACTION_OPEN);
+
+	// remote not working?
+	//chooser.set_local_only (false);
+
+	if (!libraryfolder_.empty())
+		chooser.set_current_folder (libraryfolder_);
+
+	chooser.add_button (Gtk::Stock::CANCEL, Gtk::RESPONSE_REJECT);
+	chooser.add_button (Gtk::Stock::OPEN, Gtk::RESPONSE_ACCEPT);
+	chooser.set_default_response (Gtk::RESPONSE_ACCEPT);
+
+	if (chooser.run () == Gtk::RESPONSE_ACCEPT) {
+		libraryfolder_ = Glib::path_get_dirname(chooser.get_filename());
+		Glib::ustring filename = chooser.get_uri ();
+		setDirty (true);
+		
+		{
+			Glib::ustring rawtext;
+			{
+				Gnome::Vfs::Handle importfile;
+
+				Glib::RefPtr<Gnome::Vfs::Uri> liburi = Gnome::Vfs::Uri::create (filename);
+
+				try {
+					importfile.open (filename, Gnome::Vfs::OPEN_READ);
+				} catch (const Gnome::Vfs::exception ex) {
+					Utility::exceptionDialog (&ex, "opening file '" + filename + "'");
+					//return false;
+				}
+
+				Glib::RefPtr<Gnome::Vfs::FileInfo> fileinfo;
+				fileinfo = importfile.get_file_info ();
+
+				char *buffer = (char *) malloc (sizeof(char) * (fileinfo->get_size() + 1));
+				try {
+					importfile.read (buffer, fileinfo->get_size());
+				} catch (const Gnome::Vfs::exception ex) {
+					Utility::exceptionDialog (&ex, "reading file '" + filename + "'");
+					//return false;
+				}
+				buffer[fileinfo->get_size()] = 0;
+
+				rawtext = buffer;
+				free (buffer);
+				importfile.close ();
+			}
+			param p;
+			bibl b;
+			bibl_init( &b );
+			bibl_initparams( &p, BIBL_BIBTEXIN, BIBL_MODSOUT);
+
+			int handles[2];
+			if (pipe(handles)) {
+				fprintf (stderr, "Can't create pipe\n");
+				return;
+			}
+			int pipeout = handles[0];
+			int pipein = handles[1];
+			write (pipein, rawtext.c_str(), strlen(rawtext.c_str()));
+			close (pipein);
+			
+			FILE *otherend = fdopen (pipeout, "r");
+			bibl_read( &b, otherend, "My Pipe", BIBL_BIBTEXIN, &p );
+			fclose (otherend);
+			close (pipeout);
+
+			for (int i = 0; i < b.nrefs; ++i) {
+				for (int j = 0; j < b.ref[i]->nfields; ++j) {
+					fprintf (stdout, "%s : %s\n", b.ref[i]->tag[j].data, b.ref[i]->data[j].data);
+				}
+			}
+
+			/*bibl_write( &b, stdout, BIBL_MODSOUT, &p );
+			fflush( stdout );*/
+			fprintf( stderr, "Processed %ld references.\n", b.nrefs );
+			bibl_free( &b );
+		}
+		
+		populateDocStore ();
+		populateTagList ();
+	}
 }
 
 
