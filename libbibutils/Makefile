@@ -1,5 +1,5 @@
 #CC = gcc -Wall 
-#RANLIB = echo
+RANLIB = ranlib
 
 BIB_OBJS = bbl.o fields.o lists.o name.o title.o reftypes.o
 
