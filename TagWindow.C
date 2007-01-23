@@ -267,6 +267,7 @@ void TagWindow::constructUI ()
 
 	// Er, we're actually passing this as reference, is this the right way
 	// to create it?  Will the treeview actually copy it?
+	Gtk::CellRendererText *cell;
 	Gtk::TreeViewColumn *col;
 	col = Gtk::manage (new Gtk::TreeViewColumn ("Key", dockeycol_));
 	col->set_resizable (true);
@@ -276,13 +277,14 @@ void TagWindow::constructUI ()
 	col->set_resizable (true);
 	col->set_expand (true);
 	col->set_sort_column (doctitlecol_);
-	Gtk::CellRendererText * cell =
-		(Gtk::CellRendererText *) col->get_first_cell_renderer ();
+	cell = (Gtk::CellRendererText *) col->get_first_cell_renderer ();
 	cell->property_ellipsize () = Pango::ELLIPSIZE_END;
 	table->append_column (*col);
 	col = Gtk::manage (new Gtk::TreeViewColumn ("Authors", docauthorscol_));
 	col->set_resizable (true);
 	col->set_sort_column (docauthorscol_);
+	cell = (Gtk::CellRendererText *) col->get_first_cell_renderer ();
+	cell->property_ellipsize () = Pango::ELLIPSIZE_END;
 	table->append_column (*col);
 	col = Gtk::manage (new Gtk::TreeViewColumn ("Year  ", docyearcol_));
 	col->set_resizable (true);
