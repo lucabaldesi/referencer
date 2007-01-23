@@ -174,22 +174,6 @@ void DocumentList::writeBibtex (std::ostringstream& out)
 
 
 
-extern "C" {
-
-namespace BibUtils {
-
-#include "libbibutils/bibutils.h"
-
-char progname[] = "bib2xml";
-char help1[] = "Converts a Bibtex reference file into MODS XML\n\n";
-char help2[] = "bibtex_file";
-
-lists asis  = { 0, 0, NULL };
-lists corps = { 0, 0, NULL };
-
-}
-
-}
 
 using namespace BibUtils;
 
@@ -252,45 +236,7 @@ bool DocumentList::import (Glib::ustring const & filename)
 	close (pipeout);
 
 	for (int i = 0; i < b.nrefs; ++i) {
-		Document newdoc;
-		for (int j = 0; j < b.ref[i]->nfields; ++j) {
-			Glib::ustring key = b.ref[i]->tag[j].data;
-			Glib::ustring value = b.ref[i]->data[j].data;
-
-			if (key == "REFNUM") {
-				newdoc.setDisplayName (value);
-			/*} else if (key == "TITLE") {
-				if (b.ref[i]->level[j] == 0) {
-					newdoc.getBibData().setTitle (value);
-				} else if (b.ref[i]->level[j] == 1) {
-					newdoc.getBibData().setJournal (value);
-				}*/
-			} else if (key == "TYPE") {
-				newdoc.getBibData().setType (value);
-			} else if (key == "VOLUME") {
-				newdoc.getBibData().setVolume (value);
-			} else if (key == "NUMBER") {
-				newdoc.getBibData().setIssue (value);
-			} else if (key == "YEAR" || key == "PARTYEAR") {
-				newdoc.getBibData().setYear (value);
-			} else if (key == "PAGESTART") {
-				newdoc.getBibData().setPages (value + newdoc.getBibData().getPages ());
-			} else if (key == "PAGEEND") {
-				newdoc.getBibData().setPages (newdoc.getBibData().getPages () + "-" + value);
-			} else if (key == "AUTHOR") {
-				if (newdoc.getBibData().getAuthors().empty ()) {
-					newdoc.getBibData().setAuthors (value);
-				} else {
-					newdoc.getBibData().setAuthors (
-						newdoc.getBibData().getAuthors () + " and " + value);
-				}
-			} else {
-				std::cerr << key << " = " << value << "\n";
-				std::cerr << "\t" << "used = " << b.ref[i]->used[j] << "\n";
-				std::cerr << "\t" << "level = " << b.ref[i]->level[j] << "\n";
-			}
-		}
-		docs_.push_back (newdoc);
+		docs_.push_back (parseBibUtils (b.ref[i]));
 	}
 
 	/*bibl_write( &b, stdout, BIBL_MODSOUT, &p );
@@ -301,3 +247,50 @@ bool DocumentList::import (Glib::ustring const & filename)
 	return true;
 }
 
+
+Document DocumentList::parseBibUtils (BibUtils::fields *ref)
+{
+	Document newdoc;
+	int k = fields_find (ref, "TITLE", 0);
+	if (k >= 0) {
+		newdoc.getBibData().setTitle (ref->data[k].data);
+	}
+	for (int j = 0; j < ref->nfields; ++j) {
+		Glib::ustring key = ref->tag[j].data;
+		Glib::ustring value = ref->data[j].data;
+
+		if (key == "REFNUM") {
+			newdoc.setDisplayName (value);
+		/*} else if (key == "TITLE") {
+			if (ref->level[j] == 0) {
+				newdoc.getBibData().setTitle (value);
+			} else if (ref->level[j] == 1) {
+				newdoc.getBibData().setJournal (value);
+			}*/
+		} else if (key == "TYPE") {
+			newdoc.getBibData().setType (value);
+		} else if (key == "VOLUME") {
+			newdoc.getBibData().setVolume (value);
+		} else if (key == "NUMBER") {
+			newdoc.getBibData().setIssue (value);
+		} else if (key == "YEAR" || key == "PARTYEAR") {
+			newdoc.getBibData().setYear (value);
+		} else if (key == "PAGESTART") {
+			newdoc.getBibData().setPages (value + newdoc.getBibData().getPages ());
+		} else if (key == "PAGEEND") {
+			newdoc.getBibData().setPages (newdoc.getBibData().getPages () + "-" + value);
+		} else if (key == "AUTHOR") {
+			if (newdoc.getBibData().getAuthors().empty ()) {
+				newdoc.getBibData().setAuthors (value);
+			} else {
+				newdoc.getBibData().setAuthors (
+					newdoc.getBibData().getAuthors () + " and " + value);
+			}
+		} else {
+			std::cerr << key << " = " << value << "\n";
+			std::cerr << "\t" << "used = " << ref->used[j] << "\n";
+			std::cerr << "\t" << "level = " << ref->level[j] << "\n";
+		}
+	}
+	return newdoc;
+}

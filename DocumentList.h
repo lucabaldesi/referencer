@@ -6,6 +6,8 @@
 #include <sstream>
 #include <vector>
 
+#include "BibUtils.h"
+
 #include "Document.h"
 
 class DocumentList {
@@ -34,6 +36,7 @@ class DocumentList {
 	void writeBibtex (std::ostringstream &out);
 	
 	bool import (Glib::ustring const &filename);
+	Document parseBibUtils (BibUtils::fields *ref);
 };
 
 #endif
