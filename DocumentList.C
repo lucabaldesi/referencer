@@ -228,7 +228,7 @@ bool DocumentList::import (Glib::ustring const & filename)
 	int pipeout = handles[0];
 	int pipein = handles[1];
 	
-	write (pipein, rawtext.c_str(), len);
+	write (pipein, rawtext.c_str(), strlen (rawtext.c_str()));
 	close (pipein);
 
 	FILE *otherend = fdopen (pipeout, "r");
