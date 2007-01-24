@@ -29,7 +29,11 @@ int main (int argc, char **argv)
 	_global_prefs = new Preferences();
 
 	if (argc > 1) {
-		_global_prefs->setLibraryFilename (argv[1]);
+		Glib::ustring libfile = argv[1];
+		if (!Glib::path_is_absolute (libfile)) {
+			libfile = Glib::build_filename (Glib::get_current_dir (), libfile);
+		}
+		_global_prefs->setLibraryFilename (libfile);
 	}
 
 	TagWindow window;
