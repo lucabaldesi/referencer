@@ -1,6 +1,8 @@
 
 #include <iostream>
 
+#include "Utility.h"
+
 #include "BibUtils.h"
 
 extern "C" {
@@ -40,7 +42,7 @@ static int
 bibtexout_type( fields *info)
 {
 	char *genre;
-	int type = TYPE_UNKNOWN, i, maxlevel, n, level;
+	int type = TYPE_UNKNOWN, i, maxlevel, level;
 
 	/* determine bibliography type */
 	for ( i=0; i<info->nfields; ++i ) {
@@ -102,7 +104,14 @@ typedef struct {
 	char *type_name;
 } typenames;
 
-Glib::ustring getType (fields *info)
+
+int getType (fields *info)
+{
+	return bibtexout_type (info);
+}
+
+
+Glib::ustring formatType (fields *info)
 {
 	int const type = bibtexout_type (info);
 
@@ -120,7 +129,8 @@ Glib::ustring getType (fields *info)
 		{ TYPE_INCOLLECTION, "InCollection" },
 		{ TYPE_UNPUBLISHED, "Unpublished" },
 		{ TYPE_MISC, "Misc" } };
-	int i, len, ntypes = sizeof( types ) / sizeof( types[0] );
+
+	int i, ntypes = sizeof( types ) / sizeof( types[0] );
 	char *s = NULL;
 	for ( i=0; i<ntypes; ++i ) {
 		if ( types[i].bib_type == type ) {
@@ -131,6 +141,30 @@ Glib::ustring getType (fields *info)
 	if ( !s ) s = types[ntypes-1].type_name; /* default to TYPE_MISC */
 
 	return Glib::ustring (s);
+}
+
+
+Glib::ustring formatTitle (BibUtils::fields *ref, int level)
+{
+	int kmain;
+	int ksub;
+	
+	kmain = fields_find (ref, "TITLE", level);
+	ksub = fields_find (ref, "SUBTITLE", level);
+
+	Glib::ustring title;
+
+	if (kmain >= 0) {
+		title = ref->data[kmain].data;
+		ref->used[kmain] = 1;
+		if (ksub >= 0) {
+			title += ": ";
+			title += Glib::ustring (ref->data[ksub].data);
+			ref->used[ksub] = 1;
+		}
+	}
+	
+	return title;
 }
 
 
@@ -156,40 +190,69 @@ Glib::ustring formatPerson (Glib::ustring const &munged)
 }
 
 
+Glib::ustring formatPeople(fields *info, char *tag, char *ctag, int level)
+{
+	int i, npeople, person, corp;
+
+	Glib::ustring output;
+
+	/* primary citation authors */
+	npeople = 0;
+	for ( i=0; i<info->nfields; ++i ) {
+		if ( level!=-1 && info->level[i]!=level ) continue;
+		person = ( strcasecmp( info->tag[i].data, tag ) == 0 );
+		corp   = ( strcasecmp( info->tag[i].data, ctag ) == 0 );
+		if ( person || corp ) {
+			if (npeople > 0)
+				output += " and ";
+			
+			if (corp)
+				output += Glib::ustring (info->data[i].data);
+			else
+				output += formatPerson (info->data[i].data);
+
+			npeople++;
+		}
+	}
+	
+	return output;
+}
+
+
 Document parseBibUtils (BibUtils::fields *ref)
 {
 	Document newdoc;
 
-	int k;
-	k = fields_find (ref, "TITLE", 0);
-	if (k >= 0) {
-		newdoc.getBibData().setTitle (ref->data[k].data);
-		ref->used[k] = 1;
-	}
-
-	k = fields_find (ref, "SUBTITLE", 0);
-	if (k >= 0) {
-		newdoc.getBibData().setTitle (newdoc.getBibData().getTitle () + ": " + Glib::ustring(ref->data[k].data));
-		ref->used[k] = 1;
-	}
-
-	k = fields_find (ref, "TITLE", 1);
-	if (k >= 0) {
-		newdoc.getBibData().setJournal (ref->data[k].data);
-		ref->used[k] = 1;
-	}
-	// should handle subtitle too
+	int type = 	BibUtils::getType (ref);
+	newdoc.getBibData().setType (formatType (ref));
 	
-	newdoc.getBibData().setType (BibUtils::getType (ref));
+	if (type == TYPE_INBOOK) {
+		newdoc.getBibData().addExtra ("Chapter", formatTitle (ref, 0));
+	} else {
+		newdoc.getBibData().setTitle (formatTitle (ref, 0));
+	}
+
+	if ( type==TYPE_ARTICLE )
+		newdoc.getBibData().setJournal (formatTitle (ref, 1));
+	else if ( type==TYPE_INBOOK )
+		newdoc.getBibData().setTitle (formatTitle (ref, 1));
+	else if ( type==TYPE_INPROCEEDINGS || type==TYPE_INCOLLECTION )
+		newdoc.getBibData().addExtra ("BookTitle", formatTitle (ref, 1));
+	else if ( type==TYPE_BOOK || type==TYPE_COLLECTION || type==TYPE_PROCEEDINGS )
+		newdoc.getBibData().addExtra ("Series", formatTitle (ref, 1));
+
+	Glib::ustring authors = formatPeople (ref, "AUTHOR", "CORPAUTHOR", 0);
+	Glib::ustring editors = formatPeople (ref, "EDITOR", "CORPEDITOR", -1);
+	newdoc.getBibData().setAuthors (authors);
+	if (!editors.empty ()) {
+		newdoc.getBibData().addExtra ("Editor", editors);
+	}
 
 	bool someunused = false;
 
 	for (int j = 0; j < ref->nfields; ++j) {
 		Glib::ustring key = ref->tag[j].data;
 		Glib::ustring value = ref->data[j].data;
-
-		if (key == "AUTHOR" || key == "EDITOR")
-			value = formatPerson (value);
 
 		int used = 1;
 		if (key == "REFNUM") {
@@ -198,7 +261,7 @@ Document parseBibUtils (BibUtils::fields *ref)
 			newdoc.getBibData().setType (value);
 		} else if (key == "VOLUME") {
 			newdoc.getBibData().setVolume (value);
-		} else if (key == "NUMBER") {
+		} else if (key == "NUMBER" || key == "ISSUE") {
 			newdoc.getBibData().setIssue (value);
 		} else if (key == "YEAR" || key == "PARTYEAR") {
 			newdoc.getBibData().setYear (value);
@@ -206,16 +269,12 @@ Document parseBibUtils (BibUtils::fields *ref)
 			newdoc.getBibData().setPages (value + newdoc.getBibData().getPages ());
 		} else if (key == "PAGEEND") {
 			newdoc.getBibData().setPages (newdoc.getBibData().getPages () + "-" + value);
-		} else if (key == "AUTHOR") {
-			if (newdoc.getBibData().getAuthors().empty ()) {
-				newdoc.getBibData().setAuthors (value);
-			} else {
-				newdoc.getBibData().setAuthors (
-					newdoc.getBibData().getAuthors () + " and " + value);
-			}
-		} else if (key == "TITLE") {
-			newdoc.getBibData().addExtra ("Chapter", value);
-		} else if (key == "RESOURCE" || key == "ISSUANCE" || key == "GENRE") {
+		} else if (key == "ARTICLENUMBER") {
+			/* bibtex normally avoid article number, so output as page */
+			newdoc.getBibData().setPages (value);
+		} else if (key == "RESOURCE" || key == "ISSUANCE" || key == "GENRE"
+		        || key == "AUTHOR" || key == "EDITOR" || key == "CORPAUTHOR"
+		        || key == "CORPEDITOR") {
 			// Don't add them as "extra fields"
 		} else {
 			used = 0;
@@ -226,6 +285,25 @@ Document parseBibUtils (BibUtils::fields *ref)
 		if (!ref->used[j]) {
 			if (!someunused)
 				std::cerr << "\n";
+
+			std::pair<std::string,std::string> a[]={
+				std::make_pair("PARTDAY", "Day"),
+				std::make_pair("PARTMONTH", "Month"),
+				std::make_pair("KEYWORD", "Keywords"),
+				std::make_pair("DEGREEGRANTOR", "School"),
+				std::make_pair("DEGREEGRANTOR:ASIS", "School"),
+				std::make_pair("DEGREEGRANTOR:CORP", "School"),
+				std::make_pair("NOTES", "Note")
+			};
+
+			std::map<std::string,std::string> replacements (a,a + (sizeof(a) / sizeof(*a)));
+			
+			if (!replacements[key].empty()) {
+				key = replacements[key];
+			} else {
+				key = Utility::firstCap (key);
+			}
+
 			int level = ref->level[j];
 			std::cerr << key << " = " << value << "(" << level << ")\n";
 			newdoc.getBibData().addExtra (key, value);

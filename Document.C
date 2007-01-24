@@ -260,6 +260,7 @@ void Document::writeBibtex (std::ostringstream& out)
 		out << writeBibKey ((*it).first, (*it).second) << ",\n";
 	}
 
+// Should be doing something different for non-human-name authors?
 	out << writeBibKey ("author",  bib_.getAuthors()) << ",\n";
 	out << writeBibKey ("title",   bib_.getTitle()) << ",\n";
 	out << writeBibKey ("journal", bib_.getJournal()) << ",\n";

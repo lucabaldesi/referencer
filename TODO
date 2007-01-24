@@ -7,6 +7,7 @@ Essential:
 	Removing documents is either depending on unique keys or needs some other UID, or needs to pass all pointers to target documents to DocumentList at once (when we remove one by pointers, the other pointers to delete get out of date)
 		even if we pass a key, our pointers to other documents to get keys from get out of date.  How upsetting.
 	Crash removing tags?
+	Chapters in InCollection get added as "Title" extra field in bibtex import
 
 Big functionality wishlist:
 	arXiv metadata: ('eprint' extra field)

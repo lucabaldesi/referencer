@@ -240,9 +240,6 @@ bool DocumentList::import (Glib::ustring const & filename)
 		docs_.push_back (BibUtils::parseBibUtils (b.ref[i]));
 	}
 
-	/*bibl_write( &b, stdout, BIBL_MODSOUT, &p );
-	fflush( stdout );*/
-	fprintf( stderr, "Processed %ld references.\n", b.nrefs );
 	bibl_free( &b );
 
 	return true;
