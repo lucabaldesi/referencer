@@ -186,6 +186,16 @@ Glib::ustring escapeBibtexAccents (
 }
 
 
+Glib::ustring firstCap (
+	Glib::ustring original)
+{
+	original = original.lowercase ();
+	original = Glib::Unicode::toupper (
+		original[0]) + original.substr (1, original.length());
+	return original;
+}
+
+
 /* w00t, copied and pasted from AbiWord
 	and then iso8859-1 stuff added */
 

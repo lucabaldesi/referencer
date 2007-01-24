@@ -44,6 +44,10 @@ namespace Utility {
 	Glib::ustring escapeBibtexAccents (
 		Glib::ustring target);
 
+	Glib::ustring firstCap (
+		Glib::ustring original);
+
+
 	int wvConvertUnicodeToLaTeX(
 		gunichar char16,
 		Glib::ustring &out);
