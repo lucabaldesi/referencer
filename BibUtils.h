@@ -12,7 +12,7 @@ namespace BibUtils {
 
 Glib::ustring getType (fields *info);
 
-Glib::ustring unmungPerson (Glib::ustring const &munged);
+Glib::ustring formatPerson (Glib::ustring const &munged);
 
 Document parseBibUtils (BibUtils::fields *ref);
 

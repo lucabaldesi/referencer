@@ -134,7 +134,7 @@ Glib::ustring getType (fields *info)
 }
 
 
-Glib::ustring unmungPerson (Glib::ustring const &munged)
+Glib::ustring formatPerson (Glib::ustring const &munged)
 {
 	Glib::ustring output;
 	int nseps = 0, nch;
@@ -167,6 +167,12 @@ Document parseBibUtils (BibUtils::fields *ref)
 		ref->used[k] = 1;
 	}
 
+	k = fields_find (ref, "SUBTITLE", 0);
+	if (k >= 0) {
+		newdoc.getBibData().setTitle (newdoc.getBibData().getTitle () + ": " + Glib::ustring(ref->data[k].data));
+		ref->used[k] = 1;
+	}
+
 	k = fields_find (ref, "TITLE", 1);
 	if (k >= 0) {
 		newdoc.getBibData().setJournal (ref->data[k].data);
@@ -176,12 +182,14 @@ Document parseBibUtils (BibUtils::fields *ref)
 	
 	newdoc.getBibData().setType (BibUtils::getType (ref));
 
+	bool someunused = false;
+
 	for (int j = 0; j < ref->nfields; ++j) {
 		Glib::ustring key = ref->tag[j].data;
 		Glib::ustring value = ref->data[j].data;
 
 		if (key == "AUTHOR" || key == "EDITOR")
-			value = unmungPerson (value);
+			value = formatPerson (value);
 
 		int used = 1;
 		if (key == "REFNUM") {
@@ -205,6 +213,8 @@ Document parseBibUtils (BibUtils::fields *ref)
 				newdoc.getBibData().setAuthors (
 					newdoc.getBibData().getAuthors () + " and " + value);
 			}
+		} else if (key == "TITLE") {
+			newdoc.getBibData().addExtra ("Chapter", value);
 		} else if (key == "RESOURCE" || key == "ISSUANCE" || key == "GENRE") {
 			// Don't add them as "extra fields"
 		} else {
@@ -214,10 +224,17 @@ Document parseBibUtils (BibUtils::fields *ref)
 			ref->used[j] = 1;
 			
 		if (!ref->used[j]) {
+			if (!someunused)
+				std::cerr << "\n";
 			int level = ref->level[j];
 			std::cerr << key << " = " << value << "(" << level << ")\n";
 			newdoc.getBibData().addExtra (key, value);
+			someunused = true;
 		}
+	}
+	
+	if (someunused) {
+		std::cerr << "(" << newdoc.getDisplayName () << ")\n";
 	}
 
 	return newdoc;
