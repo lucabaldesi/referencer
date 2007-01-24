@@ -49,29 +49,31 @@ readmore( FILE *fp, char *buf, int bufsize, int *bufpos, newstr *line )
  * returns 1 if last reference in file, 2 if reference within file
  */
 int
-bibtexin_readf( FILE *fp, char *buf, int bufsize, int *bufpos, newstr *line, newstr *reference, int *fcharset )
+bibtexin_readf( FILE *fp, char *buf, int bufsize, int *bufpos, newstr *line, 
+newstr *reference, int *fcharset )
 {
-	int haveref = 0;
-	char *p;
-	while ( haveref!=2 && readmore( fp, buf, bufsize, bufpos, line ) ) {
-		if ( line->len == 0 ) continue; /* blank line */
-		p = &(line->data[0]);
-		while ( is_ws( *p ) ) p++;
-		if ( *p == '%' ) { /* commented out line */
-			newstr_empty( line );
-			continue;
-		}
-		if ( *p == '@' ) haveref++;
-		if ( haveref<2 ) {
-			newstr_strcat( reference, p );
-			newstr_addchar( reference, '\n' );
-			newstr_empty( line );
-		}
-	
-	}
-	*fcharset = CHARSET_UNKNOWN;
-	return haveref;
+        int haveref = 0;
+        char *p;
+        while ( haveref!=2 && readmore( fp, buf, bufsize, bufpos, line ) ) {
+                if ( line->len == 0 ) continue; /* blank line */
+                p = &(line->data[0]);
+                while ( is_ws( *p ) ) p++;
+                if ( *p == '%' ) { /* commented out line */
+                        newstr_empty( line );
+                        continue;
+                }
+                if ( *p == '@' ) haveref++;
+                if ( haveref && haveref<2 ) {
+                        newstr_strcat( reference, p );
+                        newstr_addchar( reference, '\n' );
+                        newstr_empty( line );
+                } else if ( !haveref ) newstr_empty( line );
+
+        }
+        *fcharset = CHARSET_UNKNOWN;
+        return haveref;
 }
+
 #ifdef NOCOMPILE
 void
 bibtex_strfree( void )
@@ -80,6 +82,8 @@ bibtex_strfree( void )
 	lists_free( &replace );
 }
 #endif
+
+
 
 static char *
 bibtex_item( char *p, newstr *s )
