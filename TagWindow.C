@@ -309,7 +309,7 @@ void TagWindow::constructUI ()
 	table->append_column (*col);
 	col = Gtk::manage (new Gtk::TreeViewColumn ("Authors", docauthorscol_));
 	col->set_resizable (true);
-	col->set_expand (true);
+	//col->set_expand (true);
 	col->set_sort_column (docauthorscol_);
 	cell = (Gtk::CellRendererText *) col->get_first_cell_renderer ();
 	cell->property_ellipsize () = Pango::ELLIPSIZE_END;
@@ -442,14 +442,14 @@ void TagWindow::constructMenu ()
 		"WebLinkDoc", Gtk::Stock::CONNECT, "_Web Link..."),
   	sigc::mem_fun(*this, &TagWindow::onWebLinkDoc));
 	actiongroup_->add( Gtk::Action::create(
+		"GetMetadataDoc", Gtk::Stock::CONNECT, "_Get Metadata"),
+  	sigc::mem_fun(*this, &TagWindow::onGetMetadataDoc));
+	actiongroup_->add( Gtk::Action::create(
 		"OpenDoc", Gtk::Stock::OPEN, "_Open..."),
   	sigc::mem_fun(*this, &TagWindow::onOpenDoc));
 	actiongroup_->add( Gtk::Action::create(
 		"DocProperties", Gtk::Stock::PROPERTIES),
   	sigc::mem_fun(*this, &TagWindow::onDocProperties));
-	actiongroup_->add( Gtk::Action::create(
-		"Divine", "_Divine..."),
-  	sigc::mem_fun(*this, &TagWindow::onDivine));
 
 	actiongroup_->add ( Gtk::Action::create("HelpMenu", "_Help") );
 	actiongroup_->add( Gtk::Action::create(
@@ -496,6 +496,7 @@ void TagWindow::constructMenu ()
 		"      <separator/>"
 		"      <menuitem action='RemoveDoc'/>"
 		"      <menuitem action='WebLinkDoc'/>"
+		"      <menuitem action='GetMetadataDoc'/>"
 		"      <menuitem action='OpenDoc'/>"
 		"      <menuitem action='DocProperties'/>"
 		"    </menu>"
@@ -524,8 +525,8 @@ void TagWindow::constructMenu ()
 		"    <separator/>"
 		"    <menuitem action='RemoveDoc'/>"
 		"    <menuitem action='WebLinkDoc'/>"
+		"    <menuitem action='GetMetadataDoc'/>"
 		"    <menuitem action='OpenDoc'/>"
-		//"    <menuitem action='Divine'/>"
 		"    <menuitem action='DocProperties'/>"
 		"  </popup>"
 		"  <popup name='TagPopup'>"
@@ -805,12 +806,10 @@ void TagWindow::docSelectionChanged ()
 	actiongroup_->get_action("DocProperties")->set_sensitive (onlyoneselected);
 	taggerbox_->set_sensitive (somethingselected);
 
-	actiongroup_->get_action("WebLinkDoc")->set_sensitive (
-		onlyoneselected
-		&& getSelectedDoc()->canWebLink ());
-	actiongroup_->get_action("OpenDoc")->set_sensitive (
-		onlyoneselected
-		&& !getSelectedDoc()->getFileName().empty());
+	Capabilities cap = getDocSelectionCapabilities ();
+	actiongroup_->get_action("WebLinkDoc")->set_sensitive (cap.weblink);
+	actiongroup_->get_action("OpenDoc")->set_sensitive (cap.open);
+	actiongroup_->get_action("GetMetadataDoc")->set_sensitive (cap.getmetadata);
 
 	ignoretaggerchecktoggled_ = true;
 	for (std::vector<Tag>::iterator tagit = taglist_->getTags().begin();
@@ -898,6 +897,34 @@ TagWindow::YesNoMaybe TagWindow::selectedDocsHaveTag (int uid)
 		return MAYBE;
 	else
 		return NO;
+}
+
+
+TagWindow::Capabilities TagWindow::getDocSelectionCapabilities ()
+{
+	Capabilities result;
+
+	std::vector<Document*> docs = getSelectedDocs ();
+
+	std::vector<Document*>::iterator it = docs.begin ();
+	std::vector<Document*>::iterator const end = docs.end ();
+	
+	bool const offline = _global_prefs->getWorkOffline();
+
+	for (; it != end; it++) {
+		// Allow web linking even when offline, since it might
+		// just be us that's offline, not the web browser
+		if ((*it)->canWebLink())
+			result.weblink = true;
+
+		if ((*it)->canGetMetadata() && !offline)
+			result.getmetadata = true;
+		
+		if (!(*it)->getFileName().empty())
+			result.open = true;
+	}
+	
+	return result;
 }
 
 
@@ -1750,8 +1777,11 @@ bool TagWindow::saveLibrary (Glib::ustring const &libfilename)
 
 void TagWindow::onWebLinkDoc ()
 {
-	Document *doc = getSelectedDoc ();
-	if (doc) {
+	std::vector <Document*> docs = getSelectedDocs ();
+	std::vector <Document*>::iterator it = docs.begin ();
+	std::vector <Document*>::iterator const end = docs.end ();
+	for (; it != end; ++it) {
+		Document* doc = *it;
 		if (!doc->getBibData().getDoi().empty()) {
 			Utility::StringPair ends = _global_prefs->getDoiLaunch ();
 			Glib::ustring doi = doc->getBibData().getDoi();
@@ -1762,31 +1792,39 @@ void TagWindow::onWebLinkDoc ()
 		} else {
 			std::cerr << "Warning: TagWindow::onWebLinkDoc: nothing to link on\n";
 		}
-	} else {
-		std::cerr << "Warning: TagWindow::onWebLinkDoc: can't get doc\n";
 	}
 }
 
 
-void TagWindow::onDivine ()
+void TagWindow::onGetMetadataDoc ()
 {
-	std::vector<Document*> docpointers = getSelectedDocs ();
-
-	std::vector<Document*>::iterator it = docpointers.begin ();
-	std::vector<Document*>::iterator const end = docpointers.end ();
+	bool doclistdirty = false;
+	std::vector <Document*> docs = getSelectedDocs ();
+	std::vector <Document*>::iterator it = docs.begin ();
+	std::vector <Document*>::iterator const end = docs.end ();
 	for (; it != end; ++it) {
-		setDirty (true);
-		(*it)->getBibData().getCrossRef ();
-		(*it)->getBibData().print();
+		Document* doc = *it;
+		if (doc->canGetMetadata ()) {
+			setDirty (true);
+			doclistdirty = true;
+			doc->getBibData().getCrossRef ();
+		}
 	}
+	
+	if (doclistdirty)
+		populateDocStore ();
 }
 
 
 void TagWindow::onOpenDoc ()
 {
-	Document *doc = getSelectedDoc ();
-	if (doc && !doc->getFileName().empty()) {
-			Gnome::Vfs::url_show (doc->getFileName());
+	std::vector<Document*> docs = getSelectedDocs ();
+	std::vector<Document*>::iterator it = docs.begin ();
+	std::vector<Document*>::iterator const end = docs.end ();
+	for (; it != end ; ++it) {
+		if (!(*it)->getFileName().empty()) {
+			Gnome::Vfs::url_show ((*it)->getFileName());
+		}
 	}
 }
 
@@ -1926,6 +1964,9 @@ void TagWindow::onWorkOfflinePrefChanged ()
 	Glib::RefPtr <Gtk::ToggleAction>::cast_static(
 		actiongroup_->get_action ("WorkOffline"))->set_active (
 			_global_prefs->getWorkOffline ());
+	
+	// To pick up sensitivity changes
+	populateDocStore ();
 }
 
 

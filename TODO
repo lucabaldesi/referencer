@@ -25,7 +25,6 @@ Little functionality wishlist:
 	Make search bar match more fields
 
 UI wishlist:
-	LookupDoi and Open should really handle multiple documents.
 	Save in Preferences the sorting of the list view.
 	An "Untagged" special tag like All
 	Should be able to select multiple tags for ANDing instead of ORing document selection
@@ -43,6 +42,7 @@ Bugs:
 	In TagWindow::onIconsDragData, we do get_file_info on remote URIs synchronously
 		in order to support directory recursion on remote filesystems -- this is a 
 		bad thing when adding stuff from really remote things like websites
+	Removing documents uses key_ as if it were unique, which it is not guaranteed to be
 
 EndNote is also somewhat DOI aware, dx.doi.org URLs generated when importing reference from eg INSPEC
 Take heart, endnote is slow and crummy and easy to be better than for simple bibtex use

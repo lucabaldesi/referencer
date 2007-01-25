@@ -362,6 +362,20 @@ bool Document::canWebLink ()
 }
 
 
+bool Document::canGetMetadata ()
+{
+	if (
+		   !bib_.getDoi ().empty ()
+		|| !bib_.getExtras ()["eprint"].empty()
+	   )
+	{
+		return true;
+	} else {
+		return false;
+	}
+}
+
+
 bool Document::matchesSearch (Glib::ustring const &search)
 {
 	if (bib_.getTitle().uppercase().find(search.uppercase()) != Glib::ustring::npos)

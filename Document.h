@@ -35,6 +35,7 @@ class Document {
 
 	bool hasTag (int uid);
 	bool canWebLink ();
+	bool canGetMetadata ();
 	bool matchesSearch (Glib::ustring const &search);
 
 	void writeBibtex (std::ostringstream& out);

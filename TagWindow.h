@@ -94,6 +94,7 @@ class TagWindow {
 		void addDocFiles (std::vector<Glib::ustring> const &filenames);
 		void onRemoveDoc ();
 		void onWebLinkDoc ();
+		void onGetMetadataDoc ();
 		void onOpenDoc ();
 		void onDocProperties ();
 		void onAbout ();
@@ -125,6 +126,17 @@ class TagWindow {
 			MAYBE
 		} YesNoMaybe;
 
+
+		class Capabilities {
+			public:
+			bool weblink;
+			bool open;
+			bool getmetadata;
+			Capabilities () {weblink = open = getmetadata = false;}
+		};
+		
+		Capabilities getDocSelectionCapabilities ();
+
 		YesNoMaybe selectedDocsHaveTag (int uid);
 		Document *getSelectedDoc ();
 		std::vector<Document*> getSelectedDocs ();
@@ -146,6 +158,7 @@ class TagWindow {
 		bool dirty_;
 		Glib::ustring openedlib_;
 		void setOpenedLib (Glib::ustring const &openedlib);
+
 
 	public:
 		TagWindow ();
