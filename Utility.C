@@ -178,6 +178,9 @@ Glib::ustring escapeBibtexAccents (
 			if (gotone) {
 				target.erase (i, 1);
 				target.insert (i, replacement);
+			} else {
+				std::cerr << "escapeBibtexAccents: no replacement found for '"
+					<< letter << "'\n";
 			}
 		}
 	}
@@ -1369,6 +1372,23 @@ int wvConvertUnicodeToLaTeX(gunichar char16, Glib::ustring &out)
 	/* Windows specials (MV 4.7.2000). More could be added.
 	See http://www.hut.fi/u/jkorpela/www/windows-chars.html
 	*/
+	
+		case 0x2000:
+			printf ("\\enspace"); /* en space */
+			return (1);
+		case 0x2001:
+			printf ("\\emspace"); /* en space */
+			return (1);
+		case 0x2002:
+			printf ("\\enspace"); /* en space */
+			return (1);
+		case 0x2003:
+			printf ("\\emspace"); /* en space */
+			return (1);
+			
+		case 0x2009:
+			printf ("\\thinspace"); /* thin space */
+			return (1);
 
 		case 0x2014:
 			printf("---"); /* em-dash */
