@@ -1073,6 +1073,16 @@ void TagWindow::onExportBibtex ()
 	chooser.set_default_response (Gtk::RESPONSE_ACCEPT);
 	chooser.set_do_overwrite_confirmation (true);
 
+	Gtk::FileFilter bibtexfiles;
+	bibtexfiles.add_pattern ("*.[bB][iI][bB]");
+	bibtexfiles.set_name ("BibTeX Files");
+	chooser.add_filter (bibtexfiles);
+
+	Gtk::FileFilter allfiles;
+	allfiles.add_pattern ("*.*");
+	allfiles.set_name ("All Files");
+	chooser.add_filter (allfiles);
+
 	// Browsing to remote hosts not working for some reason
 	//chooser.set_local_only (false);
 
@@ -1151,6 +1161,16 @@ void TagWindow::onOpenLibrary ()
 	chooser.add_button (Gtk::Stock::OPEN, Gtk::RESPONSE_ACCEPT);
 	chooser.set_default_response (Gtk::RESPONSE_ACCEPT);
 
+	Gtk::FileFilter reflibfiles;
+	reflibfiles.add_pattern ("*.reflib");
+	reflibfiles.set_name ("Referencer Libraries");
+	chooser.add_filter (reflibfiles);
+
+	Gtk::FileFilter allfiles;
+	allfiles.add_pattern ("*.*");
+	allfiles.set_name ("All Files");
+	chooser.add_filter (allfiles);
+
 	if (chooser.run () == Gtk::RESPONSE_ACCEPT) {
 		libraryfolder_ = Glib::path_get_dirname(chooser.get_filename());
 		Glib::ustring libfile = chooser.get_uri ();
@@ -1188,6 +1208,16 @@ void TagWindow::onSaveAsLibrary ()
 	chooser.add_button (Gtk::Stock::SAVE, Gtk::RESPONSE_ACCEPT);
 	chooser.set_default_response (Gtk::RESPONSE_ACCEPT);
 	chooser.set_do_overwrite_confirmation (true);
+
+	Gtk::FileFilter reflibfiles;
+	reflibfiles.add_pattern ("*.reflib");
+	reflibfiles.set_name ("Referencer Libraries");
+	chooser.add_filter (reflibfiles);
+
+	Gtk::FileFilter allfiles;
+	allfiles.add_pattern ("*.*");
+	allfiles.set_name ("All Files");
+	chooser.add_filter (allfiles);
 
 	// Browsing to remote hosts not working for some reason
 	//chooser.set_local_only (false);
@@ -1888,12 +1918,62 @@ void TagWindow::onImport ()
 	chooser.add_button (Gtk::Stock::OPEN, Gtk::RESPONSE_ACCEPT);
 	chooser.set_default_response (Gtk::RESPONSE_ACCEPT);
 
+	Gtk::FileFilter allfiles;
+	allfiles.add_pattern ("*.*");
+	allfiles.set_name ("All Files");
+	chooser.add_filter (allfiles);
+	
+	Gtk::FileFilter allbibfiles;
+	// Complete random guesses, what are the real extensions?
+	allbibfiles.add_pattern ("*.ris");
+	allbibfiles.add_pattern ("*.[bB][iI][bB]");
+	allbibfiles.add_pattern ("*.ref");
+	allbibfiles.set_name ("Bibliography Files");
+	chooser.add_filter (allbibfiles);
+	
+	Gtk::FileFilter bibtexfiles;
+	bibtexfiles.add_pattern ("*.[bB][iI][bB]");
+	bibtexfiles.set_name ("BibTeX Files");
+	chooser.add_filter (bibtexfiles);
+
+	Gtk::HBox extrabox;
+	extrabox.set_spacing (6);
+	chooser.set_extra_widget (extrabox);
+	Gtk::Label label ("Format:");
+	extrabox.pack_start (label, false, false, 0);
+	Gtk::ComboBoxText combo;
+	combo.append_text ("Auto Detected");
+	combo.append_text ("BibTeX");
+	combo.append_text ("EndNote");
+	combo.append_text ("RIS");
+	combo.set_active (0);
+	extrabox.pack_start (combo, true, true, 0);
+	extrabox.show_all ();
+
+
 	if (chooser.run () == Gtk::RESPONSE_ACCEPT) {
 		libraryfolder_ = Glib::path_get_dirname(chooser.get_filename());
 		Glib::ustring filename = chooser.get_uri ();
 		setDirty (true);
 
-		doclist_->import (filename);
+		BibUtils::Format format;
+		switch (combo.get_active_row_number ()) {
+			case 1:
+				format = BibUtils::FORMAT_BIBTEX;
+				break;
+			case 2:
+				format = BibUtils::FORMAT_ENDNOTE;
+				break;
+			case 3:
+				format = BibUtils::FORMAT_RIS;
+				break;
+			default:
+				// DocumentList::import will try to guess once 
+				// it has the text
+				format = BibUtils::FORMAT_UNKNOWN;
+		}
+
+		doclist_->import (filename, format);
 
 		populateDocStore ();
 		populateTagList ();

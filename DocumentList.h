@@ -35,7 +35,7 @@ class DocumentList {
 	void clear () {docs_.clear ();}
 	void writeBibtex (std::ostringstream &out);
 
-	bool import (Glib::ustring const &filename);
+	bool import (Glib::ustring const &filename, BibUtils::Format format);
 	Document parseBibUtils (BibUtils::fields *ref);
 };
 

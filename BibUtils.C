@@ -38,6 +38,7 @@ enum {
 	TYPE_MISC
 };
 
+
 static int
 bibtexout_type( fields *info)
 {
@@ -316,6 +317,12 @@ Document parseBibUtils (BibUtils::fields *ref)
 	}
 
 	return newdoc;
+}
+
+
+Format guessFormat (Glib::ustring const &rawtext)
+{
+	return (Format) BIBL_BIBTEXIN;
 }
 
 

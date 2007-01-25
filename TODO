@@ -45,7 +45,6 @@ Bugs:
 	In TagWindow::onIconsDragData, we do get_file_info on remote URIs synchronously
 		in order to support directory recursion on remote filesystems -- this is a 
 		bad thing when adding stuff from really remote things like websites
-	Bibutils breaks when there is junk outside of @whatever{} before a reference
 
 EndNote is also somewhat DOI aware, dx.doi.org URLs generated when importing reference from eg INSPEC
 Take heart, endnote is slow and crummy and easy to be better than for simple bibtex use

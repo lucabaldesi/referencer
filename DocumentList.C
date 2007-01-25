@@ -173,12 +173,9 @@ void DocumentList::writeBibtex (std::ostringstream& out)
 }
 
 
-
-
-using namespace BibUtils;
-
-
-bool DocumentList::import (Glib::ustring const & filename)
+bool DocumentList::import (
+	Glib::ustring const & filename,
+	BibUtils::Format format)
 {
 	Glib::ustring rawtext;
 	{
@@ -215,10 +212,15 @@ bool DocumentList::import (Glib::ustring const & filename)
 		free (buffer);
 		importfile.close ();
 	}
-	param p;
-	bibl b;
-	bibl_init( &b );
-	bibl_initparams( &p, BIBL_BIBTEXIN, BIBL_MODSOUT);
+
+	if (format == BibUtils::FORMAT_UNKNOWN)
+		format = BibUtils::guessFormat (rawtext);
+
+	BibUtils::param p;
+	BibUtils::bibl b;
+	BibUtils::bibl_init( &b );
+	// BIBL_* are #defines, so not in namespace
+	BibUtils::bibl_initparams( &p, format, BIBL_MODSOUT);
 
 	int handles[2];
 	if (pipe(handles)) {
@@ -232,7 +234,7 @@ bool DocumentList::import (Glib::ustring const & filename)
 	close (pipein);
 
 	FILE *otherend = fdopen (pipeout, "r");
-	bibl_read( &b, otherend, "My Pipe", BIBL_BIBTEXIN, &p );
+	BibUtils::bibl_read( &b, otherend, "My Pipe", format, &p );
 	fclose (otherend);
 	close (pipeout);
 
@@ -240,7 +242,7 @@ bool DocumentList::import (Glib::ustring const & filename)
 		docs_.push_back (BibUtils::parseBibUtils (b.ref[i]));
 	}
 
-	bibl_free( &b );
+	BibUtils::bibl_free( &b );
 
 	return true;
 }
