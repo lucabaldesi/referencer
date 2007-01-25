@@ -19,11 +19,14 @@ class BibData {
 	Glib::ustring title_;
 	Glib::ustring year_;
 
+	static std::vector<Glib::ustring> document_types;
+	static Glib::ustring default_document_type;
+
 	public:
 	BibData ();
 
-	static std::vector<Glib::ustring> document_types;
-	static Glib::ustring default_document_type;
+	static std::vector<Glib::ustring> &getDocTypes ();
+	static Glib::ustring &getDefaultDocType ();
 
 	void print ();
 	void clear ();

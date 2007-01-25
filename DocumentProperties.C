@@ -27,11 +27,12 @@ DocumentProperties::DocumentProperties ()
 	box->pack_start (*typecombo_, true, true, 0);
 	box->show_all ();
 
-	std::vector<Glib::ustring>::iterator it = BibData::document_types.begin();
-	for (; it != BibData::document_types.end(); ++it) {
+	std::vector<Glib::ustring>::iterator it = BibData::getDocTypes().begin();
+	for (; it != BibData::getDocTypes().end(); ++it) {
 		typecombo_->append_text (*it);
+		std::cerr << "Appending " << *it << "\n";
 	}
-	typecombo_->set_active_text (BibData::default_document_type);
+	typecombo_->set_active_text (BibData::getDefaultDocType ());
 
 	crossrefbutton_ = (Gtk::Button *) xml_->get_widget ("CrossRefLookup");
 	crossrefbutton_->signal_clicked().connect(

@@ -17,8 +17,7 @@
 std::vector<Glib::ustring> BibData::document_types;
 Glib::ustring BibData::default_document_type;
 
-
-BibData::BibData ()
+std::vector<Glib::ustring> &BibData::getDocTypes ()
 {
 	if (document_types.size() == 0) {
 		document_types.push_back ("Article");
@@ -35,12 +34,25 @@ BibData::BibData ()
 		document_types.push_back ("Proceedings");
 		document_types.push_back ("TechReport");
 		document_types.push_back ("Unpublished");
-
-		default_document_type = "Article";
 	}
+	
+	return document_types;
+}
 
-	// The only key that actuallyy has a default value
-	type_ = default_document_type;
+
+Glib::ustring &BibData::getDefaultDocType ()
+{
+	if (default_document_type.empty ())
+		default_document_type = "Article";
+	
+	return default_document_type;
+}
+
+
+BibData::BibData ()
+{
+	// The only field that actually has a default value
+	type_ = getDefaultDocType ();
 }
 
 
