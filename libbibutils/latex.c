@@ -220,6 +220,9 @@ static struct latex_chars latex_chars[] = {
    { 8216, "`",      "", "" },  /* Opening single quote &#x2018 */
    { 8217, "'",      "", "" },  /* Closing single quote &#x2019 */
    { 8243, "$''$",   "", "" },  /* Double prime &#x2033 */
+   { 8194, "\\enspace",     "", "" },  /* En-space &#x2002 */
+   { 8195, "\\emspace",    "", "" },  /* Em-space &#x2003 */
+   { 8201, "\\thinspace",    "", "" },  /* Thin space &#x2009 */
    { 8211, "--",     "", "" },  /* En-dash &#x2013 */
    { 8212, "---",    "", "" },  /* Em-dash &#x2014 */
    { 8230, "\\ldots", "", "" },  /* Ellipsis &#x2026 */
