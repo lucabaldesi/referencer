@@ -103,7 +103,7 @@ void DocumentProperties::update ()
 	filechooser_->set_uri (doc_->getFileName());
 
 	doientry_->set_text (bib.getDoi());
-	keyentry_->set_text (doc_->getDisplayName());
+	keyentry_->set_text (doc_->getKey());
 	typecombo_->get_entry()->set_text (bib.getType());
 
 	titleentry_->set_text (bib.getTitle());
@@ -134,7 +134,7 @@ void DocumentProperties::save ()
 
 	Glib::ustring filename = filechooser_->get_uri ();
 	doc_->setFileName (filename);
-	doc_->setDisplayName (keyentry_->get_text ());
+	doc_->setKey (keyentry_->get_text ());
 
 	bib.setType (typecombo_->get_entry()->get_text());
 	bib.setDoi (doientry_->get_text ());

@@ -18,14 +18,14 @@ class DocumentList {
 	std::vector<Document>& getDocs ();
 	Document* getDoc (Glib::ustring const &name);
 	Document* newDocWithFile (Glib::ustring const &filename);
-	Document* newDocWithName (Glib::ustring const &displayname);
+	Document* newDocWithName (Glib::ustring const &key);
 	Document* newDocWithDoi (Glib::ustring const &doi);
 	Document* newDocUnnamed ();
-	Glib::ustring uniqueDisplayName (Glib::ustring const &basename);
-	void removeDoc (Glib::ustring const &displayname);
+	Glib::ustring uniqueKey (Glib::ustring const &basename);
+	void removeDoc (Glib::ustring const &key);
 	void loadDoc (
 		Glib::ustring const &filename,
-		Glib::ustring const &displayname,
+		Glib::ustring const &key,
 		std::vector<int> const &taguids,
 		BibData const &bib);
 	void print ();

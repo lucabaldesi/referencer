@@ -35,13 +35,13 @@ Document::Document ()
 
 Document::Document (
 	Glib::ustring const &filename,
-	Glib::ustring const &displayname,
+	Glib::ustring const &key,
 	std::vector<int> const &tagUids,
 	BibData const &bib)
 {
 	filename_ = filename;
 	setupThumbnail ();
-	displayname_ = displayname;
+	key_ = key;
 	tagUids_ = tagUids;
 	bib_ = bib;
 }
@@ -175,9 +175,9 @@ void Document::setupThumbnail ()
 }
 
 
-Glib::ustring& Document::getDisplayName()
+Glib::ustring& Document::getKey()
 {
-	return displayname_;
+	return key_;
 }
 
 
@@ -196,9 +196,9 @@ void Document::setFileName (Glib::ustring &filename)
 }
 
 
-void Document::setDisplayName (Glib::ustring const &displayname)
+void Document::setKey (Glib::ustring const &key)
 {
-	displayname_ = displayname;
+	key_ = key;
 }
 
 
@@ -211,7 +211,7 @@ void Document::setTag(int uid)
 {
 	if (hasTag(uid)) {
 		std::cerr << "Warning: Document::setTag: warning, already have tag "
-			<< uid << " on " << displayname_ << std::endl;
+			<< uid << " on " << key_ << std::endl;
 	} else {
 		tagUids_.push_back(uid);
 	}
@@ -227,7 +227,7 @@ void Document::clearTag(int uid)
 		tagUids_.erase(location);
 	} else {
 		std::cerr << "Warning: Document::clearTag: didn't have tag "
-			<< uid << " on " << displayname_ << std::endl;
+			<< uid << " on " << key_ << std::endl;
 	}
 }
 
@@ -250,8 +250,8 @@ void Document::writeBibtex (std::ostringstream& out)
 {
 	// BibTeX values cannot be larger than 1000 characters - should make sure of this
 	// This doctype bit should be a variable
-	// We should strip illegal characters from displayname in a predictable way
-	out << "@" << bib_.getType() << "{" << displayname_ << "," << std::endl;
+	// We should strip illegal characters from key in a predictable way
+	out << "@" << bib_.getType() << "{" << key_ << "," << std::endl;
 
 	BibData::ExtrasMap extras = bib_.getExtras ();
 	BibData::ExtrasMap::iterator it = extras.begin ();
@@ -280,8 +280,8 @@ void Document::writeXML (std::ostringstream &out)
 	out << "  <doc>\n";
 	out << "    <filename>" << escape_text(getFileName())
 		<< "</filename>\n";
-	out << "    <displayname>" << escape_text(getDisplayName())
-		<< "</displayname>\n";
+	out << "    <key>" << escape_text(getKey())
+		<< "</key>\n";
 
 	std::vector<int> docvec = getTags();
 	for (std::vector<int>::iterator it = docvec.begin();

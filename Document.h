@@ -7,7 +7,7 @@
 class Document {
 	private:
 	Glib::ustring filename_;
-	Glib::ustring displayname_;
+	Glib::ustring key_;
 	std::vector<int> tagUids_;
 	Glib::RefPtr<Gdk::Pixbuf> thumbnail_;
 
@@ -21,13 +21,13 @@ class Document {
 	Document (Glib::ustring const &filename);
 	Document (
 		Glib::ustring const &filename,
-		Glib::ustring const &displayname,
+		Glib::ustring const &key,
 		std::vector<int> const &tagUids,
 		BibData const &bib);
-	Glib::ustring& getDisplayName();
+	Glib::ustring& getKey();
 	Glib::ustring& getFileName();
 	void setFileName (Glib::ustring &filename);
-	void setDisplayName (Glib::ustring const &displayname);
+	void setKey (Glib::ustring const &key);
 	Glib::RefPtr<Gdk::Pixbuf> getThumbnail () {return thumbnail_;}
 	std::vector<int>& getTags ();
 	void setTag (int uid);

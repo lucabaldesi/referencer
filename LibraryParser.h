@@ -20,12 +20,12 @@ class LibraryParser : public Glib::Markup::Parser {
 	Glib::ustring newTagName_;
 
 	bool inDoc_;
-	bool inDisplayName_;
+	bool inKey_;
 	bool inFileName_;
 	bool inTagged_;
 	bool inBibItem_;
 
-	Glib::ustring newDocDisplayName_;
+	Glib::ustring newDocKey_;
 	Glib::ustring newDocFileName_;
 	Glib::ustring newDocTag_;
 	std::vector<int> newDocTags_;
@@ -43,7 +43,7 @@ class LibraryParser : public Glib::Markup::Parser {
 		inTagName_ = false;
 
 		inDoc_ = false;
-		inDisplayName_ = false;
+		inKey_ = false;
 		inFileName_ = false;
 		inTagged_ = false;
 		inBibItem_ = false;
@@ -68,13 +68,13 @@ class LibraryParser : public Glib::Markup::Parser {
 		else if (element_name == "doc") {
 			inDoc_ = true;
 			newDocFileName_ = "";
-			newDocDisplayName_ = "";
+			newDocKey_ = "";
 			newDocTag_ = "";
 			newDocTags_.clear();
 		} else if (inDoc_ && element_name == "filename") {
 			inFileName_ = true;
-		} else if (inDoc_ && element_name == "displayname") {
-			inDisplayName_ = true;
+		} else if (inDoc_ && element_name == "key") {
+			inKey_ = true;
 		} else if (inDoc_ && element_name == "tagged") {
 			inTagged_ = true;
 
@@ -117,11 +117,11 @@ class LibraryParser : public Glib::Markup::Parser {
 		else if (element_name == "doc") {
 			inDoc_ = false;
 			doclist_.loadDoc (
-				newDocFileName_, newDocDisplayName_, newDocTags_, newDocBib_);
+				newDocFileName_, newDocKey_, newDocTags_, newDocBib_);
 		} else if (inDoc_ && element_name == "filename") {
 			inFileName_ = false;
-		} else if (inDoc_ && element_name == "displayname") {
-			inDisplayName_ = false;
+		} else if (inDoc_ && element_name == "key") {
+			inKey_ = false;
 		} else if (inDoc_ && element_name == "tagged") {
 			inTagged_ = false;
 			newDocTags_.push_back(atoi(newDocTag_.c_str()));
@@ -179,8 +179,8 @@ class LibraryParser : public Glib::Markup::Parser {
 		else if (inFileName_) {
 			newDocFileName_ += text;
 		}
-		else if (inDisplayName_)
-			newDocDisplayName_ += text;
+		else if (inKey_)
+			newDocKey_ += text;
 		else if (inTagged_)
 			newDocTag_ += text;
 		else if (inBibItem_)

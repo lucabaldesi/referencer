@@ -257,7 +257,7 @@ Document parseBibUtils (BibUtils::fields *ref)
 
 		int used = 1;
 		if (key == "REFNUM") {
-			newdoc.setDisplayName (value);
+			newdoc.setKey (value);
 		} else if (key == "TYPE") {
 			newdoc.getBibData().setType (value);
 		} else if (key == "VOLUME") {
@@ -313,7 +313,7 @@ Document parseBibUtils (BibUtils::fields *ref)
 	}
 	
 	if (someunused) {
-		std::cerr << "(" << newdoc.getDisplayName () << ")\n";
+		std::cerr << "(" << newdoc.getKey () << ")\n";
 	}
 
 	return newdoc;

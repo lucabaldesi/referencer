@@ -554,7 +554,7 @@ void TagWindow::populateDocStore ()
 			continue;
 
 		Gtk::TreeModel::iterator item = docstore_->append();
-		(*item)[dockeycol_] = (*docit).getDisplayName();
+		(*item)[dockeycol_] = (*docit).getKey();
 		// PROGRAM CRASHING THIS HOLIDAY SEASON?
 		// THIS LINE DID IT!
 		// WHEE!  LOOK AT THIS LINE OF CODE!
@@ -1305,7 +1305,7 @@ void TagWindow::addDocFiles (std::vector<Glib::ustring> const &filenames)
 		if (!newdoc->getBibData().getDoi().empty())
 			newdoc->getBibData().getCrossRef ();
 
-		newdoc->setDisplayName (doclist_->uniqueDisplayName (newdoc->generateKey ()));
+		newdoc->setKey (doclist_->uniqueKey (newdoc->generateKey ()));
 
 		++n;
 	}
@@ -1325,7 +1325,7 @@ void TagWindow::onAddDocUnnamed ()
 {
 	setDirty (true);
 	Document *newdoc = doclist_->newDocUnnamed ();
-	newdoc->setDisplayName (doclist_->uniqueDisplayName (newdoc->generateKey ()));
+	newdoc->setKey (doclist_->uniqueKey (newdoc->generateKey ()));
 	docpropertiesdialog_->show (newdoc);
 	populateDocStore ();
 }
@@ -1359,7 +1359,7 @@ void TagWindow::onAddDocByDoi ()
 		Document *newdoc = doclist_->newDocWithDoi (entry.get_text ());
 
 		newdoc->getBibData().getCrossRef ();
-		newdoc->setDisplayName (doclist_->uniqueDisplayName (newdoc->generateKey ()));
+		newdoc->setKey (doclist_->uniqueKey (newdoc->generateKey ()));
 
 		populateDocStore ();
 	}
