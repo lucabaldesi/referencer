@@ -30,7 +30,6 @@ DocumentProperties::DocumentProperties ()
 	std::vector<Glib::ustring>::iterator it = BibData::getDocTypes().begin();
 	for (; it != BibData::getDocTypes().end(); ++it) {
 		typecombo_->append_text (*it);
-		std::cerr << "Appending " << *it << "\n";
 	}
 	typecombo_->set_active_text (BibData::getDefaultDocType ());
 
