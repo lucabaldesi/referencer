@@ -547,6 +547,11 @@ void TagWindow::populateDocStore ()
 {
 	//std::cerr << "TagWindow::populateDocStore >>\n";
 
+	// This is our notification that something about the documentlist
+	// has changed, including its length, so update dependent sensitivities:
+	actiongroup_->get_action("ExportBibtex")
+		->set_sensitive (doclist_->size() > 0);
+
 	// Save initial selection
 	Gtk::TreePath initialpath;
 	if (usinglistview_) {
