@@ -196,6 +196,24 @@ Glib::ustring firstCap (
 }
 
 
+Glib::RefPtr<Gdk::Pixbuf> getThemeIcon(Glib::ustring const &iconname)
+{
+	Glib::RefPtr<Gtk::IconTheme> theme = Gtk::IconTheme::get_default();
+	if (!theme) {
+		return Glib::RefPtr<Gdk::Pixbuf> (NULL);
+	}
+
+	if (!iconname.empty()) {
+		if (theme->has_icon(iconname)) {
+			return theme->load_icon(iconname, 48, Gtk::ICON_LOOKUP_FORCE_SVG);
+		}
+	}
+
+	// Fall through on failure
+	return Glib::RefPtr<Gdk::Pixbuf> (NULL);
+}
+
+
 /* w00t, copied and pasted from AbiWord
 	and then iso8859-1 stuff added */
 

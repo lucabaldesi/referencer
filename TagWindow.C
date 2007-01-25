@@ -507,6 +507,8 @@ void TagWindow::constructMenu ()
 		"    <toolitem action='NewLibrary'/>"
 		"    <toolitem action='OpenLibrary'/>"
 		"    <toolitem action='SaveLibrary'/>"
+		"    <separator/>"
+		"    <toolitem action='ExportBibtex'/>"
 		"  </toolbar>"
 		"  <toolbar name='TagBar'>"
 		"    <toolitem action='CreateTag'/>"

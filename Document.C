@@ -100,25 +100,6 @@ Glib::ustring Document::generateKey ()
 }
 
 
-
-Glib::RefPtr<Gdk::Pixbuf> Document::getThemeIcon(Glib::ustring const &iconname)
-{
-	Glib::RefPtr<Gtk::IconTheme> theme = Gtk::IconTheme::get_default();
-	if (!theme) {
-		return Glib::RefPtr<Gdk::Pixbuf> (NULL);
-	}
-
-	if (!iconname.empty()) {
-		if (theme->has_icon(iconname)) {
-			return theme->load_icon(iconname, 48, Gtk::ICON_LOOKUP_FORCE_SVG);
-		}
-	}
-
-	// Fall through on failure
-	return Glib::RefPtr<Gdk::Pixbuf> (NULL);
-}
-
-
 void Document::setupThumbnail ()
 {
 	Glib::RefPtr<Gnome::Vfs::Uri> uri = Gnome::Vfs::Uri::create (filename_);
@@ -160,7 +141,7 @@ void Document::setupThumbnail ()
 		if (defaultthumb_) {
 			thumbnail_ = Document::defaultthumb_;
 		} else {
-			thumbnail_ = getThemeIcon ("gnome-mime-application-pdf");
+			thumbnail_ = Utility::getThemeIcon ("gnome-mime-application-pdf");
 			Document::defaultthumb_ = thumbnail_;
 		}
 	} else {

@@ -47,6 +47,7 @@ namespace Utility {
 	Glib::ustring firstCap (
 		Glib::ustring original);
 
+	Glib::RefPtr<Gdk::Pixbuf> getThemeIcon(Glib::ustring const &iconname);
 
 	int wvConvertUnicodeToLaTeX(
 		gunichar char16,

@@ -12,7 +12,6 @@ class Document {
 	Glib::RefPtr<Gdk::Pixbuf> thumbnail_;
 
 	void setupThumbnail ();
-	static Glib::RefPtr<Gdk::Pixbuf> getThemeIcon(Glib::ustring const &iconname);
 
 	BibData bib_;
 
