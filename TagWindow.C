@@ -104,7 +104,7 @@ void TagWindow::constructUI ()
 	window_->add (*vbox);
 
 	vbox->pack_start (*uimanager_->get_widget("/MenuBar"), false, false, 0);
-	//vbox->pack_start (*uimanager_->get_widget("/ToolBar"), false, false, 0);
+	vbox->pack_start (*uimanager_->get_widget("/ToolBar"), false, false, 0);
 	Gtk::HPaned *hpaned = Gtk::manage(new Gtk::HPaned());
 	vbox->pack_start (*hpaned, true, true, 0);
 
@@ -481,13 +481,9 @@ void TagWindow::constructMenu ()
 		"    </menu>"
 		"  </menubar>"
 		"  <toolbar name='ToolBar'>"
-		"    <toolitem action='ExportBibtex'/>"
-		"    <toolitem action='Preferences'/>"
-		"    <separator/>"
-		"    <toolitem action='RemoveDoc'/>"
-		"    <toolitem action='WebLinkDoc'/>"
-		"    <toolitem action='OpenDoc'/>"
-		"    <toolitem action='DocProperties'/>"
+		"    <toolitem action='NewLibrary'/>"
+		"    <toolitem action='OpenLibrary'/>"
+		"    <toolitem action='SaveLibrary'/>"
 		"  </toolbar>"
 		"  <toolbar name='TagBar'>"
 		"    <toolitem action='CreateTag'/>"
@@ -1457,6 +1453,38 @@ std::vector<Document*> TagWindow::getSelectedDocs ()
 }
 
 
+std::vector<Glib::ustring> TagWindow::getSelectedDocKeys ()
+{
+	std::vector<Glib::ustring> dockeys;
+
+	if (usinglistview_) {
+		Gtk::TreeSelection::ListHandle_Path paths =
+			docslistselection_->get_selected_rows ();
+
+		Gtk::TreeSelection::ListHandle_Path::iterator it = paths.begin ();
+		Gtk::TreeSelection::ListHandle_Path::iterator const end = paths.end ();
+		for (; it != end; it++) {
+			Gtk::TreePath path = (*it);
+			Gtk::ListStore::iterator iter = docstore_->get_iter (path);
+			dockeys.push_back((*iter)[dockeycol_]);
+		}
+	} else {
+		Gtk::IconView::ArrayHandle_TreePaths paths =
+			docsiconview_->get_selected_items ();
+
+		Gtk::IconView::ArrayHandle_TreePaths::iterator it = paths.begin ();
+		Gtk::IconView::ArrayHandle_TreePaths::iterator const end = paths.end ();
+		for (; it != end; it++) {
+			Gtk::TreePath path = (*it);
+			Gtk::ListStore::iterator iter = docstore_->get_iter (path);
+			dockeys.push_back((*iter)[dockeycol_]);
+		}
+	}
+
+	return dockeys;
+}
+
+
 Document *TagWindow::getSelectedDoc ()
 {
 	if (usinglistview_) {
@@ -1499,16 +1527,16 @@ int TagWindow::getSelectedDocCount ()
 
 void TagWindow::onRemoveDoc ()
 {
-	Gtk::IconView::ArrayHandle_TreePaths paths = docsiconview_->get_selected_items ();
+	std::vector<Glib::ustring> keys = getSelectedDocKeys ();
 
-	bool const multiple = paths.size() > 1;
+	bool const multiple = keys.size() > 1;
 
 	bool doclistdirty = false;
 
 	if (multiple) {
 		// Do you really want to remove N documents?
 		std::ostringstream num;
-		num << paths.size ();
+		num << keys.size ();
 		Glib::ustring message = "<b><big>Are you sure you want to remove these "
 			+ num.str() + " documents?</big></b>\n\nAll tag "
 			"associations and metadata for these documents will be permanently lost.";
@@ -1525,14 +1553,12 @@ void TagWindow::onRemoveDoc ()
 		}
 	}
 
-	Gtk::IconView::ArrayHandle_TreePaths::iterator it = paths.begin ();
-	Gtk::IconView::ArrayHandle_TreePaths::iterator const end = paths.end ();
+	std::vector<Glib::ustring>::iterator it = keys.begin ();
+	std::vector<Glib::ustring>::iterator const end = keys.end ();
 	for (; it != end; it++) {
-		Gtk::TreePath path = (*it);
-		Gtk::ListStore::iterator iter = docstore_->get_iter (path);
 		if (!multiple) {
 			Glib::ustring message = "<b><big>Are you sure you want to remove '" +
-				(*iter)[dockeycol_] + "'?</big></b>\n\nAll tag "
+				*it + "'?</big></b>\n\nAll tag "
 				"associations and metadata for the document will be permanently lost.";
 			Gtk::MessageDialog confirmdialog (
 				message, true, Gtk::MESSAGE_QUESTION,
@@ -1547,8 +1573,8 @@ void TagWindow::onRemoveDoc ()
 			}
 		}
 
-		std::cerr << "TagWindow::onRemoveDoc: removeDoc on '" << (*iter)[dockeycol_] << "'\n";
-		doclist_->removeDoc((*iter)[dockeycol_]);
+		std::cerr << "TagWindow::onRemoveDoc: removeDoc on '" << *it << "'\n";
+		doclist_->removeDoc(*it);
 		doclistdirty = true;
 	}
 
