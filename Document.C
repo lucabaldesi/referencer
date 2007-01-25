@@ -381,3 +381,16 @@ bool Document::canWebLink ()
 }
 
 
+bool Document::matchesSearch (Glib::ustring const &search)
+{
+	if (bib_.getTitle().uppercase().find(search.uppercase()) != Glib::ustring::npos)
+		return true;
+		
+	if (bib_.getAuthors().uppercase().find(search.uppercase()) != Glib::ustring::npos)
+		return true;
+		
+	if (key_.uppercase().find(search.uppercase()) != Glib::ustring::npos)
+		return true;
+	
+	return false;
+}

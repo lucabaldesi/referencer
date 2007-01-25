@@ -33,9 +33,10 @@ class Document {
 	void setTag (int uid);
 	void clearTag (int uid);
 	void clearTags ();
-	bool hasTag (int uid);
 
+	bool hasTag (int uid);
 	bool canWebLink ();
+	bool matchesSearch (Glib::ustring const &search);
 
 	void writeBibtex (std::ostringstream& out);
 	void writeXML (std::ostringstream &out);

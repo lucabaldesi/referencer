@@ -56,6 +56,7 @@ class TagWindow {
 		Gtk::ScrolledWindow *docsiconscroll_;
 		Gtk::ScrolledWindow *docslistscroll_;
 		Gtk::Widget *tagpane_;
+		Gtk::Entry *searchentry_;
 
 		Glib::RefPtr<Gtk::TreeSelection> tagselection_;
 		Gtk::TreeView *tagview_;
@@ -107,6 +108,7 @@ class TagWindow {
 			const Glib::RefPtr <Gdk::DragContext> &context,
 			int n1, int n2, const Gtk::SelectionData &sel, guint n3, guint n4);
 
+		void onSearchChanged ();
 		void onShowTagPanePrefChanged ();
 		void onUseListViewPrefChanged ();
 		void onWorkOfflinePrefChanged ();

@@ -108,6 +108,29 @@ void TagWindow::constructUI ()
 	Gtk::HPaned *hpaned = Gtk::manage(new Gtk::HPaned());
 	vbox->pack_start (*hpaned, true, true, 0);
 
+
+	Gtk::Toolbar *toolbar = (Gtk::Toolbar *) uimanager_->get_widget("/ToolBar");
+	
+	Gtk::ToolItem *paditem = Gtk::manage (new Gtk::ToolItem);
+	paditem->set_expand (true);
+	toolbar->append (*paditem);
+
+	Gtk::ToolItem *searchitem = Gtk::manage (new Gtk::ToolItem);
+	Gtk::HBox *search = Gtk::manage (new Gtk::HBox);
+	Gtk::Label *searchlabel = Gtk::manage (new Gtk::Label ("Search:"));
+	Gtk::Entry *searchentry = Gtk::manage (new Gtk::Entry);
+	search->set_spacing (6);
+	search->pack_start (*searchlabel, false, false, 0);
+	search->pack_start (*searchentry, false, false, 0);
+	search->show_all ();
+	searchitem->add (*search);
+	toolbar->append (*searchitem);
+	
+	searchentry_ = searchentry;
+	searchentry_->signal_changed ().connect (
+		sigc::mem_fun (*this, &TagWindow::onSearchChanged));
+	
+
 	vbox = Gtk::manage(new Gtk::VBox);
 	Gtk::Frame *tagsframe = new Gtk::Frame ();
 	tagsframe->add(*vbox);
@@ -537,6 +560,9 @@ void TagWindow::populateDocStore ()
 
 	docstore_->clear ();
 
+	Glib::ustring const searchtext = searchentry_->get_text ();
+	bool const search = !searchtext.empty ();
+
 	// Populate from doclist_
 	std::vector<Document>& docvec = doclist_->getDocs();
 	std::vector<Document>::iterator docit = docvec.begin();
@@ -550,6 +576,12 @@ void TagWindow::populateDocStore ()
 				break;
 			}
 		}
+		
+		if (search && !filtered) {
+			if (!(*docit).matchesSearch (searchtext))
+				filtered = true;
+		}
+		
 		if (filtered)
 			continue;
 
@@ -2007,4 +2039,7 @@ void TagWindow::onImport ()
 }
 
 
-
+void TagWindow::onSearchChanged ()
+{
+	populateDocStore ();
+}
