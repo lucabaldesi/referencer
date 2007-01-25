@@ -1144,6 +1144,19 @@ void TagWindow::onExportBibtex ()
 	allfiles.add_pattern ("*.*");
 	allfiles.set_name ("All Files");
 	chooser.add_filter (allfiles);
+	
+	Gtk::HBox extrabox;
+	extrabox.set_spacing (6);
+	chooser.set_extra_widget (extrabox);
+	Gtk::Label label ("Selection:");
+	extrabox.pack_start (label, false, false, 0);
+	Gtk::ComboBoxText combo;
+	combo.append_text ("All Documents");
+	combo.append_text ("Selected Documents");
+	combo.set_active (0);
+	extrabox.pack_start (combo, true, true, 0);
+	extrabox.show_all ();
+	extrabox.set_sensitive (getSelectedDocCount ());
 
 	// Browsing to remote hosts not working for some reason
 	//chooser.set_local_only (false);
@@ -1152,6 +1165,7 @@ void TagWindow::onExportBibtex ()
 		chooser.set_current_folder (exportfolder_);
 
 	if (chooser.run() == Gtk::RESPONSE_ACCEPT) {
+		bool const selectedonly = combo.get_active_row_number () == 1;
 		exportfolder_ = Glib::path_get_dirname(chooser.get_filename());
 		Glib::ustring bibfilename = chooser.get_uri();
 		// Really we shouldn't add the extension if the user has chosen an
@@ -1172,7 +1186,23 @@ void TagWindow::onExportBibtex ()
 		}
 
 		std::ostringstream bibtext;
-		doclist_->writeBibtex (bibtext);
+
+		if (selectedonly) {
+			std::vector<Document*> docs = getSelectedDocs ();
+			std::vector<Document*>::iterator it = docs.begin ();
+			std::vector<Document*>::iterator const end = docs.end ();
+			for (; it != end; ++it) {
+				(*it)->writeBibtex (bibtext);
+			}
+		} else {
+			std::vector<Document> &docs = doclist_->getDocs ();
+			std::vector<Document>::iterator it = docs.begin();
+			std::vector<Document>::iterator const end = docs.end();
+			for (; it != end; it++) {
+				(*it).writeBibtex (bibtext);
+			}
+		}
+
 
 		try {
 			bibfile.write (bibtext.str().c_str(), strlen(bibtext.str().c_str()));
@@ -1567,7 +1597,8 @@ Document *TagWindow::getSelectedDoc ()
 		return (*iter)[docpointercol_];
 
 	} else {
-		Gtk::IconView::ArrayHandle_TreePaths paths = docsiconview_->get_selected_items ();
+		Gtk::IconView::ArrayHandle_TreePaths paths =
+			docsiconview_->get_selected_items ();
 
 		if (paths.size() != 1) {
 			std::cerr << "Warning: TagWindow::getSelectedDoc: size != 1\n";

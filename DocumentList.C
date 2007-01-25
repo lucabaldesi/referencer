@@ -135,7 +135,7 @@ bool DocumentList::test ()
 {
 	/*newDoc ("/somewhere/foo.pdf");
 	newDoc ("/somewhere/bar.pdf");
-	std::vector<Document> docvec = getDocs();
+	std::vector<Document> &docvec = getDocs();
 	for (std::vector<Document>::iterator it = docvec.begin; it != docvec.end*/
 	return true;
 }
@@ -160,16 +160,6 @@ void DocumentList::writeXML (std::ostringstream& out)
 		(*it).writeXML (out);
 	}
 	out << "</doclist>\n";
-}
-
-
-void DocumentList::writeBibtex (std::ostringstream& out)
-{
-	std::vector<Document>::iterator it = docs_.begin();
-	std::vector<Document>::iterator const end = docs_.end();
-	for (; it != end; it++) {
-		(*it).writeBibtex (out);
-	}
 }
 
 
