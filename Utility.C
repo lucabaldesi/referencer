@@ -1,4 +1,13 @@
 
+
+/*
+ * wvConvertUnicodeToLaTeX
+	The wvConvertUnicodeToLaTeX function is based on the function of the same name in the wv library, Copyright (C) Caolan McNamara, Dom Lachowicz, and others
+ */
+
+// The gtkmm in Ubuntu 6.04 doesn't seem to get this in <gtkmm.h>
+#include <gtkmm/icontheme.h>
+
 #include <iostream>
 
 #include "Utility.h"
