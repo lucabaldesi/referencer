@@ -1,4 +1,10 @@
 
+
+/*
+ * The eel_* functions are copied from libeel, Copyright © 2000 Eazel, Inc.
+ * The art_rgb_run_alpha function in Document.C is copied from libart, Copyright © Raph Levien 1998
+*/
+
 #include <iostream>
 #include <sstream>
 
@@ -18,6 +24,7 @@
 #include "Document.h"
 
 Glib::RefPtr<Gdk::Pixbuf> Document::defaultthumb_;
+Glib::RefPtr<Gdk::Pixbuf> Document::thumbframe_;
 
 Document::Document (Glib::ustring const &filename)
 {
@@ -145,14 +152,27 @@ void Document::setupThumbnail ()
 			Document::defaultthumb_ = thumbnail_;
 		}
 	} else {
-		float desiredheight = 96.0;
+		float const desiredheight = 96.0;
 		int oldwidth = thumbnail_->get_width ();
 		int oldheight = thumbnail_->get_height ();
 		int newheight = (int)desiredheight;
 		int newwidth = (int)((float)oldwidth * (desiredheight / (float)oldheight));
 		thumbnail_ = thumbnail_->scale_simple (
 			newwidth, newheight, Gdk::INTERP_BILINEAR);
-	}
+		
+		if (!thumbframe_) {
+			thumbframe_ = Gdk::Pixbuf::create_from_file (
+				Utility::findDataFile ("thumbnail_frame.png"));
+		}
+
+		int const left_offset = 3;
+		int const top_offset = 3;
+		int const right_offset = 6;
+		int const bottom_offset = 6;
+		thumbnail_ = Utility::eelEmbedImageInFrame (
+			thumbnail_, thumbframe_,
+			left_offset, top_offset, right_offset, bottom_offset);
+		}
 }
 
 

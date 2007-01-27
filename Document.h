@@ -46,6 +46,7 @@ class Document {
 	void setBibData (BibData& bib){bib_ = bib;}
 
 	static Glib::RefPtr<Gdk::Pixbuf> defaultthumb_;
+	static Glib::RefPtr<Gdk::Pixbuf> thumbframe_;
 
 	Glib::ustring generateKey ();
 };
