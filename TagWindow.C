@@ -98,6 +98,8 @@ void TagWindow::constructUI ()
 	window_->signal_delete_event().connect (
 		sigc::mem_fun (*this, &TagWindow::onDelete));
 
+	window_->set_icon (Utility::getThemeIcon("stock_bookmark"));
+
 	constructMenu ();
 
 	Gtk::VBox *vbox = Gtk::manage(new Gtk::VBox);
