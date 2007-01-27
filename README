@@ -39,7 +39,7 @@ Attributions
 ============
 
 libbibutils is copied from the bibutils 3.27 package, Copyright © Chris Putnam 2005
-The wvConvertUnicodeToLaTeX function in Utility.C is based on the function of the same name in the wv library, Copyright © Caolan McNamara, Dom Lachowicz, and others
+The wvConvertUnicodeToLaTeX function is based on the function of the same name in the wv library, Copyright © Caolan McNamara, Dom Lachowicz, and others
 The eel_* functions are copied from libeel, Copyright © 2000 Eazel, Inc.
-The art_rgb_run_alpha function in Document.C is copied from libart, Copyright © Raph Levien 1998
+The art_rgb_run_alpha function is copied from libart, Copyright © Raph Levien 1998
 The thumbnail_frame.png graphic is copied from Nautilus, Copyright © 2003 Redhat, Inc

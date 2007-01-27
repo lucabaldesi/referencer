@@ -1,10 +1,5 @@
 
 
-/*
- * The eel_* functions are copied from libeel, Copyright © 2000 Eazel, Inc.
- * The art_rgb_run_alpha function in Document.C is copied from libart, Copyright © Raph Levien 1998
-*/
-
 #include <iostream>
 #include <sstream>
 
