@@ -55,6 +55,11 @@ namespace Utility {
 	int wvConvertUnicodeToLaTeX(
 		gunichar char16,
 		Glib::ustring &out);
+		
+	Glib::RefPtr<Gdk::Pixbuf> eelEmbedImageInFrame (
+		Glib::RefPtr<Gdk::Pixbuf> source,
+		Glib::RefPtr<Gdk::Pixbuf> frame,
+		int left, int top, int right, int bottom);
 }
 
 #endif
