@@ -30,6 +30,9 @@ namespace Utility {
 
 	Glib::RefPtr<Gnome::Glade::Xml> openGlade (
 		Glib::ustring const &filename);
+	
+	Glib::ustring findDataFile (
+		Glib::ustring const &filename);
 
 	void exceptionDialog (
 		Glib::Exception const *ex, Glib::ustring const &context);

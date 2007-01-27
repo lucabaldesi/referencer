@@ -48,7 +48,8 @@ Preferences::Preferences ()
 		CONF_PATH,
 		sigc::mem_fun (*this, &Preferences::onConfChange));
 
-	xml_ = Utility::openGlade ("preferences.glade");
+	xml_ = Gnome::Glade::Xml::create (
+		Utility::findDataFile ("preferences.glade"));
 
 	dialog_ = (Gtk::Dialog *) xml_->get_widget ("Preferences");
 	workofflinecheck_ = (Gtk::CheckButton *) xml_->get_widget ("WorkOffline");

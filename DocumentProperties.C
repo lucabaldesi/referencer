@@ -8,7 +8,8 @@
 
 DocumentProperties::DocumentProperties ()
 {
-	xml_ = Utility::openGlade ("documentproperties.glade");
+	xml_ = Gnome::Glade::Xml::create (
+		Utility::findDataFile ("documentproperties.glade"));
 
 	dialog_ = (Gtk::Dialog *) xml_->get_widget ("DocumentProperties");
 	filechooser_ = (Gtk::FileChooserButton *) xml_->get_widget ("File");

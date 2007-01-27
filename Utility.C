@@ -56,36 +56,37 @@ Glib::ustring ensureExtension (
 }
 
 
-Glib::RefPtr<Gnome::Glade::Xml> openGlade (
+Glib::ustring findDataFile (
 	Glib::ustring const &filename)
 {
 	Glib::RefPtr<Gnome::Glade::Xml> xml;
 
-	// Make the path absolute only so we can use uri_exists -- glade itself
-	// doesn't care if it's relative.
 	Glib::ustring localfile;
 	if (Glib::path_is_absolute (filename)) {
 		localfile = filename;
 	} else {
-		localfile = Glib::build_filename (Glib::get_current_dir (), filename);
+		localfile = Glib::build_filename (
+			Glib::get_current_dir (), filename);
 	}
 
-	Glib::RefPtr<Gnome::Vfs::Uri> uri = Gnome::Vfs::Uri::create (localfile);
+	Glib::RefPtr<Gnome::Vfs::Uri> uri = 
+		Gnome::Vfs::Uri::create (localfile);
 
 	if (uri->uri_exists ()) {
-		return Gnome::Glade::Xml::create (localfile);
+		return localfile;
 	} else {
-		Glib::ustring const installedfile = Glib::build_filename (DATADIR, filename);
+		Glib::ustring const installedfile = 
+			Glib::build_filename (DATADIR, filename);
 		uri = Gnome::Vfs::Uri::create (installedfile);
 		if (uri->uri_exists ()) {
-			return Gnome::Glade::Xml::create (installedfile);
+			return installedfile;
 		}
 	}
 
 	// Fall through
-	std::cerr << "Utility::openGlade: couldn't "
-		"find glade file '" << filename << "'\n";
-	return Glib::RefPtr<Gnome::Glade::Xml> (NULL);
+	std::cerr << "Utility::findDataFile: couldn't "
+		"find file '" << filename << "'\n";
+	return Glib::ustring();
 }
 
 
