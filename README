@@ -20,6 +20,15 @@ The build dependencies are:
 
 On Ubuntu 6.10, all of these may be obtained by running the following command:
 	sudo apt-get install build-essential libpoppler-dev libgtkmm-2.4-dev libgnomeuimm-2.6-dev libgnome-vfsmm-2.6-dev libglademm-2.4-dev libgconfmm-2.6-dev libboost-regex-dev
+	
+(note that libboost-regex-dev is in the 'universe' repository, which is not enabled in a default Ubuntu install.  See https://help.ubuntu.com/ubuntu/desktopguide/C/extra-repositories.html)
+
+
+NOTE TO FEDORA USERS: Unfortuately the poppler development packages in the default yum repositories are incomplete -- to build Referencer it is necessary to separately download poppler source packages, and edit the Referencer Makefile to find this directory.  Note that the binary library itself is fine on Fedora, it's just the headers that are problematic, so once it is built it can be distributed without problems.
+On Fedora Core 5, you will need to do:
+	yum install gtkmm24-devel libgnomeuimm26-devel gnome-vfsmm26-devel libglademm24-devel gconfmm26-devel poppler-devel gcc-c++ boost-devel
+
+
 
 Installing
 ==========
@@ -29,7 +38,8 @@ Referencer may be run in-place from the build directory for convenient evaluatio
 Attributions
 ============
 
-libbibutils is copied from the bibutils 3.27 package, Copyright (c) Chris Putnam 2005
-The wvConvertUnicodeToLaTeX function in Utility.C is based on the function of the same name in the wv library, Copyright (C) Caolan McNamara, Dom Lachowicz, and others
-
-Both of the above packages are released under the GPL version 2 as Referencer is.
+libbibutils is copied from the bibutils 3.27 package, Copyright © Chris Putnam 2005
+The wvConvertUnicodeToLaTeX function in Utility.C is based on the function of the same name in the wv library, Copyright © Caolan McNamara, Dom Lachowicz, and others
+The eel_* functions are copied from libeel, Copyright © 2000 Eazel, Inc.
+The art_rgb_run_alpha function in Document.C is copied from libart, Copyright © Raph Levien 1998
+The thumbnail_frame.png graphic is copied from Nautilus, Copyright © 2003 Redhat, Inc
