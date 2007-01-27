@@ -2,3 +2,34 @@
 Referencer
 ==========
 A document organiser and bibliography manager
+
+Building
+========
+
+A simple 'make' should build the referencer executable, if the dependencies are present.
+
+The build dependencies are:
+	g++
+	poppler
+	gtkmm-2.4
+	libgnomeuimm-2.6 
+	gnome-vfsmm-2.6
+	libglademm-2.4
+	gconfmm-2.6
+	boost_regex
+
+On Ubuntu 6.10, all of these may be obtained by running the following command:
+	sudo apt-get install build-essential libpoppler-dev libgtkmm-2.4-dev libgnomeuimm-2.6-dev libgnome-vfsmm-2.6-dev libglademm-2.4-dev libgconfmm-2.6-dev libboost-regex-dev
+
+Installing
+==========
+
+Referencer may be run in-place from the build directory for convenient evaluation or testing.  Alternatively, it maybe installed systemwide: running 'make install' should install Referencer into the /usr/local prefix.  Edit the 'PREFIX' variable in Makefile and rebuild to install to a different location.
+
+Attributions
+============
+
+libbibutils is copied from the bibutils 3.27 package, Copyright (c) Chris Putnam 2005
+The wvConvertUnicodeToLaTeX function in Utility.C is based on the function of the same name in the wv library, Copyright (C) Caolan McNamara, Dom Lachowicz, and others
+
+Both of the above packages are released under the GPL version 2 as Referencer is.
