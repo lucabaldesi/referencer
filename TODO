@@ -3,6 +3,7 @@ Essential:
 	Store relative document file paths where possible
 	Crash removing tags?
 	Chapters in InCollection get added as "Title" extra field in bibtex import
+	Metadata magic for arxiv
 
 Big functionality wishlist:
 	arXiv metadata: ('eprint' extra field)
