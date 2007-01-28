@@ -3,6 +3,8 @@ Referencer
 ==========
 A document organiser and bibliography manager
 
+Author: John Spray (jcspray at icculus.org)
+
 Building
 ========
 
@@ -18,7 +20,7 @@ The build dependencies are:
 	gconfmm-2.6
 	boost_regex
 
-On Ubuntu 6.10, all of these may be obtained by running the following command:
+On Ubuntu 6.10 (or 6.04 LTS), all of these may be obtained by running the following command:
 	sudo apt-get install build-essential libpoppler-dev libgtkmm-2.4-dev libgnomeuimm-2.6-dev libgnome-vfsmm-2.6-dev libglademm-2.4-dev libgconfmm-2.6-dev libboost-regex-dev
 	
 (note that libboost-regex-dev is in the 'universe' repository, which is not enabled in a default Ubuntu install.  See https://help.ubuntu.com/ubuntu/desktopguide/C/extra-repositories.html)
