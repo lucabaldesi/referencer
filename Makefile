@@ -14,7 +14,7 @@ BINDIR=$(PREFIX)/bin
 DATAFILES =\
 	data/*.glade\
 	data/thumbnail_frame.png\
-	data/bookweb.svg\
+	data/referencer.svg\
 	data/introduction.html
 
 all: $(TARGET)
@@ -35,6 +35,8 @@ install: all
 	install -s $(TARGET) $(DESTDIR)$(BINDIR)
 	install -d $(DESTDIR)$(DATADIR)
 	install -m 0644 $(DATAFILES) $(DESTDIR)$(DATADIR)
+	install -m 0644 data/referencer.svg $(PREFIX)/share/pixmaps
+	install -m 0644 referencer.desktop $(PREFIX)/share/applications
 
 uninstall:
 	rm -f  $(DESTDIR)$(BINDIR)/$(TARGET)

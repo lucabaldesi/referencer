@@ -100,7 +100,7 @@ void TagWindow::constructUI ()
 
 	window_->set_icon (
 		Gdk::Pixbuf::create_from_file(
-			Utility::findDataFile("bookweb.svg")));
+			Utility::findDataFile("referencer.svg")));
 
 	constructMenu ();
 
