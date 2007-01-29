@@ -3,12 +3,9 @@ Essential:
 	Store relative document file paths where possible
 	Crash removing tags?
 	Chapters in InCollection get added as "Title" extra field in bibtex import
-	Metadata magic for arxiv
 
 Big functionality wishlist:
-	arXiv metadata: ('eprint' extra field)
-		http://www.citebase.org/openurl?svc_id=bibtex&rft_id=oai%3AarXiv.org%3Ahep-lat%2F0306023
-		Alternatively OAI support for arXiv and CrossRef (and possibly many others)
+	OAI support for arXiv and CrossRef (and possibly many others)
 	Google scholar link?  Arbitrary links?
 	read PS files to search for DOIs as well as reading PDFs
 	Copy added (remote?) files into a local directory

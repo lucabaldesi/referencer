@@ -98,7 +98,7 @@ void TagWindow::constructUI ()
 	window_->signal_delete_event().connect (
 		sigc::mem_fun (*this, &TagWindow::onDelete));
 
-	window_->set_icon (Utility::getThemeIcon("stock_bookmark"));
+	window_->set_icon (Gdk::Pixbuf::create_from_file(Utility::findDataFile("bookweb.svg")));
 
 	constructMenu ();
 
@@ -1347,6 +1347,10 @@ void TagWindow::onAbout ()
 	dialog.set_version (VERSION);
 	dialog.set_comments ("A document organiser and bibliography manager");
 	dialog.set_copyright ("Copyright © 2007 John Spray");
+	dialog.set_logo (
+		Gdk::Pixbuf::create_from_file (
+			Utility::findDataFile ("bookweb.svg"),
+			128, 128));
 	dialog.run ();
 }
 
