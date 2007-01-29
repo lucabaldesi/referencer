@@ -2,7 +2,7 @@
 
 #CXX = g++
 CFLAGS = -g -Wall `pkg-config --cflags poppler gtkmm-2.4 libgnomeuimm-2.6 gnome-vfsmm-2.6 libglademm-2.4 gconfmm-2.6` -DDATADIR="\"$(DATADIR)\""
-LIBS = `pkg-config --libs poppler gtkmm-2.4 libgnomeuimm-2.6 gnome-vfsmm-2.6 libglademm-2.4 gconfmm-2.6` -lboost_regex -Llibbibutils -lbibutils
+LIBS = -g `pkg-config --libs poppler gtkmm-2.4 libgnomeuimm-2.6 gnome-vfsmm-2.6 libglademm-2.4 gconfmm-2.6` -lboost_regex -Llibbibutils -lbibutils
 
 TARGET = referencer
 OBJECTS = TagWindow.o TagList.o  DocumentList.o Document.o BibData.o DocumentProperties.o Preferences.o Utility.o BibUtils.o Transfer.o
@@ -10,6 +10,12 @@ OBJECTS = TagWindow.o TagList.o  DocumentList.o Document.o BibData.o DocumentPro
 PREFIX=/usr/local
 DATADIR=$(PREFIX)/share/$(TARGET)
 BINDIR=$(PREFIX)/bin
+
+DATAFILES =\
+	data/*.glade\
+	data/thumbnail_frame.png\
+	data/bookweb.svg\
+	data/introduction.html
 
 all: $(TARGET)
 
@@ -28,8 +34,7 @@ install: all
 	install -d $(DESTDIR)$(BINDIR)
 	install -s $(TARGET) $(DESTDIR)$(BINDIR)
 	install -d $(DESTDIR)$(DATADIR)
-	install -m 0644 data/*.glade $(DESTDIR)$(DATADIR)
-	install -m 0644 data/thumbnail_frame.png data/bookweb.svg $(DESTDIR)$(DATADIR)
+	install -m 0644 $(DATAFILES) $(DESTDIR)$(DATADIR)
 
 uninstall:
 	rm -f  $(DESTDIR)$(BINDIR)/$(TARGET)
