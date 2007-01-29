@@ -20,6 +20,7 @@ Little functionality wishlist:
 	Where we use ".tmp" in writing files, we should use something more unique
 	Do something with PDF-embedded metadata if there is any
 	Make search bar match more fields
+	Tell the user somehow in addDocFiles when we don't add files b/c they're already in the documentlist.
 
 UI wishlist:
 	Save in Preferences the sorting of the list view.
@@ -28,7 +29,6 @@ UI wishlist:
 	Drag and drop to make LaTeX citations
 	Drag and drop to import bibtex snippets
 	Copy document key to clipboard
-	Should complain when adding files we already have
 	Thumbnail generation is done in main thread and freezes UI
 	Configuration of proxy server for non-GNOMEers
 	Configuration of max_timeout in BibData::getCrossRef

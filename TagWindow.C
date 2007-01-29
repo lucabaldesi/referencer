@@ -1413,16 +1413,19 @@ void TagWindow::addDocFiles (std::vector<Glib::ustring> const &filenames)
 		}
 
 		Document *newdoc = doclist_->newDocWithFile(*it);
-		newdoc->readPDF ();
+		if (newdoc) {
+			newdoc->readPDF ();
 
-		while (Gnome::Main::events_pending())
-			Gnome::Main::iteration ();
+			while (Gnome::Main::events_pending())
+				Gnome::Main::iteration ();
 
-		// If we got a DOI or eprint field this will work
-		newdoc->getMetaData ();
+			// If we got a DOI or eprint field this will work
+			newdoc->getMetaData ();
 
-		newdoc->setKey (doclist_->uniqueKey (newdoc->generateKey ()));
-
+			newdoc->setKey (doclist_->uniqueKey (newdoc->generateKey ()));
+		} else {
+			std::cerr << "TagWindow::addDocFiles: Warning: didn't succeed adding '" << *it << "'.  Duplicate file?\n";
+		}
 		++n;
 	}
 

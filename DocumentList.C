@@ -18,10 +18,15 @@ std::vector<Document>& DocumentList::getDocs ()
 
 Document* DocumentList::newDocWithFile (Glib::ustring const &filename)
 {
+	std::vector<Document>::iterator it = docs_.begin ();
+	std::vector<Document>::iterator const end = docs_.end ();
+	for (; it != end; ++it) {
+		if ((*it).getFileName() == filename) {
+			return NULL;
+		}
+	}
+
 	Document newdoc(filename);
-	/*newdoc.setKey (
-		uniqueKey (
-			newdoc.generateKey()));*/
 	docs_.push_back(newdoc);
 	return &(docs_.back());
 }
@@ -30,8 +35,6 @@ Document* DocumentList::newDocWithFile (Glib::ustring const &filename)
 Document* DocumentList::newDocUnnamed ()
 {
 	Document newdoc;
-	/*newdoc.setKey (
-		uniqueKey ("Unnamed"));*/
 	docs_.push_back(newdoc);
 	return &(docs_.back());
 }
