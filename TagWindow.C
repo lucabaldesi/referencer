@@ -1355,7 +1355,7 @@ void TagWindow::onAbout ()
 	dialog.set_copyright ("Copyright © 2007 John Spray");
 	dialog.set_logo (
 		Gdk::Pixbuf::create_from_file (
-			Utility::findDataFile ("bookweb.svg"),
+			Utility::findDataFile ("referencer.svg"),
 			128, 128));
 	dialog.run ();
 }
