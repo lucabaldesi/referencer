@@ -98,7 +98,9 @@ void TagWindow::constructUI ()
 	window_->signal_delete_event().connect (
 		sigc::mem_fun (*this, &TagWindow::onDelete));
 
-	window_->set_icon (Gdk::Pixbuf::create_from_file(Utility::findDataFile("bookweb.svg")));
+	window_->set_icon (
+		Gdk::Pixbuf::create_from_file(
+			Utility::findDataFile("bookweb.svg")));
 
 	constructMenu ();
 
@@ -455,6 +457,9 @@ void TagWindow::constructMenu ()
 
 	actiongroup_->add ( Gtk::Action::create("HelpMenu", "_Help") );
 	actiongroup_->add( Gtk::Action::create(
+		"Introduction", Gtk::Stock::HELP, "Introduction"),
+  	sigc::mem_fun(*this, &TagWindow::onIntroduction));
+	actiongroup_->add( Gtk::Action::create(
 		"About", Gtk::Stock::ABOUT),
   	sigc::mem_fun(*this, &TagWindow::onAbout));
 
@@ -503,6 +508,7 @@ void TagWindow::constructMenu ()
 		"      <menuitem action='DocProperties'/>"
 		"    </menu>"
 		"    <menu action='HelpMenu'>"
+		"      <menuitem action='Introduction'/>"
 		"      <menuitem action='About'/>"
 		"    </menu>"
 		"  </menubar>"
@@ -1352,6 +1358,14 @@ void TagWindow::onAbout ()
 			Utility::findDataFile ("bookweb.svg"),
 			128, 128));
 	dialog.run ();
+}
+
+
+void TagWindow::onIntroduction ()
+{
+	Glib::ustring uri = "file://" + Utility::findDataFile ("introduction.html");
+	std::cerr << uri << "\n";
+	Gnome::Vfs::url_show (uri);
 }
 
 

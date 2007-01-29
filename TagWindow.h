@@ -97,6 +97,7 @@ class TagWindow {
 		void onGetMetadataDoc ();
 		void onOpenDoc ();
 		void onDocProperties ();
+		void onIntroduction ();
 		void onAbout ();
 		void onNewLibrary ();
 		void onSaveLibrary ();
