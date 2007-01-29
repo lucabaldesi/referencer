@@ -22,6 +22,17 @@ width: 800px;
 }
 
 
+a.title {
+	margin:				0;
+	padding:			3px;
+	display:			block;
+	text-decoration:		none;
+	color:				black;
+	background-color:		inherit;
+	border-width: 0px;
+}
+
+
 div#main {
 	width: 800px;
 }
