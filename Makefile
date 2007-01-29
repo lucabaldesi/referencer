@@ -25,10 +25,11 @@ $(TARGET): $(OBJECTS) libbibutils/libbibutils.a
 	$(CXX) -o $(TARGET) $(OBJECTS) $(LIBS) 
 
 install: all
-	install -d $(DESTDIR)$(BINDIR) $(DESTDIR)$(DATADIR)
+	install -d $(DESTDIR)$(BINDIR)
 	install -s $(TARGET) $(DESTDIR)$(BINDIR)
-	install -m 0644 *.glade $(DESTDIR)$(DATADIR)
-	install -m 0644 thumbnail_frame.png $(DESTDIR)$(DATADIR)
+	install -d $(DESTDIR)$(DATADIR)
+	install -m 0644 data/*.glade $(DESTDIR)$(DATADIR)
+	install -m 0644 data/thumbnail_frame.png data/bookweb.svg $(DESTDIR)$(DATADIR)
 
 uninstall:
 	rm -f  $(DESTDIR)$(BINDIR)/$(TARGET)
