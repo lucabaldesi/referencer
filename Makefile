@@ -1,11 +1,11 @@
 
 
-CC = g++ -g -Wall #-pedantic
-CFLAGS = `pkg-config --cflags poppler gtkmm-2.4 libgnomeuimm-2.6 gnome-vfsmm-2.6 libglademm-2.4 gconfmm-2.6` -DDATADIR="\"$(DATADIR)\""
+#CXX = g++
+CFLAGS = -g -Wall `pkg-config --cflags poppler gtkmm-2.4 libgnomeuimm-2.6 gnome-vfsmm-2.6 libglademm-2.4 gconfmm-2.6` -DDATADIR="\"$(DATADIR)\""
 LIBS = `pkg-config --libs poppler gtkmm-2.4 libgnomeuimm-2.6 gnome-vfsmm-2.6 libglademm-2.4 gconfmm-2.6` -lboost_regex -Llibbibutils -lbibutils
 
 TARGET = referencer
-OBJECTS = TagWindow.o TagList.o  DocumentList.o Document.o BibData.o DocumentProperties.o Preferences.o Utility.o BibUtils.o
+OBJECTS = TagWindow.o TagList.o  DocumentList.o Document.o BibData.o DocumentProperties.o Preferences.o Utility.o BibUtils.o Transfer.o
 
 PREFIX=/usr/local
 DATADIR=$(PREFIX)/share/$(TARGET)
@@ -14,7 +14,7 @@ BINDIR=$(PREFIX)/bin
 all: $(TARGET)
 
 .C.o: ${patsubst %.C, %.h, $<}
-	$(CC) $(CFLAGS) -o ${patsubst %.C, %.o, $<} -c $<
+	$(CXX) $(CFLAGS) -o ${patsubst %.C, %.o, $<} -c $<
 
 libbibutils/libbibutils.a:
 	$(MAKE) -C libbibutils libbibutils.a
@@ -22,7 +22,7 @@ libbibutils/libbibutils.a:
 	$(MAKE) -C libbibutils clean
 
 $(TARGET): $(OBJECTS) libbibutils/libbibutils.a
-	$(CC) -o $(TARGET) $(OBJECTS) $(LIBS) 
+	$(CXX) -o $(TARGET) $(OBJECTS) $(LIBS) 
 
 install: all
 	install -d $(DESTDIR)$(BINDIR) $(DESTDIR)$(DATADIR)

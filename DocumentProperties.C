@@ -160,8 +160,9 @@ void DocumentProperties::onCrossRefLookup ()
 {
 	Document *orig = doc_;
 	Document spoof = *doc_;
+	// Should also update the arxiv eprint field?
 	spoof.getBibData().setDoi (doientry_->get_text ());
-	spoof.getBibData().getCrossRef ();
+	spoof.getMetaData();
 	doc_ = &spoof;
 	update ();
 	doc_ = orig;

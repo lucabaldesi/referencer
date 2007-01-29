@@ -41,6 +41,7 @@ class Document {
 	void writeBibtex (std::ostringstream& out);
 	void writeXML (std::ostringstream &out);
 	void readPDF ();
+	void getMetaData ();
 
 	BibData& getBibData () {return bib_;}
 	void setBibData (BibData& bib){bib_ = bib;}

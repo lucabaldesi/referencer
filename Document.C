@@ -92,6 +92,8 @@ Glib::ustring Document::generateKey ()
 	name = Utility::strip (name, "_");
 	name = Utility::strip (name, "{");
 	name = Utility::strip (name, "}");
+	name = Utility::strip (name, ",");
+	name = Utility::strip (name, "@");
 
 	unsigned int const maxlen = 12;
 	if (name.size() > maxlen) {
@@ -403,4 +405,13 @@ bool Document::matchesSearch (Glib::ustring const &search)
 		return true;
 	
 	return false;
+}
+
+
+void Document::getMetaData ()
+{
+	if (!bib_.getDoi().empty ())
+		bib_.getCrossRef ();
+	else if (!bib_.getExtras()["eprint"].empty())
+		bib_.getArxiv ();
 }

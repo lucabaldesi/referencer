@@ -325,6 +325,57 @@ Format guessFormat (Glib::ustring const &rawtext)
 	return (Format) BIBL_BIBTEXIN;
 }
 
+static void writerThread (Glib::ustring const &raw, int pipe, bool *advance)
+{
+	int len = strlen (raw.c_str());
+	// Writing more than 65536 freezes in write()
+	int block = 1024;
+	if (block > len)
+		block = len;
+
+	for (int i = 0; i < len / block; ++i) {
+		write (pipe, raw.c_str() + i * block, block);
+		*advance = true;
+	}
+	if (len % block > 0) {
+		write (pipe, raw.c_str() + (len / block) * block, len % block);
+	}
+	
+	close (pipe);
+}
+
+
+bool biblFromString (
+	bibl &b,
+	Glib::ustring const &rawtext,
+	Format format,
+	param &p
+	)
+{
+	int handles[2];
+	if (pipe(handles)) {
+		std::cerr << "Warning: DocumentList::import: couldn't get pipe\n";
+		return false;
+	}
+	int pipeout = handles[0];
+	int pipein = handles[1];
+
+	bool advance = false;
+
+	Glib::Thread *writer = Glib::Thread::create (
+		sigc::bind (sigc::ptr_fun (&writerThread), rawtext, pipein, &advance), true);
+
+	while (!advance) {}
+
+	FILE *otherend = fdopen (pipeout, "r");
+	BibUtils::bibl_read(&b, otherend, "My Pipe", format, &p );
+	fclose (otherend);
+	close (pipeout);
+	
+	writer->join ();
+	
+	return true;
+}
 
 }
 

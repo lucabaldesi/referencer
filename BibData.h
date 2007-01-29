@@ -34,8 +34,7 @@ class BibData {
 	void writeXML (std::ostringstream &out);
 	void parseCrossRefXML (Glib::ustring const &xml);
 	void getCrossRef ();
-	void onCrossRefCancel ();
-	void fetcherThread ();
+	void getArxiv ();
 
 	typedef std::map <Glib::ustring, Glib::ustring> ExtrasMap;
 	ExtrasMap extras_;

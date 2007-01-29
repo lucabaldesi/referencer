@@ -1400,8 +1400,8 @@ void TagWindow::addDocFiles (std::vector<Glib::ustring> const &filenames)
 		while (Gnome::Main::events_pending())
 			Gnome::Main::iteration ();
 
-		if (!newdoc->getBibData().getDoi().empty())
-			newdoc->getBibData().getCrossRef ();
+		// If we got a DOI or eprint field this will work
+		newdoc->getMetaData ();
 
 		newdoc->setKey (doclist_->uniqueKey (newdoc->generateKey ()));
 
@@ -1456,7 +1456,7 @@ void TagWindow::onAddDocByDoi ()
 		setDirty (true);
 		Document *newdoc = doclist_->newDocWithDoi (entry.get_text ());
 
-		newdoc->getBibData().getCrossRef ();
+		newdoc->getMetaData ();
 		newdoc->setKey (doclist_->uniqueKey (newdoc->generateKey ()));
 
 		populateDocStore ();
@@ -1845,7 +1845,7 @@ void TagWindow::onGetMetadataDoc ()
 		if (doc->canGetMetadata ()) {
 			setDirty (true);
 			doclistdirty = true;
-			doc->getBibData().getCrossRef ();
+			doc->getMetaData ();
 		}
 	}
 	
