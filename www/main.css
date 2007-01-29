@@ -5,7 +5,7 @@ div#titlebar
 	background-color:#adc2df;
 	border-style: solid;
 	border-width: 0px;
-	border-bottom: 2px solid black;
+	/*border-bottom: 2px solid black;*/
 
 	padding:10px;
 }
@@ -30,12 +30,17 @@ div#main {
 div#footer
 {
 	background-color:DDD;
-	border-style: solid;
 	border-width: 0px;
-	border-color: #005;
-	border-top: 2px black solid;
 	padding: 10px;
-	width:				525px;
+	padding-top: 100px;
+	width:				800px;
+	float:left;
+}
+
+div#footer p
+{
+	text-align: center;
+	font-size: 50%;
 }
 
 

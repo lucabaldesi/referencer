@@ -81,7 +81,9 @@ Glib::ustring findDataFile (
 		localfile = filename;
 	} else {
 		localfile = Glib::build_filename (
-			Glib::get_current_dir (), filename);
+			Glib::get_current_dir (), "data");
+		localfile = Glib::build_filename (
+			localfile, filename);
 	}
 
 	Glib::RefPtr<Gnome::Vfs::Uri> uri = 
