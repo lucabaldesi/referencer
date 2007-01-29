@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mime-info xmlns="http://www.freedesktop.org/standards/shared-mime-info">
+   <mime-type type="application/x-referencer">
+     <comment>Referencer Library</comment>
+     <!--<magic priority="50">
+       <match value="library" type="string" offset="20:140"/>
+     </magic>-->
+     <glob pattern="*.reflib"/>
+   </mime-type>
+</mime-info>

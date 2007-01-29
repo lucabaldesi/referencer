@@ -7,7 +7,7 @@ LIBS = -g `pkg-config --libs poppler gtkmm-2.4 libgnomeuimm-2.6 gnome-vfsmm-2.6 
 TARGET = referencer
 OBJECTS = TagWindow.o TagList.o  DocumentList.o Document.o BibData.o DocumentProperties.o Preferences.o Utility.o BibUtils.o Transfer.o
 
-PREFIX=/usr/local
+PREFIX=/usr/
 DATADIR=$(PREFIX)/share/$(TARGET)
 BINDIR=$(PREFIX)/bin
 
@@ -37,12 +37,16 @@ install: all
 	install -m 0644 $(DATAFILES) $(DESTDIR)$(DATADIR)
 	install -m 0644 data/referencer.svg $(PREFIX)/share/pixmaps
 	install -m 0644 referencer.desktop $(PREFIX)/share/applications
+	install -d $(PREFIX)/share/mime/packages
+	install -m 0644 referencer.xml $(PREFIX)/share/mime/packages
+	update-mime-database $(PREFIX)/share/mime
 
 uninstall:
 	rm -f  $(DESTDIR)$(BINDIR)/$(TARGET)
 	rm -rf $(DESTDIR)$(DATADIR)
 	rm -f $(PREFIX)/share/pixmaps/referencer.svg
 	rm -f $(PREFIX)/share/applications/referencer.desktop
+	rm -f $(PREFIX)/share/mime/packages/referencer.xml
 
 clean:
 	rm -f $(TARGET)
