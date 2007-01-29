@@ -41,6 +41,8 @@ install: all
 uninstall:
 	rm -f  $(DESTDIR)$(BINDIR)/$(TARGET)
 	rm -rf $(DESTDIR)$(DATADIR)
+	rm -f $(PREFIX)/share/pixmaps/referencer.svg
+	rm -f $(PREFIX)/share/applications/referencer.desktop
 
 clean:
 	rm -f $(TARGET)
