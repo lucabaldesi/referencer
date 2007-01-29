@@ -7,7 +7,7 @@ LIBS = -g `pkg-config --libs poppler gtkmm-2.4 libgnomeuimm-2.6 gnome-vfsmm-2.6 
 TARGET = referencer
 OBJECTS = TagWindow.o TagList.o  DocumentList.o Document.o BibData.o DocumentProperties.o Preferences.o Utility.o BibUtils.o Transfer.o
 
-PREFIX=/usr/
+PREFIX=$(DESTDIR)/usr/local
 DATADIR=$(PREFIX)/share/$(TARGET)
 BINDIR=$(PREFIX)/bin
 
@@ -31,11 +31,14 @@ $(TARGET): $(OBJECTS) libbibutils/libbibutils.a
 	$(CXX) -o $(TARGET) $(OBJECTS) $(LIBS) 
 
 install: all
-	install -d $(DESTDIR)$(BINDIR)
+	install -d $(BINDIR)
 	install -s $(TARGET) $(DESTDIR)$(BINDIR)
-	install -d $(DESTDIR)$(DATADIR)
+	install -d $(DATADIR)
 	install -m 0644 $(DATAFILES) $(DESTDIR)$(DATADIR)
 	install -m 0644 data/referencer.svg $(PREFIX)/share/pixmaps
+	install -d $(PREFIX)/share/icons/hicolor/48x48/mimetypes
+	install -m 0644 data/gnome-mime-application-x-referencer.png\
+		$(PREFIX)/share/icons/hicolor/48x48/mimetypes
 	install -m 0644 referencer.desktop $(PREFIX)/share/applications
 	install -d $(PREFIX)/share/mime/packages
 	install -m 0644 referencer.xml $(PREFIX)/share/mime/packages
@@ -47,6 +50,8 @@ uninstall:
 	rm -f $(PREFIX)/share/pixmaps/referencer.svg
 	rm -f $(PREFIX)/share/applications/referencer.desktop
 	rm -f $(PREFIX)/share/mime/packages/referencer.xml
+	rm -f $(PREFIX)/share/icons/hicolor/48x48/mimetypes/gnome-mime-application-x-referencer.png
+	update-mime-database $(PREFIX)/share/mime
 
 clean:
 	rm -f $(TARGET)
