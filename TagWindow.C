@@ -143,7 +143,7 @@ void TagWindow::constructUI ()
 	tagpane_ = tagsframe;
 
 	Gtk::Label *tagslabel = Gtk::manage (new Gtk::Label (""));
-	tagslabel->set_markup ("<b> All Tags </b>");
+	tagslabel->set_markup ("<b> Tags </b>");
 	tagslabel->set_alignment (0.0, 0.0);
 	vbox->pack_start (*tagslabel, false, true, 3);
 
@@ -587,7 +587,9 @@ void TagWindow::populateDocStore ()
 		bool filtered = true;
 		for (std::vector<int>::iterator tagit = filtertags_.begin();
 		     tagit != filtertags_.end(); ++tagit) {
-			if (*tagit == ALL_TAGS_UID || (*docit).hasTag(*tagit)) {
+			if (*tagit == ALL_TAGS_UID
+			    || (*tagit == NO_TAGS_UID && (*docit).getTags().empty())
+			    || (*docit).hasTag(*tagit)) {
 				filtered = false;
 				break;
 			}
@@ -636,6 +638,10 @@ void TagWindow::populateTagList ()
 	Gtk::TreeModel::iterator all = tagstore_->append();
 	(*all)[taguidcol_] = ALL_TAGS_UID;
 	(*all)[tagnamecol_] = "<b>All</b>";
+	
+	Gtk::TreeModel::iterator none = tagstore_->append();
+	(*none)[taguidcol_] = NO_TAGS_UID;
+	(*none)[tagnamecol_] = "<b>Untagged</b>";
 
 	taggerbox_->children().clear();
 
@@ -692,6 +698,7 @@ void TagWindow::taggerCheckToggled (Gtk::CheckButton *check, int taguid)
 	check->set_inconsistent (false);
 
 	bool tagsremoved = false;
+	bool tagsadded = false;
 
 	std::vector<Document*>::iterator it = selecteddocs.begin ();
 	std::vector<Document*>::iterator const end = selecteddocs.end ();
@@ -699,19 +706,34 @@ void TagWindow::taggerCheckToggled (Gtk::CheckButton *check, int taguid)
 		Document *doc = (*it);
 		if (active) {
 			doc->setTag (taguid);
+			tagsadded = true;
 		} else {
 			doc->clearTag (taguid);
 			tagsremoved = true;
 		}
 	}
 
-	// If we've untagged something it might no longer be visible
-	if (tagsremoved
-	    && (*filtertags_.begin()) != ALL_TAGS_UID) {
-	  // Should check if the tag we removed is in filtertags ideally
-	  // This is quite annoying when we don't save which document is selected
+	bool allselected = false;
+	bool taglessselected = false;
+
+	for (std::vector<int>::iterator tagit = filtertags_.begin();
+	     tagit != filtertags_.end ();
+	     ++tagit) {
+		if (*tagit == ALL_TAGS_UID)
+			allselected = true;
+		else if (*tagit == NO_TAGS_UID)
+			taglessselected = true;
+	}
+
+	if (
+	    // If we've untagged something it might no longer be visible
+	    (tagsremoved && !allselected)
+	    // Or if we've added a tag to something while viewing "untagged"
+	    || (tagsadded && taglessselected)
+	    ) {
 		populateDocStore ();
 	}
+
 
 }
 
@@ -735,7 +757,8 @@ void TagWindow::tagNameEdited (
 	Gtk::TreePath path = (*paths.begin ());
 	Gtk::ListStore::iterator iter = tagstore_->get_iter (path);
 
-	if ((*iter)[taguidcol_] == ALL_TAGS_UID)
+	if ((*iter)[taguidcol_] == ALL_TAGS_UID
+	    || (*iter)[taguidcol_] == NO_TAGS_UID)
 		return;
 
 	setDirty (true);
@@ -772,11 +795,11 @@ void TagWindow::tagSelectionChanged ()
 
 	filtertags_.clear();
 
-	bool allselected = false;
+	bool specialselected = false;
 	bool anythingselected = false;
 
 	if (paths.empty()) {
-		allselected = true;
+		specialselected = true;
 		anythingselected = true;
 		filtertags_.push_back(ALL_TAGS_UID);
 	} else {
@@ -787,17 +810,18 @@ void TagWindow::tagSelectionChanged ()
 			Gtk::TreePath path = (*it);
 			Gtk::ListStore::iterator iter = tagstore_->get_iter (path);
 			filtertags_.push_back((*iter)[taguidcol_]);
-			if ((*iter)[taguidcol_] == ALL_TAGS_UID) {
-				allselected = true;
+			if ((*iter)[taguidcol_] == ALL_TAGS_UID
+			    || (*iter)[taguidcol_] == NO_TAGS_UID) {
+				specialselected = true;
 				break;
 			}
 		}
 	}
 
 	actiongroup_->get_action("DeleteTag")->set_sensitive (
-		anythingselected && !allselected);
+		anythingselected && !specialselected);
 	actiongroup_->get_action("RenameTag")->set_sensitive (
-		paths.size() == 1 && !allselected);
+		paths.size() == 1 && !specialselected);
 
 	populateDocStore ();
 }
