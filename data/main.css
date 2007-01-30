@@ -83,6 +83,7 @@ div.left {
 	float:				left;
 	width:				525px;
 	padding-left:			15px;
+	text-align: justify;
 }
 
 
