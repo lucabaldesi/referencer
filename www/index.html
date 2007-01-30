@@ -5,6 +5,9 @@
 <head>
 <link rel="stylesheet" type="text/css" href="main.css">
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta name="keywords" content="GNOME BibTeX Bibliography">
+<meta name="description" content="A document organiser and bibliography manager for Gnome">
+
 <title>Referencer</title>
 
 </head>
@@ -24,16 +27,16 @@
 
 	<div id="about">
 	<h2>About Referencer</h2>
-	<p>Referencer is a package to organise documents or references, and ultimately generate a BibTeX bibliography file.  Referencer includes a number of features to make this process easier:</p>
+	<p>Referencer is a <a href="http://gnome.org">Gnome</a> application to organise documents or references, and ultimately generate a <a href="http://en.wikipedia.org/wiki/BibTeX">BibTeX</a> bibliography file.  Referencer includes a number of features to make this process easier:</p>
 	<ul>
 	<li><b>Automatic metadata retrieval</b><br>
-	If you show Referencer a PDF which has either a DOI code (found in most recently published papers) or ArXiV ID, Referencer will retrieve the metadata for this document over the internet.
+	If you show Referencer a PDF which has either a <a href="http://www.doi.org/">DOI code</a> (found in most recently published papers) or <a href="http://www.arxiv.org">ArXiV</a> ID, Referencer will retrieve the metadata for this document over the internet.
 	</li>
 	<li><b>Smart web links</b><br>
 	Referencer uses documents' ID codes to provide handy links to the document's web location &mdash; no need to maintain your own bookmarks.
 	</li>
 	<li><b>Import from BibTeX, Reference Manager and EndNote</b><br>
-	No need to start from scratch &mdash; Referencer will import your existing bibliography files using the BibUtils library.
+	No need to start from scratch &mdash; Referencer will import your existing bibliography files using the <a href="http://www.scripps.edu/~cdputnam/software/bibutils/">BibUtils</a> library.
 	</li>
 	<li><b>Tagging</b><br>
 	No need to organise your documents into rigid directory trees &mdash; with Referencer you can use tags to categorise your documents.
@@ -42,6 +45,7 @@
 	</div>
 	
 	<div id="screenshots">
+	<a name="screenshots">
 	<h2>Screenshots</h2>
 	<p align="center">
 	<img src="mainwindow-1.0.0.png">
@@ -53,8 +57,17 @@
 	
 	<div id="getting">
 	<h2>Getting Referencer</h2>
-	<p>Referencer hasn't yet been packaged, so in order to try it out you'll have to download the source and compile it.  Referencer has quite a number of dependencies (see README in the source), all of which are available in Ubuntu Linux.</p>
 	<p>Download: <a href="downloads/referencer-1.0.0.tar.gz">Referencer 1.0.0 (source)</a></p>
+	<p>Referencer hasn't yet been packaged, so in order to try it out you'll have to download the source and compile it.  Referencer has quite a number of dependencies (see README in the source), all of which are available in Ubuntu Linux:</p>
+	<ul>
+	<li>poppler</li>
+	<li>gtkmm-2.4</li>
+	<li>libgnomeuimm-2.6</li>
+	<li>gnome-vfsmm-2.6</li>
+	<li>libglademm-2.4</li>
+	<li>gconfmm-2.6</li>
+	<li>boost_regex</li>
+	</ul>
 	</div>
 
 </div>
