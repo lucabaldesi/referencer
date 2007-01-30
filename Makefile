@@ -15,7 +15,8 @@ DATAFILES =\
 	data/*.glade\
 	data/thumbnail_frame.png\
 	data/referencer.svg\
-	data/introduction.html
+	data/introduction.html\
+	data/main.css
 
 all: $(TARGET)
 
