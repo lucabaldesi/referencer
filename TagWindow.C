@@ -2010,6 +2010,8 @@ void TagWindow::onUseListViewPrefChanged ()
 		docslistscroll_->hide ();
 		docsiconscroll_->show ();
 	}
+	
+	docSelectionChanged ();
 }
 
 
