@@ -12,6 +12,7 @@ Big functionality wishlist:
 	"Manage BibTeX File" as well as one-off export
 	Documents need some unique ID.  Currently keys are created as unique but there
 		is nothing stopping user from creating by hand or importing dups.
+	Formatted bibliographies with Rtfbtx?
 
 Little functionality wishlist:
 	gconf schema
