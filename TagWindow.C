@@ -781,6 +781,8 @@ void TagWindow::docActivated (const Gtk::TreeModel::Path& path)
 		onOpenDoc ();
 	} else if (doc->canWebLink ()) {
 		onWebLinkDoc ();
+	} else {
+		onDocProperties ();
 	}
 }
 
