@@ -2,8 +2,8 @@
 Essential:
 	Store relative document file paths where possible
 	Crash removing tags?
-	Chapters in InCollection get added as "Title" extra field in bibtex import
-		Currently taking all level 0 title fields as chapter
+	When importing endnote, %Y is series editor, but this is lost by bibutils for refs of inappropriate type.  %Y is used in pablo's file as generic author.
+	Sizing of columns in the list view
 
 Big functionality wishlist:
 	OAI support for arXiv and CrossRef (and possibly many others)
@@ -14,6 +14,7 @@ Big functionality wishlist:
 	Documents need some unique ID.  Currently keys are created as unique but there
 		is nothing stopping user from creating by hand or importing dups.
 	Formatted bibliographies with Rtfbtx?
+	Tracker?  Beagle?
 
 Little functionality wishlist:
 	gconf schema
@@ -23,6 +24,10 @@ Little functionality wishlist:
 	Do something with PDF-embedded metadata if there is any
 	Make search bar match more fields
 	Tell the user somehow in addDocFiles when we don't add files b/c they're already in the documentlist.
+	Assign a color to a tag and highlight refs with it
+	File operations:
+		Deleting documents from disk?
+		Rename file to key
 
 UI wishlist:
 	Save in Preferences the sorting of the list view.
@@ -41,6 +46,9 @@ Bugs:
 		in order to support directory recursion on remote filesystems -- this is a 
 		bad thing when adding stuff from really remote things like websites
 	Removing documents uses key_ as if it were unique, which it is not guaranteed to be
+	Chapters in InCollection come through as level 0 "TITLE" field in bibtex import
+		Currently taking all level 0 title fields as chapter
+
 
 EndNote is also somewhat DOI aware, dx.doi.org URLs generated when importing reference from eg INSPEC
 
