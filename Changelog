@@ -1,2 +1,11 @@
+1.0.1:
+	- Open properties on double click as last resort
+	- Import stuff:
+		- Fix import dialog ignoring choice of file format
+		- Fix chapter fields in incollection items in bibtex import
+		- Understand translator fields in import
+		- Don't extra fields for import fields with no value string
+		- Import from MODS
+		- Hide non-functional "auto-detect" option in import dialog
 
 1.0.0: Initial release
