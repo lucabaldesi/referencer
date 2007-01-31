@@ -14,7 +14,8 @@ typedef enum {
 	FORMAT_BIBTEX = BIBL_BIBTEXIN,
 	FORMAT_ENDNOTE = BIBL_ENDNOTEIN,
 	FORMAT_RIS = BIBL_RISIN,
-	FORMAT_UNKNOWN
+	FORMAT_MODS = BIBL_MODSIN,
+	FORMAT_UNKNOWN = -1
 } Format;
 
 Glib::ustring formatType (fields *info);

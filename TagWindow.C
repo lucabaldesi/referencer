@@ -2128,10 +2128,11 @@ void TagWindow::onImport ()
 	Gtk::Label label ("Format:");
 	extrabox.pack_start (label, false, false, 0);
 	Gtk::ComboBoxText combo;
-	combo.append_text ("Auto Detected");
 	combo.append_text ("BibTeX");
 	combo.append_text ("EndNote");
 	combo.append_text ("RIS");
+	combo.append_text ("MODS");
+	//combo.append_text ("Auto Detected");
 	combo.set_active (0);
 	extrabox.pack_start (combo, true, true, 0);
 	extrabox.show_all ();
@@ -2144,16 +2145,20 @@ void TagWindow::onImport ()
 
 		BibUtils::Format format;
 		switch (combo.get_active_row_number ()) {
-			case 1:
+			case 0:
 				format = BibUtils::FORMAT_BIBTEX;
 				break;
-			case 2:
+			case 1:
 				format = BibUtils::FORMAT_ENDNOTE;
 				break;
-			case 3:
+			case 2:
 				format = BibUtils::FORMAT_RIS;
 				break;
+			case 3:
+				format = BibUtils::FORMAT_MODS;
+				break;
 			default:
+				// Users selected "Auto detect"
 				// DocumentList::import will try to guess once 
 				// it has the text
 				format = BibUtils::FORMAT_UNKNOWN;

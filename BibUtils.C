@@ -222,6 +222,19 @@ Glib::ustring formatPeople(fields *info, char *tag, char *ctag, int level)
 
 Document parseBibUtils (BibUtils::fields *ref)
 {
+	std::pair<std::string,std::string> a[]={
+		std::make_pair("PARTDAY", "Day"),
+		std::make_pair("PARTMONTH", "Month"),
+		std::make_pair("KEYWORD", "Keywords"),
+		std::make_pair("DEGREEGRANTOR", "School"),
+		std::make_pair("DEGREEGRANTOR:ASIS", "School"),
+		std::make_pair("DEGREEGRANTOR:CORP", "School"),
+		std::make_pair("NOTES", "Note")
+	};
+
+	std::map<std::string,std::string> replacements (
+		a,a + (sizeof(a) / sizeof(*a)));
+
 	Document newdoc;
 
 	int type = 	BibUtils::getType (ref);
@@ -244,9 +257,13 @@ Document parseBibUtils (BibUtils::fields *ref)
 
 	Glib::ustring authors = formatPeople (ref, "AUTHOR", "CORPAUTHOR", 0);
 	Glib::ustring editors = formatPeople (ref, "EDITOR", "CORPEDITOR", -1);
+	Glib::ustring translators = formatPeople (ref, "TRANSLATOR", "CORPTRANSLATOR", -1);
 	newdoc.getBibData().setAuthors (authors);
 	if (!editors.empty ()) {
 		newdoc.getBibData().addExtra ("Editor", editors);
+	}
+	if (!translators.empty ()) {
+		newdoc.getBibData().addExtra ("Translator", translators);
 	}
 
 	bool someunused = false;
@@ -287,18 +304,11 @@ Document parseBibUtils (BibUtils::fields *ref)
 			if (!someunused)
 				std::cerr << "\n";
 
-			std::pair<std::string,std::string> a[]={
-				std::make_pair("PARTDAY", "Day"),
-				std::make_pair("PARTMONTH", "Month"),
-				std::make_pair("KEYWORD", "Keywords"),
-				std::make_pair("DEGREEGRANTOR", "School"),
-				std::make_pair("DEGREEGRANTOR:ASIS", "School"),
-				std::make_pair("DEGREEGRANTOR:CORP", "School"),
-				std::make_pair("NOTES", "Note")
-			};
-
-			std::map<std::string,std::string> replacements (a,a + (sizeof(a) / sizeof(*a)));
-			
+			// Special case: Chapters in InCollection get added as "Title" level 0
+			if (key == "TITLE" && type==TYPE_INCOLLECTION) {
+				key = "Chapter";
+			}
+	
 			if (!replacements[key].empty()) {
 				key = replacements[key];
 			} else {
@@ -307,7 +317,9 @@ Document parseBibUtils (BibUtils::fields *ref)
 
 			int level = ref->level[j];
 			std::cerr << key << " = " << value << "(" << level << ")\n";
-			newdoc.getBibData().addExtra (key, value);
+			if (!value.empty ()) {
+				newdoc.getBibData().addExtra (key, value);
+			}
 			someunused = true;
 		}
 	}

@@ -3,6 +3,7 @@ Essential:
 	Store relative document file paths where possible
 	Crash removing tags?
 	Chapters in InCollection get added as "Title" extra field in bibtex import
+		Currently taking all level 0 title fields as chapter
 
 Big functionality wishlist:
 	OAI support for arXiv and CrossRef (and possibly many others)
@@ -42,7 +43,6 @@ Bugs:
 	Removing documents uses key_ as if it were unique, which it is not guaranteed to be
 
 EndNote is also somewhat DOI aware, dx.doi.org URLs generated when importing reference from eg INSPEC
-Take heart, endnote is slow and crummy and easy to be better than for simple bibtex use
 
 Competition on Science biblio export:
 	EndNote
@@ -50,3 +50,4 @@ Competition on Science biblio export:
 	ProCite
 	RefWorks
 also: Zotero
+also: Yep
