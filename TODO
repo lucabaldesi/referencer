@@ -5,6 +5,7 @@ Essential:
 	Sizing of columns in the list view
 	phdthesis items in slawson's bibtex file get imported as "THESIS", bib2xml complains
 	failure on exporting bibtex for imported slawson's bibtex file
+	importing something with {{SoMe TeXT}} loses the {}.
 	
 
 Big functionality wishlist:
