@@ -8,7 +8,7 @@ Author: John Spray (jcspray at icculus.org)
 Building
 ========
 
-A simple 'make' should build the referencer executable, if the dependencies are present.
+A simple './configure && make' should build the referencer executable, if the dependencies are present.
 
 The build dependencies are:
 	g++
