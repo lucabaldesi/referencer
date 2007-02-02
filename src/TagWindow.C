@@ -67,6 +67,8 @@ TagWindow::TagWindow ()
 	} else {
 		onNewLibrary ();
 	}
+	
+	setDirty (false);
 
 	populateDocStore ();
 	populateTagList ();
@@ -2086,6 +2088,8 @@ void TagWindow::setOpenedLib (Glib::ustring const &openedlib)
 void TagWindow::setDirty (bool const &dirty)
 {
 	dirty_ = dirty;
+	actiongroup_->get_action("SaveLibrary")
+		->set_sensitive (dirty_);
 	updateTitle ();
 }
 
