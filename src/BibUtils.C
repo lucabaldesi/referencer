@@ -275,8 +275,6 @@ Document parseBibUtils (BibUtils::fields *ref)
 		int used = 1;
 		if (key == "REFNUM") {
 			newdoc.setKey (value);
-		/*} else if (key == "TYPE") {
-			newdoc.getBibData().setType (value);*/
 		} else if (key == "VOLUME") {
 			newdoc.getBibData().setVolume (value);
 		} else if (key == "NUMBER" || key == "ISSUE") {
@@ -292,7 +290,7 @@ Document parseBibUtils (BibUtils::fields *ref)
 			newdoc.getBibData().setPages (value);
 		} else if (key == "RESOURCE" || key == "ISSUANCE" || key == "GENRE"
 		        || key == "AUTHOR" || key == "EDITOR" || key == "CORPAUTHOR"
-		        || key == "CORPEDITOR") {
+		        || key == "CORPEDITOR" || key == "TYPE") {
 			// Don't add them as "extra fields"
 		} else {
 			used = 0;
