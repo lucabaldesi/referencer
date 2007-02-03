@@ -275,8 +275,8 @@ Document parseBibUtils (BibUtils::fields *ref)
 		int used = 1;
 		if (key == "REFNUM") {
 			newdoc.setKey (value);
-		} else if (key == "TYPE") {
-			newdoc.getBibData().setType (value);
+		/*} else if (key == "TYPE") {
+			newdoc.getBibData().setType (value);*/
 		} else if (key == "VOLUME") {
 			newdoc.getBibData().setVolume (value);
 		} else if (key == "NUMBER" || key == "ISSUE") {
