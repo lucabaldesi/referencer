@@ -102,7 +102,7 @@ Glib::ustring &getRemoteFile (
 }
 
 
-static bool advance;
+volatile static bool advance;
 Gnome::Vfs::Async::Handle bibfile;
 
 void openCB (
@@ -156,7 +156,7 @@ void closeCB (
 
 // Return true if all is well
 // Return false if we should give up and go home
-static bool waitForFlag (bool &flag)
+static bool waitForFlag (volatile bool &flag)
 {
 	while (flag == false) {
 		std::cerr << "Waiting...\n";
