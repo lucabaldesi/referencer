@@ -337,7 +337,7 @@ Format guessFormat (Glib::ustring const &rawtext)
 	return (Format) BIBL_BIBTEXIN;
 }
 
-static void writerThread (Glib::ustring const &raw, int pipe, bool *advance)
+static void writerThread (Glib::ustring const &raw, int pipe, volatile bool *advance)
 {
 	int len = strlen (raw.c_str());
 	// Writing more than 65536 freezes in write()
@@ -372,7 +372,7 @@ bool biblFromString (
 	int pipeout = handles[0];
 	int pipein = handles[1];
 
-	bool advance = false;
+	volatile bool advance = false;
 
 	Glib::Thread *writer = Glib::Thread::create (
 		sigc::bind (sigc::ptr_fun (&writerThread), rawtext, pipein, &advance), true);
