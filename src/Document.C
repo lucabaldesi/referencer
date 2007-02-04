@@ -23,8 +23,7 @@ Glib::RefPtr<Gdk::Pixbuf> Document::thumbframe_;
 
 Document::Document (Glib::ustring const &filename)
 {
-	filename_ = filename;
-	setupThumbnail ();
+	setFileName (filename);
 }
 
 
@@ -41,8 +40,7 @@ Document::Document (
 	std::vector<int> const &tagUids,
 	BibData const &bib)
 {
-	filename_ = filename;
-	setupThumbnail ();
+	setFileName (filename);
 	key_ = key;
 	tagUids_ = tagUids;
 	bib_ = bib;
@@ -185,7 +183,7 @@ Glib::ustring& Document::getFileName()
 }
 
 
-void Document::setFileName (Glib::ustring &filename)
+void Document::setFileName (Glib::ustring const &filename)
 {
 	if (filename == filename_)
 		return;

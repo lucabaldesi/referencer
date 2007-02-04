@@ -25,7 +25,7 @@ class Document {
 		BibData const &bib);
 	Glib::ustring& getKey();
 	Glib::ustring& getFileName();
-	void setFileName (Glib::ustring &filename);
+	void setFileName (Glib::ustring const &filename);
 	void setKey (Glib::ustring const &key);
 	Glib::RefPtr<Gdk::Pixbuf> getThumbnail () {return thumbnail_;}
 	std::vector<int>& getTags ();
