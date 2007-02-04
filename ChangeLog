@@ -1,9 +1,10 @@
 1.0.1:
 	- Make SaveLibrary insensitive when library not dirty
-	- Fix getting type wrong for PhdThesis
 	- Switch to autotools (Eric Lesh)
 	- Open properties on double click as last resort
 	- Import stuff:
+		- Fix getting type wrong for PhdThesis
+		- Fix bibtex import getting confused about certain accents (Chris Putnam)
 		- Fix import dialog ignoring choice of file format
 		- Fix chapter fields in incollection items in bibtex import
 		- Understand translator fields in import
