@@ -28,7 +28,7 @@ Document parseBibUtils (BibUtils::fields *ref);
 
 Format guessFormat (Glib::ustring const &rawtext);
 
-bool biblFromString (
+void biblFromString (
 	bibl &b,
 	Glib::ustring const &rawtext,
 	Format format,

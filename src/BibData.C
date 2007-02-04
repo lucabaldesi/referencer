@@ -386,32 +386,37 @@ void BibData::getArxiv ()
 
 	std::cerr << filename << "\n";
 
+	Glib::ustring *rawtext;
 	try {
-		Glib::ustring &rawtext = Transfer::getRemoteFile (
+		rawtext = &Transfer::getRemoteFile (
 			"Retrieving Metadata", messagetext, filename);
-		std::cerr << rawtext << "\n\n\n";
-
-		BibUtils::param p;
-		BibUtils::bibl b;
-		BibUtils::bibl_init( &b );
-		BibUtils::bibl_initparams( &p, BibUtils::FORMAT_BIBTEX, BIBL_MODSOUT);
-
-		if (BibUtils::biblFromString (b, rawtext, BibUtils::FORMAT_BIBTEX, p)) {
-			Document newdoc = BibUtils::parseBibUtils (b.ref[0]);
-			newdoc.getBibData().print ();
-
-			title_ = newdoc.getBibData().getTitle ();
-			authors_ = newdoc.getBibData().getAuthors ();
-			year_ = newdoc.getBibData().getYear ();
-			if (extras_["Url"].empty())
-				addExtra ("Url", newdoc.getBibData().getExtras ()["Url"]);
-			
-			BibUtils::bibl_free( &b );
-		} else {
-			BibUtils::bibl_free( &b );
-		}
+		std::cerr << *rawtext << "\n\n\n";
 	} catch (Transfer::Exception ex) {
 		Utility::exceptionDialog (&ex, "retrieving metadata");
+		return;
+	}
+
+	BibUtils::param p;
+	BibUtils::bibl b;
+	BibUtils::bibl_init( &b );
+	BibUtils::bibl_initparams( &p, BibUtils::FORMAT_BIBTEX, BIBL_MODSOUT);
+
+	try {
+		BibUtils::biblFromString (b, *rawtext, BibUtils::FORMAT_BIBTEX, p);
+		Document newdoc = BibUtils::parseBibUtils (b.ref[0]);
+		newdoc.getBibData().print ();
+
+		title_ = newdoc.getBibData().getTitle ();
+		authors_ = newdoc.getBibData().getAuthors ();
+		year_ = newdoc.getBibData().getYear ();
+		if (extras_["Url"].empty())
+			addExtra ("Url", newdoc.getBibData().getExtras ()["Url"]);
+		
+		BibUtils::bibl_free( &b );
+	} catch (Glib::Error ex) {
+		BibUtils::bibl_free( &b );
+		Utility::exceptionDialog (&ex, "parsing bibtex");
+		return;
 	}
 }
 

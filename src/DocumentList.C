@@ -179,7 +179,8 @@ bool DocumentList::import (
 		try {
 			importfile.open (filename, Gnome::Vfs::OPEN_READ);
 		} catch (const Gnome::Vfs::exception ex) {
-			Utility::exceptionDialog (&ex, "opening file '" + filename + "'");
+			Utility::exceptionDialog (&ex, "opening file '"
+				+ Glib::filename_to_utf8 (filename) + "'");
 			return false;
 		}
 
@@ -195,7 +196,8 @@ bool DocumentList::import (
 		try {
 			importfile.read (buffer, fileinfo->get_size());
 		} catch (const Gnome::Vfs::exception ex) {
-			Utility::exceptionDialog (&ex, "reading file '" + filename + "'");
+			Utility::exceptionDialog (&ex,
+				"reading file '" + Glib::filename_to_utf8 (filename) + "'");
 			free (buffer);
 			return false;
 		}
@@ -215,15 +217,16 @@ bool DocumentList::import (
 	// BIBL_* are #defines, so not in namespace
 	BibUtils::bibl_initparams( &p, format, BIBL_MODSOUT);
 
-	if (BibUtils::biblFromString (b, rawtext, format, p)) {
+	try {
+		BibUtils::biblFromString (b, rawtext, format, p);
 		for (int i = 0; i < b.nrefs; ++i) {
 			docs_.push_back (BibUtils::parseBibUtils (b.ref[i]));
 		}
 		BibUtils::bibl_free( &b );
-
 		return true;
-	} else {
+	} catch (Glib::Error ex) {
 		BibUtils::bibl_free( &b );
+		Utility::exceptionDialog (&ex, "parsing import");
 		return false;
 	}
 

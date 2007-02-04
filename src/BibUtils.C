@@ -164,7 +164,13 @@ Glib::ustring formatTitle (BibUtils::fields *ref, int level)
 			ref->used[ksub] = 1;
 		}
 	}
-	
+
+	if (!title.validate ()) {
+		throw (Glib::ConvertError (
+			Glib::ConvertError::FAILED,
+			"Invalid UTF-8 from libbibutils in formatTitle"));
+	}
+
 	return title;
 }
 
@@ -185,6 +191,12 @@ Glib::ustring formatPerson (Glib::ustring const &munged)
 		if ( nseps==0 ) output = output + ",";
 		else if ( nch==1 ) output = output + ".";
 		nseps++;
+	}
+
+	if (!output.validate ()) {
+		throw (Glib::ConvertError (
+			Glib::ConvertError::FAILED,
+			"Invalid UTF-8 from libbibutils in formatPerson"));
 	}
 
 	return output;
@@ -214,6 +226,12 @@ Glib::ustring formatPeople(fields *info, char *tag, char *ctag, int level)
 
 			npeople++;
 		}
+	}
+	
+	if (!output.validate ()) {
+		throw (Glib::ConvertError (
+			Glib::ConvertError::FAILED,
+			"Invalid UTF-8 from libbibutils in formatPeople"));
 	}
 	
 	return output;
@@ -271,6 +289,12 @@ Document parseBibUtils (BibUtils::fields *ref)
 	for (int j = 0; j < ref->nfields; ++j) {
 		Glib::ustring key = ref->tag[j].data;
 		Glib::ustring value = ref->data[j].data;
+
+		if (!value.validate ()) {
+			throw (Glib::ConvertError (
+				Glib::ConvertError::FAILED,
+				"Invalid UTF-8 from libbibutils"));
+		}
 
 		int used = 1;
 		if (key == "REFNUM") {
@@ -355,7 +379,7 @@ static void writerThread (Glib::ustring const &raw, int pipe, volatile bool *adv
 }
 
 
-bool biblFromString (
+void biblFromString (
 	bibl &b,
 	Glib::ustring const &rawtext,
 	Format format,
@@ -364,8 +388,9 @@ bool biblFromString (
 {
 	int handles[2];
 	if (pipe(handles)) {
-		std::cerr << "Warning: DocumentList::import: couldn't get pipe\n";
-		return false;
+		throw Glib::IOChannelError (
+			Glib::IOChannelError::BROKEN_PIPE,
+			"Couldn't get pipe");
 	}
 	int pipeout = handles[0];
 	int pipein = handles[1];
@@ -383,8 +408,6 @@ bool biblFromString (
 	close (pipeout);
 	
 	writer->join ();
-	
-	return true;
 }
 
 }
