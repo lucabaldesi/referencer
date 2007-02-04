@@ -16,7 +16,7 @@ class Glib::ustring;
 #define NO_TAGS_UID -2
 
 #define PROGRAM_NAME "Referencer"
-#define VERSION "1.0.1-pre"
+#define VERSION "1.0.1"
 
 class TagWindow {
 
