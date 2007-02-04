@@ -36,9 +36,12 @@ int main (int argc, char **argv)
 		_global_prefs->setLibraryFilename (libfile);
 	}
 
-	TagWindow window;
-
-	window.run();
+	try {
+		TagWindow window;
+		window.run();
+	} catch (Glib::Error ex) {
+		Utility::exceptionDialog (&ex, "failing fatally");
+	}
 
 	return 0;
 }
@@ -561,7 +564,7 @@ void TagWindow::populateDocStore ()
 	// has changed, including its length, so update dependent sensitivities:
 	actiongroup_->get_action("ExportBibtex")
 		->set_sensitive (doclist_->size() > 0);
-
+throw (Glib::ConvertError (Glib::ConvertError::FAILED, "MOOOO!"));
 	// Save initial selection
 	Gtk::TreePath initialpath;
 	if (usinglistview_) {
