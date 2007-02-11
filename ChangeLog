@@ -1,4 +1,5 @@
 1.0.1:
+	- When opening library, clear bibdata in between docs (Rodrigo Kassick)
 	- Make SaveLibrary insensitive when library not dirty
 	- Switch to autotools (Eric Lesh)
 	- Open properties on double click as last resort
