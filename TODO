@@ -1,12 +1,10 @@
 
 Essential:
-	Store relative document file paths where possible
 	Sizing of columns in the list view
 	importing something with {{SoMe TeXT}} loses the {}.
 	LyX citation via lyxserver (pybliographic, lyx/src/client)
 
 	When importing endnote, %Y is series editor, but this is lost by bibutils for refs of inappropriate type.  %Y is used in pablo's file as generic author. - that was with endnote 3, try with more recent endnote	
-	failure on exporting bibtex for imported slawson's bibtex file - \" misunderstood by libbibutils, waiting to hear back
 
 Big functionality wishlist:
 	OAI support for arXiv and CrossRef (and possibly many others)
@@ -34,7 +32,6 @@ Little functionality wishlist:
 
 UI wishlist:
 	Save in Preferences the sorting of the list view.
-	An "Untagged" special tag like All
 	Should be able to select multiple tags for ANDing instead of ORing document selection
 	Drag and drop to make LaTeX citations
 	Drag and drop to import bibtex snippets
