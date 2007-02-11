@@ -33,11 +33,8 @@ int main (int argc, char **argv)
 		if (!Glib::path_is_absolute (libfile)) {
 			libfile = Glib::build_filename (Glib::get_current_dir (), libfile);
 		}
-		// Naughty, should support other protocols too
-		if (libfile.find ("file://") != 0) {
-			libfile = "file://" + libfile;
-		}
-		Gnome::Vfs::escape_string (libfile);
+
+		libfile = Gnome::Vfs::get_uri_from_local_path (libfile);
 
 		_global_prefs->setLibraryFilename (libfile);
 	}
