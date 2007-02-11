@@ -71,6 +71,8 @@ class LibraryParser : public Glib::Markup::Parser {
 			newDocKey_ = "";
 			newDocTag_ = "";
 			newDocTags_.clear();
+			newDocBib_.clear();
+			newDocBib_.clearExtras();
 		} else if (inDoc_ && element_name == "filename") {
 			inFileName_ = true;
 		} else if (inDoc_ && element_name == "key") {
