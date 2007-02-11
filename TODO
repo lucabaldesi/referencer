@@ -3,6 +3,7 @@ Essential:
 	Sizing of columns in the list view
 	importing something with {{SoMe TeXT}} loses the {}.
 	LyX citation via lyxserver (pybliographic, lyx/src/client)
+	Command line reflib->bibtex
 
 	When importing endnote, %Y is series editor, but this is lost by bibutils for refs of inappropriate type.  %Y is used in pablo's file as generic author. - that was with endnote 3, try with more recent endnote	
 
