@@ -235,6 +235,8 @@ Glib::ustring relPath (
 		return "";
 	}
 
+//	std::cerr << "\n\t" << parent << "\n\t" << child << "\n";
+
 	Glib::ustring separator = Glib::build_filename ("-", "-");
 	separator = separator.substr (1, separator.length() - 2);
 	
@@ -260,7 +262,6 @@ Glib::ustring relPath (
 	for (int i = 0; i < libparts.size() - 1; ++i) {
 		if (docparts.size() < i + 1 || libparts[i] != docparts[i]) {
 			ischild = false;
-			std::cerr << "Not a child at i = " << i << "\n";
 			break;
 		}
 	}
