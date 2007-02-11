@@ -26,6 +26,7 @@ class DocumentList {
 	void removeDoc (Glib::ustring const &key);
 	void loadDoc (
 		Glib::ustring const &filename,
+		Glib::ustring const &relfilename,
 		Glib::ustring const &key,
 		std::vector<int> const &taguids,
 		BibData const &bib);

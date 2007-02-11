@@ -107,6 +107,16 @@ Glib::ustring findDataFile (
 }
 
 
+bool fileExists (
+	Glib::ustring const &filename)
+{
+	Glib::RefPtr<Gnome::Vfs::Uri> uri = 
+		Gnome::Vfs::Uri::create (filename);
+	
+	return uri->uri_exists ();
+}
+
+
 void exceptionDialog (
 	Glib::Exception const *ex, Glib::ustring const &context)
 {
@@ -214,6 +224,57 @@ Glib::ustring firstCap (
 	original = Glib::Unicode::toupper (
 		original[0]) + original.substr (1, original.length());
 	return original;
+}
+
+
+Glib::ustring relPath (
+	Glib::ustring parent,
+	Glib::ustring child)
+{
+	if (parent.empty () || child.empty ()) {
+		return "";
+	}
+
+	Glib::ustring separator = Glib::build_filename ("-", "-");
+	separator = separator.substr (1, separator.length() - 2);
+	
+	std::vector<Glib::ustring> libparts;
+
+	unsigned int next;
+	while ((next = parent.find (separator)) != Glib::ustring::npos) {
+		Glib::ustring chunk = parent.substr (0, next);
+		libparts.push_back (chunk);
+		parent = parent.substr (next + 1, parent.length() - 1);
+	}
+
+	std::vector<Glib::ustring> docparts;
+
+	while ((next = child.find (separator)) != Glib::ustring::npos) {
+		Glib::ustring chunk = child.substr (0, next);
+		docparts.push_back (chunk);
+		child = child.substr (next + 1, child.length() - 1);
+	}
+	
+	bool ischild = true;
+	
+	for (int i = 0; i < libparts.size() - 1; ++i) {
+		if (docparts.size() < i + 1 || libparts[i] != docparts[i]) {
+			ischild = false;
+			std::cerr << "Not a child at i = " << i << "\n";
+			break;
+		}
+	}
+
+	Glib::ustring relfilename = "";	
+	if (ischild) {
+		for (int i = libparts.size(); i < docparts.size(); ++i) {
+			relfilename += docparts[i];
+			relfilename += separator;
+		}
+		relfilename += child;
+	}
+	
+	return relfilename;
 }
 
 

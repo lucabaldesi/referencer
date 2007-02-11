@@ -22,11 +22,13 @@ class LibraryParser : public Glib::Markup::Parser {
 	bool inDoc_;
 	bool inKey_;
 	bool inFileName_;
+	bool inRelFileName_;
 	bool inTagged_;
 	bool inBibItem_;
 
 	Glib::ustring newDocKey_;
 	Glib::ustring newDocFileName_;
+	Glib::ustring newDocRelFileName_;
 	Glib::ustring newDocTag_;
 	std::vector<int> newDocTags_;
 	Glib::ustring bibText_;
@@ -45,6 +47,7 @@ class LibraryParser : public Glib::Markup::Parser {
 		inDoc_ = false;
 		inKey_ = false;
 		inFileName_ = false;
+		inRelFileName_ = false;
 		inTagged_ = false;
 		inBibItem_ = false;
 	}
@@ -68,13 +71,15 @@ class LibraryParser : public Glib::Markup::Parser {
 		else if (element_name == "doc") {
 			inDoc_ = true;
 			newDocFileName_ = "";
+			newDocRelFileName_ = "";
 			newDocKey_ = "";
 			newDocTag_ = "";
 			newDocTags_.clear();
 			newDocBib_.clear();
-			newDocBib_.clearExtras();
 		} else if (inDoc_ && element_name == "filename") {
 			inFileName_ = true;
+		} else if (inDoc_ && element_name == "relative_filename") {
+			inRelFileName_ = true;
 		} else if (inDoc_ && element_name == "key") {
 			inKey_ = true;
 		} else if (inDoc_ && element_name == "tagged") {
@@ -119,9 +124,11 @@ class LibraryParser : public Glib::Markup::Parser {
 		else if (element_name == "doc") {
 			inDoc_ = false;
 			doclist_.loadDoc (
-				newDocFileName_, newDocKey_, newDocTags_, newDocBib_);
+				newDocFileName_, newDocRelFileName_, newDocKey_, newDocTags_, newDocBib_);
 		} else if (inDoc_ && element_name == "filename") {
 			inFileName_ = false;
+		} else if (inDoc_ && element_name == "relative_filename") {
+			inRelFileName_ = false;
 		} else if (inDoc_ && element_name == "key") {
 			inKey_ = false;
 		} else if (inDoc_ && element_name == "tagged") {
@@ -180,6 +187,8 @@ class LibraryParser : public Glib::Markup::Parser {
 
 		else if (inFileName_) {
 			newDocFileName_ += text;
+		} else if (inRelFileName_) {
+			newDocRelFileName_ += text;
 		}
 		else if (inKey_)
 			newDocKey_ += text;

@@ -36,6 +36,7 @@ Document::Document ()
 
 Document::Document (
 	Glib::ustring const &filename,
+	Glib::ustring const &relfilename,
 	Glib::ustring const &key,
 	std::vector<int> const &tagUids,
 	BibData const &bib)
@@ -44,6 +45,7 @@ Document::Document (
 	key_ = key;
 	tagUids_ = tagUids;
 	bib_ = bib;
+	relfilename_ = relfilename;
 }
 
 
@@ -120,7 +122,6 @@ void Document::setupThumbnail ()
 			std::cerr << "Couldn't find thumbnail:'" << filename_ << "'\n";
 			if (thumbfac->has_valid_failed_thumbnail (filename_, mtime)) {
 				std::cerr << "Has valid failed thumbnail: '" << filename_ << "'\n";
-
 			} else {
 				std::cerr << "Generate thumbnail: '" << filename_ << "'\n";
 				thumbnail_ = thumbfac->generate_thumbnail (filename_, "application/pdf");
@@ -183,12 +184,25 @@ Glib::ustring& Document::getFileName()
 }
 
 
+Glib::ustring& Document::getRelFileName()
+{
+	return relfilename_;
+}
+
+
 void Document::setFileName (Glib::ustring const &filename)
 {
 	if (filename == filename_)
 		return;
 	filename_ = filename;
 	setupThumbnail ();
+}
+
+
+void Document::updateRelFileName (Glib::ustring const &libfilename)
+{
+	relfilename_ = Utility::relPath (libfilename, getFileName ());
+	std::cerr << "Set relfilename_ = " << relfilename_ << "\n";
 }
 
 
@@ -276,6 +290,8 @@ void Document::writeXML (std::ostringstream &out)
 	out << "  <doc>\n";
 	out << "    <filename>" << escape_text(getFileName())
 		<< "</filename>\n";
+	out << "    <relative_filename>" << escape_text(getRelFileName())
+		<< "</relative_filename>\n";
 	out << "    <key>" << escape_text(getKey())
 		<< "</key>\n";
 

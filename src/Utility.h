@@ -34,6 +34,9 @@ namespace Utility {
 	Glib::ustring findDataFile (
 		Glib::ustring const &filename);
 
+	bool fileExists (
+		Glib::ustring const &filename);
+
 	void exceptionDialog (
 		Glib::Exception const *ex, Glib::ustring const &context);
 
@@ -49,6 +52,10 @@ namespace Utility {
 
 	Glib::ustring firstCap (
 		Glib::ustring original);
+	
+	Glib::ustring relPath (
+		Glib::ustring parent,
+		Glib::ustring child);
 
 	Glib::RefPtr<Gdk::Pixbuf> getThemeIcon(Glib::ustring const &iconname);
 

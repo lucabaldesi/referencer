@@ -564,7 +564,6 @@ void TagWindow::populateDocStore ()
 	// has changed, including its length, so update dependent sensitivities:
 	actiongroup_->get_action("ExportBibtex")
 		->set_sensitive (doclist_->size() > 0);
-throw (Glib::ConvertError (Glib::ConvertError::FAILED, "MOOOO!"));
 	// Save initial selection
 	Gtk::TreePath initialpath;
 	if (usinglistview_) {
@@ -1822,7 +1821,33 @@ bool TagWindow::loadLibrary (Glib::ustring const &libfilename)
 	free (buffer);
 	libfile.close ();
 
-	return readXML (rawtext);
+	std::cerr << "Reading XML...\n";
+	if (!readXML (rawtext))
+		return false;
+	std::cerr << "Done, got " << doclist_->getDocs ().size() << " docs\n";
+	
+	std::vector<Document> &docs = doclist_->getDocs ();
+	std::vector<Document>::iterator docit = docs.begin ();
+	std::vector<Document>::iterator const docend = docs.end ();
+	for (; docit != docend; ++docit) {
+		if (Utility::fileExists (docit->getFileName())) {
+			// Do nothing, all is well, the file is still there
+			std::cerr << "Filename still good: " << docit->getFileName() << "\n";
+		} else if (!docit->getRelFileName().empty()) {
+			// Oh no!  We lost the file!  But we've got a relfilename!  Is relfilename still valid?
+			Glib::ustring filename = Glib::build_filename (
+				Glib::path_get_dirname (libfilename),
+				docit->getRelFileName());
+			filename = "file://" + filename;
+			std::cerr << "Derived from relative: " << filename << "\n";
+			if (Utility::fileExists (filename)) {
+				std::cerr << "\tValid\n";
+				docit->setFileName (filename);
+			}
+		}
+	}
+
+	return true;
 }
 
 
@@ -1839,6 +1864,15 @@ bool TagWindow::saveLibrary (Glib::ustring const &libfilename)
 	} catch (const Gnome::Vfs::exception ex) {
 		Utility::exceptionDialog (&ex, "opening file '" + tmplibfilename + "'");
 		return false;
+	}
+
+	std::vector<Document> &docs = doclist_->getDocs ();
+	std::vector<Document>::iterator docit = docs.begin ();
+	std::vector<Document>::iterator const docend = docs.end ();
+	for (; docit != docend; ++docit) {
+		if (Utility::fileExists (docit->getFileName())) {
+			docit->updateRelFileName (libfilename);
+		}
 	}
 
 	Glib::ustring rawtext = writeXML ();
@@ -2185,3 +2219,4 @@ void TagWindow::onSearchChanged ()
 {
 	populateDocStore ();
 }
+

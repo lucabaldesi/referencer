@@ -1,4 +1,5 @@
 1.0.1:
+	- Save and load relative filenames as well as absolute filenames
 	- When opening library, clear bibdata in between docs (Rodrigo Kassick)
 	- Make SaveLibrary insensitive when library not dirty
 	- Switch to autotools (Eric Lesh)

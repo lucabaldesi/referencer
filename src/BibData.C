@@ -81,6 +81,7 @@ void BibData::clear ()
 	journal_ = "";
 	title_ = "";
 	year_ = "";
+	extras_.clear ();
 }
 
 
