@@ -1844,7 +1844,6 @@ bool TagWindow::loadLibrary (Glib::ustring const &libfilename)
 			Glib::ustring filename = Glib::build_filename (
 				Glib::path_get_dirname (libfilename),
 				docit->getRelFileName());
-			filename = "file://" + filename;
 			std::cerr << "Derived from relative: " << filename << "\n";
 			if (Utility::fileExists (filename)) {
 				std::cerr << "\tValid\n";
