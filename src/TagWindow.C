@@ -1502,6 +1502,7 @@ void TagWindow::onAddDocByDoi ()
 
 	dialog.add_button (Gtk::Stock::CANCEL, 0);
 	dialog.add_button (Gtk::Stock::OK, 1);
+	dialog.set_default_response (1);
 
 	dialog.show_all ();
 	vbox->set_border_width (12);
