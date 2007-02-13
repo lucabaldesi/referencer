@@ -1212,7 +1212,7 @@ void TagWindow::onExportBibtex ()
 		// Really we shouldn't add the extension if the user has chosen an
 		// existing file rather than typing in a name themselves.
 		bibfilename = Utility::ensureExtension (bibfilename, "bib");
-		Glib::ustring tmpbibfilename = bibfilename + ".tmp";
+		Glib::ustring tmpbibfilename = bibfilename + ".export-tmp";
 
 		Gnome::Vfs::Handle bibfile;
 
@@ -1859,7 +1859,7 @@ bool TagWindow::saveLibrary (Glib::ustring const &libfilename)
 {
 	Gnome::Vfs::Handle libfile;
 
-	Glib::ustring tmplibfilename = Glib::get_home_dir () + "/.referencer.lib" + ".tmp";
+	Glib::ustring tmplibfilename = libfilename + ".save-tmp";
 
 	try {
 		libfile.create (tmplibfilename, Gnome::Vfs::OPEN_WRITE,

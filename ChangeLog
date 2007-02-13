@@ -1,3 +1,6 @@
+1.0.2:
+	- Fix saving broken to FS away from $HOME (Andreas Dalsgaard)
+
 1.0.1:
 	- Save and load relative filenames as well as absolute filenames
 	- When opening library, clear bibdata in between docs (Rodrigo Kassick)
