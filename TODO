@@ -9,6 +9,10 @@ Essential:
 
 Big functionality wishlist:
 	OAI support for arXiv and CrossRef (and possibly many others)
+		http://www.pubmedcentral.nih.gov/oai/oai.cgi
+		http://arxiv.org/oai2
+		http://oai.crossref.org/OAIHandler/
+
 	Google scholar link?  Arbitrary links?
 	read PS files to search for DOIs as well as reading PDFs
 	Copy added (remote?) files into a local directory
