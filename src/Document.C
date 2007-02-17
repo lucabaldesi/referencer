@@ -256,7 +256,7 @@ bool Document::hasTag(int uid)
 
 using Utility::writeBibKey;
 
-void Document::writeBibtex (std::ostringstream& out)
+void Document::writeBibtex (std::ostringstream& out, bool const usebraces)
 {
 	// BibTeX values cannot be larger than 1000 characters - should make sure of this
 	// This doctype bit should be a variable
@@ -267,17 +267,17 @@ void Document::writeBibtex (std::ostringstream& out)
 	BibData::ExtrasMap::iterator it = extras.begin ();
 	BibData::ExtrasMap::iterator const end = extras.end ();
 	for (; it != end; ++it) {
-		out << writeBibKey ((*it).first, (*it).second) << ",\n";
+		out << writeBibKey ((*it).first, (*it).second, usebraces) << ",\n";
 	}
 
 // Should be doing something different for non-human-name authors?
-	out << writeBibKey ("author",  bib_.getAuthors()) << ",\n";
-	out << writeBibKey ("title",   bib_.getTitle()) << ",\n";
-	out << writeBibKey ("journal", bib_.getJournal()) << ",\n";
-	out << writeBibKey ("volume",  bib_.getVolume()) << ",\n";
-	out << writeBibKey ("number",  bib_.getIssue()) << ",\n";
-	out << writeBibKey ("pages",   bib_.getPages()) << ",\n";
-	out << writeBibKey ("year",    bib_.getYear()) << "\n";
+	out << writeBibKey ("author",  bib_.getAuthors(), usebraces) << ",\n";
+	out << writeBibKey ("title",   bib_.getTitle(), usebraces) << ",\n";
+	out << writeBibKey ("journal", bib_.getJournal(), usebraces) << ",\n";
+	out << writeBibKey ("volume",  bib_.getVolume(), usebraces) << ",\n";
+	out << writeBibKey ("number",  bib_.getIssue(), usebraces) << ",\n";
+	out << writeBibKey ("pages",   bib_.getPages(), usebraces) << ",\n";
+	out << writeBibKey ("year",    bib_.getYear(), usebraces) << "\n";
 
 	out << "}\n\n";
 }

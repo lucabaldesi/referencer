@@ -45,7 +45,8 @@ namespace Utility {
 
 	Glib::ustring writeBibKey (
 		Glib::ustring key,
-		Glib::ustring const & value);
+		Glib::ustring const & value,
+		bool const usebraces);
 
 	Glib::ustring escapeBibtexAccents (
 		Glib::ustring target);

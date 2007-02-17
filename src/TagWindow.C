@@ -1186,18 +1186,27 @@ void TagWindow::onExportBibtex ()
 	allfiles.set_name ("All Files");
 	chooser.add_filter (allfiles);
 	
-	Gtk::HBox extrabox;
+	Gtk::VBox extrabox;
 	extrabox.set_spacing (6);
 	chooser.set_extra_widget (extrabox);
+	
+	Gtk::HBox selectionbox;
+	selectionbox.set_spacing (6);
+	extrabox.pack_start (selectionbox, false, false, 0);
+
 	Gtk::Label label ("Selection:");
-	extrabox.pack_start (label, false, false, 0);
+	selectionbox.pack_start (label, false, false, 0);
 	Gtk::ComboBoxText combo;
 	combo.append_text ("All Documents");
 	combo.append_text ("Selected Documents");
 	combo.set_active (0);
-	extrabox.pack_start (combo, true, true, 0);
-	extrabox.show_all ();
-	extrabox.set_sensitive (getSelectedDocCount ());
+	selectionbox.pack_start (combo, true, true, 0);
+	selectionbox.set_sensitive (getSelectedDocCount ());
+	
+	Gtk::CheckButton bracescheck ("Protect capitalization (surround values with {})");
+	extrabox.pack_start (bracescheck, false, false, 0);
+
+	extrabox.show_all ();	
 
 	// Browsing to remote hosts not working for some reason
 	//chooser.set_local_only (false);
@@ -1206,6 +1215,7 @@ void TagWindow::onExportBibtex ()
 		chooser.set_current_folder (exportfolder_);
 
 	if (chooser.run() == Gtk::RESPONSE_ACCEPT) {
+		bool const usebraces = bracescheck.get_active ();
 		bool const selectedonly = combo.get_active_row_number () == 1;
 		exportfolder_ = Glib::path_get_dirname(chooser.get_filename());
 		Glib::ustring bibfilename = chooser.get_uri();
@@ -1233,14 +1243,14 @@ void TagWindow::onExportBibtex ()
 			std::vector<Document*>::iterator it = docs.begin ();
 			std::vector<Document*>::iterator const end = docs.end ();
 			for (; it != end; ++it) {
-				(*it)->writeBibtex (bibtext);
+				(*it)->writeBibtex (bibtext, usebraces);
 			}
 		} else {
 			std::vector<Document> &docs = doclist_->getDocs ();
 			std::vector<Document>::iterator it = docs.begin();
 			std::vector<Document>::iterator const end = docs.end();
 			for (; it != end; it++) {
-				(*it).writeBibtex (bibtext);
+				(*it).writeBibtex (bibtext, usebraces);
 			}
 		}
 
