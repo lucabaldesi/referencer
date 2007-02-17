@@ -1,8 +1,12 @@
+
 Essential:
 	Sizing of columns in the list view
 	importing something with {{SoMe TeXT}} loses the {}.
+		always use {} in output?
+		better yet, make it an option in the export dialog.
 	LyX citation via lyxserver (pybliographic, lyx/src/client)
 	Command line reflib->bibtex
+	fix configure requirements to work with dapper
 
 	When importing endnote, %Y is series editor, but this is lost by bibutils for refs of inappropriate type.  %Y is used in pablo's file as generic author. - that was with endnote 3, try with more recent endnote	
 
@@ -12,7 +16,11 @@ Big functionality wishlist:
 		http://arxiv.org/oai2
 		http://oai.crossref.org/OAIHandler/
 
+	add by pubmed/medline ID (pubmed OAI)	
+	searching databases?
+	rewrite poppler code to use glib bindings: also read page 1 first, check for IDS, and only read rest if needed.
 	Google scholar link?  Arbitrary links?
+	Parse strings "Title: foo\nISBN: bar\n" like recipe manager
 	read PS files to search for DOIs as well as reading PDFs
 	Copy added (remote?) files into a local directory
 	"Manage BibTeX File" as well as one-off export

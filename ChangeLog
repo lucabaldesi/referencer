@@ -1,4 +1,5 @@
 1.0.2:
+	- Fix crash opening files which no longer exist (Andreas Dalsgaard)
 	- Fix saving broken to FS away from $HOME (Andreas Dalsgaard)
 
 1.0.1:
