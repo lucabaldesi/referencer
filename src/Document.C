@@ -261,23 +261,23 @@ void Document::writeBibtex (std::ostringstream& out, bool const usebraces)
 	// BibTeX values cannot be larger than 1000 characters - should make sure of this
 	// This doctype bit should be a variable
 	// We should strip illegal characters from key in a predictable way
-	out << "@" << bib_.getType() << "{" << key_ << "," << std::endl;
+	out << "@" << bib_.getType() << "{" << key_ << ",\n";
 
 	BibData::ExtrasMap extras = bib_.getExtras ();
 	BibData::ExtrasMap::iterator it = extras.begin ();
 	BibData::ExtrasMap::iterator const end = extras.end ();
 	for (; it != end; ++it) {
-		out << writeBibKey ((*it).first, (*it).second, usebraces) << ",\n";
+		writeBibKey (out, (*it).first, (*it).second, usebraces);
 	}
 
-// Should be doing something different for non-human-name authors?
-	out << writeBibKey ("author",  bib_.getAuthors(), usebraces) << ",\n";
-	out << writeBibKey ("title",   bib_.getTitle(), usebraces) << ",\n";
-	out << writeBibKey ("journal", bib_.getJournal(), usebraces) << ",\n";
-	out << writeBibKey ("volume",  bib_.getVolume(), usebraces) << ",\n";
-	out << writeBibKey ("number",  bib_.getIssue(), usebraces) << ",\n";
-	out << writeBibKey ("pages",   bib_.getPages(), usebraces) << ",\n";
-	out << writeBibKey ("year",    bib_.getYear(), usebraces) << "\n";
+	// Should be doing something different for non-human-name authors?
+	writeBibKey (out, "author",  bib_.getAuthors(), usebraces);
+	writeBibKey (out, "title",   bib_.getTitle(), usebraces);
+	writeBibKey (out, "journal", bib_.getJournal(), usebraces);
+	writeBibKey (out, "volume",  bib_.getVolume(), usebraces);
+	writeBibKey (out, "number",  bib_.getIssue(), usebraces);
+	writeBibKey (out, "pages",   bib_.getPages(), usebraces);
+	writeBibKey (out, "year",    bib_.getYear(), usebraces);
 
 	out << "}\n\n";
 }

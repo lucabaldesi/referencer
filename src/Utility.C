@@ -187,21 +187,26 @@ std::vector<Glib::ustring> recurseFolder (
 
 
 // key is not ref because it gets initted from a const char*
-Glib::ustring writeBibKey (
+void writeBibKey (
+	std::ostringstream &out,
 	Glib::ustring key,
 	Glib::ustring const & value,
-	bool const usebraces)
+	bool usebraces)
 {
+	if (!value.validate ()) {
+		std::cerr << "bad unicode in value for '" << key << "'\n";
+	}
 	if (!value.empty ()) {
+		// Okay to always append comma, since bibtex doesn't mind the trailing one
 		if (usebraces)
-			return "\t" + key + " = {{" + escapeBibtexAccents (value) + "}}";
+			out << "\t" << key << " = {{" << escapeBibtexAccents (value) << "}},\n";
 		else
-			return "\t" + key + " = {" + escapeBibtexAccents (value) + "}";
+			out << "\t" << key << " = {" << escapeBibtexAccents (value) << "},\n";
 	}
 }
 
 
-Glib::ustring escapeBibtexAccents (
+std::string escapeBibtexAccents (
 	Glib::ustring target)
 {
 	for (unsigned int i = 0; i < target.length(); ++i) {
@@ -210,11 +215,12 @@ Glib::ustring escapeBibtexAccents (
 			continue;
 		} else {
 			Glib::ustring replacement;
+			target.erase (i, 1);
 			int gotone = wvConvertUnicodeToLaTeX (letter, replacement);
 			if (gotone) {
-				target.erase (i, 1);
 				target.insert (i, replacement);
 			} else {
+				target.insert (i, "*");
 				std::cerr << "escapeBibtexAccents: no replacement found for '"
 					<< letter << "'\n";
 			}

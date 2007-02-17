@@ -5,6 +5,7 @@
 
 #include <utility>
 #include <vector>
+#include <sstream>
 
 #include <gtkmm.h>
 #include <libglademm.h>
@@ -43,12 +44,13 @@ namespace Utility {
 	std::vector<Glib::ustring> recurseFolder (
 		Glib::ustring const &rootfoldername);
 
-	Glib::ustring writeBibKey (
+	void writeBibKey (
+		std::ostringstream &out,
 		Glib::ustring key,
 		Glib::ustring const & value,
-		bool const usebraces);
+		bool usebraces);
 
-	Glib::ustring escapeBibtexAccents (
+	std::string escapeBibtexAccents (
 		Glib::ustring target);
 
 	Glib::ustring firstCap (
