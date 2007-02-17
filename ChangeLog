@@ -1,4 +1,5 @@
 1.0.2:
+	- Add option to enclose all values in {} when exporting bibtex
 	- Fix crash opening files which no longer exist (Andreas Dalsgaard)
 	- Fix saving broken to FS away from $HOME (Andreas Dalsgaard)
 
