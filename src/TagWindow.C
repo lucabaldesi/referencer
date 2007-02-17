@@ -1948,10 +1948,16 @@ void TagWindow::onOpenDoc ()
 	std::vector<Document*> docs = getSelectedDocs ();
 	std::vector<Document*>::iterator it = docs.begin ();
 	std::vector<Document*>::iterator const end = docs.end ();
-	for (; it != end ; ++it) {
-		if (!(*it)->getFileName().empty()) {
-			Gnome::Vfs::url_show ((*it)->getFileName());
-		}
+	for (; it != end ; ++it) {		 
+		if (!(*it)->getFileName().empty()) {		
+			try { 
+				Gnome::Vfs::url_show ((*it)->getFileName());
+			} catch (const Gnome::Vfs::exception ex) {
+				Utility::exceptionDialog (&ex,
+					"trying to open file '" + (*it)->getFileName() + "'");
+				return;
+			}
+		}		
 	}
 }
 
