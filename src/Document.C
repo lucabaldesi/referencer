@@ -259,7 +259,6 @@ using Utility::writeBibKey;
 void Document::writeBibtex (std::ostringstream& out, bool const usebraces)
 {
 	// BibTeX values cannot be larger than 1000 characters - should make sure of this
-	// This doctype bit should be a variable
 	// We should strip illegal characters from key in a predictable way
 	out << "@" << bib_.getType() << "{" << key_ << ",\n";
 
@@ -267,11 +266,18 @@ void Document::writeBibtex (std::ostringstream& out, bool const usebraces)
 	BibData::ExtrasMap::iterator it = extras.begin ();
 	BibData::ExtrasMap::iterator const end = extras.end ();
 	for (; it != end; ++it) {
-		writeBibKey (out, (*it).first, (*it).second, usebraces);
+		// Exceptions to usebraces are editor and author because we
+		// don't want "Foo, B.B. and John Bar" to be literal
+		writeBibKey (
+			out,
+			(*it).first,
+			(*it).second,
+			((*it).first.tolower () != "editor") && usebraces);
 	}
 
-	// Should be doing something different for non-human-name authors?
-	writeBibKey (out, "author",  bib_.getAuthors(), usebraces);
+	// Ideally should know what's a list of human names and what's an 
+	// institution name be doing something different for non-human-name authors?
+	writeBibKey (out, "author",  bib_.getAuthors(), false);
 	writeBibKey (out, "title",   bib_.getTitle(), usebraces);
 	writeBibKey (out, "journal", bib_.getJournal(), usebraces);
 	writeBibKey (out, "volume",  bib_.getVolume(), usebraces);
