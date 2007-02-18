@@ -454,14 +454,21 @@ void TagWindow::constructMenu ()
 		"WebLinkDoc", Gtk::Stock::CONNECT, "_Web Link..."), Gtk::AccelKey ("<control><shift>a"),
   	sigc::mem_fun(*this, &TagWindow::onWebLinkDoc));
 	actiongroup_->add( Gtk::Action::create(
-		"GetMetadataDoc", Gtk::Stock::CONNECT, "_Get Metadata"),
-  	sigc::mem_fun(*this, &TagWindow::onGetMetadataDoc));
-	actiongroup_->add( Gtk::Action::create(
 		"OpenDoc", Gtk::Stock::OPEN, "_Open..."), Gtk::AccelKey ("<control>a"),
   	sigc::mem_fun(*this, &TagWindow::onOpenDoc));
 	actiongroup_->add( Gtk::Action::create(
 		"DocProperties", Gtk::Stock::PROPERTIES), Gtk::AccelKey ("<control>e"),
   	sigc::mem_fun(*this, &TagWindow::onDocProperties));
+
+	actiongroup_->add( Gtk::Action::create(
+		"GetMetadataDoc", Gtk::Stock::CONNECT, "_Get Metadata"),
+  	sigc::mem_fun(*this, &TagWindow::onGetMetadataDoc));
+	actiongroup_->add( Gtk::Action::create(
+		"DeleteDoc", Gtk::Stock::DELETE, "_Move to Trash"),
+  	sigc::mem_fun(*this, &TagWindow::onDeleteDoc));
+	actiongroup_->add( Gtk::Action::create(
+		"RenameDoc", Gtk::Stock::EDIT, "_Rename File from Key"),
+  	sigc::mem_fun(*this, &TagWindow::onRenameDoc));
 
 	actiongroup_->add ( Gtk::Action::create("HelpMenu", "_Help") );
 	actiongroup_->add( Gtk::Action::create(
@@ -509,11 +516,14 @@ void TagWindow::constructMenu ()
 		"      <menuitem action='AddDocDoi'/>"
 		"      <menuitem action='AddDocUnnamed'/>"
 		"      <separator/>"
-		"      <menuitem action='RemoveDoc'/>"
 		"      <menuitem action='WebLinkDoc'/>"
-		"      <menuitem action='GetMetadataDoc'/>"
 		"      <menuitem action='OpenDoc'/>"
 		"      <menuitem action='DocProperties'/>"
+		"      <separator/>"
+		"      <menuitem action='RemoveDoc'/>"
+		"      <menuitem action='GetMetadataDoc'/>"
+		"      <menuitem action='RenameDoc'/>"
+		"      <menuitem action='DeleteDoc'/>"
 		"    </menu>"
 		"    <menu action='HelpMenu'>"
 		"      <menuitem action='Introduction'/>"
@@ -588,9 +598,9 @@ void TagWindow::populateDocStore ()
 	bool const search = !searchtext.empty ();
 
 	// Populate from doclist_
-	std::vector<Document>& docvec = doclist_->getDocs();
-	std::vector<Document>::iterator docit = docvec.begin();
-	std::vector<Document>::iterator const docend = docvec.end();
+	DocumentList::Container& docvec = doclist_->getDocs();
+	DocumentList::Container::iterator docit = docvec.begin();
+	DocumentList::Container::iterator const docend = docvec.end();
 	for (; docit != docend; ++docit) {
 		bool filtered = true;
 		for (std::vector<int>::iterator tagit = filtertags_.begin();
@@ -850,6 +860,8 @@ void TagWindow::docSelectionChanged ()
 	bool const onlyoneselected = selectcount == 1;
 
 	actiongroup_->get_action("RemoveDoc")->set_sensitive (somethingselected);
+	actiongroup_->get_action("DeleteDoc")->set_sensitive (somethingselected);
+	actiongroup_->get_action("RenameDoc")->set_sensitive (somethingselected);
 	actiongroup_->get_action("DocProperties")->set_sensitive (onlyoneselected);
 	taggerbox_->set_sensitive (somethingselected);
 
@@ -1247,9 +1259,9 @@ void TagWindow::onExportBibtex ()
 				(*it)->writeBibtex (bibtext, usebraces);
 			}
 		} else {
-			std::vector<Document> &docs = doclist_->getDocs ();
-			std::vector<Document>::iterator it = docs.begin();
-			std::vector<Document>::iterator const end = docs.end();
+			DocumentList::Container &docs = doclist_->getDocs ();
+			DocumentList::Container::iterator it = docs.begin();
+			DocumentList::Container::iterator const end = docs.end();
 			for (; it != end; it++) {
 				(*it).writeBibtex (bibtext, usebraces);
 			}
@@ -1692,16 +1704,16 @@ int TagWindow::getSelectedDocCount ()
 
 void TagWindow::onRemoveDoc ()
 {
-	std::vector<Glib::ustring> keys = getSelectedDocKeys ();
+	std::vector<Document*> docs = getSelectedDocs ();
 
-	bool const multiple = keys.size() > 1;
+	bool const multiple = docs.size() > 1;
 
 	bool doclistdirty = false;
 
 	if (multiple) {
 		// Do you really want to remove N documents?
 		std::ostringstream num;
-		num << keys.size ();
+		num << docs.size ();
 		Glib::ustring message = "<b><big>Are you sure you want to remove these "
 			+ num.str() + " documents?</big></b>\n\nAll tag "
 			"associations and metadata for these documents will be permanently lost.";
@@ -1718,12 +1730,12 @@ void TagWindow::onRemoveDoc ()
 		}
 	}
 
-	std::vector<Glib::ustring>::iterator it = keys.begin ();
-	std::vector<Glib::ustring>::iterator const end = keys.end ();
+	std::vector<Document*>::iterator it = docs.begin ();
+	std::vector<Document*>::iterator const end = docs.end ();
 	for (; it != end; it++) {
 		if (!multiple) {
 			Glib::ustring message = "<b><big>Are you sure you want to remove '" +
-				*it + "'?</big></b>\n\nAll tag "
+				(*it)->getKey () + "'?</big></b>\n\nAll tag "
 				"associations and metadata for the document will be permanently lost.";
 			Gtk::MessageDialog confirmdialog (
 				message, true, Gtk::MESSAGE_QUESTION,
@@ -1841,9 +1853,9 @@ bool TagWindow::loadLibrary (Glib::ustring const &libfilename)
 		return false;
 	std::cerr << "Done, got " << doclist_->getDocs ().size() << " docs\n";
 	
-	std::vector<Document> &docs = doclist_->getDocs ();
-	std::vector<Document>::iterator docit = docs.begin ();
-	std::vector<Document>::iterator const docend = docs.end ();
+	DocumentList::Container &docs = doclist_->getDocs ();
+	DocumentList::Container::iterator docit = docs.begin ();
+	DocumentList::Container::iterator const docend = docs.end ();
 	for (; docit != docend; ++docit) {
 		if (Utility::fileExists (docit->getFileName())) {
 			// Do nothing, all is well, the file is still there
@@ -1880,9 +1892,9 @@ bool TagWindow::saveLibrary (Glib::ustring const &libfilename)
 		return false;
 	}
 
-	std::vector<Document> &docs = doclist_->getDocs ();
-	std::vector<Document>::iterator docit = docs.begin ();
-	std::vector<Document>::iterator const docend = docs.end ();
+	DocumentList::Container &docs = doclist_->getDocs ();
+	DocumentList::Container::iterator docit = docs.begin ();
+	DocumentList::Container::iterator const docend = docs.end ();
 	for (; docit != docend; ++docit) {
 		if (Utility::fileExists (docit->getFileName())) {
 			docit->updateRelFileName (libfilename);
@@ -1951,6 +1963,92 @@ void TagWindow::onGetMetadataDoc ()
 	
 	if (doclistdirty)
 		populateDocStore ();
+}
+
+
+void TagWindow::onRenameDoc ()
+{
+	bool doclistdirty = false;
+	std::vector <Document*> docs = getSelectedDocs ();
+	std::vector <Document*>::iterator it = docs.begin ();
+	std::vector <Document*>::iterator const end = docs.end ();
+	for (; it != end; ++it) {
+		Document* doc = *it;
+		doc->renameFromKey ();
+	}
+	
+	if (doclistdirty)
+		populateDocStore ();
+}
+
+
+void TagWindow::onDeleteDoc ()
+{
+	std::vector<Document*> docs = getSelectedDocs ();
+	bool const multiple = docs.size() > 1;
+	bool doclistdirty = false;
+
+	if (multiple) {
+		std::ostringstream num;
+		num << docs.size ();
+		Glib::ustring message = "<b><big>Are you sure you want to move these "
+			+ num.str() + " documents to the trash?</big></b>\n\nAll tag "
+			"associations and metadata for these documents will be permanently lost, and the files they refer to will be moved to the trash.";
+		Gtk::MessageDialog confirmdialog (
+			message, true, Gtk::MESSAGE_QUESTION,
+			Gtk::BUTTONS_NONE, true);
+
+		confirmdialog.add_button (Gtk::Stock::CANCEL, 0);
+		confirmdialog.add_button (Gtk::Stock::REMOVE, 1);
+		confirmdialog.set_default_response (0);
+
+		if (!confirmdialog.run()) {
+			return;
+		}
+	}
+
+	std::vector<Document*>::iterator it = docs.begin ();
+	std::vector<Document*>::iterator const end = docs.end ();
+	for (; it != end; it++) {
+		if (!multiple) {
+			Glib::ustring message = "<b><big>Are you sure you want to move '" +
+				(*it)->getKey () + "' to the trash?</big></b>\n\nsAll tag "
+				"associations and metadata for the document will be permanently lost, and the file it refers to will be moved to the trash.";
+			Gtk::MessageDialog confirmdialog (
+				message, true, Gtk::MESSAGE_QUESTION,
+				Gtk::BUTTONS_NONE, true);
+
+			confirmdialog.add_button (Gtk::Stock::CANCEL, 0);
+			confirmdialog.add_button (Gtk::Stock::REMOVE, 1);
+			confirmdialog.set_default_response (0);
+
+			if (!confirmdialog.run()) {
+				continue;
+			}
+		}
+
+		try {
+			Utility::moveToTrash ((*it)->getFileName ());
+		} catch (Gnome::Vfs::exception ex) {
+			Utility::exceptionDialog (&ex, "Moving '" + (*it)->getFileName () + "' to trash");
+		}
+		doclist_->removeDoc(*it);
+
+		doclistdirty = true;
+	}
+
+	if (doclistdirty) {
+		setDirty (true);
+		std::cerr << "TagWindow::onRemoveDoc: dirty, calling populateDocStore\n";
+		// We disable docSelectionChanged because otherwise it gets called N
+		// times for deleting N items
+		docselectionignore_ = true;
+		populateDocStore ();
+		docselectionignore_ = false;
+		docSelectionChanged ();
+	} else {
+		docselectionignore_ = false;
+	}
 }
 
 

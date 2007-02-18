@@ -95,9 +95,9 @@ Glib::ustring Document::generateKey ()
 	name = Utility::strip (name, ",");
 	name = Utility::strip (name, "@");
 
-	unsigned int const maxlen = 12;
+	unsigned int const maxlen = 14;
 	if (name.size() > maxlen) {
-		name = name.substr(0, maxlen) + "...";
+		name = name.substr(0, maxlen);
 	}
 
 	return name;
@@ -435,3 +435,9 @@ void Document::getMetaData ()
 	else if (!bib_.getExtras()["eprint"].empty())
 		bib_.getArxiv ();
 }
+
+
+void Document::renameFromKey ()
+{
+}
+

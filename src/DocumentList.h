@@ -4,18 +4,24 @@
 
 #include <gtkmm.h>
 #include <sstream>
-#include <vector>
+//#include <vector>
+#include <list>
 
 #include "BibUtils.h"
 
 #include "Document.h"
 
+
+
 class DocumentList {
+	public:
+	typedef std::list<Document> Container;
+
 	private:
-	std::vector<Document> docs_;
+	Container docs_;
 
 	public:
-	std::vector<Document>& getDocs ();
+	Container& getDocs ();
 	int size () {return docs_.size();}
 	Document* getDoc (Glib::ustring const &name);
 	Document* newDocWithFile (Glib::ustring const &filename);
@@ -23,7 +29,7 @@ class DocumentList {
 	Document* newDocWithDoi (Glib::ustring const &doi);
 	Document* newDocUnnamed ();
 	Glib::ustring uniqueKey (Glib::ustring const &basename);
-	void removeDoc (Glib::ustring const &key);
+	void removeDoc (Document* const addr);
 	void loadDoc (
 		Glib::ustring const &filename,
 		Glib::ustring const &relfilename,
@@ -31,7 +37,6 @@ class DocumentList {
 		std::vector<int> const &taguids,
 		BibData const &bib);
 	void print ();
-	bool test ();
 	void clearTag (int uid);
 	void writeXML (std::ostringstream& out);
 	void clear () {docs_.clear ();}

@@ -3,14 +3,13 @@
 #include <iostream>
 #include <sstream>
 
-//#include <glibmm/markup.h>
 #include <libgnomevfsmm.h>
 
 #include "Utility.h"
 #include "DocumentList.h"
 #include "Document.h"
 
-std::vector<Document>& DocumentList::getDocs ()
+DocumentList::Container& DocumentList::getDocs ()
 {
 	return docs_;
 }
@@ -18,8 +17,8 @@ std::vector<Document>& DocumentList::getDocs ()
 
 Document* DocumentList::newDocWithFile (Glib::ustring const &filename)
 {
-	std::vector<Document>::iterator it = docs_.begin ();
-	std::vector<Document>::iterator const end = docs_.end ();
+	Container::iterator it = docs_.begin ();
+	Container::iterator const end = docs_.end ();
 	for (; it != end; ++it) {
 		if ((*it).getFileName() == filename) {
 			return NULL;
@@ -66,8 +65,8 @@ Glib::ustring DocumentList::uniqueKey (Glib::ustring const &basename)
 
 Document* DocumentList::getDoc (Glib::ustring const &name)
 {
-	std::vector<Document>::iterator it = docs_.begin ();
-	std::vector<Document>::iterator const end = docs_.end ();
+	Container::iterator it = docs_.begin ();
+	Container::iterator const end = docs_.end ();
 	for (; it != end; ++it) {
 		if ((*it).getKey() == name) {
 			return &(*it);
@@ -102,26 +101,26 @@ void DocumentList::loadDoc (
 }
 
 
-void DocumentList::removeDoc (Glib::ustring const &key)
+void DocumentList::removeDoc (Document * const addr)
 {
-	std::vector<Document>::iterator it = docs_.begin();
-	std::vector<Document>::iterator const end = docs_.end();
+	Container::iterator it = docs_.begin();
+	Container::iterator const end = docs_.end();
 	for (; it != end; it++) {
-		if ((*it).getKey() == key) {
+		if (&(*it) == addr) {
 			docs_.erase(it);
 			return;
 		}
 	}
 
 	std::cerr << "Warning: DocumentList::removeDoc: couldn't find '"
-		<< key << "' to erase it\n";
+		<< addr << "' to erase it\n";
 }
 
 
 void DocumentList::print()
 {
-	std::vector<Document>::iterator it = docs_.begin();
-	std::vector<Document>::iterator const end = docs_.end();
+	Container::iterator it = docs_.begin();
+	Container::iterator const end = docs_.end();
 	for (; it != end; it++) {
 		std::cerr << (*it).getFileName() << " ";
 		std::cerr << (*it).getKey() << " ";
@@ -135,20 +134,10 @@ void DocumentList::print()
 }
 
 
-bool DocumentList::test ()
-{
-	/*newDoc ("/somewhere/foo.pdf");
-	newDoc ("/somewhere/bar.pdf");
-	std::vector<Document> &docvec = getDocs();
-	for (std::vector<Document>::iterator it = docvec.begin; it != docvec.end*/
-	return true;
-}
-
-
 void DocumentList::clearTag (int uid)
 {
-	std::vector<Document>::iterator it = docs_.begin();
-	std::vector<Document>::iterator const end = docs_.end();
+	Container::iterator it = docs_.begin();
+	Container::iterator const end = docs_.end();
 	for (; it != end; it++) {
 		(*it).clearTag(uid);
 	}
@@ -158,8 +147,8 @@ void DocumentList::clearTag (int uid)
 void DocumentList::writeXML (std::ostringstream& out)
 {
 	out << "<doclist>\n";
-	std::vector<Document>::iterator it = docs_.begin();
-	std::vector<Document>::iterator const end = docs_.end();
+	Container::iterator it = docs_.begin();
+	Container::iterator const end = docs_.end();
 	for (; it != end; it++) {
 		(*it).writeXML (out);
 	}

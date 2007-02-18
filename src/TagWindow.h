@@ -97,6 +97,8 @@ class TagWindow {
 		void onRemoveDoc ();
 		void onWebLinkDoc ();
 		void onGetMetadataDoc ();
+		void onDeleteDoc ();
+		void onRenameDoc ();
 		void onOpenDoc ();
 		void onDocProperties ();
 		void onIntroduction ();

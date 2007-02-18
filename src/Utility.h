@@ -44,6 +44,9 @@ namespace Utility {
 	std::vector<Glib::ustring> recurseFolder (
 		Glib::ustring const &rootfoldername);
 
+	void moveToTrash (
+		Glib::ustring const &uri);
+
 	void writeBibKey (
 		std::ostringstream &out,
 		Glib::ustring key,
