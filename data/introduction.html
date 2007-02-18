@@ -31,6 +31,8 @@
 <h3>use Referencer with BibTeX?</h3>
 <p>Referencer maintains its own library of your documents, rather than loading and editing a BibTeX file.  As such, when you're ready to use your library in your LaTeX document, you can have Referencer generate a BibTeX file (<i>Library->Export to BibTeX</i>).  Referencer will automatically handle conversion of special characters (e.g. ß) to their LaTeX equivalents (e.g. \ss).
 </p>
+<p>Depending on the BibTeX style you are using in your work, capitalisation of text in your latex output may differ from that in your Referencer library.  This is to allow publishers to impose their own capitalisation schemes.  If you want text to be capitalised in your work exactly as it is in your library, then you can use the <i>Protect capitalization</i> option in the BibTeX export dialog.</p>
+<p>If you already have a BibTeX file, you can import it into Referencer (<i>Library->Import...</i>).  Importing and then exporting a bibtex file is not guaranteed (or intended) to produce exactly the same file as went in: <b>Referencer is not a BibTeX editor</b>.  Information such as document filenames and tags is not included in BibTeX files.  You should always use your Referencer library file as the authoritative copy.</p>
 <h3>add documents?</h3>
 <ul>
 	<li><p><b>By file/folder:</b>  <i>Documents->Add File...</i><br>
@@ -41,6 +43,9 @@
 	</li>
 	<li><p><b>By hand:</b>  <i>Documents->Add Empty Reference...</i><br>
 	As a last resort, Referencer provides a simple interface for manually creating a document and inputting metadata.  A document with no information is created, and the properties window is opened for you to enter a name for the document and some metadata.
+	</p></li>
+	<li><p><b>From a BibTeX/EndNote/Refer file:</b>  <i>Library->Import...</i><br>
+	Your existing bibliography files, or snippets from websites can be imported.  Items from these files will be loaded and added to the currently open library.
 	</p></li>
 </ul>
 <h3>use different document types/fields?</h3>
