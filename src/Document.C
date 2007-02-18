@@ -272,7 +272,7 @@ void Document::writeBibtex (std::ostringstream& out, bool const usebraces)
 			out,
 			(*it).first,
 			(*it).second,
-			((*it).first.tolower () != "editor") && usebraces);
+			((*it).first.lowercase () != "editor") && usebraces);
 	}
 
 	// Ideally should know what's a list of human names and what's an 
