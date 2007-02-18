@@ -398,10 +398,10 @@ void TagWindow::constructMenu ()
 		Gtk::Stock::SAVE),
   	sigc::mem_fun(*this, &TagWindow::onSaveLibrary));
 	actiongroup_->add( Gtk::Action::create("SaveAsLibrary",
-		Gtk::Stock::SAVE_AS),
+		Gtk::Stock::SAVE_AS), Gtk::AccelKey ("<control><shift>s"),
   	sigc::mem_fun(*this, &TagWindow::onSaveAsLibrary));
 	actiongroup_->add( Gtk::Action::create("ExportBibtex",
-		Gtk::Stock::CONVERT, "E_xport as BibTeX..."),
+		Gtk::Stock::CONVERT, "E_xport as BibTeX..."), Gtk::AccelKey ("<control>b"),
   	sigc::mem_fun(*this, &TagWindow::onExportBibtex));
 	actiongroup_->add( Gtk::Action::create("Import",
 		"_Import..."),
@@ -421,11 +421,11 @@ void TagWindow::constructMenu ()
 	actiongroup_->add( Gtk::RadioAction::create(group, "UseIconView",
 		"Use _Icon View"));
 	actiongroup_->add( Gtk::ToggleAction::create("ShowTagPane",
-		"_Show Tag Pane"));
+		"_Show Tag Pane"), Gtk::AccelKey ("<control><shift>t"));
 
 	actiongroup_->add ( Gtk::Action::create("TagMenu", "_Tags") );
 	actiongroup_->add( Gtk::Action::create(
-		"CreateTag", Gtk::Stock::NEW, "_Create Tag..."),
+		"CreateTag", Gtk::Stock::NEW, "_Create Tag..."), Gtk::AccelKey ("<control>t"),
   	sigc::mem_fun(*this, &TagWindow::onCreateTag));
 	actiongroup_->add( Gtk::Action::create(
 		"DeleteTag", Gtk::Stock::DELETE, "_Delete Tag"),
@@ -451,16 +451,16 @@ void TagWindow::constructMenu ()
 		"RemoveDoc", Gtk::Stock::REMOVE, "_Remove"),
   	sigc::mem_fun(*this, &TagWindow::onRemoveDoc));
 	actiongroup_->add( Gtk::Action::create(
-		"WebLinkDoc", Gtk::Stock::CONNECT, "_Web Link..."),
+		"WebLinkDoc", Gtk::Stock::CONNECT, "_Web Link..."), Gtk::AccelKey ("<control><shift>a"),
   	sigc::mem_fun(*this, &TagWindow::onWebLinkDoc));
 	actiongroup_->add( Gtk::Action::create(
 		"GetMetadataDoc", Gtk::Stock::CONNECT, "_Get Metadata"),
   	sigc::mem_fun(*this, &TagWindow::onGetMetadataDoc));
 	actiongroup_->add( Gtk::Action::create(
-		"OpenDoc", Gtk::Stock::OPEN, "_Open..."),
+		"OpenDoc", Gtk::Stock::OPEN, "_Open..."), Gtk::AccelKey ("<control>a"),
   	sigc::mem_fun(*this, &TagWindow::onOpenDoc));
 	actiongroup_->add( Gtk::Action::create(
-		"DocProperties", Gtk::Stock::PROPERTIES),
+		"DocProperties", Gtk::Stock::PROPERTIES), Gtk::AccelKey ("<control>e"),
   	sigc::mem_fun(*this, &TagWindow::onDocProperties));
 
 	actiongroup_->add ( Gtk::Action::create("HelpMenu", "_Help") );
@@ -556,6 +556,7 @@ void TagWindow::constructMenu ()
 	uimanager_->add_ui_from_string (ui);
 
 	window_->add_accel_group (uimanager_->get_accel_group ());
+
 }
 
 
