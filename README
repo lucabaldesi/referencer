@@ -3,6 +3,8 @@ Referencer
 ==========
 A document organiser and bibliography manager
 
+For help: There is a mailing list.  Send a blank email to referencer-subscribe@icculus.org to subscribe.  To post to the list, send messages to referencer@icculus.org.
+
 Author: John Spray (jcspray at icculus.org)
 
 Building
@@ -19,14 +21,15 @@ The build dependencies are:
 	libglademm-2.4
 	gconfmm-2.6
 	boost_regex
+	intltool
 
 On Ubuntu 6.10 (or 6.04 LTS), all of these may be obtained by running the following command:
-	sudo apt-get install build-essential libpoppler-dev libgtkmm-2.4-dev libgnomeuimm-2.6-dev libgnome-vfsmm-2.6-dev libglademm-2.4-dev libgconfmm-2.6-dev libboost-regex-dev
+	sudo apt-get install build-essential libpoppler-dev libgtkmm-2.4-dev libgnomeuimm-2.6-dev libgnome-vfsmm-2.6-dev libglademm-2.4-dev libgconfmm-2.6-dev libboost-regex-dev intltool
 	
 (note that libboost-regex-dev is in the 'universe' repository, which is not enabled in a default Ubuntu install.  See https://help.ubuntu.com/ubuntu/desktopguide/C/extra-repositories.html)
 
 
-NOTE TO FEDORA USERS: Unfortuately the poppler development packages in the default yum repositories are incomplete -- to build Referencer it is necessary to separately download poppler source packages, and edit the Referencer Makefile to find this directory.  Note that the binary library itself is fine on Fedora, it's just the headers that are problematic, so once it is built it can be distributed without problems.
+NOTE TO FEDORA USERS: Unfortuately the poppler interface used in Referencer is not supported in the fedora poppler development packages -- to build Referencer it is necessary to separately download poppler source packages, and edit the Referencer Makefile to find this directory.  Note that the binary library itself is fine on Fedora, it's just the headers that are problematic, so once it is built it can be distributed without problems.
 On Fedora Core 5, you will need to do:
 	yum install gtkmm24-devel libgnomeuimm26-devel gnome-vfsmm26-devel libglademm24-devel gconfmm26-devel poppler-devel gcc-c++ boost-devel
 
