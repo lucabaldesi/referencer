@@ -270,7 +270,10 @@ Glib::ustring relPath (
 		docparts.push_back (chunk);
 		child = child.substr (next + 1, child.length() - 1);
 	}
-	
+
+	// Should use Gnome::Vfs::Uri::is_parent?
+	// and Gnome::Vfs::Uri::resolve_relative?
+
 	bool ischild = true;
 	
 	for (int i = 0; i < libparts.size() - 1; ++i) {
