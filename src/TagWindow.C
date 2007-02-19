@@ -1970,6 +1970,33 @@ void TagWindow::onRenameDoc ()
 {
 	bool doclistdirty = false;
 	std::vector <Document*> docs = getSelectedDocs ();
+	
+	Glib::ustring message;
+	if (docs.size () == 1) {
+		message = "<b><big>Really rename this file to '"
+			+ (*docs.begin())->getKey()
+			+ "'?</big></b>\n\n"
+			+ "This action <b>cannot be undone</b>.";
+	} else if (docs.size () > 1) {
+		std::ostringstream num;
+		num << docs.size ();
+		message = "<b><big>Really rename these "
+			+ num.str()
+			+ " files to their keys?</big></b>\n\n"
+			+ "This action <b>cannot be undone</b>.";
+	}
+	
+	Gtk::MessageDialog confirmdialog (
+		message, true, Gtk::MESSAGE_QUESTION,
+		Gtk::BUTTONS_NONE, true);
+
+	confirmdialog.add_button (Gtk::Stock::CANCEL, 0);
+	confirmdialog.add_button ("Rename", 1);
+	confirmdialog.set_default_response (0);
+
+	if (!confirmdialog.run())
+		return;
+	
 	std::vector <Document*>::iterator it = docs.begin ();
 	std::vector <Document*>::iterator const end = docs.end ();
 	for (; it != end; ++it) {
