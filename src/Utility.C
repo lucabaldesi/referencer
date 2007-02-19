@@ -315,89 +315,51 @@ Glib::RefPtr<Gdk::Pixbuf> getThemeIcon(Glib::ustring const &iconname)
 
 
 void moveToTrash (
-	Glib::ustring const &uri)
+	Glib::ustring const &target_uri_str)
 {
-#if 0
-	GnomeVFSResult res;
-	GnomeVFSURI *uri, *trash, *dest;
-	char *shortname;
-
-	uri = gnome_vfs_uri_new (rb_refstring_get (entry->location));
-	if (uri == NULL) {
-		rhythmdb_entry_move_to_trash_set_error (db, entry, -1);
-		return;
-	}
-
-	res = gnome_vfs_find_directory (uri,
+	// This and following Gnome::Vfs funcs may throw exceptions, 
+	// but it's our caller's responsibility to catch them.
+	Glib::RefPtr<Gnome::Vfs::Uri> target =
+		Gnome::Vfs::Uri::create (target_uri_str);
+	
+	GnomeVFSURI *newuri = NULL;
+	
+	GnomeVFSResult res = gnome_vfs_find_directory (
+		target->gobj (),
 		GNOME_VFS_DIRECTORY_KIND_TRASH,
-		&trash,
-		TRUE, TRUE,
+		&newuri,
+		TRUE,
+		TRUE,
 		0);
-	if (res != GNOME_VFS_OK || trash == NULL) {
-		/* If the file doesn't exist, or trash isn't support,
-		* remove it from the db */
-		if (res == GNOME_VFS_ERROR_NOT_FOUND ||
-			res == GNOME_VFS_ERROR_NOT_SUPPORTED) {
-			rhythmdb_entry_set_visibility (db, entry, FALSE);
-		} else {
-			rhythmdb_entry_move_to_trash_set_error (db, entry, -1);
-		}
 
-		gnome_vfs_uri_unref (uri);
-		return;
+	if (res != GNOME_VFS_OK || newuri == NULL) {
+		throw (new Glib::FileError (Glib::FileError::NO_SUCH_ENTITY,
+			"Cannot find trash"));
+	}
+	
+	
+	Glib::RefPtr<Gnome::Vfs::Uri> trash = Glib::wrap (newuri);
+	
+	if (trash->is_parent (target, true)) {
+		throw (new Glib::FileError (Glib::FileError::EXISTS,
+			"File is already in trash"));
 	}
 
-	/* Is the file already in the Trash? If so it should be hidden */
-	if (gnome_vfs_uri_is_parent (trash, uri, TRUE)) {
-		GValue value = { 0, };
-		g_value_init (&value, G_TYPE_BOOLEAN);
-		g_value_set_boolean (&value, TRUE);
-		rhythmdb_entry_set (db, entry, RHYTHMDB_PROP_HIDDEN, &value);
-		rhythmdb_commit (db);
+	Glib::ustring shortname = target->extract_short_name ();
 
-		gnome_vfs_uri_unref (trash);
-		gnome_vfs_uri_unref (uri);
-		return;
+	Glib::RefPtr<Gnome::Vfs::Uri> dest = trash->append_path (shortname);
+	try{
+	std::cerr << target->to_string () << "\n";
+	std::cerr << dest->to_string () << "\n";
+	Gnome::Vfs::Transfer::transfer (
+		target,
+		dest,
+		Gnome::Vfs::XFER_REMOVESOURCE,
+		Gnome::Vfs::XFER_ERROR_MODE_ABORT,
+		Gnome::Vfs::XFER_OVERWRITE_MODE_SKIP);
+	} catch (Gnome::Vfs::exception ex) {
+		std::cerr << "2: " << ex.what () << "\n";
 	}
-
-	shortname = gnome_vfs_uri_extract_short_name (uri);
-	if (shortname == NULL) {
-		rhythmdb_entry_move_to_trash_set_error (db, entry, -1);
-		rhythmdb_commit (db);
-		gnome_vfs_uri_unref (uri);
-		gnome_vfs_uri_unref (trash);
-		return;
-	}
-
-	/* Compute the destination URI */
-	dest = gnome_vfs_uri_append_path (trash, shortname);
-	gnome_vfs_uri_unref (trash);
-	g_free (shortname);
-	if (dest == NULL) {
-		rhythmdb_entry_move_to_trash_set_error (db, entry, -1);
-		rhythmdb_commit (db);
-		gnome_vfs_uri_unref (uri);
-		return;
-	}
-
-	/* RB can't tell that a file's moved, so no unique names */
-	res = gnome_vfs_xfer_uri (uri, dest,
-	GNOME_VFS_XFER_REMOVESOURCE,
-	GNOME_VFS_XFER_ERROR_MODE_ABORT,
-	GNOME_VFS_XFER_OVERWRITE_MODE_SKIP,
-	rhythmdb_entry_move_to_trash_cb,
-	entry);
-
-	if (res == GNOME_VFS_OK) {
-		rhythmdb_entry_set_visibility (db, entry, FALSE);
-	} else {
-		rhythmdb_entry_move_to_trash_set_error (db, entry, res);
-	}
-	rhythmdb_commit (db);
-
-	gnome_vfs_uri_unref (dest);
-	gnome_vfs_uri_unref (uri);
-#endif
 }
 
 

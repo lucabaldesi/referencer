@@ -2012,7 +2012,7 @@ void TagWindow::onDeleteDoc ()
 	for (; it != end; it++) {
 		if (!multiple) {
 			Glib::ustring message = "<b><big>Are you sure you want to move '" +
-				(*it)->getKey () + "' to the trash?</big></b>\n\nsAll tag "
+				(*it)->getKey () + "' to the trash?</big></b>\n\nAll tag "
 				"associations and metadata for the document will be permanently lost, and the file it refers to will be moved to the trash.";
 			Gtk::MessageDialog confirmdialog (
 				message, true, Gtk::MESSAGE_QUESTION,
@@ -2029,7 +2029,7 @@ void TagWindow::onDeleteDoc ()
 
 		try {
 			Utility::moveToTrash ((*it)->getFileName ());
-		} catch (Gnome::Vfs::exception ex) {
+		} catch (Glib::Exception &ex) {
 			Utility::exceptionDialog (&ex, "Moving '" + (*it)->getFileName () + "' to trash");
 		}
 		doclist_->removeDoc(*it);
