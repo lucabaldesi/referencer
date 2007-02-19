@@ -439,5 +439,37 @@ void Document::getMetaData ()
 
 void Document::renameFromKey ()
 {
+	if (getFileName().empty () || getKey().empty ())
+		return;
+	
+	Glib::RefPtr<Gnome::Vfs::Uri> olduri = Gnome::Vfs::Uri::create (getFileName());
+	
+	Glib::ustring shortname = olduri->extract_short_name ();
+	std::cerr << "Shortname = " << shortname << "\n";
+	Glib::ustring dirname = olduri->extract_dirname ();
+	std::cerr << "Dirname = " << dirname << "\n";
+	
+	unsigned int pos = shortname.rfind (".");
+	Glib::ustring extension = "";
+	if (pos != Glib::ustring::npos)
+		extension = shortname.substr (pos, shortname.length() - 1);
+	
+	Glib::ustring newfilename = getKey() + extension;
+	std::cerr << "Newfilename = " << newfilename << "\n";
+	
+	//Glib::RefPtr<Gnome::Vfs::Uri> newuri = Gnome::Vfs::Uri::create (newfilename);
+	Glib::RefPtr<Gnome::Vfs::Uri> newuri =
+		Gnome::Vfs::Uri::create (dirname)->append_file_name (newfilename);
+	
+	try {
+		Gnome::Vfs::Handle::move (
+			olduri,
+			newuri,
+			false /*force replace*/);
+		setFileName (newuri->to_string ());
+	} catch (Gnome::Vfs::exception &ex) {
+		Utility::exceptionDialog (&ex,
+			"moving '" + olduri->to_string () + "' to '" + newuri->to_string () + "'");
+	}
 }
 
