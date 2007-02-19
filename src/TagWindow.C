@@ -2020,7 +2020,8 @@ void TagWindow::onDeleteDoc ()
 		num << docs.size ();
 		Glib::ustring message = "<b><big>Are you sure you want to move these "
 			+ num.str() + " documents to the trash?</big></b>\n\nAll tag "
-			"associations and metadata for these documents will be permanently lost, and the files they refer to will be moved to the trash.";
+			"associations and metadata for these documents will be permanently "
+			+ "lost, and the files they refer to will be moved to the trash.";
 		Gtk::MessageDialog confirmdialog (
 			message, true, Gtk::MESSAGE_QUESTION,
 			Gtk::BUTTONS_NONE, true);
@@ -2040,7 +2041,8 @@ void TagWindow::onDeleteDoc ()
 		if (!multiple) {
 			Glib::ustring message = "<b><big>Are you sure you want to move '" +
 				(*it)->getKey () + "' to the trash?</big></b>\n\nAll tag "
-				"associations and metadata for the document will be permanently lost, and the file it refers to will be moved to the trash.";
+				"associations and metadata for the document will be permanently "
+				+ "lost, and the file it refers to will be moved to the trash.";
 			Gtk::MessageDialog confirmdialog (
 				message, true, Gtk::MESSAGE_QUESTION,
 				Gtk::BUTTONS_NONE, true);
