@@ -1,4 +1,7 @@
 1.0.2:
+	- Fix 'remove' failing with duplicate keys
+	- Add "Delete File from Drive"
+	- Add "Rename File to Key"
 	- Add/fix some accelerators
 	- Fix ./configure failing on Ubuntu 6.06
 	- Add option to enclose all values in {} when exporting bibtex

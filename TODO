@@ -1,8 +1,13 @@
 
-Essential:
+	Implement renameFromTag and moveToTrash
+
+Needed:
 	Sizing of columns in the list view
 	LyX citation via lyxserver (pybliographic, lyx/src/client)
 	Command line reflib->bibtex
+	progress for loading docs/generating thumbnails - takes forever when you
+	move a library (old thumb paths invalidated)
+
 
 	When importing endnote, %Y is series editor, but this is lost by bibutils for refs of inappropriate type.  %Y is used in pablo's file as generic author. - that was with endnote 3, try with more recent endnote	
 
@@ -20,8 +25,6 @@ Big functionality wishlist:
 	read PS files to search for DOIs as well as reading PDFs
 	Copy added (remote?) files into a local directory
 	"Manage BibTeX File" as well as one-off export
-	Documents need some unique ID.  Currently keys are created as unique but there
-		is nothing stopping user from creating by hand or importing dups.
 	Formatted bibliographies with Rtfbtx?
 	Tracker?  Beagle?
 
@@ -34,9 +37,8 @@ Little functionality wishlist:
 	Make search bar match more fields
 	Tell the user somehow in addDocFiles when we don't add files b/c they're already in the documentlist.
 	Assign a color to a tag and highlight refs with it
-	File operations:
-		Deleting documents from disk?
-		Rename file to key
+	Should take relative filenames over absolute ones, if the two differ
+	Should have GPL headers in all files to qualify for debian packaging
 
 UI wishlist:
 	Save in Preferences the sorting of the list view.
@@ -53,9 +55,6 @@ Bugs:
 	In TagWindow::onIconsDragData, we do get_file_info on remote URIs synchronously
 		in order to support directory recursion on remote filesystems -- this is a 
 		bad thing when adding stuff from really remote things like websites
-	Removing documents uses key_ as if it were unique, which it is not guaranteed to be
-	Chapters in InCollection come through as level 0 "TITLE" field in bibtex import
-		Currently taking all level 0 title fields as chapter
 
 
 EndNote is also somewhat DOI aware, dx.doi.org URLs generated when importing reference from eg INSPEC
