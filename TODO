@@ -6,7 +6,7 @@ Needed:
 	LyX citation via lyxserver (pybliographic, lyx/src/client)
 	Command line reflib->bibtex
 	progress for loading docs/generating thumbnails - takes forever when you
-	move a library (old thumb paths invalidated)
+		move a library (old thumb paths invalidated)
 
 
 	When importing endnote, %Y is series editor, but this is lost by bibutils for refs of inappropriate type.  %Y is used in pablo's file as generic author. - that was with endnote 3, try with more recent endnote	
