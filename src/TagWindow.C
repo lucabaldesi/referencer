@@ -2192,11 +2192,13 @@ void TagWindow::onUseListViewPrefChanged ()
 			actiongroup_->get_action ("UseListView"))->set_active (true);
 		docsiconscroll_->hide ();
 		docslistscroll_->show ();
+		docslistview_->grab_focus ();
 	} else {
 		Glib::RefPtr <Gtk::RadioAction>::cast_static(
 			actiongroup_->get_action ("UseIconView"))->set_active (true);
 		docslistscroll_->hide ();
 		docsiconscroll_->show ();
+		docsiconview_->grab_focus ();
 	}
 	
 	docSelectionChanged ();
