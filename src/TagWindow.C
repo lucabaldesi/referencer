@@ -129,8 +129,9 @@ void TagWindow::constructUI ()
 
 	Gtk::ToolItem *searchitem = Gtk::manage (new Gtk::ToolItem);
 	Gtk::HBox *search = Gtk::manage (new Gtk::HBox);
-	Gtk::Label *searchlabel = Gtk::manage (new Gtk::Label ("Search:"));
+	Gtk::Label *searchlabel = Gtk::manage (new Gtk::Label ("_Search:", true));
 	Gtk::Entry *searchentry = Gtk::manage (new Gtk::Entry);
+	searchlabel->set_mnemonic_widget (*searchentry);
 	search->set_spacing (6);
 	search->pack_start (*searchlabel, false, false, 0);
 	search->pack_start (*searchentry, false, false, 0);
@@ -1420,9 +1421,16 @@ void TagWindow::onAbout ()
 
 void TagWindow::onIntroduction ()
 {
-	Glib::ustring uri = "file://" + Utility::findDataFile ("introduction.html");
-	std::cerr << uri << "\n";
-	Gnome::Vfs::url_show (uri);
+	Glib::ustring filename = Utility::findDataFile ("introduction.html");
+	
+	if (filename.empty)
+		return;
+
+	try {
+		Gnome::Vfs::url_show (Gnome::Vfs::get_uri_from_local_path (filename));
+	} catch (Gnome::Vfs::exception &ex) {
+		Utility::exceptionDialog (&ex, "showing '" + filename + "'");
+	}
 }
 
 
