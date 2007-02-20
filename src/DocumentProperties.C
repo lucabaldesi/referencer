@@ -82,6 +82,8 @@ bool DocumentProperties::show (Document *doc)
 
 	extrafieldsexpander_->set_expanded (doc->getBibData().hasExtras ());
 
+	keyentry_->grab_focus ();
+
 	int result = dialog_->run ();
 
 	if (result == Gtk::RESPONSE_OK) {

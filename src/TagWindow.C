@@ -1991,7 +1991,7 @@ void TagWindow::onRenameDoc ()
 		Gtk::BUTTONS_NONE, true);
 
 	confirmdialog.add_button (Gtk::Stock::CANCEL, 0);
-	confirmdialog.add_button ("Rename", 1);
+	confirmdialog.add_button ("Rename from Tag", 1);
 	confirmdialog.set_default_response (0);
 
 	if (!confirmdialog.run())
@@ -2027,7 +2027,7 @@ void TagWindow::onDeleteDoc ()
 			Gtk::BUTTONS_NONE, true);
 
 		confirmdialog.add_button (Gtk::Stock::CANCEL, 0);
-		confirmdialog.add_button (Gtk::Stock::REMOVE, 1);
+		confirmdialog.add_button ("Move to Trash", 1);
 		confirmdialog.set_default_response (0);
 
 		if (!confirmdialog.run()) {
@@ -2048,7 +2048,7 @@ void TagWindow::onDeleteDoc ()
 				Gtk::BUTTONS_NONE, true);
 
 			confirmdialog.add_button (Gtk::Stock::CANCEL, 0);
-			confirmdialog.add_button (Gtk::Stock::REMOVE, 1);
+			confirmdialog.add_button ("Move to Trash", 1);
 			confirmdialog.set_default_response (0);
 
 			if (!confirmdialog.run()) {
