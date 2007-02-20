@@ -186,6 +186,7 @@ void DocumentProperties::onNewExtraField ()
 	hbox.pack_start (label, false, false, 0);
 
 	Gtk::Entry entry;
+	entry.set_activates_default (true);
 	hbox.pack_start (entry, true, true, 0);
 
 	dialog.add_button (Gtk::Stock::CANCEL, 0);
