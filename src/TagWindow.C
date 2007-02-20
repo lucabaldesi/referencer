@@ -1409,6 +1409,7 @@ void TagWindow::onAbout ()
 	dialog.set_version (VERSION);
 	dialog.set_comments ("A document organiser and bibliography manager");
 	dialog.set_copyright ("Copyright © 2007 John Spray");
+	dialog.set_website ("http://icculus.org/referencer/");
 	dialog.set_logo (
 		Gdk::Pixbuf::create_from_file (
 			Utility::findDataFile ("referencer.svg"),
