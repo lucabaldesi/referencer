@@ -1423,7 +1423,7 @@ void TagWindow::onIntroduction ()
 {
 	Glib::ustring filename = Utility::findDataFile ("introduction.html");
 	
-	if (filename.empty)
+	if (filename.empty ())
 		return;
 
 	try {
