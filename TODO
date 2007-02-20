@@ -49,7 +49,7 @@ UI wishlist:
 	Thumbnail generation is done in main thread and freezes UI
 	Configuration of proxy server for non-GNOMEers
 	Configuration of max_timeout in BibData::getCrossRef
-	Somehow know when to add et. al. to authors
+	click-to-edit in list view
 
 Bugs:
 	In TagWindow::onIconsDragData, we do get_file_info on remote URIs synchronously
