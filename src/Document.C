@@ -141,8 +141,6 @@ void Document::setupThumbnail ()
 	}
 
 	if (!thumbnail_) {
-		// Should use one global pixbuf for this instead of loading
-		// it separately for each doc
 		if (defaultthumb_) {
 			thumbnail_ = Document::defaultthumb_;
 		} else {
@@ -194,10 +192,12 @@ Glib::ustring& Document::getRelFileName()
 
 void Document::setFileName (Glib::ustring const &filename)
 {
-	if (filename == filename_)
-		return;
-	filename_ = filename;
-	setupThumbnail ();
+	if (filename != filename_) {
+		filename_ = filename;
+		setupThumbnail ();
+	} else if (!thumbnail_) {
+		setupThumbnail ();
+	}
 }
 
 
