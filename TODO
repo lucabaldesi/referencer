@@ -8,6 +8,13 @@ Needed:
 	Fix moveToTrash
 
 
+	Edit menu:
+		- Copy key
+		- Copy latex citation command
+		- copy filename
+		- copy bibtex
+		- paste bibtex
+
 	When importing endnote, %Y is series editor, but this is lost by bibutils for refs of inappropriate type.  %Y is used in pablo's file as generic author. - that was with endnote 3, try with more recent endnote	
 
 Big functionality wishlist:
@@ -15,8 +22,8 @@ Big functionality wishlist:
 		http://www.pubmedcentral.nih.gov/oai/oai.cgi
 		http://arxiv.org/oai2
 		http://oai.crossref.org/OAIHandler/
-
 	add by pubmed/medline ID (pubmed OAI)	
+
 	searching databases?
 	rewrite poppler code to use glib bindings: also read page 1 first, check for IDS, and only read rest if needed.
 	Google scholar link?  Arbitrary links?
