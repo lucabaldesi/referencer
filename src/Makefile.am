@@ -17,6 +17,8 @@ referencer_SOURCES =	\
 	DocumentProperties.h	\
 	Preferences.C	\
 	Preferences.h	\
+	ProgressDialog.C	\
+	ProgressDialog.h	\
 	Utility.C	\
 	Utility.h	\
 	BibUtils.C	\
