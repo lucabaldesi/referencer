@@ -56,15 +56,19 @@ Glib::ustring Document::generateKey ()
 	// If not then Unnamed-5
 	Glib::ustring name;
 
+	unsigned int const maxlen = 14;
+
 	if (!bib_.getAuthors().empty ()) {
 		Glib::ustring year = bib_.getYear ();
 		if (year.size() == 4)
 			year = year.substr (2,3);
 
 		Glib::ustring authors = bib_.getAuthors ();
+		if (authors.size() > maxlen - 2) {
+			authors = authors.substr(0, maxlen - 2);
+		}
 
 		// Should:
-		// Strip spaces from authors
 		// Truncate it at the first "et al", "and", or ","
 
 		name = authors + year;
@@ -78,6 +82,9 @@ Glib::ustring Document::generateKey ()
 		}
 
 		name = filename;
+		if (name.size() > maxlen) {
+			name = name.substr(0, maxlen);
+		}
 
 	} else {
 		name = "Unnamed";
@@ -94,11 +101,6 @@ Glib::ustring Document::generateKey ()
 	name = Utility::strip (name, "}");
 	name = Utility::strip (name, ",");
 	name = Utility::strip (name, "@");
-
-	unsigned int const maxlen = 14;
-	if (name.size() > maxlen) {
-		name = name.substr(0, maxlen);
-	}
 
 	return name;
 }
