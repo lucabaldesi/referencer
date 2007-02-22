@@ -9,19 +9,20 @@ class ProgressDialog {
 	ProgressDialog ();
 	~ProgressDialog ();
 
-	void setLabel (Glib::ustring &text);
+	void setLabel (Glib::ustring const &text);
 	void start ();	
 	void update (double status);
 	void update ();
 	void finish ();
 	
 	private:
-	Gtk::ProgressDialogBar *progress_;
+	Gtk::ProgressBar *progress_;
 	Gtk::Label *label_;
 	Gtk::Dialog *dialog_;
 	bool finished_;
 	Glib::Thread *loopthread_;
-}
+	void loop ();
+};
 
 #endif
 

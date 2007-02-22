@@ -13,6 +13,7 @@
 #include "Document.h"
 #include "DocumentProperties.h"
 #include "Preferences.h"
+#include "ProgressDialog.h"
 
 #include "LibraryParser.h"
 
@@ -1828,6 +1829,18 @@ bool TagWindow::loadLibrary (Glib::ustring const &libfilename)
 
 	Glib::RefPtr<Gnome::Vfs::Uri> liburi = Gnome::Vfs::Uri::create (libfilename);
 
+	ProgressDialog progress;
+	
+	progress.setLabel (
+		"<b><big>Opening "
+		+ liburi->extract_short_name ()
+		+ "</big></b>\n\nThis process may take some time, particularly\n"
+		+ "if the library has been moved since it was last opened.");
+	
+	// If we get an exception and return, progress::~Progress should
+	// take care of calling finish() for us.
+	progress.start ();
+
 	try {
 		libfile.open (libfilename, Gnome::Vfs::OPEN_READ);
 	} catch (const Gnome::Vfs::exception ex) {
@@ -1862,10 +1875,12 @@ bool TagWindow::loadLibrary (Glib::ustring const &libfilename)
 		return false;
 	std::cerr << "Done, got " << doclist_->getDocs ().size() << " docs\n";
 	
+	int i = 0;
 	DocumentList::Container &docs = doclist_->getDocs ();
 	DocumentList::Container::iterator docit = docs.begin ();
 	DocumentList::Container::iterator const docend = docs.end ();
 	for (; docit != docend; ++docit) {
+		progress.update ((double)(i++) / (double)docs.size ());
 		if (Utility::fileExists (docit->getFileName())) {
 			// Do nothing, all is well, the file is still there
 			std::cerr << "Filename still good: " << docit->getFileName() << "\n";
@@ -1881,6 +1896,8 @@ bool TagWindow::loadLibrary (Glib::ustring const &libfilename)
 			}
 		}
 	}
+
+	progress.finish ();
 
 	return true;
 }

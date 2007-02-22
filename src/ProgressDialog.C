@@ -2,7 +2,11 @@
 
 #include "ProgressDialog.h"
 
-ProgressDialog::ProgressDialog()
+#include <libgnomemm/main.h>
+
+#include <iostream>
+
+ProgressDialog::ProgressDialog ()
 {
 	dialog_ = new Gtk::Dialog ();
 	dialog_->set_modal (true);
@@ -14,18 +18,20 @@ ProgressDialog::ProgressDialog()
 	progress_ = Gtk::manage (new Gtk::ProgressBar);
 	label_ = Gtk::manage (new Gtk::Label ("", false));
 	
-	vbox->pack_start (label_, true, true, 0);
-	vbox->pack_start (ProgressDialog_, false, false, 0);
+	vbox->pack_start (*label_, true, true, 0);
+	vbox->pack_start (*progress_, false, false, 0);
 }
 
 
 ProgressDialog::~ProgressDialog ()
 {
+	if (!finished_)
+		finish ();
 	delete dialog_;
 }
 
 
-ProgressDialog::setLabel (Glib::ustring const &markup)
+void ProgressDialog::setLabel (Glib::ustring const &markup)
 {
 	label_->set_markup (markup);
 }
@@ -34,14 +40,18 @@ ProgressDialog::setLabel (Glib::ustring const &markup)
 void ProgressDialog::start ()
 {
 	dialog_->show_all ();
-	dialog_->get_vbox ()->set_border_width (12);
+	// Make sure it's realised before setting the border width
+	// There should (must be) be a better way...
+	/*while (Gnome::Main::events_pending())
+		Gnome::Main::iteration ();
+	dialog_->get_vbox ()->set_border_width (12);*/
 	
+	// Flag that the loop thread waits for
 	finished_ = false;
 	
 	// Spawn the loop thread
-	
 	loopthread_ = Glib::Thread::create (
-		sigc::mem_fun (this, &ProgressDialog::fetcherThread), true);
+		sigc::mem_fun (this, &ProgressDialog::loop), true);
 }
 
 
@@ -60,12 +70,13 @@ void ProgressDialog::update (double status)
 
 void ProgressDialog::update ()
 {
-	progress_->bounce ();
+	progress_->pulse ();
 }
 
 
 void ProgressDialog::loop ()
 {
+	// Is this conflicting with Gnome::Ui::Thumbnailfactory in Document::setupThumbnail?  Do we need a mutex?
 	while (!finished_) {
 		while (Gnome::Main::events_pending())
 			Gnome::Main::iteration ();
