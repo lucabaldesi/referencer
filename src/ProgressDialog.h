@@ -15,13 +15,18 @@ class ProgressDialog {
 	void update ();
 	void finish ();
 	
+	void getLock ();
+	void releaseLock ();
+
 	private:
+	void loop ();
+
 	Gtk::ProgressBar *progress_;
 	Gtk::Label *label_;
 	Gtk::Dialog *dialog_;
 	bool finished_;
 	Glib::Thread *loopthread_;
-	void loop ();
+	Glib::Mutex lock_;
 };
 
 #endif

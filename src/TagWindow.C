@@ -1880,6 +1880,7 @@ bool TagWindow::loadLibrary (Glib::ustring const &libfilename)
 	DocumentList::Container::iterator docit = docs.begin ();
 	DocumentList::Container::iterator const docend = docs.end ();
 	for (; docit != docend; ++docit) {
+		progress.getLock ();
 		progress.update ((double)(i++) / (double)docs.size ());
 		if (Utility::fileExists (docit->getFileName())) {
 			// Do nothing, all is well, the file is still there
@@ -1895,6 +1896,7 @@ bool TagWindow::loadLibrary (Glib::ustring const &libfilename)
 				docit->setFileName (filename);
 			}
 		}
+		progress.releaseLock ();
 	}
 
 	progress.finish ();

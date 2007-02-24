@@ -1,4 +1,5 @@
 1.0.2:
+	- Add progress dialog when loading library
 	- Improved keyboard behaviour in main window and in document properties
 	- Fix 'remove' failing with duplicate keys
 	- Add "Delete File from Drive"

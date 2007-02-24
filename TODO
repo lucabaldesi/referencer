@@ -3,8 +3,6 @@ Needed:
 	Sizing of columns in the list view
 	LyX citation via lyxserver (pybliographic, lyx/src/client)
 	Command line reflib->bibtex
-	progress for loading docs/generating thumbnails - takes forever when you
-		move a library (old thumb paths invalidated)
 	Fix moveToTrash
 
 

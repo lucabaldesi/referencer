@@ -78,8 +78,24 @@ void ProgressDialog::loop ()
 {
 	// Is this conflicting with Gnome::Ui::Thumbnailfactory in Document::setupThumbnail?  Do we need a mutex?
 	while (!finished_) {
+		getLock ();
 		while (Gnome::Main::events_pending())
 			Gnome::Main::iteration ();
+		releaseLock ();
 		Glib::usleep (100000);
 	}
 }
+
+
+void ProgressDialog::getLock ()
+{
+	lock_.lock ();
+}
+
+
+void ProgressDialog::releaseLock ()
+{
+	lock_.unlock ();
+}
+
+
