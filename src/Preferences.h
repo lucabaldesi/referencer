@@ -12,7 +12,6 @@ class Preferences {
 private:
 	Glib::RefPtr<Gnome::Glade::Xml> xml_;
 	Gtk::Dialog *dialog_;
-	Gtk::CheckButton *workofflinecheck_;
 	Gtk::Entry *doilaunchentry_;
 	Gtk::Entry *metadatalookupentry_;
 	void onWorkOfflineToggled ();
