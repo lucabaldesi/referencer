@@ -52,9 +52,6 @@ Preferences::Preferences ()
 		Utility::findDataFile ("preferences.glade"));
 
 	dialog_ = (Gtk::Dialog *) xml_->get_widget ("Preferences");
-	workofflinecheck_ = (Gtk::CheckButton *) xml_->get_widget ("WorkOffline");
-	workofflinecheck_->signal_toggled().connect (
-		sigc::mem_fun (*this, &Preferences::onWorkOfflineToggled));
 
 	doilaunchentry_ = (Gtk::Entry *) xml_->get_widget ("DoiLaunch");
 	doilaunchentry_->signal_changed().connect (
@@ -84,8 +81,6 @@ void Preferences::onConfChange (int number, Gnome::Conf::Entry entry)
 
 	Glib::ustring key = entry.get_key ();
 	if (key == CONF_PATH "/workoffline") {
-		workofflinecheck_->set_active (
-			entry.get_value ().get_bool ());
 		workofflinesignal_.emit ();
 	} else if (key == CONF_PATH "/uselistview") {
 		uselistviewsignal_.emit ();
@@ -106,8 +101,6 @@ void Preferences::showDialog ()
 {
 	ignorechanges_ = true;
 
-	workofflinecheck_->set_active (
-		confclient_->get_bool (workoffline_.get_key()));
 	doilaunchentry_->set_text (
 		confclient_->get_string (doilaunch_.get_key()));
 	metadatalookupentry_->set_text (
@@ -117,15 +110,6 @@ void Preferences::showDialog ()
 
 	dialog_->run ();
 	dialog_->hide ();
-}
-
-
-void Preferences::onWorkOfflineToggled ()
-{
-	if (ignorechanges_) return;
-
-	confclient_->set (
-		workoffline_.get_key(), workofflinecheck_->get_active());
 }
 
 

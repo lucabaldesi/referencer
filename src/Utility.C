@@ -1713,10 +1713,6 @@ int wvConvertUnicodeToLaTeX(gunichar char16, Glib::ustring &out)
 #undef printf
 
 
-void manbearpig ()
-{
-}
-
 typedef unsigned char art_u8;
 /* Render a semitransparent run of solid color over an existing RGB
    buffer. */
