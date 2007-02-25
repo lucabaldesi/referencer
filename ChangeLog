@@ -1,4 +1,6 @@
 1.0.2:
+	- Special case for getting dois like "doi: blah/blah, more text" to 
+		ignore trailing comma.
 	- Add progress dialog when loading library
 	- Improved keyboard behaviour in main window and in document properties
 	- Fix 'remove' failing with duplicate keys

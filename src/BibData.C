@@ -302,6 +302,15 @@ void BibData::guessDoi (Glib::ustring const &raw_)
 	boost::match_flag_type flags = boost::match_default;
 	while(regex_search(start, end, what, expression, flags)) {
 		Glib::ustring gstr = std::string(what[1]);
+		int len = gstr.size ();
+		// Special case to chop off trailing comma to deal with
+		// "doi: foo, available online" in JCompPhys 
+		// Note that commas ARE legal suffix characters in Doi spec
+		// But there's nothing in the spec about regexing them
+		// out of PDFS :-) -jcs
+		if (gstr[len - 1] == ',') {
+			gstr = gstr.substr (0, len - 1);
+		};
 		setDoi (gstr);
 		return;
 	}
