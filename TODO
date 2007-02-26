@@ -5,6 +5,7 @@ Needed:
 	Command line reflib->bibtex
 	Fix moveToTrash
 
+	UTF-8 option on bibtex export
 
 	Edit menu:
 		- Copy key
