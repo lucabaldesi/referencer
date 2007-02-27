@@ -3,7 +3,7 @@ Needed:
 	Sizing of columns in the list view
 	LyX citation via lyxserver (pybliographic, lyx/src/client)
 	Command line reflib->bibtex
-	Fix moveToTrash
+	Fix up moveToTrash
 
 	UTF-8 option on bibtex export
 
@@ -52,7 +52,6 @@ UI wishlist:
 	Drag and drop to import bibtex snippets
 	Copy document key to clipboard
 	Thumbnail generation is done in main thread and freezes UI
-	Configuration of proxy server for non-GNOMEers
 	Configuration of max_timeout in BibData::getCrossRef
 	click-to-edit in list view
 
@@ -62,12 +61,12 @@ Bugs:
 		bad thing when adding stuff from really remote things like websites
 
 
-EndNote is also somewhat DOI aware, dx.doi.org URLs generated when importing reference from eg INSPEC
-
 Competition on Science biblio export:
 	EndNote
+		EndNote is also somewhat DOI aware, dx.doi.org URLs generated when importing reference from eg INSPEC
 	Reference Manager
 	ProCite
 	RefWorks
 also: Zotero
 also: Yep
+
