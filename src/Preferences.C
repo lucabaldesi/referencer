@@ -54,15 +54,34 @@ Preferences::Preferences ()
 	dialog_ = (Gtk::Dialog *) xml_->get_widget ("Preferences");
 
 	doilaunchentry_ = (Gtk::Entry *) xml_->get_widget ("DoiLaunch");
+	metadatalookupentry_ = (Gtk::Entry *) xml_->get_widget ("MetadataLookup");
 	doilaunchentry_->signal_changed().connect (
 		sigc::mem_fun (*this, &Preferences::onURLChanged));
-	metadatalookupentry_ = (Gtk::Entry *) xml_->get_widget ("MetadataLookup");
 	metadatalookupentry_->signal_changed().connect (
 		sigc::mem_fun (*this, &Preferences::onURLChanged));
 
 	Gtk::Button *button = (Gtk::Button *) xml_->get_widget ("ResetToDefaults");
 	button->signal_clicked().connect (
 		sigc::mem_fun (*this, &Preferences::onResetToDefaults));
+
+	proxyhostentry_ = (Gtk::Entry *) xml_->get_widget ("ProxyHost");
+	proxyportentry_ = (Gtk::Entry *) xml_->get_widget ("ProxyPort");
+	proxyusernameentry_ = (Gtk::Entry *) xml_->get_widget ("ProxyUsername");
+	proxypasswordentry_ = (Gtk::Entry *) xml_->get_widget ("ProxyPassword");
+	useproxycheck_ = (Gtk::CheckButton *) xml_->get_widget ("UseProxy");
+	useauthcheck_ = (Gtk::CheckButton *) xml_->get_widget ("UseAuthentication");
+	proxyhostentry_->signal_changed().connect (
+		sigc::mem_fun (*this, &Preferences::onProxyChanged));
+	proxyportentry_->signal_changed().connect (
+		sigc::mem_fun (*this, &Preferences::onProxyChanged));
+	proxyusernameentry_->signal_changed().connect (
+		sigc::mem_fun (*this, &Preferences::onProxyChanged));
+	proxypasswordentry_->signal_changed().connect (
+		sigc::mem_fun (*this, &Preferences::onProxyChanged));
+	useproxycheck_->signal_toggled().connect (
+		sigc::mem_fun (*this, &Preferences::onProxyChanged));
+	useauthcheck_->signal_toggled().connect (
+		sigc::mem_fun (*this, &Preferences::onProxyChanged));
 
 	ignorechanges_ = false;
 }
@@ -134,6 +153,36 @@ void Preferences::onURLChanged ()
 			metadatalookup_.get_key(), metadatalookupentry_->get_text ());
 	}
 }
+
+
+void Preferences::onProxyChanged ()
+{
+	bool useproxy = useproxycheck_->get_active ();
+	
+	proxyhostentry_->set_sensitive (useproxy);
+	proxyportentry_->set_sensitive (useproxy);
+	useauthcheck_->set_sensitive (useproxy);
+	
+	if (useproxy) {
+		confclient_->set (
+			proxyhost_.get_key(), proxyhostentry_->get_text ());
+		confclient_->set (
+			proxyport_.get_key(), proxyportentry_->get_text ());
+	}
+	
+	bool useauth = useauthcheck_->get_active ();
+	
+	proxyusernameentry_->set_sensitive (useproxy && useauth);
+	proxypasswordentry_->set_sensitive (useproxy && useauth);
+	
+	if (useproxy && useauth) {
+		confclient_->set (
+			proxyusername_.get_key(), proxyusernameentry_->get_text ());
+		confclient_->set (
+			proxypassword_.get_key(), proxypasswordentry_->get_text ());
+	}
+}
+
 
 // This is just for the button in the dialog!
 void Preferences::onResetToDefaults ()
