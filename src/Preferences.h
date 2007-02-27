@@ -17,7 +17,7 @@ private:
 	Gtk::Entry *metadatalookupentry_;
 	
 	Gtk::Entry *proxyhostentry_;
-	Gtk::Entry *proxyportentry_;
+	Gtk::SpinButton *proxyportspin_;
 	Gtk::Entry *proxyusernameentry_;
 	Gtk::Entry *proxypasswordentry_;
 	Gtk::CheckButton *useproxycheck_;
@@ -26,6 +26,7 @@ private:
 	void onWorkOfflineToggled ();
 	void onURLChanged ();
 	void onProxyChanged ();
+	void updateSensitivity ();
 	// This is just for the button in the dialog!
 	void onResetToDefaults ();
 
