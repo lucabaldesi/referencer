@@ -2120,7 +2120,8 @@ void TagWindow::onOpenDoc ()
 				Gnome::Vfs::url_show ((*it)->getFileName());
 			} catch (const Gnome::Vfs::exception ex) {
 				Utility::exceptionDialog (&ex,
-					"trying to open file '" + (*it)->getFileName() + "'");
+					"trying to open file '"
+					+ Gnome::Vfs::unescape_string ((*it)->getFileName()) + "'");
 				return;
 			}
 		}
