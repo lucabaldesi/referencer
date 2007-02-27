@@ -92,7 +92,7 @@ bibtexout_type( fields *info)
 		maxlevel = fields_maxlevel( info );
 		if ( maxlevel > 0 ) type = TYPE_INBOOK;
 		else {
-			fprintf( stderr, "xml2bib: cannot identify TYPE" 
+			fprintf( stderr, "xml2bib: cannot identify TYPE"
 				" in reference");
 			type = TYPE_MISC;
 		}
@@ -149,7 +149,7 @@ Glib::ustring formatTitle (BibUtils::fields *ref, int level)
 {
 	int kmain;
 	int ksub;
-	
+
 	kmain = fields_find (ref, "TITLE", level);
 	ksub = fields_find (ref, "SUBTITLE", level);
 
@@ -218,7 +218,7 @@ Glib::ustring formatPeople(fields *info, char *tag, char *ctag, int level)
 		if ( person || corp ) {
 			if (npeople > 0)
 				output += " and ";
-			
+
 			if (corp)
 				output += Glib::ustring (info->data[i].data);
 			else
@@ -227,13 +227,13 @@ Glib::ustring formatPeople(fields *info, char *tag, char *ctag, int level)
 			npeople++;
 		}
 	}
-	
+
 	if (!output.validate ()) {
 		throw (Glib::ConvertError (
 			Glib::ConvertError::FAILED,
 			"Invalid UTF-8 from libbibutils in formatPeople"));
 	}
-	
+
 	return output;
 }
 
@@ -257,7 +257,7 @@ Document parseBibUtils (BibUtils::fields *ref)
 
 	int type = 	BibUtils::getType (ref);
 	newdoc.getBibData().setType (formatType (ref));
-	
+
 	if (type == TYPE_INBOOK) {
 		newdoc.getBibData().addExtra ("Chapter", formatTitle (ref, 0));
 	} else {
@@ -321,7 +321,7 @@ Document parseBibUtils (BibUtils::fields *ref)
 		}
 		if (used)
 			ref->used[j] = 1;
-			
+
 		if (!ref->used[j]) {
 			if (!someunused)
 				std::cerr << "\n";
@@ -330,7 +330,7 @@ Document parseBibUtils (BibUtils::fields *ref)
 			if (key == "TITLE" && type==TYPE_INCOLLECTION) {
 				key = "Chapter";
 			}
-	
+
 			if (!replacements[key].empty()) {
 				key = replacements[key];
 			} else {
@@ -345,7 +345,7 @@ Document parseBibUtils (BibUtils::fields *ref)
 			someunused = true;
 		}
 	}
-	
+
 	if (someunused) {
 		std::cerr << "(" << newdoc.getKey () << ")\n";
 	}
@@ -374,7 +374,7 @@ static void writerThread (Glib::ustring const &raw, int pipe, volatile bool *adv
 	if (len % block > 0) {
 		write (pipe, raw.c_str() + (len / block) * block, len % block);
 	}
-	
+
 	close (pipe);
 }
 
@@ -406,7 +406,7 @@ void biblFromString (
 	BibUtils::bibl_read(&b, otherend, "My Pipe", format, &p );
 	fclose (otherend);
 	close (pipeout);
-	
+
 	writer->join ();
 }
 

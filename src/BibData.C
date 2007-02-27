@@ -34,7 +34,7 @@ std::vector<Glib::ustring> &BibData::getDocTypes ()
 		document_types.push_back ("TechReport");
 		document_types.push_back ("Unpublished");
 	}
-	
+
 	return document_types;
 }
 
@@ -43,7 +43,7 @@ Glib::ustring &BibData::getDefaultDocType ()
 {
 	if (default_document_type.empty ())
 		default_document_type = "Article";
-	
+
 	return default_document_type;
 }
 
@@ -304,7 +304,7 @@ void BibData::guessDoi (Glib::ustring const &raw_)
 		Glib::ustring gstr = std::string(what[1]);
 		int len = gstr.size ();
 		// Special case to chop off trailing comma to deal with
-		// "doi: foo, available online" in JCompPhys 
+		// "doi: foo, available online" in JCompPhys
 		// Note that commas ARE legal suffix characters in Doi spec
 		// But there's nothing in the spec about regexing them
 		// out of PDFS :-) -jcs
@@ -389,7 +389,7 @@ void BibData::getArxiv ()
 	if (index != Glib::ustring::npos) {
 		arxivid = arxivid.substr (0, index);
 	}
-	
+
 	arxivid = Glib::Markup::escape_text (arxivid);
 
 	Glib::ustring const filename = "http://www.citebase.org/openurl?url_ver=Z39.88-2004&svc_id=bibtex&rft_id=oai%3AarXiv.org%3A" + arxivid;
@@ -421,7 +421,7 @@ void BibData::getArxiv ()
 		year_ = newdoc.getBibData().getYear ();
 		if (extras_["Url"].empty())
 			addExtra ("Url", newdoc.getBibData().getExtras ()["Url"]);
-		
+
 		BibUtils::bibl_free( &b );
 	} catch (Glib::Error ex) {
 		BibUtils::bibl_free( &b );

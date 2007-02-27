@@ -156,7 +156,7 @@ void Document::setupThumbnail ()
 		int newwidth = (int)((float)oldwidth * (desiredheight / (float)oldheight));
 		thumbnail_ = thumbnail_->scale_simple (
 			newwidth, newheight, Gdk::INTERP_BILINEAR);
-		
+
 		if (!thumbframe_) {
 			thumbframe_ = Gdk::Pixbuf::create_from_file (
 				Utility::findDataFile ("thumbnail_frame.png"));
@@ -278,7 +278,7 @@ void Document::writeBibtex (std::ostringstream& out, bool const usebraces)
 			((*it).first.lowercase () != "editor") && usebraces);
 	}
 
-	// Ideally should know what's a list of human names and what's an 
+	// Ideally should know what's a list of human names and what's an
 	// institution name be doing something different for non-human-name authors?
 	writeBibKey (out, "author",  bib_.getAuthors(), false);
 	writeBibKey (out, "title",   bib_.getTitle(), usebraces);
@@ -420,13 +420,13 @@ bool Document::matchesSearch (Glib::ustring const &search)
 {
 	if (bib_.getTitle().uppercase().find(search.uppercase()) != Glib::ustring::npos)
 		return true;
-		
+
 	if (bib_.getAuthors().uppercase().find(search.uppercase()) != Glib::ustring::npos)
 		return true;
-		
+
 	if (key_.uppercase().find(search.uppercase()) != Glib::ustring::npos)
 		return true;
-	
+
 	return false;
 }
 
@@ -444,26 +444,26 @@ void Document::renameFromKey ()
 {
 	if (getFileName().empty () || getKey().empty ())
 		return;
-	
+
 	Glib::RefPtr<Gnome::Vfs::Uri> olduri = Gnome::Vfs::Uri::create (getFileName());
-	
+
 	Glib::ustring shortname = olduri->extract_short_name ();
 	std::cerr << "Shortname = " << shortname << "\n";
 	Glib::ustring dirname = olduri->extract_dirname ();
 	std::cerr << "Dirname = " << dirname << "\n";
-	
+
 	unsigned int pos = shortname.rfind (".");
 	Glib::ustring extension = "";
 	if (pos != Glib::ustring::npos)
 		extension = shortname.substr (pos, shortname.length() - 1);
-	
+
 	Glib::ustring newfilename = getKey() + extension;
 	std::cerr << "Newfilename = " << newfilename << "\n";
-	
+
 	//Glib::RefPtr<Gnome::Vfs::Uri> newuri = Gnome::Vfs::Uri::create (newfilename);
 	Glib::RefPtr<Gnome::Vfs::Uri> newuri =
 		Gnome::Vfs::Uri::create (dirname)->append_file_name (newfilename);
-	
+
 	try {
 		Gnome::Vfs::Handle::move (
 			olduri,

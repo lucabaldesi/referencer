@@ -139,7 +139,7 @@ class TagWindow {
 			bool getmetadata;
 			Capabilities () {weblink = open = getmetadata = false;}
 		};
-		
+
 		Capabilities getDocSelectionCapabilities ();
 
 		YesNoMaybe selectedDocsHaveTag (int uid);

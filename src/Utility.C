@@ -86,13 +86,13 @@ Glib::ustring findDataFile (
 			localfile, filename);
 	}
 
-	Glib::RefPtr<Gnome::Vfs::Uri> uri = 
+	Glib::RefPtr<Gnome::Vfs::Uri> uri =
 		Gnome::Vfs::Uri::create (localfile);
 
 	if (uri->uri_exists ()) {
 		return localfile;
 	} else {
-		Glib::ustring const installedfile = 
+		Glib::ustring const installedfile =
 			Glib::build_filename (DATADIR, filename);
 		uri = Gnome::Vfs::Uri::create (installedfile);
 		if (uri->uri_exists ()) {
@@ -110,9 +110,9 @@ Glib::ustring findDataFile (
 bool fileExists (
 	Glib::ustring const &filename)
 {
-	Glib::RefPtr<Gnome::Vfs::Uri> uri = 
+	Glib::RefPtr<Gnome::Vfs::Uri> uri =
 		Gnome::Vfs::Uri::create (filename);
-	
+
 	return uri->uri_exists ();
 }
 
@@ -253,7 +253,7 @@ Glib::ustring relPath (
 
 	Glib::ustring separator = Glib::build_filename ("-", "-");
 	separator = separator.substr (1, separator.length() - 2);
-	
+
 	std::vector<Glib::ustring> libparts;
 
 	unsigned int next;
@@ -275,7 +275,7 @@ Glib::ustring relPath (
 	// and Gnome::Vfs::Uri::resolve_relative?
 
 	bool ischild = true;
-	
+
 	for (int i = 0; i < libparts.size() - 1; ++i) {
 		if (docparts.size() < i + 1 || libparts[i] != docparts[i]) {
 			ischild = false;
@@ -283,7 +283,7 @@ Glib::ustring relPath (
 		}
 	}
 
-	Glib::ustring relfilename = "";	
+	Glib::ustring relfilename = "";
 	if (ischild) {
 		for (int i = libparts.size(); i < docparts.size(); ++i) {
 			relfilename += docparts[i];
@@ -291,7 +291,7 @@ Glib::ustring relPath (
 		}
 		relfilename += child;
 	}
-	
+
 	return relfilename;
 }
 
@@ -317,13 +317,13 @@ Glib::RefPtr<Gdk::Pixbuf> getThemeIcon(Glib::ustring const &iconname)
 void moveToTrash (
 	Glib::ustring const &target_uri_str)
 {
-	// This and following Gnome::Vfs funcs may throw exceptions, 
+	// This and following Gnome::Vfs funcs may throw exceptions,
 	// but it's our caller's responsibility to catch them.
 	Glib::RefPtr<Gnome::Vfs::Uri> target =
 		Gnome::Vfs::Uri::create (target_uri_str);
-	
+
 	GnomeVFSURI *newuri = NULL;
-	
+
 	GnomeVFSResult res = gnome_vfs_find_directory (
 		target->gobj (),
 		GNOME_VFS_DIRECTORY_KIND_TRASH,
@@ -336,10 +336,10 @@ void moveToTrash (
 		throw (new Glib::FileError (Glib::FileError::NO_SUCH_ENTITY,
 			"Cannot find trash"));
 	}
-	
-	
+
+
 	Glib::RefPtr<Gnome::Vfs::Uri> trash = Glib::wrap (newuri);
-	
+
 	if (trash->is_parent (target, true)) {
 		throw (new Glib::FileError (Glib::FileError::EXISTS,
 			"File is already in trash"));
@@ -1518,7 +1518,7 @@ int wvConvertUnicodeToLaTeX(gunichar char16, Glib::ustring &out)
 	/* Windows specials (MV 4.7.2000). More could be added.
 	See http://www.hut.fi/u/jkorpela/www/windows-chars.html
 	*/
-	
+
 		case 0x2000:
 			printf ("\\enspace"); /* en space */
 			return (1);
@@ -1531,7 +1531,7 @@ int wvConvertUnicodeToLaTeX(gunichar char16, Glib::ustring &out)
 		case 0x2003:
 			printf ("\\emspace"); /* en space */
 			return (1);
-			
+
 		case 0x2009:
 			printf ("\\thinspace"); /* thin space */
 			return (1);
@@ -1739,14 +1739,14 @@ static void
 draw_frame_row (GdkPixbuf *frame_image, int target_width, int source_width, int source_v_position, int dest_v_position, GdkPixbuf *result_pixbuf, int left_offset, int height)
 {
 	int remaining_width, h_offset, slab_width;
-	
+
 	remaining_width = target_width;
 	h_offset = 0;
-	while (remaining_width > 0) {	
+	while (remaining_width > 0) {
 		slab_width = remaining_width > source_width ? source_width : remaining_width;
 		gdk_pixbuf_copy_area (frame_image, left_offset, source_v_position, slab_width, height, result_pixbuf, left_offset + h_offset, dest_v_position);
 		remaining_width -= slab_width;
-		h_offset += slab_width; 
+		h_offset += slab_width;
 	}
 }
 
@@ -1755,14 +1755,14 @@ static void
 draw_frame_column (GdkPixbuf *frame_image, int target_height, int source_height, int source_h_position, int dest_h_position, GdkPixbuf *result_pixbuf, int top_offset, int width)
 {
 	int remaining_height, v_offset, slab_height;
-	
+
 	remaining_height = target_height;
 	v_offset = 0;
-	while (remaining_height > 0) {	
+	while (remaining_height > 0) {
 		slab_height = remaining_height > source_height ? source_height : remaining_height;
 		gdk_pixbuf_copy_area (frame_image, source_h_position, top_offset, width, slab_height, result_pixbuf, dest_h_position, top_offset + v_offset);
 		remaining_height -= slab_height;
-		v_offset += slab_height; 
+		v_offset += slab_height;
 	}
 }
 
@@ -1776,10 +1776,10 @@ eel_stretch_frame_image (GdkPixbuf *frame_image, int left_offset, int top_offset
 	int y, row_stride;
 	int target_width, target_frame_width;
 	int target_height, target_frame_height;
-	
+
 	frame_width  = gdk_pixbuf_get_width  (frame_image);
 	frame_height = gdk_pixbuf_get_height (frame_image );
-	
+
 	if (fill_flag) {
 		result_pixbuf = gdk_pixbuf_scale_simple (frame_image, dest_width, dest_height, GDK_INTERP_NEAREST);
 	} else {
@@ -1787,25 +1787,25 @@ eel_stretch_frame_image (GdkPixbuf *frame_image, int left_offset, int top_offset
 	}
 	row_stride = gdk_pixbuf_get_rowstride (result_pixbuf);
 	pixels_ptr = gdk_pixbuf_get_pixels (result_pixbuf);
-	
+
 	/* clear the new pixbuf */
 	if (!fill_flag) {
 		for (y = 0; y < dest_height; y++) {
 			art_rgb_run_alpha (pixels_ptr, 255, 255, 255, 255, dest_width);
-			pixels_ptr += row_stride; 
+			pixels_ptr += row_stride;
 		}
 	}
-	
+
 	target_width  = dest_width - left_offset - right_offset;
 	target_frame_width = frame_width - left_offset - right_offset;
-	
+
 	target_height  = dest_height - top_offset - bottom_offset;
 	target_frame_height = frame_height - top_offset - bottom_offset;
-	
+
 	/* draw the left top corner  and top row */
 	gdk_pixbuf_copy_area (frame_image, 0, 0, left_offset, top_offset, result_pixbuf, 0,  0);
 	draw_frame_row (frame_image, target_width, target_frame_width, 0, 0, result_pixbuf, left_offset, top_offset);
-	
+
 	/* draw the right top corner and left column */
 	gdk_pixbuf_copy_area (frame_image, frame_width - right_offset, 0, right_offset, top_offset, result_pixbuf, dest_width - right_offset,  0);
 	draw_frame_column (frame_image, target_height, target_frame_height, 0, 0, result_pixbuf, top_offset, left_offset);
@@ -1813,11 +1813,11 @@ eel_stretch_frame_image (GdkPixbuf *frame_image, int left_offset, int top_offset
 	/* draw the bottom right corner and bottom row */
 	gdk_pixbuf_copy_area (frame_image, frame_width - right_offset, frame_height - bottom_offset, right_offset, bottom_offset, result_pixbuf, dest_width - right_offset,  dest_height - bottom_offset);
 	draw_frame_row (frame_image, target_width, target_frame_width, frame_height - bottom_offset, dest_height - bottom_offset, result_pixbuf, left_offset, bottom_offset);
-		
+
 	/* draw the bottom left corner and the right column */
 	gdk_pixbuf_copy_area (frame_image, 0, frame_height - bottom_offset, left_offset, bottom_offset, result_pixbuf, 0,  dest_height - bottom_offset);
 	draw_frame_column (frame_image, target_height, target_frame_height, frame_width - right_offset, dest_width - right_offset, result_pixbuf, top_offset, right_offset);
-	
+
 	return result_pixbuf;
 }
 
@@ -1829,16 +1829,16 @@ eel_embed_image_in_frame (GdkPixbuf *source_image, GdkPixbuf *frame_image, int l
 	GdkPixbuf *result_pixbuf;
 	int source_width, source_height;
 	int dest_width, dest_height;
-	
+
 	source_width  = gdk_pixbuf_get_width  (source_image);
 	source_height = gdk_pixbuf_get_height (source_image);
 
 	dest_width  = source_width  + left_offset + right_offset;
 	dest_height = source_height + top_offset  + bottom_offset;
-	
-	result_pixbuf = eel_stretch_frame_image (frame_image, left_offset, top_offset, right_offset, bottom_offset, 
+
+	result_pixbuf = eel_stretch_frame_image (frame_image, left_offset, top_offset, right_offset, bottom_offset,
 						      dest_width, dest_height, FALSE);
-		
+
 	/* Finally, copy the source image into the framed area */
 	gdk_pixbuf_copy_area (source_image, 0, 0, source_width, source_height, result_pixbuf, left_offset,  top_offset);
 

@@ -31,7 +31,7 @@ namespace Utility {
 
 	Glib::RefPtr<Gnome::Glade::Xml> openGlade (
 		Glib::ustring const &filename);
-	
+
 	Glib::ustring findDataFile (
 		Glib::ustring const &filename);
 
@@ -58,7 +58,7 @@ namespace Utility {
 
 	Glib::ustring firstCap (
 		Glib::ustring original);
-	
+
 	Glib::ustring relPath (
 		Glib::ustring parent,
 		Glib::ustring child);
@@ -68,7 +68,7 @@ namespace Utility {
 	int wvConvertUnicodeToLaTeX(
 		gunichar char16,
 		Glib::ustring &out);
-		
+
 	Glib::RefPtr<Gdk::Pixbuf> eelEmbedImageInFrame (
 		Glib::RefPtr<Gdk::Pixbuf> source,
 		Glib::RefPtr<Gdk::Pixbuf> frame,

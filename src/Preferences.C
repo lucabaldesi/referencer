@@ -12,7 +12,7 @@ Preferences *_global_prefs;
 
 #define USE_PROXY_KEY   "/system/http_proxy/use_http_proxy"
 #define HTTP_PROXY_HOST_KEY  "/system/http_proxy/host"
-#define HTTP_PROXY_PORT_KEY  "/system/http_proxy/port" 
+#define HTTP_PROXY_PORT_KEY  "/system/http_proxy/port"
 #define HTTP_USE_AUTH_KEY    "/system/http_proxy/use_authentication"
 #define HTTP_AUTH_USER_KEY   "/system/http_proxy/authentication_user"
 #define HTTP_AUTH_PASSWD_KEY "/system/http_proxy/authentication_password"
@@ -33,9 +33,9 @@ Preferences::Preferences ()
 	metadatalookupdefault_ =
 		"http://www.crossref.org/openurl/?id=doi:<!DOI!>&noredirect=true";
 
-	proxymode_ = confclient_->get_entry (PROXY_MODE_KEY);	
+	proxymode_ = confclient_->get_entry (PROXY_MODE_KEY);
 	proxyuseproxy_ = confclient_->get_entry (USE_PROXY_KEY);
-	proxyuseauth_ = confclient_->get_entry (HTTP_USE_AUTH_KEY);	
+	proxyuseauth_ = confclient_->get_entry (HTTP_USE_AUTH_KEY);
 	proxyhost_ = confclient_->get_entry (HTTP_PROXY_HOST_KEY);
 	proxyport_ = confclient_->get_entry (HTTP_PROXY_PORT_KEY);
 	proxyusername_ = confclient_->get_entry (HTTP_AUTH_USER_KEY);
@@ -98,7 +98,7 @@ Preferences::Preferences ()
 	xml_->get_widget ("ProxyPassword", proxypasswordentry_);
 	xml_->get_widget ("UseWebProxy", useproxycheck_);
 	xml_->get_widget ("UseAuthentication", useauthcheck_);
-	
+
 	proxyhostentry_->signal_changed().connect (
 		sigc::mem_fun (*this, &Preferences::onProxyChanged));
 	proxyportspin_->signal_value_changed().connect (
@@ -135,7 +135,7 @@ void Preferences::onConfChange (int number, Gnome::Conf::Entry entry)
 		uselistviewsignal_.emit ();
 	} else if (key == CONF_PATH "/showtagpane") {
 		showtagpanesignal_.emit ();
-	
+
 	// Web Service settings
 	} else if (key == CONF_PATH "/doilaunch") {
 		doilaunchentry_->set_text (
@@ -235,7 +235,7 @@ void Preferences::updateSensitivity ()
 	proxyhostentry_->set_sensitive (useproxy);
 	proxyportspin_->set_sensitive (useproxy);
 	useauthcheck_->set_sensitive (useproxy);
-	
+
 	bool useauth = useauthcheck_->get_active ();
 	proxyusernameentry_->set_sensitive (useproxy && useauth);
 	proxypasswordentry_->set_sensitive (useproxy && useauth);
@@ -255,7 +255,8 @@ void Preferences::onProxyChanged ()
 		confclient_->set (
 			proxyhost_.get_key(), proxyhostentry_->get_text ());
 		confclient_->set (
-			proxyport_.get_key(), (int) proxyportspin_->get_adjustment ()->get_value ());
+			proxyport_.get_key(),
+			(int) proxyportspin_->get_adjustment ()->get_value ());
 	} else {
 		confclient_->set (proxymode_.get_key (), Glib::ustring ("none"));
 	}
@@ -267,7 +268,7 @@ void Preferences::onProxyChanged ()
 		confclient_->set (
 			proxypassword_.get_key(), proxypasswordentry_->get_text ());
 	}
-	
+
 	updateSensitivity ();
 }
 

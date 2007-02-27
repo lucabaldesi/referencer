@@ -74,7 +74,7 @@ TagWindow::TagWindow ()
 	} else {
 		onNewLibrary ();
 	}
-	
+
 	setDirty (false);
 
 	populateDocStore ();
@@ -123,7 +123,7 @@ void TagWindow::constructUI ()
 
 
 	Gtk::Toolbar *toolbar = (Gtk::Toolbar *) uimanager_->get_widget("/ToolBar");
-	
+
 	Gtk::ToolItem *paditem = Gtk::manage (new Gtk::ToolItem);
 	paditem->set_expand (true);
 	toolbar->append (*paditem);
@@ -139,11 +139,11 @@ void TagWindow::constructUI ()
 	search->show_all ();
 	searchitem->add (*search);
 	toolbar->append (*searchitem);
-	
+
 	searchentry_ = searchentry;
 	searchentry_->signal_changed ().connect (
 		sigc::mem_fun (*this, &TagWindow::onSearchChanged));
-	
+
 
 	vbox = Gtk::manage(new Gtk::VBox);
 	Gtk::Frame *tagsframe = new Gtk::Frame ();
@@ -614,12 +614,12 @@ void TagWindow::populateDocStore ()
 				break;
 			}
 		}
-		
+
 		if (search && !filtered) {
 			if (!(*docit).matchesSearch (searchtext))
 				filtered = true;
 		}
-		
+
 		if (filtered)
 			continue;
 
@@ -658,7 +658,7 @@ void TagWindow::populateTagList ()
 	Gtk::TreeModel::iterator all = tagstore_->append();
 	(*all)[taguidcol_] = ALL_TAGS_UID;
 	(*all)[tagnamecol_] = "<b>All</b>";
-	
+
 	Gtk::TreeModel::iterator none = tagstore_->append();
 	(*none)[taguidcol_] = NO_TAGS_UID;
 	(*none)[tagnamecol_] = "<b>Untagged</b>";
@@ -969,7 +969,7 @@ TagWindow::Capabilities TagWindow::getDocSelectionCapabilities ()
 
 	std::vector<Document*>::iterator it = docs.begin ();
 	std::vector<Document*>::iterator const end = docs.end ();
-	
+
 	bool const offline = _global_prefs->getWorkOffline();
 
 	for (; it != end; it++) {
@@ -980,11 +980,11 @@ TagWindow::Capabilities TagWindow::getDocSelectionCapabilities ()
 
 		if ((*it)->canGetMetadata() && !offline)
 			result.getmetadata = true;
-		
+
 		if (!(*it)->getFileName().empty())
 			result.open = true;
 	}
-	
+
 	return result;
 }
 
@@ -1200,11 +1200,11 @@ void TagWindow::onExportBibtex ()
 	allfiles.add_pattern ("*.*");
 	allfiles.set_name ("All Files");
 	chooser.add_filter (allfiles);
-	
+
 	Gtk::VBox extrabox;
 	extrabox.set_spacing (6);
 	chooser.set_extra_widget (extrabox);
-	
+
 	Gtk::HBox selectionbox;
 	selectionbox.set_spacing (6);
 	extrabox.pack_start (selectionbox, false, false, 0);
@@ -1217,11 +1217,11 @@ void TagWindow::onExportBibtex ()
 	combo.set_active (0);
 	selectionbox.pack_start (combo, true, true, 0);
 	selectionbox.set_sensitive (getSelectedDocCount ());
-	
+
 	Gtk::CheckButton bracescheck ("Protect capitalization (surround values with {})");
 	extrabox.pack_start (bracescheck, false, false, 0);
 
-	extrabox.show_all ();	
+	extrabox.show_all ();
 
 	// Browsing to remote hosts not working for some reason
 	//chooser.set_local_only (false);
@@ -1423,7 +1423,7 @@ void TagWindow::onAbout ()
 void TagWindow::onIntroduction ()
 {
 	Glib::ustring filename = Utility::findDataFile ("introduction.html");
-	
+
 	if (filename.empty ())
 		return;
 
@@ -1830,13 +1830,13 @@ bool TagWindow::loadLibrary (Glib::ustring const &libfilename)
 	Glib::RefPtr<Gnome::Vfs::Uri> liburi = Gnome::Vfs::Uri::create (libfilename);
 
 	ProgressDialog progress;
-	
+
 	progress.setLabel (
 		"<b><big>Opening "
 		+ liburi->extract_short_name ()
 		+ "</big></b>\n\nThis process may take some time, particularly\n"
 		+ "if the library has been moved since it was last opened.");
-	
+
 	// If we get an exception and return, progress::~Progress should
 	// take care of calling finish() for us.
 	progress.start ();
@@ -1874,7 +1874,7 @@ bool TagWindow::loadLibrary (Glib::ustring const &libfilename)
 	if (!readXML (rawtext))
 		return false;
 	std::cerr << "Done, got " << doclist_->getDocs ().size() << " docs\n";
-	
+
 	int i = 0;
 	DocumentList::Container &docs = doclist_->getDocs ();
 	DocumentList::Container::iterator docit = docs.begin ();
@@ -1988,7 +1988,7 @@ void TagWindow::onGetMetadataDoc ()
 			doc->getMetaData ();
 		}
 	}
-	
+
 	if (doclistdirty)
 		populateDocStore ();
 }
@@ -1998,7 +1998,7 @@ void TagWindow::onRenameDoc ()
 {
 	bool doclistdirty = false;
 	std::vector <Document*> docs = getSelectedDocs ();
-	
+
 	Glib::ustring message;
 	if (docs.size () == 1) {
 		message = "<b><big>Really rename this file to '"
@@ -2013,7 +2013,7 @@ void TagWindow::onRenameDoc ()
 			+ " files to their keys?</big></b>\n\n"
 			+ "This action <b>cannot be undone</b>.";
 	}
-	
+
 	Gtk::MessageDialog confirmdialog (
 		message, true, Gtk::MESSAGE_QUESTION,
 		Gtk::BUTTONS_NONE, true);
@@ -2024,14 +2024,14 @@ void TagWindow::onRenameDoc ()
 
 	if (!confirmdialog.run())
 		return;
-	
+
 	std::vector <Document*>::iterator it = docs.begin ();
 	std::vector <Document*>::iterator const end = docs.end ();
 	for (; it != end; ++it) {
 		Document* doc = *it;
 		doc->renameFromKey ();
 	}
-	
+
 	if (doclistdirty)
 		populateDocStore ();
 }
@@ -2114,16 +2114,16 @@ void TagWindow::onOpenDoc ()
 	std::vector<Document*> docs = getSelectedDocs ();
 	std::vector<Document*>::iterator it = docs.begin ();
 	std::vector<Document*>::iterator const end = docs.end ();
-	for (; it != end ; ++it) {		 
-		if (!(*it)->getFileName().empty()) {		
-			try { 
+	for (; it != end ; ++it) {
+		if (!(*it)->getFileName().empty()) {
+			try {
 				Gnome::Vfs::url_show ((*it)->getFileName());
 			} catch (const Gnome::Vfs::exception ex) {
 				Utility::exceptionDialog (&ex,
 					"trying to open file '" + (*it)->getFileName() + "'");
 				return;
 			}
-		}		
+		}
 	}
 }
 
@@ -2228,7 +2228,7 @@ void TagWindow::onUseListViewPrefChanged ()
 		docsiconscroll_->show ();
 		docsiconview_->grab_focus ();
 	}
-	
+
 	docSelectionChanged ();
 }
 
@@ -2267,7 +2267,7 @@ void TagWindow::onWorkOfflinePrefChanged ()
 	Glib::RefPtr <Gtk::ToggleAction>::cast_static(
 		actiongroup_->get_action ("WorkOffline"))->set_active (
 			_global_prefs->getWorkOffline ());
-	
+
 	// To pick up sensitivity changes
 	populateDocStore ();
 }
@@ -2328,7 +2328,7 @@ void TagWindow::onImport ()
 	allfiles.add_pattern ("*.*");
 	allfiles.set_name ("All Files");
 	chooser.add_filter (allfiles);
-	
+
 	Gtk::FileFilter allbibfiles;
 	// Complete random guesses, what are the real extensions?
 	allbibfiles.add_pattern ("*.ris");
@@ -2336,7 +2336,7 @@ void TagWindow::onImport ()
 	allbibfiles.add_pattern ("*.ref");
 	allbibfiles.set_name ("Bibliography Files");
 	chooser.add_filter (allbibfiles);
-	
+
 	Gtk::FileFilter bibtexfiles;
 	bibtexfiles.add_pattern ("*.[bB][iI][bB]");
 	bibtexfiles.set_name ("BibTeX Files");
@@ -2379,7 +2379,7 @@ void TagWindow::onImport ()
 				break;
 			default:
 				// Users selected "Auto detect"
-				// DocumentList::import will try to guess once 
+				// DocumentList::import will try to guess once
 				// it has the text
 				format = BibUtils::FORMAT_UNKNOWN;
 		}

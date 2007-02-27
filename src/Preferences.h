@@ -11,18 +11,18 @@
 class Preferences {
 private:
 	Glib::RefPtr<Gnome::Glade::Xml> xml_;
-	
+
 	Gtk::Dialog *dialog_;
 	Gtk::Entry *doilaunchentry_;
 	Gtk::Entry *metadatalookupentry_;
-	
+
 	Gtk::Entry *proxyhostentry_;
 	Gtk::SpinButton *proxyportspin_;
 	Gtk::Entry *proxyusernameentry_;
 	Gtk::Entry *proxypasswordentry_;
 	Gtk::CheckButton *useproxycheck_;
 	Gtk::CheckButton *useauthcheck_;
-	
+
 	void onWorkOfflineToggled ();
 	void onURLChanged ();
 	void onProxyChanged ();
@@ -39,9 +39,9 @@ private:
 	Gnome::Conf::Entry showtagpane_;
 	Gnome::Conf::Entry libraryfilename_;
 
-	Gnome::Conf::Entry proxymode_;	
+	Gnome::Conf::Entry proxymode_;
 	Gnome::Conf::Entry proxyuseproxy_;
-	Gnome::Conf::Entry proxyuseauth_;	
+	Gnome::Conf::Entry proxyuseauth_;
 	Gnome::Conf::Entry proxyhost_;
 	Gnome::Conf::Entry proxyport_;
 	Gnome::Conf::Entry proxyusername_;

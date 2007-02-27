@@ -10,11 +10,11 @@ class ProgressDialog {
 	~ProgressDialog ();
 
 	void setLabel (Glib::ustring const &text);
-	void start ();	
+	void start ();
 	void update (double status);
 	void update ();
 	void finish ();
-	
+
 	void getLock ();
 	void releaseLock ();
 

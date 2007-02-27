@@ -97,7 +97,7 @@ Glib::ustring &getRemoteFile (
 		};
 		throw Exception ("Transfer failed\n");
 	}
-	
+
 	return transferresults;
 }
 
