@@ -108,6 +108,7 @@ Glib::ustring Document::generateKey ()
 
 void Document::setupThumbnail ()
 {
+	thumbnail_.clear ();
 	Glib::RefPtr<Gnome::Vfs::Uri> uri = Gnome::Vfs::Uri::create (filename_);
 	if (!filename_.empty () && uri->is_local() && uri->uri_exists()) {
 		Glib::RefPtr<Gnome::Vfs::FileInfo> fileinfo = uri->get_file_info ();
