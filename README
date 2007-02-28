@@ -5,6 +5,8 @@ A document organiser and bibliography manager
 
 For help: There is a mailing list.  Send a blank email to referencer-subscribe@icculus.org to subscribe.  To post to the list, send messages to referencer@icculus.org.
 
+Web page: http://icculus.org/referencer/
+
 Author: John Spray (jcspray at icculus.org)
 
 Building
@@ -38,7 +40,7 @@ On Fedora Core 5, you will need to do:
 Installing
 ==========
 
-Referencer may be run in-place from the build directory for convenient evaluation or testing.  Alternatively, it maybe installed systemwide: running 'make install' should install Referencer into the /usr/local prefix.  Edit the 'PREFIX' variable in Makefile and rebuild to install to a different location.
+Referencer may be run in-place from the build directory (type src/referencer) for convenient evaluation or testing.  Alternatively, it maybe installed systemwide: running 'make install' should install Referencer into the /usr/local prefix by default, use "--prefix /somewhere" when running ./configure to install it elsewhere.
 
 Attributions
 ============
