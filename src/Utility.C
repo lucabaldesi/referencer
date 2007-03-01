@@ -217,7 +217,7 @@ std::string escapeBibtexAccents (
 			// Rationale: although in general we pass through {,},\ etc to allow
 			// the user to use his own latex-isms, the ampersand has no legitimate
 			// purpose in a bibtex string and is quite common in titles etc.
-			if (letter == '&') {
+			if (letter == '&' && i > 0 && target[i - 1] != '\\') {
 				target.erase (i, 1);
 				target.insert (i, "\\&");
 				i += 1;
