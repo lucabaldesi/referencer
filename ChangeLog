@@ -1,4 +1,5 @@
 1.0.2:
+	- Escape ampersands in bibtex export
 	- Options for setting gnome proxy in Preferences
 	- Fix thumbnail sizing bug
 	- Special case for getting dois like "doi: blah/blah, more text" to 

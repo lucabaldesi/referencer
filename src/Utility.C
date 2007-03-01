@@ -209,21 +209,34 @@ void writeBibKey (
 std::string escapeBibtexAccents (
 	Glib::ustring target)
 {
+	std::cerr << "escapeBibtexAccents '" << target << "'\n";
 	for (unsigned int i = 0; i < target.length(); ++i) {
 		gunichar letter = target[i];
+		std::cerr << (char)letter << "\n";
 		if (letter < 128) {
+			// Rationale: although in general we pass through {,},\ etc to allow
+			// the user to use his own latex-isms, the ampersand has no legitimate
+			// purpose in a bibtex string and is quite common in titles etc.
+			if (letter == '&') {
+				target.erase (i, 1);
+				target.insert (i, "\\&");
+				i += 1;
+				std::cerr << target << "\n";
+			}
 			continue;
 		} else {
 			Glib::ustring replacement;
-			target.erase (i, 1);
+			
 			int gotone = wvConvertUnicodeToLaTeX (letter, replacement);
-			if (gotone) {
-				target.insert (i, replacement);
-			} else {
-				target.insert (i, "*");
+			if (!gotone) {
 				std::cerr << "escapeBibtexAccents: no replacement found for '"
 					<< letter << "'\n";
+				replacement = "*";
 			}
+			
+			target.erase (i, 1);
+			target.insert (i, replacement);
+			i += replacement.length () - 1;
 		}
 	}
 
