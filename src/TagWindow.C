@@ -451,6 +451,7 @@ void TagWindow::constructMenu ()
   	sigc::mem_fun(*this, &TagWindow::onAddDocByDoi));
 	actiongroup_->add( Gtk::Action::create(
 		"RemoveDoc", Gtk::Stock::REMOVE, "_Remove"),
+		Gtk::AccelKey ("Delete",
   	sigc::mem_fun(*this, &TagWindow::onRemoveDoc));
 	actiongroup_->add( Gtk::Action::create(
 		"WebLinkDoc", Gtk::Stock::CONNECT, "_Web Link..."), Gtk::AccelKey ("<control><shift>a"),
@@ -466,7 +467,8 @@ void TagWindow::constructMenu ()
 		"GetMetadataDoc", Gtk::Stock::CONNECT, "_Get Metadata"),
   	sigc::mem_fun(*this, &TagWindow::onGetMetadataDoc));
 	actiongroup_->add( Gtk::Action::create(
-		"DeleteDoc", Gtk::Stock::DELETE, "_Move to Trash"),
+		"DeleteDoc", Gtk::Stock::DELETE, "_Delete File from drive"),
+		Gtk::AccelKey ("<control>Delete"),
   	sigc::mem_fun(*this, &TagWindow::onDeleteDoc));
 	actiongroup_->add( Gtk::Action::create(
 		"RenameDoc", Gtk::Stock::EDIT, "_Rename File from Key"),
@@ -2046,16 +2048,16 @@ void TagWindow::onDeleteDoc ()
 	if (multiple) {
 		std::ostringstream num;
 		num << docs.size ();
-		Glib::ustring message = "<b><big>Are you sure you want to move these "
-			+ num.str() + " documents to the trash?</big></b>\n\nAll tag "
+		Glib::ustring message = "<b><big>Are you sure you want to delete these "
+			+ num.str() + " documents?</big></b>\n\nAll tag "
 			"associations and metadata for these documents will be permanently "
-			+ "lost, and the files they refer to will be moved to the trash.";
+			+ "lost, and the files they refer to will irretrievably deleted.";
 		Gtk::MessageDialog confirmdialog (
 			message, true, Gtk::MESSAGE_QUESTION,
 			Gtk::BUTTONS_NONE, true);
 
 		confirmdialog.add_button (Gtk::Stock::CANCEL, 0);
-		confirmdialog.add_button ("Move to Trash", 1);
+		confirmdialog.add_button (Gtk::Stock::DELETE, 1);
 		confirmdialog.set_default_response (0);
 
 		if (!confirmdialog.run()) {
@@ -2067,16 +2069,16 @@ void TagWindow::onDeleteDoc ()
 	std::vector<Document*>::iterator const end = docs.end ();
 	for (; it != end; it++) {
 		if (!multiple) {
-			Glib::ustring message = "<b><big>Are you sure you want to move '" +
-				(*it)->getKey () + "' to the trash?</big></b>\n\nAll tag "
+			Glib::ustring message = "<b><big>Are you sure you want to delete '" +
+				(*it)->getKey () + "'?</big></b>\n\nAll tag "
 				"associations and metadata for the document will be permanently "
-				+ "lost, and the file it refers to will be moved to the trash.";
+				+ "lost, and the file it refers to will irretrievably deleted.";
 			Gtk::MessageDialog confirmdialog (
 				message, true, Gtk::MESSAGE_QUESTION,
 				Gtk::BUTTONS_NONE, true);
 
 			confirmdialog.add_button (Gtk::Stock::CANCEL, 0);
-			confirmdialog.add_button ("Move to Trash", 1);
+			confirmdialog.add_button (Gtk::Stock::DELETE, 1);
 			confirmdialog.set_default_response (0);
 
 			if (!confirmdialog.run()) {
@@ -2085,18 +2087,18 @@ void TagWindow::onDeleteDoc ()
 		}
 
 		try {
-			Utility::moveToTrash ((*it)->getFileName ());
+			Utility::deleteFile ((*it)->getFileName ());
+			doclist_->removeDoc(*it);
+			doclistdirty = true;
 		} catch (Glib::Exception &ex) {
-			Utility::exceptionDialog (&ex, "Moving '" + (*it)->getFileName () + "' to trash");
+			Utility::exceptionDialog (&ex, "Deleting '" + (*it)->getFileName () + "'");
 		}
-		doclist_->removeDoc(*it);
 
-		doclistdirty = true;
 	}
 
 	if (doclistdirty) {
 		setDirty (true);
-		std::cerr << "TagWindow::onRemoveDoc: dirty, calling populateDocStore\n";
+		std::cerr << "TagWindow::onDeleteDoc: dirty, calling populateDocStore\n";
 		// We disable docSelectionChanged because otherwise it gets called N
 		// times for deleting N items
 		docselectionignore_ = true;

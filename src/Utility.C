@@ -314,6 +314,16 @@ Glib::RefPtr<Gdk::Pixbuf> getThemeIcon(Glib::ustring const &iconname)
 }
 
 
+void deleteFile (
+	Glib::ustring const &target_uri_str)
+{
+	// Caller is responsible for catching Gnome::Vfs exceptions
+	Gnome::Vfs::Handle::unlink (target_uri_str);
+}
+
+
+#if 0
+// This DOES NOT WORK.  Transfer::transfer always throws an exception
 void moveToTrash (
 	Glib::ustring const &target_uri_str)
 {
@@ -361,6 +371,7 @@ void moveToTrash (
 		std::cerr << "2: " << ex.what () << "\n";
 	}
 }
+#endif
 
 
 /* w00t, copied and pasted from AbiWord

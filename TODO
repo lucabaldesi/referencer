@@ -3,9 +3,9 @@ Needed:
 	Sizing of columns in the list view
 	LyX citation via lyxserver (pybliographic, lyx/src/client)
 	Command line reflib->bibtex
-	Fix up moveToTrash
 
 	UTF-8 option on bibtex export
+	Resolve symlinks before doing relative filename magic
 
 	Edit menu:
 		- Copy key
@@ -34,6 +34,8 @@ Big functionality wishlist:
 	Tracker?  Beagle?
 
 Little functionality wishlist:
+	Some support for moving file to trash instead of deleting
+	Set tags based on folder names when doing recursive import (Wilhelms, C.)
 	gconf schema
 	Get document type from crossref XML instead of assuming Article
 	When generating keys from authorYEAR, should get rid of LaTeX unfriendly accented characters

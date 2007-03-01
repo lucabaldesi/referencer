@@ -46,6 +46,9 @@ namespace Utility {
 
 	void moveToTrash (
 		Glib::ustring const &uri);
+		
+	void deleteFile (
+		Glib::ustring const &target_uri_str);
 
 	void writeBibKey (
 		std::ostringstream &out,
