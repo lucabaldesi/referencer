@@ -285,7 +285,11 @@ void BibData::guessDoi (Glib::ustring const &raw_)
 	std::string const &raw = raw_;
 
 	boost::regex expression(
-		"[Dd][Oo][Ii]:? *"
+		"(?:"
+		"(?:[Dd][Oo][Ii]:? *)"
+		"|"		
+		"(?:[Dd]igital *[Oo]bject *[Ii]denti(?:fi|ﬁ)er:? *)"
+		")"		
 		"("
 		"[^\\.\\s]+"
 		"\\."

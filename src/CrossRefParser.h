@@ -73,7 +73,13 @@ class CrossRefParser : public Glib::Markup::Parser {
 		Glib::Markup::ParseContext& context,
 		const Glib::ustring& text)
 	{
-		text_ += text;
+		if (Glib::str_has_prefix (text, "<![CDATA[") &&
+				Glib::str_has_suffix (text, "]]>")) {
+			text_ += text.substr (strlen ("<![CDATA["),
+				text.length () - strlen ("<![CDATA[" "]]>"));
+		} else {
+			text_ += text;	
+		}
 	}
 };
 
