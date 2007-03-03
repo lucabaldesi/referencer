@@ -1239,52 +1239,62 @@ void TagWindow::onExportBibtex ()
 		// Really we shouldn't add the extension if the user has chosen an
 		// existing file rather than typing in a name themselves.
 		bibfilename = Utility::ensureExtension (bibfilename, "bib");
-		Glib::ustring tmpbibfilename = bibfilename + ".export-tmp";
 
-		Gnome::Vfs::Handle bibfile;
-
-		try {
-			bibfile.create (tmpbibfilename, Gnome::Vfs::OPEN_WRITE,
-				false, Gnome::Vfs::PERM_USER_READ | Gnome::Vfs::PERM_USER_WRITE);
-		} catch (const Gnome::Vfs::exception ex) {
-			std::cerr << "TagWindow::onExportBibtex: "
-				"exception in create '" << ex.what() << "'\n";
-			Utility::exceptionDialog (&ex, "opening BibTex file");
-			return;
-		}
-
-		std::ostringstream bibtext;
-
-		if (selectedonly) {
-			std::vector<Document*> docs = getSelectedDocs ();
-			std::vector<Document*>::iterator it = docs.begin ();
-			std::vector<Document*>::iterator const end = docs.end ();
-			for (; it != end; ++it) {
-				(*it)->writeBibtex (bibtext, usebraces);
-			}
-		} else {
-			DocumentList::Container &docs = doclist_->getDocs ();
-			DocumentList::Container::iterator it = docs.begin();
-			DocumentList::Container::iterator const end = docs.end();
-			for (; it != end; it++) {
-				(*it).writeBibtex (bibtext, usebraces);
-			}
-		}
-
-
-		try {
-			bibfile.write (bibtext.str().c_str(), strlen(bibtext.str().c_str()));
-		} catch (const Gnome::Vfs::exception ex) {
-			Utility::exceptionDialog (&ex, "writing to BibTex file");
-			bibfile.close ();
-			return;
-		}
-
-		bibfile.close ();
-
-		// Forcefully move our tmp file into its real position
-		Gnome::Vfs::Handle::move (tmpbibfilename, bibfilename, true);
+		writeBibtex (bibfilename, selectedonly, usebraces);
 	}
+}
+
+
+void TagWindow::writeBibtex (
+	Glib::ustring const &bibfilename,
+	bool const selectedonly,
+	bool const usebraces)
+{
+	Glib::ustring tmpbibfilename = bibfilename + ".export-tmp";
+
+	Gnome::Vfs::Handle bibfile;
+
+	try {
+		bibfile.create (tmpbibfilename, Gnome::Vfs::OPEN_WRITE,
+			false, Gnome::Vfs::PERM_USER_READ | Gnome::Vfs::PERM_USER_WRITE);
+	} catch (const Gnome::Vfs::exception ex) {
+		std::cerr << "TagWindow::onExportBibtex: "
+			"exception in create '" << ex.what() << "'\n";
+		Utility::exceptionDialog (&ex, "opening BibTex file");
+		return;
+	}
+
+	std::ostringstream bibtext;
+
+	if (selectedonly) {
+		std::vector<Document*> docs = getSelectedDocs ();
+		std::vector<Document*>::iterator it = docs.begin ();
+		std::vector<Document*>::iterator const end = docs.end ();
+		for (; it != end; ++it) {
+			(*it)->writeBibtex (bibtext, usebraces);
+		}
+	} else {
+		DocumentList::Container &docs = doclist_->getDocs ();
+		DocumentList::Container::iterator it = docs.begin();
+		DocumentList::Container::iterator const end = docs.end();
+		for (; it != end; it++) {
+			(*it).writeBibtex (bibtext, usebraces);
+		}
+	}
+
+
+	try {
+		bibfile.write (bibtext.str().c_str(), strlen(bibtext.str().c_str()));
+	} catch (const Gnome::Vfs::exception ex) {
+		Utility::exceptionDialog (&ex, "writing to BibTex file");
+		bibfile.close ();
+		return;
+	}
+
+	bibfile.close ();
+
+	// Forcefully move our tmp file into its real position
+	Gnome::Vfs::Handle::move (tmpbibfilename, bibfilename, true);
 }
 
 

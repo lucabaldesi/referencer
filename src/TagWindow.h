@@ -151,6 +151,10 @@ class TagWindow {
 		bool readXML (Glib::ustring XML);
 		bool loadLibrary (Glib::ustring const &libfilename);
 		bool saveLibrary (Glib::ustring const &libfilename);
+		void writeBibtex (
+			Glib::ustring const &bibfilename,
+			bool const selectedonly,
+			bool const usebraces);
 
 		// Memory of where the user added files from
 		Glib::ustring addfolder_;
