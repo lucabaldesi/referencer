@@ -5,6 +5,8 @@ INCLUDES = -DDATADIR=\""$(pkgdatadir)"\"
 referencer_SOURCES =	\
 	TagWindow.C	\
 	TagWindow.h	\
+	Library.C \
+	Library.h \
 	TagList.C	\
 	TagList.h	\
 	DocumentList.C	\

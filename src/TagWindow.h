@@ -11,6 +11,7 @@ class DocumentProperties;
 class TagList;
 class Gtk::TreePath;
 class Glib::ustring;
+class Library;
 
 #define ALL_TAGS_UID -1
 #define NO_TAGS_UID -2
@@ -26,9 +27,8 @@ class TagWindow {
 		void populateTagList ();
 		void constructUI ();
 		void constructMenu ();
-
-		DocumentList *doclist_;
-		TagList *taglist_;
+		
+		Library *library_;
 
 		Gtk::TreeModelColumn<int> taguidcol_;
 		Gtk::TreeModelColumn<Glib::ustring> tagnamecol_;
@@ -125,11 +125,6 @@ class TagWindow {
 
 		Gtk::Menu doccontextmenu_;
 
-		typedef enum {
-			NO = 0,
-			YES,
-			MAYBE
-		} YesNoMaybe;
 
 
 		class Capabilities {
@@ -142,19 +137,17 @@ class TagWindow {
 
 		Capabilities getDocSelectionCapabilities ();
 
-		YesNoMaybe selectedDocsHaveTag (int uid);
+		typedef enum {
+			NONE = 0,
+			ALL,
+			SOME
+		} SubSet;
+
+		SubSet selectedDocsHaveTag (int uid);
+
 		Document *getSelectedDoc ();
 		std::vector<Document*> getSelectedDocs ();
-		std::vector<Glib::ustring> getSelectedDocKeys ();
 		int getSelectedDocCount ();
-		Glib::ustring writeXML ();
-		bool readXML (Glib::ustring XML);
-		bool loadLibrary (Glib::ustring const &libfilename);
-		bool saveLibrary (Glib::ustring const &libfilename);
-		void writeBibtex (
-			Glib::ustring const &bibfilename,
-			bool const selectedonly,
-			bool const usebraces);
 
 		// Memory of where the user added files from
 		Glib::ustring addfolder_;

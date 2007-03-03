@@ -8,8 +8,9 @@
 #include <sstream>
 
 #include "TagWindow.h"
-#include "TagList.h"
+#include "Library.h"
 #include "DocumentList.h"
+#include "TagList.h"
 #include "Document.h"
 #include "DocumentProperties.h"
 #include "Preferences.h"
@@ -58,8 +59,7 @@ TagWindow::TagWindow ()
 	docselectionignore_ = false;
 	dirty_ = false;
 
-	taglist_ = new TagList();
-	doclist_ = new DocumentList();
+	library_ = new Library ();
 
 	usinglistview_ = _global_prefs->getUseListView ();
 
@@ -69,7 +69,7 @@ TagWindow::TagWindow ()
 
 	Glib::ustring const libfile = _global_prefs->getLibraryFilename ();
 
-	if (!libfile.empty() && loadLibrary (libfile)) {
+	if (!libfile.empty() && library_->load (libfile)) {
 		setOpenedLib (libfile);
 	} else {
 		onNewLibrary ();
@@ -86,8 +86,7 @@ TagWindow::~TagWindow ()
 {
 	_global_prefs->setLibraryFilename (openedlib_);
 
-	delete taglist_;
-	delete doclist_;
+	delete library_;
 	delete docpropertiesdialog_;
 
 	delete _global_prefs;
@@ -581,7 +580,7 @@ void TagWindow::populateDocStore ()
 	// This is our notification that something about the documentlist
 	// has changed, including its length, so update dependent sensitivities:
 	actiongroup_->get_action("ExportBibtex")
-		->set_sensitive (doclist_->size() > 0);
+		->set_sensitive (library_->doclist_->size() > 0);
 	// Save initial selection
 	Gtk::TreePath initialpath;
 	if (usinglistview_) {
@@ -601,8 +600,8 @@ void TagWindow::populateDocStore ()
 	Glib::ustring const searchtext = searchentry_->get_text ();
 	bool const search = !searchtext.empty ();
 
-	// Populate from doclist_
-	DocumentList::Container& docvec = doclist_->getDocs();
+	// Populate from library_->doclist_
+	DocumentList::Container& docvec = library_->doclist_->getDocs();
 	DocumentList::Container::iterator docit = docvec.begin();
 	DocumentList::Container::iterator const docend = docvec.end();
 	for (; docit != docend; ++docit) {
@@ -669,8 +668,8 @@ void TagWindow::populateTagList ()
 
 	taggerchecks_.clear();
 
-	// Populate from taglist_
-	std::vector<Tag> tagvec = taglist_->getTags();
+	// Populate from library_->taglist_
+	std::vector<Tag> tagvec = library_->taglist_->getTags();
 	std::vector<Tag>::iterator it = tagvec.begin();
 	std::vector<Tag>::iterator const end = tagvec.end();
 	for (; it != end; ++it) {
@@ -788,7 +787,7 @@ void TagWindow::tagNameEdited (
 	// Should escape this
 	Glib::ustring newname = text2;
 	(*iter)[tagnamecol_] = newname;
-	taglist_->renameTag ((*iter)[taguidcol_], newname);
+	library_->taglist_->renameTag ((*iter)[taguidcol_], newname);
 	taggerchecks_[(*iter)[taguidcol_]]->set_label (newname);
 }
 
@@ -875,14 +874,14 @@ void TagWindow::docSelectionChanged ()
 	actiongroup_->get_action("GetMetadataDoc")->set_sensitive (cap.getmetadata);
 
 	ignoretaggerchecktoggled_ = true;
-	for (std::vector<Tag>::iterator tagit = taglist_->getTags().begin();
-	     tagit != taglist_->getTags().end(); ++tagit) {
+	for (std::vector<Tag>::iterator tagit = library_->taglist_->getTags().begin();
+	     tagit != library_->taglist_->getTags().end(); ++tagit) {
 		Gtk::CheckButton *check = taggerchecks_[(*tagit).uid_];
-		YesNoMaybe state = selectedDocsHaveTag ((*tagit).uid_);
-		if (state == YES) {
+		SubSet state = selectedDocsHaveTag ((*tagit).uid_);
+		if (state == ALL) {
 			check->set_active (true);
 			check->set_inconsistent (false);
-		} else if (state == MAYBE) {
+		} else if (state == SOME) {
 			check->set_active (false);
 			check->set_inconsistent (true);
 		} else {
@@ -935,7 +934,7 @@ bool TagWindow::docClicked (GdkEventButton* event)
 }
 
 
-TagWindow::YesNoMaybe TagWindow::selectedDocsHaveTag (int uid)
+TagWindow::SubSet TagWindow::selectedDocsHaveTag (int uid)
 {
 	bool alltrue = true;
 	bool allfalse = true;
@@ -953,13 +952,13 @@ TagWindow::YesNoMaybe TagWindow::selectedDocsHaveTag (int uid)
 	}
 
 	if (allfalse == true)
-		return NO;
+		return NONE;
 	else if (alltrue == true)
-		return YES;
+		return ALL;
 	else if (alltrue == false && allfalse == false)
-		return MAYBE;
+		return SOME;
 	else
-		return NO;
+		return NONE;
 }
 
 
@@ -1048,7 +1047,7 @@ bool TagWindow::ensureSaved (Glib::ustring const & action)
 					return false;
 				}
 			} else {
-				if (!saveLibrary (openedlib_)) {
+				if (!library_->save (openedlib_)) {
 					// Don't lose data
 					return false;
 				}
@@ -1094,7 +1093,7 @@ void TagWindow::onCreateTag  ()
 		} else {
 			invalid = false;
 			setDirty (true);
-			taglist_->newTag (newname, Tag::ATTACH);
+			library_->taglist_->newTag (newname, Tag::ATTACH);
 			populateTagList();
 		}
 
@@ -1152,9 +1151,9 @@ void TagWindow::onDeleteTag ()
 	for (; uidit != uidend; ++uidit) {
 		std::cerr << "Really deleting " << *uidit << "\n";
 		// Take it off any docs
-		doclist_->clearTag(*uidit);
+		library_->doclist_->clearTag(*uidit);
 		// Remove it from the tag list
-		taglist_->deleteTag (*uidit);
+		library_->taglist_->deleteTag (*uidit);
 	}
 
 	if (uidstodelete.size() > 0) {
@@ -1240,61 +1239,20 @@ void TagWindow::onExportBibtex ()
 		// existing file rather than typing in a name themselves.
 		bibfilename = Utility::ensureExtension (bibfilename, "bib");
 
-		writeBibtex (bibfilename, selectedonly, usebraces);
-	}
-}
-
-
-void TagWindow::writeBibtex (
-	Glib::ustring const &bibfilename,
-	bool const selectedonly,
-	bool const usebraces)
-{
-	Glib::ustring tmpbibfilename = bibfilename + ".export-tmp";
-
-	Gnome::Vfs::Handle bibfile;
-
-	try {
-		bibfile.create (tmpbibfilename, Gnome::Vfs::OPEN_WRITE,
-			false, Gnome::Vfs::PERM_USER_READ | Gnome::Vfs::PERM_USER_WRITE);
-	} catch (const Gnome::Vfs::exception ex) {
-		std::cerr << "TagWindow::onExportBibtex: "
-			"exception in create '" << ex.what() << "'\n";
-		Utility::exceptionDialog (&ex, "opening BibTex file");
-		return;
-	}
-
-	std::ostringstream bibtext;
-
-	if (selectedonly) {
-		std::vector<Document*> docs = getSelectedDocs ();
-		std::vector<Document*>::iterator it = docs.begin ();
-		std::vector<Document*>::iterator const end = docs.end ();
-		for (; it != end; ++it) {
-			(*it)->writeBibtex (bibtext, usebraces);
+		std::vector<Document*> docs;
+		if (selectedonly) {
+			docs = getSelectedDocs ();
+		} else {
+			DocumentList::Container &docrefs = library_->doclist_->getDocs ();
+			DocumentList::Container::iterator it = docrefs.begin();
+			DocumentList::Container::iterator const end = docrefs.end();
+			for (; it != end; it++) {
+				docs.push_back(&(*it));
+			}
 		}
-	} else {
-		DocumentList::Container &docs = doclist_->getDocs ();
-		DocumentList::Container::iterator it = docs.begin();
-		DocumentList::Container::iterator const end = docs.end();
-		for (; it != end; it++) {
-			(*it).writeBibtex (bibtext, usebraces);
-		}
+
+		library_->writeBibtex (bibfilename, docs, usebraces);
 	}
-
-
-	try {
-		bibfile.write (bibtext.str().c_str(), strlen(bibtext.str().c_str()));
-	} catch (const Gnome::Vfs::exception ex) {
-		Utility::exceptionDialog (&ex, "writing to BibTex file");
-		bibfile.close ();
-		return;
-	}
-
-	bibfile.close ();
-
-	// Forcefully move our tmp file into its real position
-	Gnome::Vfs::Handle::move (tmpbibfilename, bibfilename, true);
 }
 
 
@@ -1304,8 +1262,7 @@ void TagWindow::onNewLibrary ()
 		setDirty (false);
 
 		setOpenedLib ("");
-		taglist_->clear();
-		doclist_->clear();
+		library_->clear ();
 
 		populateDocStore ();
 		populateTagList ();
@@ -1344,14 +1301,14 @@ void TagWindow::onOpenLibrary ()
 	if (chooser.run () == Gtk::RESPONSE_ACCEPT) {
 		libraryfolder_ = Glib::path_get_dirname(chooser.get_filename());
 		Glib::ustring libfile = chooser.get_uri ();
-		std::cerr << "Calling loadLibrary on " << libfile << "\n";
-		if (loadLibrary (libfile)) {
+		std::cerr << "Calling library_->load on " << libfile << "\n";
+		if (library_->load (libfile)) {
 			setDirty (false);
 			populateDocStore ();
 			populateTagList ();
 			setOpenedLib (libfile);
 		} else {
-			//loadLibrary would have shown an exception error dialog
+			//library_->load would have shown an exception error dialog
 		}
 
 	}
@@ -1363,7 +1320,7 @@ void TagWindow::onSaveLibrary ()
 	if (openedlib_.empty()) {
 		onSaveAsLibrary ();
 	} else {
-		if (saveLibrary (openedlib_))
+		if (library_->save (openedlib_))
 			setDirty (false);
 	}
 }
@@ -1402,11 +1359,11 @@ void TagWindow::onSaveAsLibrary ()
 		// existing file rather than typing in a name themselves.
 		libfilename = Utility::ensureExtension (libfilename, "reflib");
 
-		if (saveLibrary (libfilename)) {
+		if (library_->save (libfilename)) {
 			setDirty (false);
 			setOpenedLib (libfilename);
 		} else {
-			// saveLibrary would have shown exception dialogs
+			// library_->save would have shown exception dialogs
 		}
 	}
 }
@@ -1490,7 +1447,7 @@ void TagWindow::addDocFiles (std::vector<Glib::ustring> const &filenames)
 			std::cerr << "Ooh, a remote uri\n";
 		}
 
-		Document *newdoc = doclist_->newDocWithFile(*it);
+		Document *newdoc = library_->doclist_->newDocWithFile(*it);
 		if (newdoc) {
 			newdoc->readPDF ();
 
@@ -1500,7 +1457,7 @@ void TagWindow::addDocFiles (std::vector<Glib::ustring> const &filenames)
 			// If we got a DOI or eprint field this will work
 			newdoc->getMetaData ();
 
-			newdoc->setKey (doclist_->uniqueKey (newdoc->generateKey ()));
+			newdoc->setKey (library_->doclist_->uniqueKey (newdoc->generateKey ()));
 		} else {
 			std::cerr << "TagWindow::addDocFiles: Warning: didn't succeed adding '" << *it << "'.  Duplicate file?\n";
 		}
@@ -1521,8 +1478,8 @@ void TagWindow::addDocFiles (std::vector<Glib::ustring> const &filenames)
 void TagWindow::onAddDocUnnamed ()
 {
 	setDirty (true);
-	Document *newdoc = doclist_->newDocUnnamed ();
-	newdoc->setKey (doclist_->uniqueKey (newdoc->generateKey ()));
+	Document *newdoc = library_->doclist_->newDocUnnamed ();
+	newdoc->setKey (library_->doclist_->uniqueKey (newdoc->generateKey ()));
 	docpropertiesdialog_->show (newdoc);
 	populateDocStore ();
 }
@@ -1554,10 +1511,10 @@ void TagWindow::onAddDocByDoi ()
 
 	if (dialog.run ()) {
 		setDirty (true);
-		Document *newdoc = doclist_->newDocWithDoi (entry.get_text ());
+		Document *newdoc = library_->doclist_->newDocWithDoi (entry.get_text ());
 
 		newdoc->getMetaData ();
-		newdoc->setKey (doclist_->uniqueKey (newdoc->generateKey ()));
+		newdoc->setKey (library_->doclist_->uniqueKey (newdoc->generateKey ()));
 
 		populateDocStore ();
 	}
@@ -1651,38 +1608,6 @@ std::vector<Document*> TagWindow::getSelectedDocs ()
 }
 
 
-std::vector<Glib::ustring> TagWindow::getSelectedDocKeys ()
-{
-	std::vector<Glib::ustring> dockeys;
-
-	if (usinglistview_) {
-		Gtk::TreeSelection::ListHandle_Path paths =
-			docslistselection_->get_selected_rows ();
-
-		Gtk::TreeSelection::ListHandle_Path::iterator it = paths.begin ();
-		Gtk::TreeSelection::ListHandle_Path::iterator const end = paths.end ();
-		for (; it != end; it++) {
-			Gtk::TreePath path = (*it);
-			Gtk::ListStore::iterator iter = docstore_->get_iter (path);
-			dockeys.push_back((*iter)[dockeycol_]);
-		}
-	} else {
-		Gtk::IconView::ArrayHandle_TreePaths paths =
-			docsiconview_->get_selected_items ();
-
-		Gtk::IconView::ArrayHandle_TreePaths::iterator it = paths.begin ();
-		Gtk::IconView::ArrayHandle_TreePaths::iterator const end = paths.end ();
-		for (; it != end; it++) {
-			Gtk::TreePath path = (*it);
-			Gtk::ListStore::iterator iter = docstore_->get_iter (path);
-			dockeys.push_back((*iter)[dockeycol_]);
-		}
-	}
-
-	return dockeys;
-}
-
-
 Document *TagWindow::getSelectedDoc ()
 {
 	if (usinglistview_) {
@@ -1773,7 +1698,7 @@ void TagWindow::onRemoveDoc ()
 		}
 
 		std::cerr << "TagWindow::onRemoveDoc: removeDoc on '" << *it << "'\n";
-		doclist_->removeDoc(*it);
+		library_->doclist_->removeDoc(*it);
 		doclistdirty = true;
 	}
 
@@ -1789,179 +1714,6 @@ void TagWindow::onRemoveDoc ()
 	} else {
 		docselectionignore_ = false;
 	}
-}
-
-
-Glib::ustring TagWindow::writeXML ()
-{
-	std::ostringstream out;
-	out << "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n";
-	out << "<library>\n";
-	taglist_->writeXML (out);
-	doclist_->writeXML (out);
-	out << "</library>\n";
-	return out.str ();
-}
-
-
-bool TagWindow::readXML (Glib::ustring XMLtext)
-{
-	TagList *newtags = new TagList ();
-	DocumentList *newdocs = new DocumentList ();
-
-	LibraryParser parser (*newtags, *newdocs);
-	Glib::Markup::ParseContext context (parser);
-	try {
-		context.parse (XMLtext);
-	} catch (Glib::MarkupError const ex) {
-		std::cerr << "Exception on line " << context.get_line_number () << ", character " << context.get_char_number () << ": '" << ex.what () << "'\n";
-		Utility::exceptionDialog (&ex, "parsing Library XML.");
-
-		delete newtags;
-		delete newdocs;
-		return false;
-	}
-
-	context.end_parse ();
-
-	delete taglist_;
-	taglist_ = newtags;
-
-	delete doclist_;
-	doclist_ = newdocs;
-
-	return true;
-}
-
-
-// True on success
-bool TagWindow::loadLibrary (Glib::ustring const &libfilename)
-{
-	Gnome::Vfs::Handle libfile;
-
-	Glib::RefPtr<Gnome::Vfs::Uri> liburi = Gnome::Vfs::Uri::create (libfilename);
-
-	ProgressDialog progress;
-
-	progress.setLabel (
-		"<b><big>Opening "
-		+ liburi->extract_short_name ()
-		+ "</big></b>\n\nThis process may take some time, particularly\n"
-		+ "if the library has been moved since it was last opened.");
-
-	// If we get an exception and return, progress::~Progress should
-	// take care of calling finish() for us.
-	progress.start ();
-
-	try {
-		libfile.open (libfilename, Gnome::Vfs::OPEN_READ);
-	} catch (const Gnome::Vfs::exception ex) {
-		Utility::exceptionDialog (&ex, "opening library '" + libfilename + "'");
-		return false;
-	}
-
-	Glib::RefPtr<Gnome::Vfs::FileInfo> fileinfo;
-	fileinfo = libfile.get_file_info ();
-
-	char *buffer = (char *) malloc (sizeof(char) * (fileinfo->get_size() + 1));
-	if (!buffer) {
-		std::cerr << "Warning: TagWindow::loadLibrary: couldn't allocate buffer\n";
-		return false;
-	}
-
-	try {
-		libfile.read (buffer, fileinfo->get_size());
-	} catch (const Gnome::Vfs::exception ex) {
-		Utility::exceptionDialog (&ex, "reading library '" + libfilename + "'");
-		free (buffer);
-		return false;
-	}
-	buffer[fileinfo->get_size()] = 0;
-
-	Glib::ustring rawtext = buffer;
-	free (buffer);
-	libfile.close ();
-
-	std::cerr << "Reading XML...\n";
-	if (!readXML (rawtext))
-		return false;
-	std::cerr << "Done, got " << doclist_->getDocs ().size() << " docs\n";
-
-	int i = 0;
-	DocumentList::Container &docs = doclist_->getDocs ();
-	DocumentList::Container::iterator docit = docs.begin ();
-	DocumentList::Container::iterator const docend = docs.end ();
-	for (; docit != docend; ++docit) {
-		progress.getLock ();
-		progress.update ((double)(i++) / (double)docs.size ());
-		if (Utility::fileExists (docit->getFileName())) {
-			// Do nothing, all is well, the file is still there
-			std::cerr << "Filename still good: " << docit->getFileName() << "\n";
-		} else if (!docit->getRelFileName().empty()) {
-			// Oh no!  We lost the file!  But we've got a relfilename!  Is relfilename still valid?
-			Glib::ustring filename = Glib::build_filename (
-				Glib::path_get_dirname (libfilename),
-				docit->getRelFileName());
-			std::cerr << "Derived from relative: " << filename << "\n";
-			if (Utility::fileExists (filename)) {
-				std::cerr << "\tValid\n";
-				docit->setFileName (filename);
-			}
-		}
-		progress.releaseLock ();
-	}
-
-	progress.finish ();
-
-	return true;
-}
-
-
-// True on success
-bool TagWindow::saveLibrary (Glib::ustring const &libfilename)
-{
-	Gnome::Vfs::Handle libfile;
-
-	Glib::ustring tmplibfilename = libfilename + ".save-tmp";
-
-	try {
-		libfile.create (tmplibfilename, Gnome::Vfs::OPEN_WRITE,
-			false, Gnome::Vfs::PERM_USER_READ | Gnome::Vfs::PERM_USER_WRITE);
-	} catch (const Gnome::Vfs::exception ex) {
-		Utility::exceptionDialog (&ex, "opening file '" + tmplibfilename + "'");
-		return false;
-	}
-
-	DocumentList::Container &docs = doclist_->getDocs ();
-	DocumentList::Container::iterator docit = docs.begin ();
-	DocumentList::Container::iterator const docend = docs.end ();
-	for (; docit != docend; ++docit) {
-		if (Utility::fileExists (docit->getFileName())) {
-			docit->updateRelFileName (libfilename);
-		}
-	}
-
-	Glib::ustring rawtext = writeXML ();
-
-	try {
-		libfile.write (rawtext.c_str(), strlen(rawtext.c_str()));
-	} catch (const Gnome::Vfs::exception ex) {
-		Utility::exceptionDialog (&ex, "writing to file '" + tmplibfilename + "'");
-		return false;
-	}
-
-	libfile.close ();
-
-	// Forcefully move our tmp file into its real position
-	try {
-		Gnome::Vfs::Handle::move (tmplibfilename, libfilename, true);
-	} catch (const Gnome::Vfs::exception ex) {
-		Utility::exceptionDialog (&ex, "moving '"
-			+ tmplibfilename + "' to '" + libfilename + "'");
-		return false;
-	}
-
-	return true;
 }
 
 
@@ -2098,7 +1850,7 @@ void TagWindow::onDeleteDoc ()
 
 		try {
 			Utility::deleteFile ((*it)->getFileName ());
-			doclist_->removeDoc(*it);
+			library_->doclist_->removeDoc(*it);
 			doclistdirty = true;
 		} catch (Glib::Exception &ex) {
 			Utility::exceptionDialog (&ex, "Deleting '" + (*it)->getFileName () + "'");
@@ -2397,7 +2149,7 @@ void TagWindow::onImport ()
 				format = BibUtils::FORMAT_UNKNOWN;
 		}
 
-		doclist_->import (filename, format);
+		library_->doclist_->import (filename, format);
 
 		populateDocStore ();
 		populateTagList ();
