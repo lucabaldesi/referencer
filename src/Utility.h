@@ -1,4 +1,15 @@
 
+/*
+ * Referencer is released under the GNU General Public License v2
+ * See the COPYING file for licensing details.
+ *
+ * Copyright 2007 John Spray
+ * (Exceptions listed in README)
+ *
+ */
+
+
+
 
 #ifndef UTILITY_H
 #define UTILITY_H
