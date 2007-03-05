@@ -461,7 +461,7 @@ void TagWindow::constructMenu ()
   	sigc::mem_fun(*this, &TagWindow::onAddDocByDoi));
 	actiongroup_->add( Gtk::Action::create(
 		"RemoveDoc", Gtk::Stock::REMOVE, "_Remove"),
-		Gtk::AccelKey ("Delete"),
+		Gtk::AccelKey ("<control>Delete"),
   	sigc::mem_fun(*this, &TagWindow::onRemoveDoc));
 	actiongroup_->add( Gtk::Action::create(
 		"WebLinkDoc", Gtk::Stock::CONNECT, "_Web Link..."), Gtk::AccelKey ("<control><shift>a"),
@@ -478,7 +478,7 @@ void TagWindow::constructMenu ()
   	sigc::mem_fun(*this, &TagWindow::onGetMetadataDoc));
 	actiongroup_->add( Gtk::Action::create(
 		"DeleteDoc", Gtk::Stock::DELETE, "_Delete File from drive"),
-		Gtk::AccelKey ("<control>Delete"),
+		Gtk::AccelKey ("<control><shift>Delete"),
   	sigc::mem_fun(*this, &TagWindow::onDeleteDoc));
 	actiongroup_->add( Gtk::Action::create(
 		"RenameDoc", Gtk::Stock::EDIT, "_Rename File from Key"),
