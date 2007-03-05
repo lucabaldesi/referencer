@@ -1029,15 +1029,15 @@ bool TagWindow::ensureSaved (Glib::ustring const & action)
 			Gtk::BUTTONS_NONE,
 			true);
 
-		dialog.add_button ("Close _without Saving", 0);
-		dialog.add_button (Gtk::Stock::CANCEL, 1);
-		dialog.add_button (Gtk::Stock::SAVE, 2);
+		dialog.add_button ("Close _without Saving", Gtk::RESPONSE_CLOSE);
+		dialog.add_button (Gtk::Stock::CANCEL, Gtk::RESPONSE_CANCEL);
+		dialog.add_button (Gtk::Stock::SAVE, Gtk::RESPONSE_ACCEPT);
 
 		int const result = dialog.run ();
 
-		if (result == 0) {
+		if (result == Gtk::RESPONSE_CLOSE) {
 			return true;
-		} else if (result == 2) {
+		} else if (result == Gtk::RESPONSE_ACCEPT) {
 			if (openedlib_.empty ()) {
 				onSaveAsLibrary ();
 				if (openedlib_.empty ()) {
@@ -1051,7 +1051,7 @@ bool TagWindow::ensureSaved (Glib::ustring const & action)
 				}
 			}
 			return true;
-		} else /*if (result == 1)*/ {
+		} else /*if (result == Gtk::RESPONSE_CANCEL)*/ {
 			return false;
 		}
 	} else {
