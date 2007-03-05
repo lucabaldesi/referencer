@@ -1037,9 +1037,7 @@ bool TagWindow::ensureSaved (Glib::ustring const & action)
 
 		if (result == 0) {
 			return true;
-		} else if (result == 1) {
-			return false;
-		} else /*if (result == 2)*/ {
+		} else if (result == 2) {
 			if (openedlib_.empty ()) {
 				onSaveAsLibrary ();
 				if (openedlib_.empty ()) {
@@ -1052,8 +1050,9 @@ bool TagWindow::ensureSaved (Glib::ustring const & action)
 					return false;
 				}
 			}
-
 			return true;
+		} else /*if (result == 1)*/ {
+			return false;
 		}
 	} else {
 		return true;
@@ -1068,9 +1067,9 @@ void TagWindow::onCreateTag  ()
 	Gtk::MessageDialog dialog(message, true, Gtk::MESSAGE_QUESTION,
 		Gtk::BUTTONS_NONE, true);
 
-	dialog.add_button (Gtk::Stock::CANCEL, 0);
-	dialog.add_button (Gtk::Stock::OK, 1);
-	dialog.set_default_response (1);
+	dialog.add_button (Gtk::Stock::CANCEL, Gtk::RESPONSE_CANCEL);
+	dialog.add_button (Gtk::Stock::OK, Gtk::RESPONSE_ACCEPT);
+	dialog.set_default_response (Gtk::RESPONSE_ACCEPT);
 
 	Gtk::Entry nameentry;
 	nameentry.set_activates_default (true);
@@ -1084,7 +1083,7 @@ void TagWindow::onCreateTag  ()
 
 	bool invalid = true;
 
-	while (invalid && dialog.run()) {
+	while (invalid && dialog.run() == Gtk::RESPONSE_ACCEPT) {
 		Glib::ustring newname = nameentry.get_text ();
 		// Later displayed in markup'd cellrenderer
 		newname = Glib::Markup::escape_text (newname);
@@ -1136,11 +1135,11 @@ void TagWindow::onDeleteTag ()
 			message, true, Gtk::MESSAGE_QUESTION,
 			Gtk::BUTTONS_NONE, true);
 
-		confirmdialog.add_button (Gtk::Stock::CANCEL, 0);
-		confirmdialog.add_button (Gtk::Stock::DELETE, 1);
-		confirmdialog.set_default_response (0);
+		confirmdialog.add_button (Gtk::Stock::CANCEL, Gtk::RESPONSE_CANCEL);
+		confirmdialog.add_button (Gtk::Stock::DELETE, Gtk::RESPONSE_ACCEPT);
+		confirmdialog.set_default_response (Gtk::RESPONSE_CANCEL);
 
-		if (confirmdialog.run ()) {
+		if (confirmdialog.run () == Gtk::RESPONSE_ACCEPT) {
 			std::cerr << "going to delete " << (*iter)[taguidcol_] << "\n";
 			uidstodelete.push_back ((*iter)[taguidcol_]);
 		}
@@ -1502,14 +1501,14 @@ void TagWindow::onAddDocByDoi ()
 	Gtk::Entry entry;
 	hbox.pack_start (entry, true, true, 0);
 
-	dialog.add_button (Gtk::Stock::CANCEL, 0);
-	dialog.add_button (Gtk::Stock::OK, 1);
-	dialog.set_default_response (1);
+	dialog.add_button (Gtk::Stock::CANCEL, Gtk::RESPONSE_CANCEL);
+	dialog.add_button (Gtk::Stock::OK, Gtk::RESPONSE_ACCEPT);
+	dialog.set_default_response (Gtk::RESPONSE_ACCEPT);
 
 	dialog.show_all ();
 	vbox->set_border_width (12);
 
-	if (dialog.run ()) {
+	if (dialog.run () == Gtk::RESPONSE_ACCEPT) {
 		setDirty (true);
 		Document *newdoc = library_->doclist_->newDocWithDoi (entry.get_text ());
 
@@ -1668,11 +1667,11 @@ void TagWindow::onRemoveDoc ()
 			message, true, Gtk::MESSAGE_QUESTION,
 			Gtk::BUTTONS_NONE, true);
 
-		confirmdialog.add_button (Gtk::Stock::CANCEL, 0);
-		confirmdialog.add_button (Gtk::Stock::REMOVE, 1);
-		confirmdialog.set_default_response (0);
+		confirmdialog.add_button (Gtk::Stock::CANCEL, Gtk::RESPONSE_CANCEL);
+		confirmdialog.add_button (Gtk::Stock::REMOVE, Gtk::RESPONSE_ACCEPT);
+		confirmdialog.set_default_response (Gtk::RESPONSE_CANCEL);
 
-		if (!confirmdialog.run()) {
+		if (confirmdialog.run () != Gtk::RESPONSE_ACCEPT) {
 			return;
 		}
 	}
@@ -1688,11 +1687,11 @@ void TagWindow::onRemoveDoc ()
 				message, true, Gtk::MESSAGE_QUESTION,
 				Gtk::BUTTONS_NONE, true);
 
-			confirmdialog.add_button (Gtk::Stock::CANCEL, 0);
-			confirmdialog.add_button (Gtk::Stock::REMOVE, 1);
-			confirmdialog.set_default_response (0);
+			confirmdialog.add_button (Gtk::Stock::CANCEL, Gtk::RESPONSE_CANCEL);
+			confirmdialog.add_button (Gtk::Stock::REMOVE, Gtk::RESPONSE_ACCEPT);
+			confirmdialog.set_default_response (Gtk::RESPONSE_CANCEL);
 
-			if (!confirmdialog.run()) {
+			if (confirmdialog.run() != Gtk::RESPONSE_ACCEPT) {
 				continue;
 			}
 		}
@@ -1782,11 +1781,11 @@ void TagWindow::onRenameDoc ()
 		message, true, Gtk::MESSAGE_QUESTION,
 		Gtk::BUTTONS_NONE, true);
 
-	confirmdialog.add_button (Gtk::Stock::CANCEL, 0);
-	confirmdialog.add_button ("Rename from Tag", 1);
-	confirmdialog.set_default_response (0);
+	confirmdialog.add_button (Gtk::Stock::CANCEL, Gtk::RESPONSE_CANCEL);
+	confirmdialog.add_button ("Rename from Tag", Gtk::RESPONSE_ACCEPT);
+	confirmdialog.set_default_response (Gtk::RESPONSE_CANCEL);
 
-	if (!confirmdialog.run())
+	if (confirmdialog.run() != Gtk::RESPONSE_ACCEPT)
 		return;
 
 	std::vector <Document*>::iterator it = docs.begin ();
@@ -1818,11 +1817,11 @@ void TagWindow::onDeleteDoc ()
 			message, true, Gtk::MESSAGE_QUESTION,
 			Gtk::BUTTONS_NONE, true);
 
-		confirmdialog.add_button (Gtk::Stock::CANCEL, 0);
-		confirmdialog.add_button (Gtk::Stock::DELETE, 1);
-		confirmdialog.set_default_response (0);
+		confirmdialog.add_button (Gtk::Stock::CANCEL, Gtk::RESPONSE_CANCEL);
+		confirmdialog.add_button (Gtk::Stock::DELETE, Gtk::RESPONSE_ACCEPT);
+		confirmdialog.set_default_response (Gtk::RESPONSE_CANCEL);
 
-		if (!confirmdialog.run()) {
+		if (confirmdialog.run() != Gtk::RESPONSE_ACCEPT) {
 			return;
 		}
 	}
@@ -1839,11 +1838,11 @@ void TagWindow::onDeleteDoc ()
 				message, true, Gtk::MESSAGE_QUESTION,
 				Gtk::BUTTONS_NONE, true);
 
-			confirmdialog.add_button (Gtk::Stock::CANCEL, 0);
-			confirmdialog.add_button (Gtk::Stock::DELETE, 1);
-			confirmdialog.set_default_response (0);
+			confirmdialog.add_button (Gtk::Stock::CANCEL, Gtk::RESPONSE_CANCEL);
+			confirmdialog.add_button (Gtk::Stock::DELETE, Gtk::RESPONSE_ACCEPT);
+			confirmdialog.set_default_response (Gtk::RESPONSE_CANCEL);
 
-			if (!confirmdialog.run()) {
+			if (confirmdialog.run() != Gtk::RESPONSE_ACCEPT) {
 				continue;
 			}
 		}
