@@ -1,4 +1,5 @@
 1.0.3:
+	- Add texttrademark unicode->latex
 	- Make configure fail properly when boost_regex is absent (Aiden Delaney)
 	- Fix handling of escape key in dialogs
 

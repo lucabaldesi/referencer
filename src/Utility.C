@@ -1228,6 +1228,9 @@ int wvConvertUnicodeToLaTeX(gunichar char16, Glib::ustring &out)
 		case 0x211c:
 			printf("$\\Re$");
 			return(1);
+		case 0x2122:
+			printf("\\texttrademark"); /* ™ (TRADEMARK SIGN ) */
+			return (1);
 		case 0x2135:
 			printf("$\\aleph$");
 			return(1);
