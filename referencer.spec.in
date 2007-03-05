@@ -1,0 +1,61 @@
+Summary: Referencer
+Name: referencer
+Version: @VERSION@
+Release: 1%{?dist}
+Source0: %{name}-%{version}.tar.gz
+License: GPL
+Group: Applications/Office
+BuildRoot: %{_builddir}/%{name}
+
+# no debug package
+%define debug_package %{nil}
+
+Requires: gtkmm24
+Requires: libgnomeuimm26
+Requires: gnome-vfsmm26
+Requires: poppler
+Requires: libgnomemm26
+Requires: libgnomeuimm26
+Requires: gconfmm26
+Requires: libglademm24
+
+%description
+A document organiser and bibliography manager for GNOME.
+
+Referencer is a GNOME application to organise documents or references, and
+ultimately generate a BibTeX bibliography file. Referencer includes a number
+of features to make this process easier:
+
+ * Automatic metadata retrieval
+   If you show Referencer a PDF which has either a DOI code (found in most
+   recently published papers) or ArXiV ID, Referencer will retrieve the
+   metadata for this document over the internet.
+ * Smart web links
+   Referencer uses documents' ID codes to provide handy links to the document's
+   web location — no need to maintain your own bookmarks.
+ * Import from BibTeX, Reference Manager and EndNote
+   No need to start from scratch — Referencer will import your existing
+   bibliography files using the BibUtils library.
+ * Tagging
+   No need to organise your documents into rigid directory trees — with
+   Referencer you can use tags to categorise your documents.
+%prep
+%setup -q
+
+%build
+%configure --disable-update-mime-database
+make RPM_OPT_FLAGS="$RPM_OPT_FLAGS"
+
+%install
+make DESTDIR=$RPM_BUILD_ROOT install
+
+%clean
+rm -rf $RPM_BUILD_ROOT
+
+%post
+update-mime-database %{_datadir}/mime
+
+%files
+%defattr(-,root,root)
+%doc COPYING AUTHORS README NEWS TODO
+%{_prefix}
