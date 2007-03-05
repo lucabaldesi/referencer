@@ -1,3 +1,6 @@
+1.0.3:
+	- Fix handling of escape key in dialogs
+
 1.0.2:
 	- Handle "Digital Object Identifier 10.1109..." (Jordy Potman)
 	- Handle CDATA enclosure of titles (Jordy Potman)
