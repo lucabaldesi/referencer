@@ -13,7 +13,7 @@
 #include <gtkmm.h>
 #include <libgnomeuimm.h>
 #include <libgnomevfsmm.h>
-#include <poppler/GlobalParams.h>
+#include <GlobalParams.h>
 
 // for ostringstream
 #include <sstream>

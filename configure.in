@@ -67,4 +67,5 @@ AC_OUTPUT(
 	data/Makefile
 	data/referencer.desktop.in
 	po/Makefile.in
+	referencer.spec
 )
