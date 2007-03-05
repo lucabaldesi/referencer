@@ -189,14 +189,14 @@ void DocumentProperties::onNewExtraField ()
 	entry.set_activates_default (true);
 	hbox.pack_start (entry, true, true, 0);
 
-	dialog.add_button (Gtk::Stock::CANCEL, 0);
-	dialog.add_button (Gtk::Stock::OK, 1);
-	dialog.set_default_response (1);
+	dialog.add_button (Gtk::Stock::CANCEL, Gtk::RESPONSE_ACCEPT);
+	dialog.add_button (Gtk::Stock::OK, Gtk::RESPONSE_ACCEPT);
+	dialog.set_default_response (Gtk::RESPONSE_ACCEPT);
 
 	dialog.show_all ();
 	vbox->set_border_width (12);
 
-	if (dialog.run ()) {
+	if (dialog.run () == Gtk::RESPONSE_ACCEPT) {
 		Gtk::ListStore::iterator row = extrafieldsstore_->append ();
 		(*row)[extrakeycol_] = entry.get_text ();
 		(*row)[extravalcol_] = "";

@@ -81,9 +81,11 @@ Glib::ustring &getRemoteFile (
 			Gtk::MESSAGE_WARNING,
 			Gtk::BUTTONS_NONE);
 
-		Gtk::Button *online = faildialog.add_button ("_Stay Online", 0);
-		Gtk::Button *offline = faildialog.add_button ("_Go Offline", 1);
-		faildialog.set_default_response (1);
+		Gtk::Button *online = faildialog.add_button
+			("_Stay Online", Gtk::RESPONSE_NO);
+		Gtk::Button *offline = faildialog.add_button
+			("_Go Offline", Gtk::RESPONSE_YES);
+		faildialog.set_default_response (Gtk::RESPONSE_YES);
 
 		Gtk::Image *onlineicon = Gtk::manage (
 			new Gtk::Image (Gtk::Stock::CONNECT, Gtk::ICON_SIZE_BUTTON));
@@ -92,7 +94,7 @@ Glib::ustring &getRemoteFile (
 			new Gtk::Image (Gtk::Stock::DISCONNECT, Gtk::ICON_SIZE_BUTTON));
 		offline->set_image (*offlineicon);
 
-		if (faildialog.run ()) {
+		if (faildialog.run () == Gtk::RESPONSE_YES) {
 			_global_prefs->setWorkOffline (true);
 		};
 		throw Exception ("Transfer failed\n");
