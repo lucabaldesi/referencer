@@ -15,3 +15,4 @@ DISTCLEANFILES =	\
 
 ## Use this so distcheck doesn't cry about the mime cache
 DISTCHECK_CONFIGURE_FLAGS = --disable-update-mime-database
+
