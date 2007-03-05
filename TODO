@@ -4,6 +4,8 @@ Needed:
 	LyX citation via lyxserver (pybliographic, lyx/src/client)
 	Command line reflib->bibtex
 
+	What about underscores?  Need an "escape everything" mode?
+
 	UTF-8 option on bibtex export
 	Resolve symlinks before doing relative filename magic
 
