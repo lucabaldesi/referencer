@@ -1208,7 +1208,7 @@ void TagWindow::onExportBibtex ()
 	chooser.add_filter (bibtexfiles);
 
 	Gtk::FileFilter allfiles;
-	allfiles.add_pattern ("*.*");
+	allfiles.add_pattern ("*");
 	allfiles.set_name ("All Files");
 	chooser.add_filter (allfiles);
 
@@ -1304,7 +1304,7 @@ void TagWindow::onOpenLibrary ()
 	chooser.add_filter (reflibfiles);
 
 	Gtk::FileFilter allfiles;
-	allfiles.add_pattern ("*.*");
+	allfiles.add_pattern ("*");
 	allfiles.set_name ("All Files");
 	chooser.add_filter (allfiles);
 
@@ -1352,7 +1352,7 @@ void TagWindow::onSaveAsLibrary ()
 	chooser.add_filter (reflibfiles);
 
 	Gtk::FileFilter allfiles;
-	allfiles.add_pattern ("*.*");
+	allfiles.add_pattern ("*");
 	allfiles.set_name ("All Files");
 	chooser.add_filter (allfiles);
 
@@ -2100,7 +2100,7 @@ void TagWindow::onImport ()
 	chooser.set_default_response (Gtk::RESPONSE_ACCEPT);
 
 	Gtk::FileFilter allfiles;
-	allfiles.add_pattern ("*.*");
+	allfiles.add_pattern ("*");
 	allfiles.set_name ("All Files");
 	chooser.add_filter (allfiles);
 
