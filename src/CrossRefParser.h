@@ -45,12 +45,26 @@ class CrossRefParser : public Glib::Markup::Parser {
 				"Looks like a HTML document, not an XML document");
 			throw error;
 		}
+		if (element_name == "doi") {
+			Glib::ustring const typestring = (*(attributes.find ("type"))).second;
+			if (typestring == "conference_paper") {
+				bib_.setType("InProceedings");
+			} else {
+				bib_.setType("Article");
+			}
+		}
 	}
 
 	virtual void	on_end_element (
 		Glib::Markup::ParseContext& context,
 		const Glib::ustring& element)
 	{
+		if (Glib::str_has_prefix (text_, "<![CDATA[") &&
+				Glib::str_has_suffix (text_, "]]>")) {
+			text_ = text_.substr (strlen ("<![CDATA["),
+				text_.length () - strlen ("<![CDATA[" "]]>"));
+		}
+
 		//std::cerr << "CrossRefParser: Ended element '" << element << "'\n";
 		if (element == "doi") {
 			bib_.setDoi (text_);
@@ -69,6 +83,8 @@ class CrossRefParser : public Glib::Markup::Parser {
 			bib_.setPages (text_);
 		} else if (element == "year") {
 			bib_.setYear (text_);
+		} else if (element == "volume_title") {
+			bib_.addExtra ("BookTitle", text_);
 		}
 	}
 
@@ -84,13 +100,7 @@ class CrossRefParser : public Glib::Markup::Parser {
 		Glib::Markup::ParseContext& context,
 		const Glib::ustring& text)
 	{
-		if (Glib::str_has_prefix (text, "<![CDATA[") &&
-				Glib::str_has_suffix (text, "]]>")) {
-			text_ += text.substr (strlen ("<![CDATA["),
-				text.length () - strlen ("<![CDATA[" "]]>"));
-		} else {
-			text_ += text;	
-		}
+		text_ += text;	
 	}
 };
 

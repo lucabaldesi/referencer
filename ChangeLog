@@ -1,4 +1,5 @@
 1.0.3:
+	- Support InProceedings crossref records
 	- RPM spec file (Davyd Madeley)
 	- Add texttrademark unicode->latex
 	- Make configure fail properly when boost_regex is absent (Aiden Delaney)
