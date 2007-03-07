@@ -1,4 +1,5 @@
 1.0.3:
+	- Compile against mt-only boost_regex (Damien Thébault)
 	- Fix "All files" filter to be * instead of *.*
 	- Support InProceedings crossref records
 	- RPM spec file (Davyd Madeley)
