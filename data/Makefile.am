@@ -21,6 +21,11 @@ install-data-hook:
 
 uninstall-hook:
 	-update-mime-database "$(DESTDIR)${datadir}/mime"
+else
+install-data-hook:
+	true
+uninstall-hook:
+	true
 endif
 
 EXTRA_DIST =	\
