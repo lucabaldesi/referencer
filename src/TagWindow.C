@@ -13,10 +13,11 @@
 #include <gtkmm.h>
 #include <libgnomeuimm.h>
 #include <libgnomevfsmm.h>
-#include <GlobalParams.h>
 
 // for ostringstream
 #include <sstream>
+
+#include "ucompose.hpp"
 
 #include "TagWindow.h"
 #include "Library.h"
@@ -35,9 +36,6 @@ int main (int argc, char **argv)
 		Gnome::UI::module_info_get(), argc, argv);
 
 	Gnome::Vfs::init ();
-
-	// Initialise libpoppler
-	globalParams = new GlobalParams (NULL);
 
 	_global_prefs = new Preferences();
 
@@ -333,7 +331,7 @@ void TagWindow::constructUI ()
 	table->append_column (*col);
 	col = Gtk::manage (new Gtk::TreeViewColumn ("Authors", docauthorscol_));
 	col->set_resizable (true);
-	//col->set_expand (true);
+	col->set_expand (true);
 	col->set_sort_column (docauthorscol_);
 	cell = (Gtk::CellRendererText *) col->get_first_cell_renderer ();
 	cell->property_ellipsize () = Pango::ELLIPSIZE_END;
@@ -1135,12 +1133,13 @@ void TagWindow::onDeleteTag ()
 			continue;
 		}
 
-		Glib::ustring message =
-			"<b><big>Are you sure you want to delete \""
-			+ (*iter)[tagnamecol_]
-			+"\"?</big></b>\n\n"
-			+ "When a tag is deleted it is also permanently removed "
-			+ "from all documents it is currently associated with";
+		Glib::ustring message = String::ucompose (
+			"<b><big>Are you sure you want to delete \"%1\"?"
+			"</big></b>\n\n"
+			"When a tag is deleted it is also permanently removed "
+			"from all documents it is currently associated with.",
+			(Glib::ustring)(*iter)[tagnamecol_]);
+
 
 		Gtk::MessageDialog confirmdialog (
 			message, true, Gtk::MESSAGE_QUESTION,

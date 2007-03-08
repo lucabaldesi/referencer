@@ -28,7 +28,8 @@ referencer_SOURCES =	\
 	Transfer.C	\
 	Transfer.h	\
 	CrossRefParser.h	\
-	LibraryParser.h
+	LibraryParser.h \
+	ucompose.hpp
 
 AM_CXXFLAGS = @CXXFLAGS@ $(DEPS_CFLAGS) -I$(top_srcdir)
 LDADD = \
