@@ -11,6 +11,7 @@ Needed:
 	Write out tags as special bibtex field
 	Resolve symlinks before doing relative filename magic
 
+	If a DOI found on first page of a pdf, don't read all the other pages
 
 
 	Edit menu:
@@ -30,7 +31,6 @@ Big functionality wishlist:
 	add by pubmed/medline ID (pubmed OAI)	
 
 	searching databases?
-	rewrite poppler code to use glib bindings: also read page 1 first, check for IDS, and only read rest if needed.
 	Google scholar link?  Arbitrary links?
 	Parse strings "Title: foo\nISBN: bar\n" like recipe manager
 	read PS files to search for DOIs as well as reading PDFs
