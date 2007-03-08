@@ -3,11 +3,15 @@ Needed:
 	Sizing of columns in the list view
 	LyX citation via lyxserver (pybliographic, lyx/src/client)
 	Command line reflib->bibtex
+	ucompose-ify all the user messages
 
 	What about underscores?  Need an "escape everything" mode?
 
 	UTF-8 option on bibtex export
+	Write out tags as special bibtex field
 	Resolve symlinks before doing relative filename magic
+
+
 
 	Edit menu:
 		- Copy key

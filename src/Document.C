@@ -18,12 +18,7 @@
 #include <libgnomevfsmm.h>
 #include <libgnomeuimm.h>
 
-// Libpoppler stuff
-#include <PDFDoc.h>
-#include <goo/gtypes.h>
-#include <goo/GooString.h>
-#include <GlobalParams.h>
-#include <TextOutputDev.h>
+#include <poppler.h>
 
 #include "Utility.h"
 
@@ -356,35 +351,42 @@ void Document::readPDF ()
 		return;
 	}
 
-	GooString *filename = new GooString (
-		Gnome::Vfs::get_local_path_from_uri(filename_).c_str());
-	PDFDoc *popplerdoc = new PDFDoc (filename, NULL, NULL);
-	if (!popplerdoc->isOk()) {
+	GError *error = NULL;
+
+	PopplerDocument *popplerdoc = poppler_document_new_from_file (filename_.c_str(), NULL, &error);
+	if (popplerdoc == NULL) {
 		std::cerr << "Document::readPDF: Failed to load '"
-			<< filename->getCString() << "'\n";
+			<< filename_ << "'\n";
+		g_error_free (error);
 		return;
 	}
 
-	GBool physLayout = gFalse;
-	GBool rawOrder = gFalse;
-
 	Glib::ustring textdump;
-	TextOutputDev *output = new TextOutputDev(
-		(TextOutputFunc) textfunc,
-		&textdump,
-		physLayout,
-		rawOrder);
+	int num_pages = poppler_document_get_n_pages (popplerdoc);
+	char **page_text;
 
-	if (output->isOk()) {
-		std::cerr << "Document::readPDF: Loaded, extracting text...\n";
-		int const firstpage = 1;
-		int const lastpage = popplerdoc->getNumPages ();
-		popplerdoc->displayPages(output, firstpage, lastpage, 72, 72, 0,
-			gTrue, gFalse, gFalse);
+	for (int i = 0; i < num_pages; i++) {
+		PopplerPage *page;
+		PopplerRectangle *rect;
+		double width, height;
+
+		page = poppler_document_get_page (popplerdoc, i);
+		poppler_page_get_size (page, &width, &height);
+
+		rect = poppler_rectangle_new ();
+		rect->x1 = 0.;
+		rect->y1 = 0.;
+		rect->x2 = width;
+		rect->y2 = height;
+
+		// FIXME: add something before/after appending text to signal pagebreak?
+		textdump += poppler_page_get_text (page, rect); 
+
+		poppler_rectangle_free (rect);
+		g_object_unref (page);
 	}
 
-	delete output;
-	delete popplerdoc;
+	g_object_unref (popplerdoc);
 
 	if (!textdump.empty()) {
 		bib_.guessDoi (textdump);

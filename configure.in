@@ -33,7 +33,7 @@ PKG_CHECK_MODULES(DEPS, [
 			libglademm-2.4 >= 2.6.0
 			gconfmm-2.6 >= 2.14.0
 			gnome-vfsmm-2.6 >= 2.14.0
-			poppler >= 0.5.0			
+			poppler-glib >= 0.5.0			
 			])
 AC_CHECK_LIB(boost_regex, [main], , [
 		AC_CHECK_LIB(boost_regex-mt, [main], ,

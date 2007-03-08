@@ -1,4 +1,6 @@
 1.0.3:
+	- Use poppler glib bindings (Kai Willadsen)
+	- Start using ucompose.hpp for string composition
 	- Compile against mt-only boost_regex (Damien Thébault)
 	- Fix "All files" filter to be * instead of *.*
 	- Support InProceedings crossref records
