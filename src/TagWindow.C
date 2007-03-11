@@ -331,7 +331,7 @@ void TagWindow::constructUI ()
 	table->append_column (*col);
 	col = Gtk::manage (new Gtk::TreeViewColumn (_("Authors"), docauthorscol_));
 	col->set_resizable (true);
-	col->set_expand (true);
+	//col->set_expand (true);
 	col->set_sort_column (docauthorscol_);
 	cell = (Gtk::CellRendererText *) col->get_first_cell_renderer ();
 	cell->property_ellipsize () = Pango::ELLIPSIZE_END;
