@@ -1,1 +1,17 @@
 data/referencer.desktop.in
+data/documentproperties.glade
+data/preferences.glade
+src/Preferences.C
+src/TagWindow.C
+src/Utility.C
+src/TagList.C
+src/DocumentList.C
+src/BibUtils.C
+src/Document.C
+src/Transfer.C
+src/BibData.C
+src/DocumentProperties.C
+src/ProgressDialog.C
+src/Library.C
+src/CrossRefParser.h
+src/LibraryParser.h
