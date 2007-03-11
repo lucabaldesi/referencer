@@ -1,4 +1,5 @@
 1.0.3:
+	- Fix(?) taglist corruption bug
 	- Use poppler glib bindings (Kai Willadsen)
 	- Start using ucompose.hpp for string composition
 	- Compile against mt-only boost_regex (Damien Thébault)

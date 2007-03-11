@@ -39,7 +39,7 @@ void TagList::loadTag (std::string const name, Tag::Action const action, int uid
 {
 	Tag newtag (uid, name, action);
 	tags_.push_back(newtag);
-	if (uid > uidCounter_)
+	if (uid >= uidCounter_)
 		uidCounter_ = uid + 1;
 }
 

@@ -46,7 +46,7 @@ class TagList {
 	void renameTag (int uid, Glib::ustring newname);
 	void deleteTag (int uid);
 	void writeXML (std::ostringstream& out);
-	void clear () {tags_.clear ();}
+	void clear () {tags_.clear (); uidCounter_ = 0;}
 
 };
 
