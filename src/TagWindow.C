@@ -13,7 +13,7 @@
 #include <gtkmm.h>
 #include <libgnomeuimm.h>
 #include <libgnomevfsmm.h>
-
+#include <glibmm/i18n.h>
 // for ostringstream
 #include <sstream>
 
@@ -138,7 +138,7 @@ void TagWindow::constructUI ()
 
 	Gtk::ToolItem *searchitem = Gtk::manage (new Gtk::ToolItem);
 	Gtk::HBox *search = Gtk::manage (new Gtk::HBox);
-	Gtk::Label *searchlabel = Gtk::manage (new Gtk::Label ("_Search:", true));
+	Gtk::Label *searchlabel = Gtk::manage (new Gtk::Label (_("_Search:"), true));
 	Gtk::Entry *searchentry = Gtk::manage (new Gtk::Entry);
 	searchlabel->set_mnemonic_widget (*searchentry);
 	search->set_spacing (6);
@@ -161,7 +161,7 @@ void TagWindow::constructUI ()
 	tagpane_ = tagsframe;
 
 	Gtk::Label *tagslabel = Gtk::manage (new Gtk::Label (""));
-	tagslabel->set_markup ("<b> Tags </b>");
+	tagslabel->set_markup (Glib::ustring("<b> ") + _("Tags") + " </b>");
 	tagslabel->set_alignment (0.0, 0.0);
 	vbox->pack_start (*tagslabel, false, true, 3);
 
@@ -182,7 +182,7 @@ void TagWindow::constructUI ()
 	render->signal_edited().connect (
 		sigc::mem_fun (*this, &TagWindow::tagNameEdited));
 	Gtk::TreeView::Column *namecol = Gtk::manage(
-		new Gtk::TreeView::Column ("Tags", *render));
+		new Gtk::TreeView::Column (_("Tags"), *render));
 	namecol->add_attribute (render->property_markup (), tagnamecol_);
 	tags->append_column (*namecol);
 	tags->signal_button_press_event().connect_notify(
@@ -208,7 +208,7 @@ void TagWindow::constructUI ()
 	filtervbox->pack_start (tagbar, false, false, 0);
 
 	Gtk::Label *taggerlabel = Gtk::manage (new Gtk::Label (""));
-	taggerlabel->set_markup ("<b> This Document </b>");
+	taggerlabel->set_markup (Glib::ustring("<b> ") + _("This Document") + " </b>");
 	taggerlabel->set_alignment (0.0, 0.0);
 	vbox->pack_start (*taggerlabel, false, true, 3);
 
@@ -318,25 +318,25 @@ void TagWindow::constructUI ()
 	// to create it?  Will the treeview actually copy it?
 	Gtk::CellRendererText *cell;
 	Gtk::TreeViewColumn *col;
-	col = Gtk::manage (new Gtk::TreeViewColumn ("Key", dockeycol_));
+	col = Gtk::manage (new Gtk::TreeViewColumn (_("Key"), dockeycol_));
 	col->set_resizable (true);
 	col->set_sort_column (dockeycol_);
 	table->append_column (*col);
-	col = Gtk::manage (new Gtk::TreeViewColumn ("Title", doctitlecol_));
+	col = Gtk::manage (new Gtk::TreeViewColumn (_("Title"), doctitlecol_));
 	col->set_resizable (true);
 	col->set_expand (true);
 	col->set_sort_column (doctitlecol_);
 	cell = (Gtk::CellRendererText *) col->get_first_cell_renderer ();
 	cell->property_ellipsize () = Pango::ELLIPSIZE_END;
 	table->append_column (*col);
-	col = Gtk::manage (new Gtk::TreeViewColumn ("Authors", docauthorscol_));
+	col = Gtk::manage (new Gtk::TreeViewColumn (_("Authors"), docauthorscol_));
 	col->set_resizable (true);
 	col->set_expand (true);
 	col->set_sort_column (docauthorscol_);
 	cell = (Gtk::CellRendererText *) col->get_first_cell_renderer ();
 	cell->property_ellipsize () = Pango::ELLIPSIZE_END;
 	table->append_column (*col);
-	col = Gtk::manage (new Gtk::TreeViewColumn ("Year  ", docyearcol_));
+	col = Gtk::manage (new Gtk::TreeViewColumn (_("Year  "), docyearcol_));
 	col->set_resizable (true);
 	col->set_sort_column (docyearcol_);
 	table->append_column (*col);
@@ -397,7 +397,7 @@ void TagWindow::constructMenu ()
 {
 	actiongroup_ = Gtk::ActionGroup::create();
 
-	actiongroup_->add ( Gtk::Action::create("LibraryMenu", "_Library") );
+	actiongroup_->add ( Gtk::Action::create("LibraryMenu", _("_Library")) );
 	actiongroup_->add( Gtk::Action::create("NewLibrary",
 		Gtk::Stock::NEW),
   	sigc::mem_fun(*this, &TagWindow::onNewLibrary));
@@ -411,80 +411,80 @@ void TagWindow::constructMenu ()
 		Gtk::Stock::SAVE_AS), Gtk::AccelKey ("<control><shift>s"),
   	sigc::mem_fun(*this, &TagWindow::onSaveAsLibrary));
 	actiongroup_->add( Gtk::Action::create("ExportBibtex",
-		Gtk::Stock::CONVERT, "E_xport as BibTeX..."), Gtk::AccelKey ("<control>b"),
+		Gtk::Stock::CONVERT, _("E_xport as BibTeX...")), Gtk::AccelKey ("<control>b"),
   	sigc::mem_fun(*this, &TagWindow::onExportBibtex));
 	actiongroup_->add( Gtk::Action::create("Import",
-		"_Import..."),
+		_("_Import...")),
   	sigc::mem_fun(*this, &TagWindow::onImport));
 	actiongroup_->add( Gtk::ToggleAction::create("WorkOffline",
-		"_Work Offline"));
+		_("_Work Offline")));
 	actiongroup_->add( Gtk::Action::create("Preferences",
 		Gtk::Stock::PREFERENCES),
   	sigc::mem_fun(*this, &TagWindow::onPreferences));
 	actiongroup_->add( Gtk::Action::create("Quit", Gtk::Stock::QUIT),
   	sigc::mem_fun(*this, &TagWindow::onQuit));
 
-	actiongroup_->add ( Gtk::Action::create("ViewMenu", "_View") );
+	actiongroup_->add ( Gtk::Action::create("ViewMenu", _("_View")) );
 	Gtk::RadioButtonGroup group;
 	actiongroup_->add( Gtk::RadioAction::create(group, "UseListView",
-		"Use _List View"));
+		_("Use _List View")));
 	actiongroup_->add( Gtk::RadioAction::create(group, "UseIconView",
-		"Use _Icon View"));
+		_("Use _Icon View")));
 	actiongroup_->add( Gtk::ToggleAction::create("ShowTagPane",
-		"_Show Tag Pane"), Gtk::AccelKey ("<control><shift>t"));
+		_("_Show Tag Pane")), Gtk::AccelKey ("<control><shift>t"));
 
-	actiongroup_->add ( Gtk::Action::create("TagMenu", "_Tags") );
+	actiongroup_->add ( Gtk::Action::create("TagMenu", _("_Tags")) );
 	actiongroup_->add( Gtk::Action::create(
-		"CreateTag", Gtk::Stock::NEW, "_Create Tag..."), Gtk::AccelKey ("<control>t"),
+		"CreateTag", Gtk::Stock::NEW, _("_Create Tag...")), Gtk::AccelKey ("<control>t"),
   	sigc::mem_fun(*this, &TagWindow::onCreateTag));
 	actiongroup_->add( Gtk::Action::create(
-		"DeleteTag", Gtk::Stock::DELETE, "_Delete Tag"),
+		"DeleteTag", Gtk::Stock::DELETE, _("_Delete Tag")),
   	sigc::mem_fun(*this, &TagWindow::onDeleteTag));
 	actiongroup_->add( Gtk::Action::create(
-		"RenameTag", Gtk::Stock::EDIT, "_Rename Tag"),
+		"RenameTag", Gtk::Stock::EDIT, _("_Rename Tag")),
   	sigc::mem_fun(*this, &TagWindow::onRenameTag));
 
-	actiongroup_->add ( Gtk::Action::create("DocMenu", "_Documents") );
+	actiongroup_->add ( Gtk::Action::create("DocMenu", _("_Documents")) );
 	actiongroup_->add( Gtk::Action::create(
-		"AddDocFile", Gtk::Stock::ADD, "_Add File..."),
+		"AddDocFile", Gtk::Stock::ADD, _("_Add File...")),
   	sigc::mem_fun(*this, &TagWindow::onAddDocFile));
 	actiongroup_->add( Gtk::Action::create(
-		"AddDocFolder", Gtk::Stock::ADD, "_Add Folder..."),
+		"AddDocFolder", Gtk::Stock::ADD, _("_Add Folder...")),
   	sigc::mem_fun(*this, &TagWindow::onAddDocFolder));
  	actiongroup_->add( Gtk::Action::create(
-		"AddDocUnnamed", Gtk::Stock::ADD, "_Add Empty Reference..."),
+		"AddDocUnnamed", Gtk::Stock::ADD, _("_Add Empty Reference...")),
   	sigc::mem_fun(*this, &TagWindow::onAddDocUnnamed));
 	actiongroup_->add( Gtk::Action::create(
-		"AddDocDoi", Gtk::Stock::ADD, "_Add Reference with DOI..."),
+		"AddDocDoi", Gtk::Stock::ADD, _("_Add Reference with DOI...")),
   	sigc::mem_fun(*this, &TagWindow::onAddDocByDoi));
 	actiongroup_->add( Gtk::Action::create(
-		"RemoveDoc", Gtk::Stock::REMOVE, "_Remove"),
+		"RemoveDoc", Gtk::Stock::REMOVE, _("_Remove")),
 		Gtk::AccelKey ("<control>Delete"),
   	sigc::mem_fun(*this, &TagWindow::onRemoveDoc));
 	actiongroup_->add( Gtk::Action::create(
-		"WebLinkDoc", Gtk::Stock::CONNECT, "_Web Link..."), Gtk::AccelKey ("<control><shift>a"),
+		"WebLinkDoc", Gtk::Stock::CONNECT, _("_Web Link...")), Gtk::AccelKey ("<control><shift>a"),
   	sigc::mem_fun(*this, &TagWindow::onWebLinkDoc));
 	actiongroup_->add( Gtk::Action::create(
-		"OpenDoc", Gtk::Stock::OPEN, "_Open..."), Gtk::AccelKey ("<control>a"),
+		"OpenDoc", Gtk::Stock::OPEN, _("_Open...")), Gtk::AccelKey ("<control>a"),
   	sigc::mem_fun(*this, &TagWindow::onOpenDoc));
 	actiongroup_->add( Gtk::Action::create(
 		"DocProperties", Gtk::Stock::PROPERTIES), Gtk::AccelKey ("<control>e"),
   	sigc::mem_fun(*this, &TagWindow::onDocProperties));
 
 	actiongroup_->add( Gtk::Action::create(
-		"GetMetadataDoc", Gtk::Stock::CONNECT, "_Get Metadata"),
+		"GetMetadataDoc", Gtk::Stock::CONNECT, _("_Get Metadata")),
   	sigc::mem_fun(*this, &TagWindow::onGetMetadataDoc));
 	actiongroup_->add( Gtk::Action::create(
-		"DeleteDoc", Gtk::Stock::DELETE, "_Delete File from drive"),
+		"DeleteDoc", Gtk::Stock::DELETE, _("_Delete File from drive")),
 		Gtk::AccelKey ("<control><shift>Delete"),
   	sigc::mem_fun(*this, &TagWindow::onDeleteDoc));
 	actiongroup_->add( Gtk::Action::create(
-		"RenameDoc", Gtk::Stock::EDIT, "_Rename File from Key"),
+		"RenameDoc", Gtk::Stock::EDIT, _("_Rename File from Key")),
   	sigc::mem_fun(*this, &TagWindow::onRenameDoc));
 
-	actiongroup_->add ( Gtk::Action::create("HelpMenu", "_Help") );
+	actiongroup_->add ( Gtk::Action::create("HelpMenu", _("_Help")) );
 	actiongroup_->add( Gtk::Action::create(
-		"Introduction", Gtk::Stock::HELP, "Introduction"),
+		"Introduction", Gtk::Stock::HELP, _("Introduction")),
   	sigc::mem_fun(*this, &TagWindow::onIntroduction));
 	actiongroup_->add( Gtk::Action::create(
 		"About", Gtk::Stock::ABOUT),
