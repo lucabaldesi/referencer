@@ -1,0 +1,300 @@
+# Italian translation of referencer.
+# Copyright (C) 2007 THE referencer'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the referencer package.
+# Michele Mattioni <mattions@gmail.com>, 2007.
+# , fuzzy
+# 
+# 
+msgid ""
+msgstr ""
+"Project-Id-Version: referencer\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2007-03-11 17:25+0000\n"
+"PO-Revision-Date: 2007-03-11 18:37+0000\n"
+"Last-Translator: Michele Mattioni <mattions@gmail.com>\n"
+"Language-Team: Italian <tp@lists.linux.it>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit"
+
+#: ../data/documentproperties.glade.h:1
+msgid "   "
+msgstr "..."
+
+#: ../data/documentproperties.glade.h:2
+msgid "<b>Document</b>"
+msgstr "<b>Documento</b>"
+
+#: ../data/documentproperties.glade.h:3
+msgid "<b>E_xtra Fields</b>"
+msgstr "<b>Campi F_acoltativi</b>"
+
+#: ../data/documentproperties.glade.h:4
+msgid "<b>Metadata</b>"
+msgstr "<b>Metadati</b>"
+
+#: ../data/documentproperties.glade.h:5
+msgid "Add a field"
+msgstr "Aggiungi un campo"
+
+#: ../data/documentproperties.glade.h:6
+msgid "Attempt to look up metadata for this document online"
+msgstr "Tentativo di ricercare i metadati di questo documento online"
+
+#: ../data/documentproperties.glade.h:7
+msgid "DOI:"
+msgstr "DOI:"
+
+#: ../data/documentproperties.glade.h:8
+msgid "Delete this field"
+msgstr "Cancella questo campo"
+
+#: ../data/documentproperties.glade.h:9
+msgid "Document Properties"
+msgstr "Proprietà Documento"
+
+#: ../data/documentproperties.glade.h:10
+msgid "File:"
+msgstr "File:"
+
+#: ../data/documentproperties.glade.h:11
+msgid "Issue:"
+msgstr "Numero:"
+
+#: ../data/documentproperties.glade.h:12
+msgid "Journal:"
+msgstr "Giornale:"
+
+#: ../data/documentproperties.glade.h:13
+msgid "Look up..."
+msgstr "Ricerca..."
+
+#: ../data/documentproperties.glade.h:14
+msgid "Pages:"
+msgstr "Pagine:"
+
+#: ../data/documentproperties.glade.h:15
+msgid "Rename this field"
+msgstr "Rinomina questo campo"
+
+#: ../data/documentproperties.glade.h:16
+msgid "Select A File"
+msgstr "Seleziona Un File"
+
+#: ../data/documentproperties.glade.h:17
+msgid "Type:"
+msgstr "Tipo:"
+
+#: ../data/documentproperties.glade.h:18
+msgid "Volume:"
+msgstr "Volume:"
+
+#: ../data/documentproperties.glade.h:19
+msgid "Year:"
+msgstr "Anno:"
+
+#: ../data/documentproperties.glade.h:20
+msgid "_Authors:"
+msgstr "_Autori"
+
+#: ../data/documentproperties.glade.h:21
+msgid "_Key:"
+msgstr "_Chiave"
+
+#: ../data/documentproperties.glade.h:22
+msgid "_Title:"
+msgstr "_Titolo:"
+
+#: ../data/preferences.glade.h:1
+msgid "<b>Proxy</b>"
+msgstr "<b>Proxy</b>"
+
+#: ../data/preferences.glade.h:2
+#: ../data/preferences.glade.h:3
+msgid "<b>Web services</b>"
+"<i>These proxy settings apply desktop-wide\n"
+"to all Gnome applications.  Auto-configuration\n"
+" URLs are not supported.</i>"
+msgstr "<i>Queste impostazioni per il proxy vengono\n"
+"applicate a tutte le applicazioni GNOME. L'Auto-configurazione\n"
+"delle URLS non è supportata.</i>"
+
+#: ../data/preferences.glade.h:6
+msgid ""
+"<i>Use placeholder <!DOI!> to represent the DOI code\n"
+"in addresses, e.g. http://dx.doi.org/<!DOI!></i>"
+msgstr "<i>Sostituisci <!DOI!> con il codice DOI nell'indirizzo\n"
+"esempio: http://dx.doi.org/<!DOI!></i>"
+
+#: ../data/preferences.glade.h:8
+msgid "DOI launch URL:"
+msgstr "DOI per lanciare l'URL:"
+
+#: ../data/preferences.glade.h:9
+msgid "Host:"
+msgstr ""
+
+#: ../data/preferences.glade.h:10
+msgid "Metadata lookup URL:"
+msgstr "URL di Ricerca per i Metadati"
+
+#: ../data/preferences.glade.h:11
+msgid "Password:"
+msgstr "Password:"
+
+#: ../data/preferences.glade.h:12
+msgid "Port:"
+msgstr "Porta:"
+
+#: ../data/preferences.glade.h:13
+msgid "Preferences"
+msgstr "Preferenze"
+
+#: ../data/preferences.glade.h:14
+msgid "Reset to Defaults"
+msgstr "Riporta alle Impostazioni Originali"
+
+#: ../data/preferences.glade.h:15
+msgid "Use authentication"
+msgstr "Usa autenticazione"
+
+#: ../data/preferences.glade.h:16
+msgid "Use web proxy"
+msgstr ""
+
+#: ../data/preferences.glade.h:2
+msgid "<b>Web services</b>"
+msgstr ""
+
+#: ../data/preferences.glade.h:17
+msgid "Username:"
+msgstr "Username:"
+
+#: ../src/TagWindow.C:141
+msgid "_Search:"
+msgstr "_Ricerca:"
+
+#: ../src/TagWindow.C:164 ../src/TagWindow.C:185
+msgid "Tags"
+msgstr "Etichette"
+
+#: ../src/TagWindow.C:211
+msgid "This Document"
+msgstr "Questo Documento"
+
+#: ../src/TagWindow.C:321
+msgid "Key"
+msgstr "Chaive"
+
+#: ../src/TagWindow.C:325
+msgid "Title"
+msgstr "Titolo"
+
+#: ../src/TagWindow.C:332
+msgid "Authors"
+msgstr "Autori"
+
+#: ../src/TagWindow.C:339
+msgid "Year  "
+msgstr "Anno"
+
+#: ../src/TagWindow.C:400
+msgid "_Library"
+msgstr "_Libreria"
+
+#: ../src/TagWindow.C:414
+msgid "E_xport as BibTeX..."
+msgstr "E_sporta come BibTex"
+
+#: ../src/TagWindow.C:417
+msgid "_Import..."
+msgstr "_Importa..."
+
+#: ../src/TagWindow.C:420
+msgid "_Work Offline"
+msgstr "_Lavora Disconnesso"
+
+#: ../src/TagWindow.C:427
+msgid "_View"
+msgstr "_Visualizza"
+
+#: ../src/TagWindow.C:430
+msgid "Use _List View"
+msgstr "Vista come _Lista"
+
+#: ../src/TagWindow.C:432
+msgid "Use _Icon View"
+msgstr "Vista Come_Icone"
+
+#: ../src/TagWindow.C:434
+msgid "_Show Tag Pane"
+msgstr "_Visualizza Pannello Etichette"
+
+#: ../src/TagWindow.C:436
+msgid "_Tags"
+msgstr "_Etichette"
+
+#: ../src/TagWindow.C:438
+msgid "_Create Tag..."
+msgstr "_Crea Etichetta..."
+
+#: ../src/TagWindow.C:441
+msgid "_Delete Tag"
+msgstr "_Rimuovi Etichetta"
+
+#: ../src/TagWindow.C:444
+msgid "_Rename Tag"
+msgstr "_Rinomina Etichetta"
+
+#: ../src/TagWindow.C:447
+msgid "_Documents"
+msgstr "_Documenti"
+
+#: ../src/TagWindow.C:449
+msgid "_Add File..."
+msgstr "_Aggiungi un File"
+
+#: ../src/TagWindow.C:452
+msgid "_Add Folder..."
+msgstr "_Aggiungi Cartella"
+
+#: ../src/TagWindow.C:455
+msgid "_Add Empty Reference..."
+msgstr "_Aggiungi Un Riferimento Vuoto"
+
+#: ../src/TagWindow.C:458
+msgid "_Add Reference with DOI..."
+msgstr "_Aggiungi Riferimento DOI"
+
+#: ../src/TagWindow.C:461
+msgid "_Remove"
+msgstr "_Elimina"
+
+#: ../src/TagWindow.C:465
+msgid "_Web Link..."
+msgstr "_Collegamento Internet"
+
+#: ../src/TagWindow.C:468
+msgid "_Open..."
+msgstr "_Apri..."
+
+#: ../src/TagWindow.C:475
+msgid "_Get Metadata"
+msgstr "_Ottieni Metadati"
+
+#: ../src/TagWindow.C:478
+msgid "_Delete File from drive"
+msgstr "_Rimuovi File dal Disco"
+
+#: ../src/TagWindow.C:482
+msgid "_Rename File from Key"
+msgstr "_Rinomina File usando la Chiave"
+
+#: ../src/TagWindow.C:485
+msgid "_Help"
+msgstr "_Aiuto"
+
+#: ../src/TagWindow.C:487
+msgid "Introduction"
+msgstr "Introduzione"
+
