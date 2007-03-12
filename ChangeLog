@@ -1,4 +1,5 @@
 1.0.3:
+	- Intltool fixes (Eric Lesh)
 	- Fix(?) taglist corruption bug
 	- Use poppler glib bindings (Kai Willadsen)
 	- Start using ucompose.hpp for string composition

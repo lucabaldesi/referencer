@@ -30,8 +30,14 @@
 
 #include "LibraryParser.h"
 
+#include "config.h"
+
 int main (int argc, char **argv)
 {
+	bindtextdomain (GETTEXT_PACKAGE, GNOMELOCALEDIR);
+	bind_textdomain_codeset (GETTEXT_PACKAGE, "UTF-8");
+	textdomain (GETTEXT_PACKAGE);
+
 	Gnome::Main gui (PROGRAM_NAME, VERSION,
 		Gnome::UI::module_info_get(), argc, argv);
 

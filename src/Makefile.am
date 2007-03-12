@@ -1,6 +1,7 @@
 bin_PROGRAMS = referencer
 
-INCLUDES = -DDATADIR=\""$(pkgdatadir)"\"
+INCLUDES = -DDATADIR=\""$(pkgdatadir)"\" \
+	 -DGNOMELOCALEDIR=\"$(datadir)/locale\"
 
 referencer_SOURCES =	\
 	TagWindow.C	\
