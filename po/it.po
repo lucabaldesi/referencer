@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: referencer\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2007-03-11 17:25+0000\n"
-"PO-Revision-Date: 2007-03-11 18:37+0000\n"
+"PO-Revision-Date: 2007-03-12 23:56+0000\n"
 "Last-Translator: Michele Mattioni <mattions@gmail.com>\n"
 "Language-Team: Italian <tp@lists.linux.it>\n"
 "MIME-Version: 1.0\n"
@@ -220,11 +220,11 @@ msgstr "_Visualizza"
 
 #: ../src/TagWindow.C:430
 msgid "Use _List View"
-msgstr "Vista come _Lista"
+msgstr "Vedi come _Elenco"
 
 #: ../src/TagWindow.C:432
 msgid "Use _Icon View"
-msgstr "Vista Come_Icone"
+msgstr "Vedi come _Icone"
 
 #: ../src/TagWindow.C:434
 msgid "_Show Tag Pane"
