@@ -3,12 +3,13 @@ Needed:
 	Sizing of columns in the list view
 	LyX citation via lyxserver (pybliographic, lyx/src/client)
 	Command line reflib->bibtex
-	ucompose-ify all the user messages
 
-	What about underscores?  Need an "escape everything" mode?
+	ucompose-ify all the user messages (tagwindow.c already done)
 
-	UTF-8 option on bibtex export
-	Write out tags as special bibtex field
+	BibTeX export:
+		What about underscores?  Need an "escape everything" mode?
+		UTF-8 option on bibtex export
+		Write out tags as special bibtex field
 	Resolve symlinks before doing relative filename magic
 
 	If a DOI found on first page of a pdf, don't read all the other pages
