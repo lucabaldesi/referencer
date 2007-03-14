@@ -14,9 +14,6 @@
 #include <libgnomeuimm.h>
 #include <libgnomevfsmm.h>
 #include <glibmm/i18n.h>
-// for ostringstream
-#include <sstream>
-
 #include "ucompose.hpp"
 
 #include "TagWindow.h"
@@ -673,11 +670,11 @@ void TagWindow::populateTagList ()
 
 	Gtk::TreeModel::iterator all = tagstore_->append();
 	(*all)[taguidcol_] = ALL_TAGS_UID;
-	(*all)[tagnamecol_] = "<b>All</b>";
+	(*all)[tagnamecol_] = String::ucompose ("<b>%1</b>", _("All"));
 
 	Gtk::TreeModel::iterator none = tagstore_->append();
 	(*none)[taguidcol_] = NO_TAGS_UID;
-	(*none)[tagnamecol_] = "<b>Untagged</b>";
+	(*none)[tagnamecol_] = String::ucompose ("<b>%1</b>", _("Untagged"));
 
 	taggerbox_->children().clear();
 
@@ -1078,7 +1075,7 @@ bool TagWindow::ensureSaved (Glib::ustring const & action)
 void TagWindow::onCreateTag  ()
 {
 	// For intelligent tags we'll need a dialog here.
-	Glib::ustring message = "<b><big>New tag</big></b>\n\n";
+	Glib::ustring message = String::ucompose ("<b><big>%1</big></b>\n\n", _("New tag"));
 	Gtk::MessageDialog dialog(message, true, Gtk::MESSAGE_QUESTION,
 		Gtk::BUTTONS_NONE, true);
 
@@ -1090,7 +1087,7 @@ void TagWindow::onCreateTag  ()
 	nameentry.set_activates_default (true);
 	Gtk::HBox hbox;
 	hbox.set_spacing (6);
-	Gtk::Label label ("Name:");
+	Gtk::Label label (_("Name:"));
 	hbox.pack_start (label, false, false, 0);
 	hbox.pack_start (nameentry, true, true, 0);
 	dialog.get_vbox()->pack_start (hbox, false, false, 0);
@@ -1140,16 +1137,16 @@ void TagWindow::onDeleteTag ()
 		}
 
 		Glib::ustring message = String::ucompose (
-			"<b><big>Are you sure you want to delete \"%1\"?"
-			"</big></b>\n\n"
-			"When a tag is deleted it is also permanently removed "
-			"from all documents it is currently associated with.",
+			"Are you sure you want to delete \"%1\"?",
 			(Glib::ustring)(*iter)[tagnamecol_]);
 
-
 		Gtk::MessageDialog confirmdialog (
-			message, true, Gtk::MESSAGE_QUESTION,
+			message, false, Gtk::MESSAGE_QUESTION,
 			Gtk::BUTTONS_NONE, true);
+
+		confirmdialog.set_secondary_text ("When a tag is deleted it is also "
+			"permanently removed from all documents it is currently "
+			"associated with.");
 
 		confirmdialog.add_button (Gtk::Stock::CANCEL, Gtk::RESPONSE_CANCEL);
 		confirmdialog.add_button (Gtk::Stock::DELETE, Gtk::RESPONSE_ACCEPT);
@@ -1200,7 +1197,7 @@ void TagWindow::onRenameTag ()
 void TagWindow::onExportBibtex ()
 {
 	Gtk::FileChooserDialog chooser (
-		"Export BibTeX",
+		_("Export BibTeX"),
 		Gtk::FILE_CHOOSER_ACTION_SAVE);
 	chooser.add_button (Gtk::Stock::CANCEL, Gtk::RESPONSE_REJECT);
 	chooser.add_button (Gtk::Stock::SAVE, Gtk::RESPONSE_ACCEPT);
@@ -1209,12 +1206,12 @@ void TagWindow::onExportBibtex ()
 
 	Gtk::FileFilter bibtexfiles;
 	bibtexfiles.add_pattern ("*.[bB][iI][bB]");
-	bibtexfiles.set_name ("BibTeX Files");
+	bibtexfiles.set_name (_("BibTeX Files"));
 	chooser.add_filter (bibtexfiles);
 
 	Gtk::FileFilter allfiles;
 	allfiles.add_pattern ("*");
-	allfiles.set_name ("All Files");
+	allfiles.set_name (_("All Files"));
 	chooser.add_filter (allfiles);
 
 	Gtk::VBox extrabox;
@@ -1225,16 +1222,16 @@ void TagWindow::onExportBibtex ()
 	selectionbox.set_spacing (6);
 	extrabox.pack_start (selectionbox, false, false, 0);
 
-	Gtk::Label label ("Selection:");
+	Gtk::Label label (_("Selection:"));
 	selectionbox.pack_start (label, false, false, 0);
 	Gtk::ComboBoxText combo;
-	combo.append_text ("All Documents");
-	combo.append_text ("Selected Documents");
+	combo.append_text (_("All Documents"));
+	combo.append_text (_("Selected Documents"));
 	combo.set_active (0);
 	selectionbox.pack_start (combo, true, true, 0);
 	selectionbox.set_sensitive (getSelectedDocCount ());
 
-	Gtk::CheckButton bracescheck ("Protect capitalization (surround values with {})");
+	Gtk::CheckButton bracescheck (_("Protect capitalization (surround values with {})"));
 	extrabox.pack_start (bracescheck, false, false, 0);
 
 	extrabox.show_all ();
@@ -1288,7 +1285,7 @@ void TagWindow::onNewLibrary ()
 void TagWindow::onOpenLibrary ()
 {
 	Gtk::FileChooserDialog chooser(
-		"Open Library",
+		_("Open Library"),
 		Gtk::FILE_CHOOSER_ACTION_OPEN);
 
 	// remote not working?
@@ -1305,12 +1302,12 @@ void TagWindow::onOpenLibrary ()
 
 	Gtk::FileFilter reflibfiles;
 	reflibfiles.add_pattern ("*.reflib");
-	reflibfiles.set_name ("Referencer Libraries");
+	reflibfiles.set_name (_("Referencer Libraries"));
 	chooser.add_filter (reflibfiles);
 
 	Gtk::FileFilter allfiles;
 	allfiles.add_pattern ("*");
-	allfiles.set_name ("All Files");
+	allfiles.set_name (_("All Files"));
 	chooser.add_filter (allfiles);
 
 	if (chooser.run () == Gtk::RESPONSE_ACCEPT) {
@@ -1344,7 +1341,7 @@ void TagWindow::onSaveLibrary ()
 void TagWindow::onSaveAsLibrary ()
 {
 	Gtk::FileChooserDialog chooser (
-		"Save Library As",
+		_("Save Library As"),
 		Gtk::FILE_CHOOSER_ACTION_SAVE);
 	chooser.add_button (Gtk::Stock::CANCEL, Gtk::RESPONSE_REJECT);
 	chooser.add_button (Gtk::Stock::SAVE, Gtk::RESPONSE_ACCEPT);
@@ -1353,12 +1350,12 @@ void TagWindow::onSaveAsLibrary ()
 
 	Gtk::FileFilter reflibfiles;
 	reflibfiles.add_pattern ("*.reflib");
-	reflibfiles.set_name ("Referencer Libraries");
+	reflibfiles.set_name (_("Referencer Libraries"));
 	chooser.add_filter (reflibfiles);
 
 	Gtk::FileFilter allfiles;
 	allfiles.add_pattern ("*");
-	allfiles.set_name ("All Files");
+	allfiles.set_name (_("All Files"));
 	chooser.add_filter (allfiles);
 
 	// Browsing to remote hosts not working for some reason
@@ -1422,15 +1419,15 @@ void TagWindow::onIntroduction ()
 
 void TagWindow::addDocFiles (std::vector<Glib::ustring> const &filenames)
 {
-	Gtk::Dialog dialog ("Add Document Files", true, false);
+	Gtk::Dialog dialog (_("Add Document Files"), true, false);
 
 	Gtk::VBox *vbox = dialog.get_vbox ();
 	vbox->set_spacing (12);
 
 	Glib::ustring messagetext =
-		"<b><big>Adding document files</big></b>\n\n"
-		"This process may take some time as the bibliographic \n"
-		"information for each document is looked up.";
+		String::ucompose ("<b><big>%1</big></b>\n\n", _("Adding document files")) +
+		_("This process may take some time as the bibliographic "
+		"information for each document is looked up.");
 
 	Gtk::Label label ("", false);
 	label.set_markup (messagetext);
@@ -1444,16 +1441,15 @@ void TagWindow::addDocFiles (std::vector<Glib::ustring> const &filenames)
 	dialog.show_all ();
 	vbox->set_border_width (12);
 
-	std::ostringstream progresstext;
+	Glib::ustring progresstext;
 
 	int n = 0;
 	std::vector<Glib::ustring>::const_iterator it = filenames.begin();
 	std::vector<Glib::ustring>::const_iterator const end = filenames.end();
 	for (; it != end; ++it) {
 		progress.set_fraction ((float)n / (float)filenames.size());
-		progresstext.str ("");
-		progresstext << n << " of " << filenames.size() << " documents";
-		progress.set_text (progresstext.str());
+		progresstext = String::ucompose (_("%1 of %2 documents"), n, filenames.size ());
+		progress.set_text (progresstext);
 		while (Gnome::Main::events_pending())
 			Gnome::Main::iteration ();
 
@@ -1504,7 +1500,7 @@ void TagWindow::onAddDocUnnamed ()
 void TagWindow::onAddDocByDoi ()
 {
 
-	Gtk::Dialog dialog ("Add Document with DOI", true, false);
+	Gtk::Dialog dialog (_("Add Document with DOI"), true, false);
 
 	Gtk::VBox *vbox = dialog.get_vbox ();
 
@@ -1512,7 +1508,7 @@ void TagWindow::onAddDocByDoi ()
 	hbox.set_spacing (12);
 	vbox->pack_start (hbox, true, true, 0);
 
-	Gtk::Label label ("DOI:", false);
+	Gtk::Label label (_("DOI:"), false);
 	hbox.pack_start (label, false, false, 0);
 
 	Gtk::Entry entry;
@@ -1540,7 +1536,7 @@ void TagWindow::onAddDocByDoi ()
 void TagWindow::onAddDocFile ()
 {
 	Gtk::FileChooserDialog chooser(
-		"Add Document",
+		_("Add Document"),
 		Gtk::FILE_CHOOSER_ACTION_OPEN);
 
 	chooser.set_select_multiple (true);
@@ -1570,7 +1566,7 @@ void TagWindow::onAddDocFile ()
 void TagWindow::onAddDocFolder ()
 {
 	Gtk::FileChooserDialog chooser(
-		"Add Folder",
+		_("Add Folder"),
 		Gtk::FILE_CHOOSER_ACTION_SELECT_FOLDER);
 
 	// Want an option for following symlinks? (we don't do it)
@@ -1673,46 +1669,40 @@ void TagWindow::onRemoveDoc ()
 
 	bool doclistdirty = false;
 
+	Glib::ustring message;
+	Glib::ustring secondary;
+
 	if (multiple) {
-		// Do you really want to remove N documents?
-		std::ostringstream num;
-		num << docs.size ();
-		Glib::ustring message = "<b><big>Are you sure you want to remove these "
-			+ num.str() + " documents?</big></b>\n\nAll tag "
-			"associations and metadata for these documents will be permanently lost.";
-		Gtk::MessageDialog confirmdialog (
-			message, true, Gtk::MESSAGE_QUESTION,
-			Gtk::BUTTONS_NONE, true);
+		message = String::ucompose (
+			_("Are you sure you want to remove these %1 documents?"),
+			docs.size ());
+		secondary = _("All tag associations and metadata for these documents "
+			"will be permanently lost.");
+	}
+	else {
+		message = String::ucompose (
+			_("Are you sure you want to remove '%1'?"),
+			(*docs.begin ())->getKey ());
+		secondary = _("All tag associations and metadata for the document "
+			"will be permanently lost.");
+	}
+	Gtk::MessageDialog confirmdialog (
+		message, false, Gtk::MESSAGE_QUESTION,
+		Gtk::BUTTONS_NONE, true);
 
-		confirmdialog.add_button (Gtk::Stock::CANCEL, Gtk::RESPONSE_CANCEL);
-		confirmdialog.add_button (Gtk::Stock::REMOVE, Gtk::RESPONSE_ACCEPT);
-		confirmdialog.set_default_response (Gtk::RESPONSE_CANCEL);
+	confirmdialog.set_secondary_text (secondary);
 
-		if (confirmdialog.run () != Gtk::RESPONSE_ACCEPT) {
-			return;
-		}
+	confirmdialog.add_button (Gtk::Stock::CANCEL, Gtk::RESPONSE_CANCEL);
+	confirmdialog.add_button (Gtk::Stock::REMOVE, Gtk::RESPONSE_ACCEPT);
+	confirmdialog.set_default_response (Gtk::RESPONSE_CANCEL);
+
+	if (confirmdialog.run () != Gtk::RESPONSE_ACCEPT) {
+		return;
 	}
 
 	std::vector<Document*>::iterator it = docs.begin ();
 	std::vector<Document*>::iterator const end = docs.end ();
 	for (; it != end; it++) {
-		if (!multiple) {
-			Glib::ustring message = "<b><big>Are you sure you want to remove '" +
-				(*it)->getKey () + "'?</big></b>\n\nAll tag "
-				"associations and metadata for the document will be permanently lost.";
-			Gtk::MessageDialog confirmdialog (
-				message, true, Gtk::MESSAGE_QUESTION,
-				Gtk::BUTTONS_NONE, true);
-
-			confirmdialog.add_button (Gtk::Stock::CANCEL, Gtk::RESPONSE_CANCEL);
-			confirmdialog.add_button (Gtk::Stock::REMOVE, Gtk::RESPONSE_ACCEPT);
-			confirmdialog.set_default_response (Gtk::RESPONSE_CANCEL);
-
-			if (confirmdialog.run() != Gtk::RESPONSE_ACCEPT) {
-				continue;
-			}
-		}
-
 		std::cerr << "TagWindow::onRemoveDoc: removeDoc on '" << *it << "'\n";
 		library_->doclist_->removeDoc(*it);
 		doclistdirty = true;
@@ -1781,25 +1771,21 @@ void TagWindow::onRenameDoc ()
 
 	Glib::ustring message;
 	if (docs.size () == 1) {
-		message = "<b><big>Really rename this file to '"
-			+ (*docs.begin())->getKey()
-			+ "'?</big></b>\n\n"
-			+ "This action <b>cannot be undone</b>.";
+		message = String::ucompose (_("Really rename this file to '%1'?"),
+			(*docs.begin())->getKey());
 	} else if (docs.size () > 1) {
-		std::ostringstream num;
-		num << docs.size ();
-		message = "<b><big>Really rename these "
-			+ num.str()
-			+ " files to their keys?</big></b>\n\n"
-			+ "This action <b>cannot be undone</b>.";
+		message = String::ucompose (_("Really rename these %1 files to their keys?"),
+			docs.size ());
 	}
 
 	Gtk::MessageDialog confirmdialog (
-		message, true, Gtk::MESSAGE_QUESTION,
+		message, false, Gtk::MESSAGE_QUESTION,
 		Gtk::BUTTONS_NONE, true);
 
+	confirmdialog.set_secondary_text (_("This action <b>cannot be undone</b>."), true);
+
 	confirmdialog.add_button (Gtk::Stock::CANCEL, Gtk::RESPONSE_CANCEL);
-	confirmdialog.add_button ("Rename from Tag", Gtk::RESPONSE_ACCEPT);
+	confirmdialog.add_button (_("Rename from Tag"), Gtk::RESPONSE_ACCEPT);
 	confirmdialog.set_default_response (Gtk::RESPONSE_CANCEL);
 
 	if (confirmdialog.run() != Gtk::RESPONSE_ACCEPT)
@@ -1822,48 +1808,43 @@ void TagWindow::onDeleteDoc ()
 	std::vector<Document*> docs = getSelectedDocs ();
 	bool const multiple = docs.size() > 1;
 	bool doclistdirty = false;
+	Glib::ustring message;
+	Glib::ustring secondary;
 
 	if (multiple) {
-		std::ostringstream num;
-		num << docs.size ();
-		Glib::ustring message = "<b><big>Are you sure you want to delete these "
-			+ num.str() + " documents?</big></b>\n\nAll tag "
-			"associations and metadata for these documents will be permanently "
-			+ "lost, and the files they refer to will irretrievably deleted.";
-		Gtk::MessageDialog confirmdialog (
-			message, true, Gtk::MESSAGE_QUESTION,
-			Gtk::BUTTONS_NONE, true);
+		message = String::ucompose (
+			_("Are you sure you want to delete these %1 documents?"),
+			docs.size ());
+		secondary = _("All tag associations and metadata for these documents "
+			"will be permanently lost, and the files they refer to will be "
+			"irretrievably deleted.");
+	}
+	else {
+		message = String::ucompose (
+			_("Are you sure you want to delete '%1'?"),
+			(*docs.begin ())->getKey ());
+		secondary = _("All tag associations and metadata for the document "
+			"will be permanently lost, and the file it refers to will be "
+			"irretrievably deleted.");
+	}
 
-		confirmdialog.add_button (Gtk::Stock::CANCEL, Gtk::RESPONSE_CANCEL);
-		confirmdialog.add_button (Gtk::Stock::DELETE, Gtk::RESPONSE_ACCEPT);
-		confirmdialog.set_default_response (Gtk::RESPONSE_CANCEL);
+	Gtk::MessageDialog confirmdialog (
+		message, false, Gtk::MESSAGE_QUESTION,
+		Gtk::BUTTONS_NONE, true);
 
-		if (confirmdialog.run() != Gtk::RESPONSE_ACCEPT) {
-			return;
-		}
+	confirmdialog.set_secondary_text (secondary);
+
+	confirmdialog.add_button (Gtk::Stock::CANCEL, Gtk::RESPONSE_CANCEL);
+	confirmdialog.add_button (Gtk::Stock::DELETE, Gtk::RESPONSE_ACCEPT);
+	confirmdialog.set_default_response (Gtk::RESPONSE_CANCEL);
+
+	if (confirmdialog.run() != Gtk::RESPONSE_ACCEPT) {
+		return;
 	}
 
 	std::vector<Document*>::iterator it = docs.begin ();
 	std::vector<Document*>::iterator const end = docs.end ();
 	for (; it != end; it++) {
-		if (!multiple) {
-			Glib::ustring message = "<b><big>Are you sure you want to delete '" +
-				(*it)->getKey () + "'?</big></b>\n\nAll tag "
-				"associations and metadata for the document will be permanently "
-				+ "lost, and the file it refers to will irretrievably deleted.";
-			Gtk::MessageDialog confirmdialog (
-				message, true, Gtk::MESSAGE_QUESTION,
-				Gtk::BUTTONS_NONE, true);
-
-			confirmdialog.add_button (Gtk::Stock::CANCEL, Gtk::RESPONSE_CANCEL);
-			confirmdialog.add_button (Gtk::Stock::DELETE, Gtk::RESPONSE_ACCEPT);
-			confirmdialog.set_default_response (Gtk::RESPONSE_CANCEL);
-
-			if (confirmdialog.run() != Gtk::RESPONSE_ACCEPT) {
-				continue;
-			}
-		}
-
 		try {
 			Utility::deleteFile ((*it)->getFileName ());
 			library_->doclist_->removeDoc(*it);
@@ -2058,7 +2039,7 @@ void TagWindow::updateTitle ()
 {
 	Glib::ustring filename;
 	if (openedlib_.empty ()) {
-		filename = "Unnamed Library";
+		filename = _("Unnamed Library");
 	} else {
 		filename = Glib::path_get_basename (openedlib_);
 		unsigned int pos = filename.find (".reflib");
@@ -2092,7 +2073,7 @@ void TagWindow::setDirty (bool const &dirty)
 void TagWindow::onImport ()
 {
 	Gtk::FileChooserDialog chooser(
-		"Import References",
+		_("Import References"),
 		Gtk::FILE_CHOOSER_ACTION_OPEN);
 
 	// remote not working?
@@ -2107,7 +2088,7 @@ void TagWindow::onImport ()
 
 	Gtk::FileFilter allfiles;
 	allfiles.add_pattern ("*");
-	allfiles.set_name ("All Files");
+	allfiles.set_name (_("All Files"));
 	chooser.add_filter (allfiles);
 
 	Gtk::FileFilter allbibfiles;
@@ -2115,18 +2096,18 @@ void TagWindow::onImport ()
 	allbibfiles.add_pattern ("*.ris");
 	allbibfiles.add_pattern ("*.[bB][iI][bB]");
 	allbibfiles.add_pattern ("*.ref");
-	allbibfiles.set_name ("Bibliography Files");
+	allbibfiles.set_name (_("Bibliography Files"));
 	chooser.add_filter (allbibfiles);
 
 	Gtk::FileFilter bibtexfiles;
 	bibtexfiles.add_pattern ("*.[bB][iI][bB]");
-	bibtexfiles.set_name ("BibTeX Files");
+	bibtexfiles.set_name (_("BibTeX Files"));
 	chooser.add_filter (bibtexfiles);
 
 	Gtk::HBox extrabox;
 	extrabox.set_spacing (6);
 	chooser.set_extra_widget (extrabox);
-	Gtk::Label label ("Format:");
+	Gtk::Label label (_("Format:"));
 	extrabox.pack_start (label, false, false, 0);
 	Gtk::ComboBoxText combo;
 	combo.append_text ("BibTeX");

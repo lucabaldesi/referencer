@@ -1,4 +1,6 @@
 1.0.3:
+	- Italian translation (Michele Mattioni)
+	- Improve translatability of code (Kai Willadsen)
 	- Intltool fixes (Eric Lesh)
 	- Fix(?) taglist corruption bug
 	- Use poppler glib bindings (Kai Willadsen)
