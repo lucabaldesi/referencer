@@ -1144,9 +1144,9 @@ void TagWindow::onDeleteTag ()
 			message, false, Gtk::MESSAGE_QUESTION,
 			Gtk::BUTTONS_NONE, true);
 
-		confirmdialog.set_secondary_text ("When a tag is deleted it is also "
+		confirmdialog.set_secondary_text (_("When a tag is deleted it is also "
 			"permanently removed from all documents it is currently "
-			"associated with.");
+			"associated with."));
 
 		confirmdialog.add_button (Gtk::Stock::CANCEL, Gtk::RESPONSE_CANCEL);
 		confirmdialog.add_button (Gtk::Stock::DELETE, Gtk::RESPONSE_ACCEPT);
@@ -1813,7 +1813,7 @@ void TagWindow::onDeleteDoc ()
 
 	if (multiple) {
 		message = String::ucompose (
-			_("Are you sure you want to delete these %1 documents?"),
+			_("Are you sure you want to delete the files of these %1 documents?"),
 			docs.size ());
 		secondary = _("All tag associations and metadata for these documents "
 			"will be permanently lost, and the files they refer to will be "
@@ -1821,7 +1821,7 @@ void TagWindow::onDeleteDoc ()
 	}
 	else {
 		message = String::ucompose (
-			_("Are you sure you want to delete '%1'?"),
+			_("Are you sure you want to delete the file of '%1'?"),
 			(*docs.begin ())->getKey ());
 		secondary = _("All tag associations and metadata for the document "
 			"will be permanently lost, and the file it refers to will be "
