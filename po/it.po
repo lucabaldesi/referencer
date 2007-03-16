@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: referencer\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2007-03-16 12:59+0100\n"
-"PO-Revision-Date: 2007-03-16 12:59+0100\n"
+"PO-Revision-Date: 2007-03-16 16:40+0100\n"
 "Last-Translator: Michele Mattioni <mattions@gmail.com>\n"
 "Language-Team: Italian <tp@lists.linux.it>\n"
 "MIME-Version: 1.0\n"
@@ -114,7 +114,6 @@ msgid "<b>Web services</b>"
 msgstr ""
 
 #: ../data/preferences.glade.h:3
-#, fuzzy
 msgid ""
 "<i>These proxy settings apply desktop-wide\n"
 "to all Gnome applications.  Auto-configuration\n"
@@ -122,7 +121,7 @@ msgid ""
 msgstr ""
 "<i>Queste impostazioni per il proxy vengono\n"
 "applicate a tutte le applicazioni GNOME. L'Auto-configurazione\n"
-"delle URLS non è supportata.</i>"
+"delle URLs non è supportata.</i>"
 
 #: ../data/preferences.glade.h:6
 msgid ""
@@ -166,7 +165,7 @@ msgstr "Usa autenticazione"
 
 #: ../data/preferences.glade.h:16
 msgid "Use web proxy"
-msgstr ""
+msgstr "Usa il proxy"
 
 #: ../data/preferences.glade.h:17
 msgid "Username:"
@@ -306,131 +305,120 @@ msgstr "Tutti"
 
 #: ../src/TagWindow.C:677
 msgid "Untagged"
-msgstr ""
+msgstr "Non Etichettati"
 
 #. For intelligent tags we'll need a dialog here.
 #: ../src/TagWindow.C:1078
 msgid "New tag"
-msgstr ""
+msgstr "Nuova etichetta"
 
 #: ../src/TagWindow.C:1090
 msgid "Name:"
-msgstr ""
+msgstr "Nome:"
 
 #: ../src/TagWindow.C:1147
 msgid ""
 "When a tag is deleted it is also permanently removed from all documents it "
 "is currently associated with."
-msgstr ""
+msgstr "Quando un'etichetta viene cancellata essa viene anche rimossa da tutti i documenti con cui era associata."
 
 #: ../src/TagWindow.C:1200
-#, fuzzy
 msgid "Export BibTeX"
-msgstr "E_sporta come BibTex"
+msgstr "Esporta come BibTex"
 
 #: ../src/TagWindow.C:1209 ../src/TagWindow.C:2104
 msgid "BibTeX Files"
-msgstr ""
+msgstr "File BibTeX"
 
 #: ../src/TagWindow.C:1214 ../src/TagWindow.C:1310 ../src/TagWindow.C:1358
 #: ../src/TagWindow.C:2091
 msgid "All Files"
-msgstr ""
+msgstr "Tutti i Files"
 
 #: ../src/TagWindow.C:1225
-#, fuzzy
 msgid "Selection:"
-msgstr "Seleziona Un File"
+msgstr "Selezione:"
 
 #: ../src/TagWindow.C:1228
-#, fuzzy
 msgid "All Documents"
-msgstr "_Documenti"
+msgstr "Tutti i Documenti"
 
 #: ../src/TagWindow.C:1229
-#, fuzzy
 msgid "Selected Documents"
-msgstr "_Documenti"
+msgstr "Documenti Selezionati"
 
 #: ../src/TagWindow.C:1234
 msgid "Protect capitalization (surround values with {})"
 msgstr ""
 
 #: ../src/TagWindow.C:1288
-#, fuzzy
 msgid "Open Library"
-msgstr "_Libreria"
+msgstr "Apri Libreria"
 
 #: ../src/TagWindow.C:1305 ../src/TagWindow.C:1353
 msgid "Referencer Libraries"
-msgstr ""
+msgstr "Libreria Referencer"
 
 #: ../src/TagWindow.C:1344
-#, fuzzy
 msgid "Save Library As"
-msgstr "_Libreria"
+msgstr "Salva come Libreria"
 
 #: ../src/TagWindow.C:1396
 msgid "translator-credits"
-msgstr ""
+msgstr "crediti traduttori"
 
 #: ../src/TagWindow.C:1422
-#, fuzzy
 msgid "Add Document Files"
-msgstr "Proprietà Documento"
+msgstr "Aggiungi un Documento"
 
 #: ../src/TagWindow.C:1428
 msgid "Adding document files"
-msgstr ""
+msgstr "Aggiungere un Documento"
 
 #: ../src/TagWindow.C:1429
 msgid ""
 "This process may take some time as the bibliographic information for each "
 "document is looked up."
-msgstr ""
+msgstr "Ricerca delle informazioni bibliografiche on-line. Questo processo potrebbe richiedere del tempo."
 
 #: ../src/TagWindow.C:1451
 msgid "%1 of %2 documents"
-msgstr ""
+msgstr "%1 di %2 documenti"
 
 #: ../src/TagWindow.C:1503
-#, fuzzy
 msgid "Add Document with DOI"
-msgstr "_Aggiungi Riferimento DOI"
+msgstr "Aggiungi un Documento con un riferimento DOI"
 
 #: ../src/TagWindow.C:1539
-#, fuzzy
 msgid "Add Document"
-msgstr "_Documenti"
+msgstr "Aggiungi Documento"
 
 #: ../src/TagWindow.C:1569
-#, fuzzy
 msgid "Add Folder"
-msgstr "_Aggiungi Cartella"
+msgstr "Aggiungi Cartella"
 
 #: ../src/TagWindow.C:1677
 msgid "Are you sure you want to remove these %1 documents?"
-msgstr ""
+msgstr "Sei sicuro di voler rimuovere questi %1 documenti?"
 
 #: ../src/TagWindow.C:1679
 msgid ""
 "All tag associations and metadata for these documents will be permanently "
 "lost."
-msgstr ""
+msgstr "Tutte le etichette ed i metadati associati con questi documenti saranno persi per sempre."
 
 #: ../src/TagWindow.C:1684
 msgid "Are you sure you want to remove '%1'?"
-msgstr ""
+msgstr "Sei sicuro di voler rimuovere '%1'?"
 
 #: ../src/TagWindow.C:1686
 msgid ""
 "All tag associations and metadata for the document will be permanently lost."
-msgstr ""
+msgstr "Tutte le etichette ed i metadati associati con questo documento verranno persi per sempre."
 
 #: ../src/TagWindow.C:1774
-#, fuzzy
 msgid "Really rename this file to '%1'?"
-msgstr "Rinomina questo campo"
+msgstr "Rinominare questo file to '%1'?"
 
 #: ../src/TagWindow.C:1777
 msgid "Really rename these %1 files to their keys?"
@@ -438,49 +426,45 @@ msgstr ""
 
 #: ../src/TagWindow.C:1785
 msgid "This action <b>cannot be undone</b>."
-msgstr ""
+msgstr "Quest'azione <b>non potrà essere annullata</b>"
 
 #: ../src/TagWindow.C:1788
-#, fuzzy
 msgid "Rename from Tag"
-msgstr "_Rinomina Etichetta"
+msgstr "Rinomina Etichetta"
 
 #: ../src/TagWindow.C:1816
 msgid "Are you sure you want to delete the files of these %1 documents?"
-msgstr ""
+msgstr "Sei sicuro di voler rimuovere i files di questi %1 documenti?"
 
 #: ../src/TagWindow.C:1818
 msgid ""
 "All tag associations and metadata for these documents will be permanently "
 "lost, and the files they refer to will be irretrievably deleted."
-msgstr ""
+msgstr "Tutte le etichette ed i metadati di questi documenti verranno cancellati per sempre ed i lor files verranno irrimediabilmente cancellati."
 
 #: ../src/TagWindow.C:1824
 msgid "Are you sure you want to delete the file of '%1'?"
-msgstr ""
+msgstr "Sei sicuro di voler rimuovere il file di '%1'?"
 
 #: ../src/TagWindow.C:1826
 msgid ""
 "All tag associations and metadata for the document will be permanently lost, "
 "and the file it refers to will be irretrievably deleted."
-msgstr ""
+msgstr "Tutte le etichette ed i metadati per questo documento verranno permanentemente cancellati e il file verrà irrimediabilmente cancellato."
 
 #: ../src/TagWindow.C:2042
-#, fuzzy
 msgid "Unnamed Library"
-msgstr "_Libreria"
+msgstr "Libreria"
 
 #: ../src/TagWindow.C:2076
-#, fuzzy
 msgid "Import References"
-msgstr "Preferenze"
+msgstr "Importa Riferimenti"
 
 #: ../src/TagWindow.C:2099
 msgid "Bibliography Files"
-msgstr ""
+msgstr "Files Bibliografici"
 
 #: ../src/TagWindow.C:2110
-#, fuzzy
 msgid "Format:"
-msgstr "Porta:"
+msgstr "Formato:"
 
