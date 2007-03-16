@@ -9,8 +9,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: referencer\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2007-03-11 17:25+0000\n"
-"PO-Revision-Date: 2007-03-12 23:56+0000\n"
+"POT-Creation-Date: 2007-03-16 12:59+0100\n"
+"PO-Revision-Date: 2007-03-16 12:59+0100\n"
 "Last-Translator: Michele Mattioni <mattions@gmail.com>\n"
 "Language-Team: Italian <tp@lists.linux.it>\n"
 "MIME-Version: 1.0\n"
@@ -41,7 +41,7 @@ msgstr "Aggiungi un campo"
 msgid "Attempt to look up metadata for this document online"
 msgstr "Tentativo di ricercare i metadati di questo documento online"
 
-#: ../data/documentproperties.glade.h:7
+#: ../data/documentproperties.glade.h:7 ../src/TagWindow.C:1511
 msgid "DOI:"
 msgstr "DOI:"
 
@@ -110,12 +110,17 @@ msgid "<b>Proxy</b>"
 msgstr "<b>Proxy</b>"
 
 #: ../data/preferences.glade.h:2
-#: ../data/preferences.glade.h:3
 msgid "<b>Web services</b>"
+msgstr ""
+
+#: ../data/preferences.glade.h:3
+#, fuzzy
+msgid ""
 "<i>These proxy settings apply desktop-wide\n"
 "to all Gnome applications.  Auto-configuration\n"
 " URLs are not supported.</i>"
-msgstr "<i>Queste impostazioni per il proxy vengono\n"
+msgstr ""
+"<i>Queste impostazioni per il proxy vengono\n"
 "applicate a tutte le applicazioni GNOME. L'Auto-configurazione\n"
 "delle URLS non è supportata.</i>"
 
@@ -123,7 +128,8 @@ msgstr "<i>Queste impostazioni per il proxy vengono\n"
 msgid ""
 "<i>Use placeholder <!DOI!> to represent the DOI code\n"
 "in addresses, e.g. http://dx.doi.org/<!DOI!></i>"
-msgstr "<i>Sostituisci <!DOI!> con il codice DOI nell'indirizzo\n"
+msgstr ""
+"<i>Sostituisci <!DOI!> con il codice DOI nell'indirizzo\n"
 "esempio: http://dx.doi.org/<!DOI!></i>"
 
 #: ../data/preferences.glade.h:8
@@ -162,139 +168,319 @@ msgstr "Usa autenticazione"
 msgid "Use web proxy"
 msgstr ""
 
-#: ../data/preferences.glade.h:2
-msgid "<b>Web services</b>"
-msgstr ""
-
 #: ../data/preferences.glade.h:17
 msgid "Username:"
 msgstr "Username:"
 
-#: ../src/TagWindow.C:141
+#: ../src/TagWindow.C:144
 msgid "_Search:"
 msgstr "_Ricerca:"
 
-#: ../src/TagWindow.C:164 ../src/TagWindow.C:185
+#: ../src/TagWindow.C:167 ../src/TagWindow.C:188
 msgid "Tags"
 msgstr "Etichette"
 
-#: ../src/TagWindow.C:211
+#: ../src/TagWindow.C:214
 msgid "This Document"
 msgstr "Questo Documento"
 
-#: ../src/TagWindow.C:321
+#: ../src/TagWindow.C:324
 msgid "Key"
 msgstr "Chaive"
 
-#: ../src/TagWindow.C:325
+#: ../src/TagWindow.C:328
 msgid "Title"
 msgstr "Titolo"
 
-#: ../src/TagWindow.C:332
+#: ../src/TagWindow.C:335
 msgid "Authors"
 msgstr "Autori"
 
-#: ../src/TagWindow.C:339
+#: ../src/TagWindow.C:342
 msgid "Year  "
 msgstr "Anno"
 
-#: ../src/TagWindow.C:400
+#: ../src/TagWindow.C:403
 msgid "_Library"
 msgstr "_Libreria"
 
-#: ../src/TagWindow.C:414
+#: ../src/TagWindow.C:417
 msgid "E_xport as BibTeX..."
 msgstr "E_sporta come BibTex"
 
-#: ../src/TagWindow.C:417
+#: ../src/TagWindow.C:420
 msgid "_Import..."
 msgstr "_Importa..."
 
-#: ../src/TagWindow.C:420
+#: ../src/TagWindow.C:423
 msgid "_Work Offline"
 msgstr "_Lavora Disconnesso"
 
-#: ../src/TagWindow.C:427
+#: ../src/TagWindow.C:430
 msgid "_View"
 msgstr "_Visualizza"
 
-#: ../src/TagWindow.C:430
+#: ../src/TagWindow.C:433
 msgid "Use _List View"
 msgstr "Vedi come _Elenco"
 
-#: ../src/TagWindow.C:432
+#: ../src/TagWindow.C:435
 msgid "Use _Icon View"
 msgstr "Vedi come _Icone"
 
-#: ../src/TagWindow.C:434
+#: ../src/TagWindow.C:437
 msgid "_Show Tag Pane"
 msgstr "_Visualizza Pannello Etichette"
 
-#: ../src/TagWindow.C:436
+#: ../src/TagWindow.C:439
 msgid "_Tags"
 msgstr "_Etichette"
 
-#: ../src/TagWindow.C:438
+#: ../src/TagWindow.C:441
 msgid "_Create Tag..."
 msgstr "_Crea Etichetta..."
 
-#: ../src/TagWindow.C:441
+#: ../src/TagWindow.C:444
 msgid "_Delete Tag"
 msgstr "_Rimuovi Etichetta"
 
-#: ../src/TagWindow.C:444
+#: ../src/TagWindow.C:447
 msgid "_Rename Tag"
 msgstr "_Rinomina Etichetta"
 
-#: ../src/TagWindow.C:447
+#: ../src/TagWindow.C:450
 msgid "_Documents"
 msgstr "_Documenti"
 
-#: ../src/TagWindow.C:449
+#: ../src/TagWindow.C:452
 msgid "_Add File..."
 msgstr "_Aggiungi un File"
 
-#: ../src/TagWindow.C:452
+#: ../src/TagWindow.C:455
 msgid "_Add Folder..."
 msgstr "_Aggiungi Cartella"
 
-#: ../src/TagWindow.C:455
+#: ../src/TagWindow.C:458
 msgid "_Add Empty Reference..."
 msgstr "_Aggiungi Un Riferimento Vuoto"
 
-#: ../src/TagWindow.C:458
+#: ../src/TagWindow.C:461
 msgid "_Add Reference with DOI..."
 msgstr "_Aggiungi Riferimento DOI"
 
-#: ../src/TagWindow.C:461
+#: ../src/TagWindow.C:464
 msgid "_Remove"
 msgstr "_Elimina"
 
-#: ../src/TagWindow.C:465
+#: ../src/TagWindow.C:468
 msgid "_Web Link..."
 msgstr "_Collegamento Internet"
 
-#: ../src/TagWindow.C:468
+#: ../src/TagWindow.C:471
 msgid "_Open..."
 msgstr "_Apri..."
 
-#: ../src/TagWindow.C:475
+#: ../src/TagWindow.C:478
 msgid "_Get Metadata"
 msgstr "_Ottieni Metadati"
 
-#: ../src/TagWindow.C:478
+#: ../src/TagWindow.C:481
 msgid "_Delete File from drive"
 msgstr "_Rimuovi File dal Disco"
 
-#: ../src/TagWindow.C:482
+#: ../src/TagWindow.C:485
 msgid "_Rename File from Key"
 msgstr "_Rinomina File usando la Chiave"
 
-#: ../src/TagWindow.C:485
+#: ../src/TagWindow.C:488
 msgid "_Help"
 msgstr "_Aiuto"
 
-#: ../src/TagWindow.C:487
+#: ../src/TagWindow.C:490
 msgid "Introduction"
 msgstr "Introduzione"
+
+#: ../src/TagWindow.C:673
+msgid "All"
+msgstr "Tutti"
+
+#: ../src/TagWindow.C:677
+msgid "Untagged"
+msgstr ""
+
+#. For intelligent tags we'll need a dialog here.
+#: ../src/TagWindow.C:1078
+msgid "New tag"
+msgstr ""
+
+#: ../src/TagWindow.C:1090
+msgid "Name:"
+msgstr ""
+
+#: ../src/TagWindow.C:1147
+msgid ""
+"When a tag is deleted it is also permanently removed from all documents it "
+"is currently associated with."
+msgstr ""
+
+#: ../src/TagWindow.C:1200
+#, fuzzy
+msgid "Export BibTeX"
+msgstr "E_sporta come BibTex"
+
+#: ../src/TagWindow.C:1209 ../src/TagWindow.C:2104
+msgid "BibTeX Files"
+msgstr ""
+
+#: ../src/TagWindow.C:1214 ../src/TagWindow.C:1310 ../src/TagWindow.C:1358
+#: ../src/TagWindow.C:2091
+msgid "All Files"
+msgstr ""
+
+#: ../src/TagWindow.C:1225
+#, fuzzy
+msgid "Selection:"
+msgstr "Seleziona Un File"
+
+#: ../src/TagWindow.C:1228
+#, fuzzy
+msgid "All Documents"
+msgstr "_Documenti"
+
+#: ../src/TagWindow.C:1229
+#, fuzzy
+msgid "Selected Documents"
+msgstr "_Documenti"
+
+#: ../src/TagWindow.C:1234
+msgid "Protect capitalization (surround values with {})"
+msgstr ""
+
+#: ../src/TagWindow.C:1288
+#, fuzzy
+msgid "Open Library"
+msgstr "_Libreria"
+
+#: ../src/TagWindow.C:1305 ../src/TagWindow.C:1353
+msgid "Referencer Libraries"
+msgstr ""
+
+#: ../src/TagWindow.C:1344
+#, fuzzy
+msgid "Save Library As"
+msgstr "_Libreria"
+
+#: ../src/TagWindow.C:1396
+msgid "translator-credits"
+msgstr ""
+
+#: ../src/TagWindow.C:1422
+#, fuzzy
+msgid "Add Document Files"
+msgstr "Proprietà Documento"
+
+#: ../src/TagWindow.C:1428
+msgid "Adding document files"
+msgstr ""
+
+#: ../src/TagWindow.C:1429
+msgid ""
+"This process may take some time as the bibliographic information for each "
+"document is looked up."
+msgstr ""
+
+#: ../src/TagWindow.C:1451
+msgid "%1 of %2 documents"
+msgstr ""
+
+#: ../src/TagWindow.C:1503
+#, fuzzy
+msgid "Add Document with DOI"
+msgstr "_Aggiungi Riferimento DOI"
+
+#: ../src/TagWindow.C:1539
+#, fuzzy
+msgid "Add Document"
+msgstr "_Documenti"
+
+#: ../src/TagWindow.C:1569
+#, fuzzy
+msgid "Add Folder"
+msgstr "_Aggiungi Cartella"
+
+#: ../src/TagWindow.C:1677
+msgid "Are you sure you want to remove these %1 documents?"
+msgstr ""
+
+#: ../src/TagWindow.C:1679
+msgid ""
+"All tag associations and metadata for these documents will be permanently "
+"lost."
+msgstr ""
+
+#: ../src/TagWindow.C:1684
+msgid "Are you sure you want to remove '%1'?"
+msgstr ""
+
+#: ../src/TagWindow.C:1686
+msgid ""
+"All tag associations and metadata for the document will be permanently lost."
+msgstr ""
+
+#: ../src/TagWindow.C:1774
+#, fuzzy
+msgid "Really rename this file to '%1'?"
+msgstr "Rinomina questo campo"
+
+#: ../src/TagWindow.C:1777
+msgid "Really rename these %1 files to their keys?"
+msgstr ""
+
+#: ../src/TagWindow.C:1785
+msgid "This action <b>cannot be undone</b>."
+msgstr ""
+
+#: ../src/TagWindow.C:1788
+#, fuzzy
+msgid "Rename from Tag"
+msgstr "_Rinomina Etichetta"
+
+#: ../src/TagWindow.C:1816
+msgid "Are you sure you want to delete the files of these %1 documents?"
+msgstr ""
+
+#: ../src/TagWindow.C:1818
+msgid ""
+"All tag associations and metadata for these documents will be permanently "
+"lost, and the files they refer to will be irretrievably deleted."
+msgstr ""
+
+#: ../src/TagWindow.C:1824
+msgid "Are you sure you want to delete the file of '%1'?"
+msgstr ""
+
+#: ../src/TagWindow.C:1826
+msgid ""
+"All tag associations and metadata for the document will be permanently lost, "
+"and the file it refers to will be irretrievably deleted."
+msgstr ""
+
+#: ../src/TagWindow.C:2042
+#, fuzzy
+msgid "Unnamed Library"
+msgstr "_Libreria"
+
+#: ../src/TagWindow.C:2076
+#, fuzzy
+msgid "Import References"
+msgstr "Preferenze"
+
+#: ../src/TagWindow.C:2099
+msgid "Bibliography Files"
+msgstr ""
+
+#: ../src/TagWindow.C:2110
+#, fuzzy
+msgid "Format:"
+msgstr "Porta:"
 
