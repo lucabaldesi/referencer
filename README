@@ -49,3 +49,5 @@ The eel_* functions are copied from libeel, Copyright © 2000 Eazel, Inc.
 The art_rgb_run_alpha function is copied from libart, Copyright © Raph Levien 1998
 The thumbnail_frame.png graphic is copied from Nautilus, Copyright © 2003 Redhat, Inc
 ucompose.hpp is from the string composition library, Copyright © 2003 Ole Laursen, licensed under the LGPL
+
+ 
