@@ -1247,6 +1247,7 @@ void TagWindow::onExportBibtex ()
 		bool const selectedonly = combo.get_active_row_number () == 1;
 		exportfolder_ = Glib::path_get_dirname(chooser.get_filename());
 		Glib::ustring bibfilename = chooser.get_uri();
+		chooser.hide ();
 		// Really we shouldn't add the extension if the user has chosen an
 		// existing file rather than typing in a name themselves.
 		bibfilename = Utility::ensureExtension (bibfilename, "bib");
@@ -1313,6 +1314,7 @@ void TagWindow::onOpenLibrary ()
 	if (chooser.run () == Gtk::RESPONSE_ACCEPT) {
 		libraryfolder_ = Glib::path_get_dirname(chooser.get_filename());
 		Glib::ustring libfile = chooser.get_uri ();
+		chooser.hide ();
 		std::cerr << "Calling library_->load on " << libfile << "\n";
 		if (library_->load (libfile)) {
 			setDirty (false);
@@ -1367,6 +1369,7 @@ void TagWindow::onSaveAsLibrary ()
 	if (chooser.run() == Gtk::RESPONSE_ACCEPT) {
 		libraryfolder_ = Glib::path_get_dirname(chooser.get_filename());
 		Glib::ustring libfilename = chooser.get_uri();
+		chooser.hide ();
 		// Really we shouldn't add the extension if the user has chosen an
 		// existing file rather than typing in a name themselves.
 		libfilename = Utility::ensureExtension (libfilename, "reflib");
@@ -1553,6 +1556,7 @@ void TagWindow::onAddDocFile ()
 		addfolder_ = Glib::path_get_dirname(chooser.get_filename());
 		std::vector<Glib::ustring> newfiles;
 		Glib::SListHandle<Glib::ustring> uris = chooser.get_uris ();
+		chooser.hide ();
 		Glib::SListHandle<Glib::ustring>::iterator iter = uris.begin();
 		Glib::SListHandle<Glib::ustring>::iterator const end = uris.end();
 		for (; iter != end; ++iter) {
@@ -1582,6 +1586,7 @@ void TagWindow::onAddDocFolder ()
 		// Dirty is set in adddocfiles
 		addfolder_ = Glib::path_get_dirname(chooser.get_filename());
 		Glib::ustring rootfoldername = chooser.get_uri();
+		chooser.hide ();
 		std::vector<Glib::ustring> files = Utility::recurseFolder (rootfoldername);
 		addDocFiles (files);
 	}
@@ -2123,6 +2128,7 @@ void TagWindow::onImport ()
 	if (chooser.run () == Gtk::RESPONSE_ACCEPT) {
 		libraryfolder_ = Glib::path_get_dirname(chooser.get_filename());
 		Glib::ustring filename = chooser.get_uri ();
+		chooser.hide ();
 		setDirty (true);
 
 		BibUtils::Format format;

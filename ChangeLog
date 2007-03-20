@@ -1,4 +1,5 @@
 1.0.3:
+	- Reduce window clutter (Kai Willadsen)
 	- Italian translation (Michele Mattioni)
 	- Improve translatability of code (Kai Willadsen)
 	- Intltool fixes (Eric Lesh)
