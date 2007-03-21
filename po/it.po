@@ -9,8 +9,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: referencer\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2007-03-16 12:59+0100\n"
-"PO-Revision-Date: 2007-03-16 16:40+0100\n"
+"POT-Creation-Date: 2007-03-21 19:21+0000\n"
+"PO-Revision-Date: 2007-03-21 19:32+0000\n"
 "Last-Translator: Michele Mattioni <mattions@gmail.com>\n"
 "Language-Team: Italian <tp@lists.linux.it>\n"
 "MIME-Version: 1.0\n"
@@ -41,7 +41,7 @@ msgstr "Aggiungi un campo"
 msgid "Attempt to look up metadata for this document online"
 msgstr "Tentativo di ricercare i metadati di questo documento online"
 
-#: ../data/documentproperties.glade.h:7 ../src/TagWindow.C:1511
+#: ../data/documentproperties.glade.h:7 ../src/TagWindow.C:1514
 msgid "DOI:"
 msgstr "DOI:"
 
@@ -320,18 +320,20 @@ msgstr "Nome:"
 msgid ""
 "When a tag is deleted it is also permanently removed from all documents it "
 "is currently associated with."
-msgstr "Quando un'etichetta viene cancellata essa viene anche rimossa da tutti i documenti con cui era associata."
+msgstr ""
+"Quando un'etichetta viene cancellata essa viene anche rimossa da tutti i "
+"documenti con cui era associata."
 
 #: ../src/TagWindow.C:1200
 msgid "Export BibTeX"
 msgstr "Esporta come BibTex"
 
-#: ../src/TagWindow.C:1209 ../src/TagWindow.C:2104
+#: ../src/TagWindow.C:1209 ../src/TagWindow.C:2109
 msgid "BibTeX Files"
 msgstr "File BibTeX"
 
-#: ../src/TagWindow.C:1214 ../src/TagWindow.C:1310 ../src/TagWindow.C:1358
-#: ../src/TagWindow.C:2091
+#: ../src/TagWindow.C:1214 ../src/TagWindow.C:1311 ../src/TagWindow.C:1360
+#: ../src/TagWindow.C:2096
 msgid "All Files"
 msgstr "Tutti i Files"
 
@@ -351,120 +353,130 @@ msgstr "Documenti Selezionati"
 msgid "Protect capitalization (surround values with {})"
 msgstr ""
 
-#: ../src/TagWindow.C:1288
+#: ../src/TagWindow.C:1289
 msgid "Open Library"
 msgstr "Apri Libreria"
 
-#: ../src/TagWindow.C:1305 ../src/TagWindow.C:1353
+#: ../src/TagWindow.C:1306 ../src/TagWindow.C:1355
 msgid "Referencer Libraries"
 msgstr "Libreria Referencer"
 
-#: ../src/TagWindow.C:1344
+#: ../src/TagWindow.C:1346
 msgid "Save Library As"
 msgstr "Salva come Libreria"
 
-#: ../src/TagWindow.C:1396
+#: ../src/TagWindow.C:1399
 msgid "translator-credits"
 msgstr "crediti traduttori"
 
-#: ../src/TagWindow.C:1422
+#: ../src/TagWindow.C:1425
 msgid "Add Document Files"
 msgstr "Aggiungi un Documento"
 
-#: ../src/TagWindow.C:1428
+#: ../src/TagWindow.C:1431
 msgid "Adding document files"
 msgstr "Aggiungere un Documento"
 
-#: ../src/TagWindow.C:1429
+#: ../src/TagWindow.C:1432
 msgid ""
 "This process may take some time as the bibliographic information for each "
 "document is looked up."
-msgstr "Ricerca delle informazioni bibliografiche on-line. Questo processo potrebbe richiedere del tempo."
+msgstr ""
+"Ricerca delle informazioni bibliografiche on-line. Questo processo potrebbe "
+"richiedere del tempo."
 
-#: ../src/TagWindow.C:1451
+#: ../src/TagWindow.C:1454
 msgid "%1 of %2 documents"
 msgstr "%1 di %2 documenti"
 
-#: ../src/TagWindow.C:1503
+#: ../src/TagWindow.C:1506
 msgid "Add Document with DOI"
 msgstr "Aggiungi un Documento con un riferimento DOI"
 
-#: ../src/TagWindow.C:1539
+#: ../src/TagWindow.C:1542
 msgid "Add Document"
 msgstr "Aggiungi Documento"
 
-#: ../src/TagWindow.C:1569
+#: ../src/TagWindow.C:1573
 msgid "Add Folder"
 msgstr "Aggiungi Cartella"
 
-#: ../src/TagWindow.C:1677
+#: ../src/TagWindow.C:1682
 msgid "Are you sure you want to remove these %1 documents?"
 msgstr "Sei sicuro di voler rimuovere questi %1 documenti?"
 
-#: ../src/TagWindow.C:1679
+#: ../src/TagWindow.C:1684
 msgid ""
 "All tag associations and metadata for these documents will be permanently "
 "lost."
-msgstr "Tutte le etichette ed i metadati associati con questi documenti saranno persi per sempre."
+msgstr ""
+"Tutte le etichette ed i metadati associati con questi documenti saranno "
+"persi per sempre."
 
-#: ../src/TagWindow.C:1684
+#: ../src/TagWindow.C:1689
 msgid "Are you sure you want to remove '%1'?"
 msgstr "Sei sicuro di voler rimuovere '%1'?"
 
-#: ../src/TagWindow.C:1686
+#: ../src/TagWindow.C:1691
 msgid ""
 "All tag associations and metadata for the document will be permanently lost."
-msgstr "Tutte le etichette ed i metadati associati con questo documento verranno persi per sempre."
+msgstr ""
+"Tutte le etichette ed i metadati associati con questo documento verranno "
+"persi per sempre."
 
-#: ../src/TagWindow.C:1774
+#: ../src/TagWindow.C:1779
 msgid "Really rename this file to '%1'?"
 msgstr "Rinominare questo file to '%1'?"
 
-#: ../src/TagWindow.C:1777
+#: ../src/TagWindow.C:1782
 msgid "Really rename these %1 files to their keys?"
-msgstr ""
+msgstr "Rinominarere questi files %1 come le loro chiavi?"
 
-#: ../src/TagWindow.C:1785
+#: ../src/TagWindow.C:1790
 msgid "This action <b>cannot be undone</b>."
 msgstr "Quest'azione <b>non potrà essere annullata</b>"
 
-#: ../src/TagWindow.C:1788
+#: ../src/TagWindow.C:1793
 msgid "Rename from Tag"
 msgstr "Rinomina Etichetta"
 
-#: ../src/TagWindow.C:1816
+#: ../src/TagWindow.C:1821
 msgid "Are you sure you want to delete the files of these %1 documents?"
 msgstr "Sei sicuro di voler rimuovere i files di questi %1 documenti?"
 
-#: ../src/TagWindow.C:1818
+#: ../src/TagWindow.C:1823
 msgid ""
 "All tag associations and metadata for these documents will be permanently "
 "lost, and the files they refer to will be irretrievably deleted."
-msgstr "Tutte le etichette ed i metadati di questi documenti verranno cancellati per sempre ed i lor files verranno irrimediabilmente cancellati."
+msgstr ""
+"Tutte le etichette ed i metadati di questi documenti verranno cancellati per "
+"sempre ed i lor files verranno irrimediabilmente cancellati."
 
-#: ../src/TagWindow.C:1824
+#: ../src/TagWindow.C:1829
 msgid "Are you sure you want to delete the file of '%1'?"
 msgstr "Sei sicuro di voler rimuovere il file di '%1'?"
 
-#: ../src/TagWindow.C:1826
+#: ../src/TagWindow.C:1831
 msgid ""
 "All tag associations and metadata for the document will be permanently lost, "
 "and the file it refers to will be irretrievably deleted."
-msgstr "Tutte le etichette ed i metadati per questo documento verranno permanentemente cancellati e il file verrà irrimediabilmente cancellato."
+msgstr ""
+"Tutte le etichette ed i metadati per questo documento verranno "
+"permanentemente cancellati e il file verrà irrimediabilmente cancellato."
 
-#: ../src/TagWindow.C:2042
+#: ../src/TagWindow.C:2047
 msgid "Unnamed Library"
 msgstr "Libreria"
 
-#: ../src/TagWindow.C:2076
+#: ../src/TagWindow.C:2081
 msgid "Import References"
 msgstr "Importa Riferimenti"
 
-#: ../src/TagWindow.C:2099
+#: ../src/TagWindow.C:2104
 msgid "Bibliography Files"
 msgstr "Files Bibliografici"
 
-#: ../src/TagWindow.C:2110
+#: ../src/TagWindow.C:2115
 msgid "Format:"
 msgstr "Formato:"
 
