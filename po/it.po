@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: referencer\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2007-03-21 19:21+0000\n"
-"PO-Revision-Date: 2007-03-21 19:32+0000\n"
+"PO-Revision-Date: 2007-03-21 20:12+0000\n"
 "Last-Translator: Michele Mattioni <mattions@gmail.com>\n"
 "Language-Team: Italian <tp@lists.linux.it>\n"
 "MIME-Version: 1.0\n"
@@ -351,7 +351,7 @@ msgstr "Documenti Selezionati"
 
 #: ../src/TagWindow.C:1234
 msgid "Protect capitalization (surround values with {})"
-msgstr ""
+msgstr "Impedire la capitalizzazione (circondare I valori con {})"
 
 #: ../src/TagWindow.C:1289
 msgid "Open Library"
