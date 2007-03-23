@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: referencer\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2007-03-21 19:21+0000\n"
-"PO-Revision-Date: 2007-03-21 20:12+0000\n"
+"PO-Revision-Date: 2007-03-23 14:12+0000\n"
 "Last-Translator: Michele Mattioni <mattions@gmail.com>\n"
 "Language-Team: Italian <tp@lists.linux.it>\n"
 "MIME-Version: 1.0\n"
@@ -169,7 +169,7 @@ msgstr "Usa il proxy"
 
 #: ../data/preferences.glade.h:17
 msgid "Username:"
-msgstr "Username:"
+msgstr "Nome Utente:"
 
 #: ../src/TagWindow.C:144
 msgid "_Search:"
