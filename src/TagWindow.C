@@ -1790,7 +1790,7 @@ void TagWindow::onRenameDoc ()
 	confirmdialog.set_secondary_text (_("This action <b>cannot be undone</b>."), true);
 
 	confirmdialog.add_button (Gtk::Stock::CANCEL, Gtk::RESPONSE_CANCEL);
-	confirmdialog.add_button (_("Rename from Tag"), Gtk::RESPONSE_ACCEPT);
+	confirmdialog.add_button (_("Rename from Key"), Gtk::RESPONSE_ACCEPT);
 	confirmdialog.set_default_response (Gtk::RESPONSE_CANCEL);
 
 	if (confirmdialog.run() != Gtk::RESPONSE_ACCEPT)
@@ -1801,10 +1801,13 @@ void TagWindow::onRenameDoc ()
 	for (; it != end; ++it) {
 		Document* doc = *it;
 		doc->renameFromKey ();
+		doclistdirty = true;
 	}
 
-	if (doclistdirty)
+	if (doclistdirty) {
+		setDirty (true);
 		populateDocStore ();
+	}
 }
 
 
