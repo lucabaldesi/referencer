@@ -344,7 +344,7 @@ void BibData::guessArxiv (Glib::ustring const &raw_)
 	"arXiv:"
 	"("
 	"[^\\/\\s]+"
-	"\\/"
+	"[\\/\\.]"
 	"[^\\s]+"
 	")"
 	);

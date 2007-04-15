@@ -1,4 +1,5 @@
 1.0.3:
+	- Support new arXiv id format
 	- Stop reading document if DOI/Arxiv is found on first page
 	- Fix setting dirtyness of library in "Rename from Key" (Jordy Potman)
 	- Reduce window clutter (Kai Willadsen)
