@@ -12,8 +12,6 @@ Needed:
 		Write out tags as special bibtex field
 	Resolve symlinks before doing relative filename magic
 
-	If a DOI found on first page of a pdf, don't read all the other pages
-
 
 	Edit menu:
 		- Copy key

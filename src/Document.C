@@ -364,6 +364,7 @@ void Document::readPDF ()
 	Glib::ustring textdump;
 	int num_pages = poppler_document_get_n_pages (popplerdoc);
 	char **page_text;
+	bool got_id = false;
 
 	for (int i = 0; i < num_pages; i++) {
 		PopplerPage *page;
@@ -384,16 +385,32 @@ void Document::readPDF ()
 
 		poppler_rectangle_free (rect);
 		g_object_unref (page);
+		
+		// When we read the first page, see if it has the doc ID
+		// and if it does then don't bother reading the rest.
+		if (i == 0) {
+			bib_.guessYear (textdump);
+			bib_.guessDoi (textdump);
+			if (bib_.getDoi ().empty ())
+				bib_.guessArxiv (textdump);
+			if (!bib_.getDoi ().empty () || !bib_.getExtras ()["eprint"].empty ()) {
+				got_id = true;
+				break;
+			}
+		}
 	}
 
 	g_object_unref (popplerdoc);
 
-	if (!textdump.empty()) {
+	// If we didn't find the ID on the first page and we have some text
+	// then search the whole document text for the ID and year
+	if (!got_id && !textdump.empty()) {
 		bib_.guessDoi (textdump);
-		if (bib_.getDoi().empty ())
+		if (bib_.getDoi ().empty ())
 			bib_.guessArxiv (textdump);
-		//bib_.guessAuthors (textdump);
-		bib_.guessYear (textdump);
+		// We might have picked this up on the first page
+		if (bib_.getYear ().empty())
+			bib_.guessYear (textdump);
 	} else {
 		std::cerr << "Document::ReadPDF: Could not extract text from '"
 			<< filename_ << "'\n";
