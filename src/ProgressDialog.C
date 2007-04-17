@@ -24,7 +24,10 @@ ProgressDialog::ProgressDialog ()
 	dialog_->set_has_separator (false);
 
 	Gtk::VBox *vbox = dialog_->get_vbox ();
-	vbox->set_spacing (12);
+	Gtk::VBox *myvbox = Gtk::manage (new Gtk::VBox (false, 12));
+	vbox->pack_start (*myvbox);
+	vbox = myvbox;
+	vbox->set_border_width (6);
 
 	progress_ = Gtk::manage (new Gtk::ProgressBar);
 	label_ = Gtk::manage (new Gtk::Label ("", false));
@@ -51,11 +54,6 @@ void ProgressDialog::setLabel (Glib::ustring const &markup)
 void ProgressDialog::start ()
 {
 	dialog_->show_all ();
-	// Make sure it's realised before setting the border width
-	// There should (must be) be a better way...
-	/*while (Gnome::Main::events_pending())
-		Gnome::Main::iteration ();
-	dialog_->get_vbox ()->set_border_width (12);*/
 
 	// Flag that the loop thread waits for
 	finished_ = false;
