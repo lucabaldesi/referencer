@@ -416,6 +416,9 @@ void TagWindow::constructMenu ()
 	actiongroup_->add( Gtk::Action::create("ExportBibtex",
 		Gtk::Stock::CONVERT, _("E_xport as BibTeX...")), Gtk::AccelKey ("<control>b"),
   	sigc::mem_fun(*this, &TagWindow::onExportBibtex));
+	actiongroup_->add( Gtk::Action::create("ManageBibtex",
+		Gtk::Stock::CONVERT, _("_Manage BibTeX File...")), Gtk::AccelKey ("<control><shift>b"),
+  	sigc::mem_fun(*this, &TagWindow::onManageBibtex));
 	actiongroup_->add( Gtk::Action::create("Import",
 		_("_Import...")),
   	sigc::mem_fun(*this, &TagWindow::onImport));
@@ -506,6 +509,7 @@ void TagWindow::constructMenu ()
 		"      <menuitem action='SaveAsLibrary'/>"
 		"      <separator/>"
 		"      <menuitem action='ExportBibtex'/>"
+		"      <menuitem action='ManageBibtex'/>"
 		"      <menuitem action='Import'/>"
 		"      <separator/>"
 		"      <menuitem action='WorkOffline'/>"
@@ -1266,6 +1270,45 @@ void TagWindow::onExportBibtex ()
 
 		library_->writeBibtex (bibfilename, docs, usebraces);
 	}
+}
+
+
+void TagWindow::onManageBibtex ()
+{
+	Gtk::Dialog dialog ("Manage BibTeX File", true, false);
+	
+	enum {CANCEL, CLEAR, SET};
+	
+	Gtk::VBox *vbox = dialog.get_vbox ();
+	Gtk::VBox mybox;
+	vbox->pack_start (mybox);	
+	vbox = &mybox;
+	vbox->set_border_width (6);
+
+	Gtk::Label explanation;
+	explanation.set_markup (
+	"<b><big>Manage BibTeX File</big></b>"
+	"\n\n"
+	"If you choose a file here, it will be overwritten whenever "
+	"this referencer library is saved.\n\n");
+	
+	vbox->pack_start (explanation);
+	vbox->show_all ();
+	
+	dialog.add_button (Gtk::Stock::CANCEL, CANCEL);
+	Gtk::Button *clearbutton = dialog.add_button ("Stop Managing File", CLEAR);
+	dialog.add_button ("Choose File to Manage...", CLEAR);
+	
+	int result = dialog.run ();
+	switch (result) {
+		case CANCEL:
+			break;
+		case CLEAR:
+			break;
+		case SET:
+			break;
+	}
+	
 }
 
 

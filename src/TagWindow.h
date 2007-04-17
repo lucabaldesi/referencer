@@ -119,6 +119,7 @@ class TagWindow {
 		void onSaveAsLibrary ();
 		void onOpenLibrary ();
 		void onExportBibtex ();
+		void onManageBibtex ();
 		void onImport ();
 		void onPreferences ();
 		void onIconsDragData (
