@@ -1275,39 +1275,46 @@ void TagWindow::onExportBibtex ()
 
 void TagWindow::onManageBibtex ()
 {
-	Gtk::Dialog dialog ("Manage BibTeX File", true, false);
-	
-	enum {CANCEL, CLEAR, SET};
+	Gtk::Dialog dialog (_("Manage BibTeX File"), true, false);
+
+	dialog.add_button (Gtk::Stock::CLOSE, Gtk::RESPONSE_CANCEL);
 	
 	Gtk::VBox *vbox = dialog.get_vbox ();
 	Gtk::VBox mybox;
 	vbox->pack_start (mybox);	
 	vbox = &mybox;
 	vbox->set_border_width (6);
+	vbox->set_spacing (6);
 
 	Gtk::Label explanation;
-	explanation.set_markup (
+	explanation.set_markup ( _(
 	"<b><big>Manage BibTeX File</big></b>"
 	"\n\n"
 	"If you choose a file here, it will be overwritten whenever "
-	"this referencer library is saved.\n\n");
-	
+	"this library is saved."));
 	vbox->pack_start (explanation);
+	
+	Gtk::HBox hbox;
+	hbox.set_spacing (6);
+	Gtk::Label label (_("BibTeX file:"));
+	hbox.pack_start (label, false, false, 0);
+	Gtk::FileChooserButton chooserbutton
+		(_("Manage BibTeX File"), Gtk::FILE_CHOOSER_ACTION_OPEN);
+	hbox.pack_start (chooserbutton);
+
+	Gtk::Button clearbutton (Gtk::Stock::CLEAR);
+	hbox.pack_end (clearbutton, false, false, 0);
+	clearbutton.signal_clicked ().connect (
+		sigc::mem_fun (chooserbutton, &Gtk::FileChooser::unselect_all));
+	vbox->pack_start (hbox);
+
+	Gtk::CheckButton bracescheck (_("Protect capitalization (surround values with {})"));
+	vbox->pack_start (bracescheck);
+	
 	vbox->show_all ();
 	
-	dialog.add_button (Gtk::Stock::CANCEL, CANCEL);
-	Gtk::Button *clearbutton = dialog.add_button ("Stop Managing File", CLEAR);
-	dialog.add_button ("Choose File to Manage...", CLEAR);
-	
-	int result = dialog.run ();
-	switch (result) {
-		case CANCEL:
-			break;
-		case CLEAR:
-			break;
-		case SET:
-			break;
-	}
+	dialog.run ();
+
 	
 }
 
