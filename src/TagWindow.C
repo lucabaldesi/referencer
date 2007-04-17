@@ -1141,7 +1141,7 @@ void TagWindow::onDeleteTag ()
 		}
 
 		Glib::ustring message = String::ucompose (
-			"Are you sure you want to delete \"%1\"?",
+			_("Are you sure you want to delete \"%1\"?"),
 			(Glib::ustring)(*iter)[tagnamecol_]);
 
 		Gtk::MessageDialog confirmdialog (
@@ -1235,6 +1235,7 @@ void TagWindow::onExportBibtex ()
 	selectionbox.pack_start (combo, true, true, 0);
 	selectionbox.set_sensitive (getSelectedDocCount ());
 
+	// Any options here should be replicated in onManageBibtex
 	Gtk::CheckButton bracescheck (_("Protect capitalization (surround values with {})"));
 	extrabox.pack_start (bracescheck, false, false, 0);
 
@@ -1273,6 +1274,22 @@ void TagWindow::onExportBibtex ()
 }
 
 
+static void browseUri (Gtk::Entry *entry)
+{
+	Glib::ustring filename = Glib::filename_from_utf8 (entry->get_text ());
+	
+	Gtk::FileChooserDialog dialog (_("Browse"), Gtk::FILE_CHOOSER_ACTION_SAVE);
+	dialog.add_button (Gtk::Stock::CANCEL, Gtk::RESPONSE_CANCEL);
+	dialog.add_button (Gtk::Stock::SAVE, Gtk::RESPONSE_OK);
+	dialog.set_do_overwrite_confirmation ();
+	
+	// Should be doing some kind of genius relative-path detection here
+	if (dialog.run() == Gtk::RESPONSE_OK) {
+		entry->set_text (Glib::filename_to_utf8 (dialog.get_filename()));
+	}
+}
+
+
 void TagWindow::onManageBibtex ()
 {
 	Gtk::Dialog dialog (_("Manage BibTeX File"), true, false);
@@ -1298,24 +1315,50 @@ void TagWindow::onManageBibtex ()
 	hbox.set_spacing (6);
 	Gtk::Label label (_("BibTeX file:"));
 	hbox.pack_start (label, false, false, 0);
-	Gtk::FileChooserButton chooserbutton
-		(_("Manage BibTeX File"), Gtk::FILE_CHOOSER_ACTION_OPEN);
-	hbox.pack_start (chooserbutton);
-
-	Gtk::Button clearbutton (Gtk::Stock::CLEAR);
-	hbox.pack_end (clearbutton, false, false, 0);
-	clearbutton.signal_clicked ().connect (
-		sigc::mem_fun (chooserbutton, &Gtk::FileChooser::unselect_all));
+	Gtk::Entry urientry;
+	hbox.pack_start (urientry);
+	urientry.set_text (Gnome::Vfs::get_local_path_from_uri (library_->getBibtexTarget ()));
 	vbox->pack_start (hbox);
 
+	Gtk::HBox hbox2;
+	hbox2.set_spacing (6);
+	
+	Gtk::Button browsebutton ("_Browse...", true);
+  Gtk::Image *openicon = Gtk::manage (
+    new Gtk::Image (Gtk::Stock::OPEN, Gtk::ICON_SIZE_BUTTON));
+	browsebutton.set_image (*openicon);
+	browsebutton.signal_clicked ().connect (
+		sigc::bind(sigc::ptr_fun (browseUri), &urientry));
+
+	browsebutton.set_use_underline (true);
+	hbox2.pack_end (browsebutton, false, false, 0);
+	Gtk::Button clearbutton (Gtk::Stock::CLEAR);
+	hbox2.pack_end (clearbutton, false, false, 0);
+	clearbutton.signal_clicked ().connect (
+		sigc::bind (sigc::mem_fun (urientry, &Gtk::Entry::set_text), Glib::ustring()));
+	vbox->pack_start (hbox2);
+
+	// Any options here should be replicated in onExportBibtex
 	Gtk::CheckButton bracescheck (_("Protect capitalization (surround values with {})"));
 	vbox->pack_start (bracescheck);
-	
+	bracescheck.set_active (library_->getBibtexBraces ());
+
 	vbox->show_all ();
 	
 	dialog.run ();
 
+	Glib::ustring const newtarget =
+		Gnome::Vfs::get_uri_from_local_path (urientry.get_text ());
+	bool const newbraces = bracescheck.get_active ();
 	
+	if (newtarget != library_->getBibtexTarget ()
+	    || newbraces != library_->getBibtexBraces () ) {
+		setDirty (true);
+	}
+
+	library_->manageBibtex (
+		newtarget,
+		bracescheck.get_active ());
 }
 
 

@@ -27,6 +27,7 @@ Library::Library ()
 {
 	doclist_ = new DocumentList ();
 	taglist_ = new TagList ();
+	manage_braces = false;
 }
 
 
@@ -40,11 +41,20 @@ Library::~Library ()
 Glib::ustring Library::writeXML ()
 {
 	std::ostringstream out;
+	
 	out << "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n";
 	out << "<library>\n";
+	
+	out << "<manage_target>" << Glib::Markup::escape_text (manage_target)
+		<< "</manage_target>\n";
+	out << "<manage_braces>" << (manage_braces ? "true" : "false")
+	 << "</manage_braces>\n";
+	
 	taglist_->writeXML (out);
 	doclist_->writeXML (out);
+	
 	out << "</library>\n";
+	
 	return out.str ();
 }
 
@@ -214,6 +224,18 @@ bool Library::save (Glib::ustring const &libfilename)
 		return false;
 	}
 
+	// Having successfully saved the library, write the bibtex if needed
+	if (!manage_target.empty ()) {
+		std::vector<Document*> docs;
+		DocumentList::Container &docrefs = doclist_->getDocs ();
+		DocumentList::Container::iterator it = docrefs.begin();
+		DocumentList::Container::iterator const end = docrefs.end();
+		for (; it != end; it++) {
+			docs.push_back(&(*it));
+		}
+		writeBibtex (manage_target, docs, manage_braces);
+	}
+
 	return true;
 }
 
@@ -257,5 +279,14 @@ void Library::writeBibtex (
 
 	// Forcefully move our tmp file into its real position
 	Gnome::Vfs::Handle::move (tmpbibfilename, bibfilename, true);
+}
+
+
+void Library::manageBibtex (
+	Glib::ustring const &target,
+	bool const braces)
+{
+	manage_target = target;
+	manage_braces = braces;
 }
 
