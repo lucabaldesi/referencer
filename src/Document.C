@@ -199,6 +199,7 @@ Glib::ustring& Document::getRelFileName()
 
 void Document::setFileName (Glib::ustring const &filename)
 {
+	std::cerr << "Document::setFileName: got '" << filename << "'\n";
 	if (filename != filename_) {
 		filename_ = filename;
 		setupThumbnail ();

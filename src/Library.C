@@ -195,6 +195,8 @@ bool Library::save (Glib::ustring const &libfilename)
 		return false;
 	}
 
+
+	std::cerr << "Updating relative filenames...\n";
 	DocumentList::Container &docs = doclist_->getDocs ();
 	DocumentList::Container::iterator docit = docs.begin ();
 	DocumentList::Container::iterator const docend = docs.end ();
@@ -203,8 +205,11 @@ bool Library::save (Glib::ustring const &libfilename)
 			docit->updateRelFileName (libfilename);
 		}
 	}
+	std::cerr << "Done.\n";
 
+	std::cerr << "Generating XML...\n";
 	Glib::ustring rawtext = writeXML ();
+	std::cerr << "Done.\n";
 
 	try {
 		libfile.write (rawtext.c_str(), strlen(rawtext.c_str()));
