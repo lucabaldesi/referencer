@@ -14,12 +14,14 @@
 #define LIBRARYPARSER_H
 
 #include <gtkmm.h>
+#include "Library.h"
 #include "DocumentList.h"
 #include "TagList.h"
 #include "BibData.h"
+#include "ucompose.hpp"
 
 class LibraryParser : public Glib::Markup::Parser {
-
+	Library &library_;
 	DocumentList &doclist_;
 	TagList &taglist_;
 
@@ -45,11 +47,15 @@ class LibraryParser : public Glib::Markup::Parser {
 	Glib::ustring bibText_;
 	Glib::ustring bibExtraKey_;
 
+	Glib::ustring textBuffer_;
+
+	bool manageBraces_;
+
 	BibData newDocBib_;
 
 	public:
-	LibraryParser (TagList &taglist, DocumentList &doclist)
-		: doclist_(doclist), taglist_(taglist)
+	LibraryParser (Library &library, TagList &taglist, DocumentList &doclist)
+		: doclist_(doclist), taglist_(taglist), library_(library)
 	{
 		inTag_ = false;
 		inUid_ = false;
@@ -64,11 +70,24 @@ class LibraryParser : public Glib::Markup::Parser {
 	}
 
 	private:
+
+	bool boolFromStr (Glib::ustring const &str) {
+		if (str == "true") {
+			return true;
+		} else if (str == "false") {
+			return false;
+		} else {
+			throw new Glib::MarkupError (Glib::MarkupError::INVALID_CONTENT,
+				String::ucompose ("'%s' is not a valid boolean value", str));
+		}
+	}
+
 	virtual void on_start_element (
 		Glib::Markup::ParseContext& context,
 		const Glib::ustring& element_name,
 		const Glib::Markup::Parser::AttributeMap& attributes)
 	{
+		textBuffer_ = "";
 		//std::cerr << "Started element " << element_name << "\n";
 		if (element_name == "tag") {
 			inTag_ = true;
@@ -95,8 +114,6 @@ class LibraryParser : public Glib::Markup::Parser {
 			inKey_ = true;
 		} else if (inDoc_ && element_name == "tagged") {
 			inTagged_ = true;
-
-
 		} else if (element_name == "bib_doi"
 		           || element_name == "bib_type"
 		           || element_name == "bib_title"
@@ -115,7 +132,12 @@ class LibraryParser : public Glib::Markup::Parser {
 			Glib::Markup::Parser::AttributeMap::const_iterator foo = attributes.find ("key");
 			std::pair<Glib::ustring, Glib::ustring> item = *foo;
 			bibExtraKey_ = item.second;
+		} else if (element_name == "manage_target") {
+			Glib::Markup::Parser::AttributeMap::const_iterator foo = attributes.find ("braces");
+			std::pair<Glib::ustring, Glib::ustring> item = *foo;
+			manageBraces_ = boolFromStr (item.second);
 		}
+
 	}
 
 	virtual void	on_end_element (
@@ -176,6 +198,8 @@ class LibraryParser : public Glib::Markup::Parser {
 		} else if (element_name == "bib_extra") {
 			inBibItem_ = false;
 			newDocBib_.addExtra (bibExtraKey_, bibText_);
+		} else if (element_name == "manage_target") {
+			library_.manageBibtex (textBuffer_, manageBraces_);
 		}
 	}
 
@@ -207,6 +231,10 @@ class LibraryParser : public Glib::Markup::Parser {
 			newDocTag_ += text;
 		else if (inBibItem_)
 			bibText_ += text;
+		else {
+			textBuffer_ += text;
+		}
+
 	}
 };
 

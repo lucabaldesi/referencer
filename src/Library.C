@@ -45,10 +45,10 @@ Glib::ustring Library::writeXML ()
 	out << "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n";
 	out << "<library>\n";
 	
-	out << "<manage_target>" << Glib::Markup::escape_text (manage_target)
-		<< "</manage_target>\n";
-	out << "<manage_braces>" << (manage_braces ? "true" : "false")
-	 << "</manage_braces>\n";
+	out << "<manage_target braces=\""
+		<< (manage_braces ? "true" : "false")
+	<< "\">" << Glib::Markup::escape_text (manage_target)
+	<< "</manage_target>\n";
 	
 	taglist_->writeXML (out);
 	doclist_->writeXML (out);
@@ -64,7 +64,7 @@ bool Library::readXML (Glib::ustring XMLtext)
 	TagList *newtags = new TagList ();
 	DocumentList *newdocs = new DocumentList ();
 
-	LibraryParser parser (*newtags, *newdocs);
+	LibraryParser parser (*this, *newtags, *newdocs);
 	Glib::Markup::ParseContext context (parser);
 	try {
 		context.parse (XMLtext);
