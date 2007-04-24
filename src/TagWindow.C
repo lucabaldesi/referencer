@@ -1304,11 +1304,13 @@ void TagWindow::onManageBibtex ()
 	vbox->set_spacing (6);
 
 	Gtk::Label explanation;
-	explanation.set_markup ( _(
-	"<b><big>Manage BibTeX File</big></b>"
-	"\n\n"
-	"If you choose a file here, it will be overwritten whenever "
-	"this library is saved."));
+	explanation.set_markup (
+	String::ucompose (
+		"<b><big>%1</big></b>\n\n%2",
+		_("Manage BibTeX File"),
+		_("If you choose a file here, it will be overwritten "
+		"whenever this library is saved."))
+		);
 	vbox->pack_start (explanation);
 	
 	Gtk::HBox hbox;
@@ -1323,7 +1325,7 @@ void TagWindow::onManageBibtex ()
 	Gtk::HBox hbox2;
 	hbox2.set_spacing (6);
 	
-	Gtk::Button browsebutton ("_Browse...", true);
+	Gtk::Button browsebutton (_("_Browse..."), true);
   Gtk::Image *openicon = Gtk::manage (
     new Gtk::Image (Gtk::Stock::OPEN, Gtk::ICON_SIZE_BUTTON));
 	browsebutton.set_image (*openicon);
