@@ -1233,7 +1233,7 @@ void TagWindow::onExportBibtex ()
 	combo.append_text (_("Selected Documents"));
 	combo.set_active (0);
 	selectionbox.pack_start (combo, true, true, 0);
-	selectionbox.set_sensitive (getSelectedDocCount ());
+	combo.set_sensitive (getSelectedDocCount ());
 
 	// Any options here should be replicated in onManageBibtex
 	Gtk::CheckButton bracescheck (_("Protect capitalization (surround values with {})"));
