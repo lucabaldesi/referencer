@@ -28,6 +28,7 @@ Library::Library ()
 	doclist_ = new DocumentList ();
 	taglist_ = new TagList ();
 	manage_braces_ = false;
+	manage_utf8_ = false;
 }
 
 
@@ -45,9 +46,13 @@ Glib::ustring Library::writeXML ()
 	out << "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n";
 	out << "<library>\n";
 	
-	out << "<manage_target braces=\""
+	out << "<manage_target"
+		<< " braces=\""
 		<< (manage_braces_ ? "true" : "false")
-	<< "\">" << Glib::Markup::escape_text (manage_target_)
+		<< "\" utf8=\""
+		<< (manage_utf8_ ? "true" : "false")
+	<< "\">"
+	<< Glib::Markup::escape_text (manage_target_)
 	<< "</manage_target>\n";
 	
 	taglist_->writeXML (out);
@@ -95,6 +100,7 @@ void Library::clear ()
 	doclist_->clear ();
 	manage_target_ = "";
 	manage_braces_ = false;
+	manage_utf8_ = false;
 }
 
 
@@ -246,7 +252,7 @@ bool Library::save (Glib::ustring const &libfilename)
 		for (; it != end; it++) {
 			docs.push_back(&(*it));
 		}
-		writeBibtex (bibtextarget, docs, manage_braces_);
+		writeBibtex (bibtextarget, docs, manage_braces_, manage_utf8_);
 	}
 
 	return true;
@@ -256,7 +262,8 @@ bool Library::save (Glib::ustring const &libfilename)
 void Library::writeBibtex (
 	Glib::ustring const &bibfilename,
 	std::vector<Document*> const &docs,
-	bool const usebraces)
+	bool const usebraces,
+	bool const utf8)
 {
 	Glib::ustring tmpbibfilename = bibfilename + ".export-tmp";
 
@@ -277,7 +284,7 @@ void Library::writeBibtex (
 	std::vector<Document*>::const_iterator it = docs.begin ();
 	std::vector<Document*>::const_iterator const end = docs.end ();
 	for (; it != end; ++it) {
-		(*it)->writeBibtex (bibtext, usebraces);
+		(*it)->writeBibtex (bibtext, usebraces, utf8);
 	}
 
 	try {
@@ -297,9 +304,11 @@ void Library::writeBibtex (
 
 void Library::manageBibtex (
 	Glib::ustring const &target,
-	bool const braces)
+	bool const braces,
+	bool const utf8)
 {
 	manage_target_ = target;
 	manage_braces_ = braces;
+	manage_utf8_ = utf8;
 }
 

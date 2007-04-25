@@ -55,7 +55,10 @@ class Document {
 	bool canGetMetadata ();
 	bool matchesSearch (Glib::ustring const &search);
 
-	void writeBibtex (std::ostringstream& out, bool const usebraces);
+	void writeBibtex (
+		std::ostringstream& out,
+		bool const usebraces,
+		bool const utf8);
 	void writeXML (std::ostringstream &out);
 	void readPDF ();
 	void getMetaData ();

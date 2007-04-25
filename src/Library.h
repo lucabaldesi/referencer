@@ -36,7 +36,8 @@ class Library {
 	void writeBibtex (
 		Glib::ustring const &bibfilename,
 		std::vector<Document*> const &docs,
-		bool const usebraces);
+		bool const usebraces,
+		bool const utf8);
 		
 
 	// The naming is BibtexFoo everywhere else, but in Library
@@ -45,14 +46,17 @@ class Library {
 	// functionality
 	void manageBibtex (
 		Glib::ustring const &target,
-		bool const brackets);
+		bool const brackets,
+		bool const utf8);
 	Glib::ustring getBibtexTarget () {return manage_target_;}
 	bool getBibtexBraces () {return manage_braces_;}
+	bool getBibtexUTF8 () {return manage_utf8_;}
 
 		
 	private:
 	Glib::ustring manage_target_;
 	bool manage_braces_;
+	bool manage_utf8_;
 };
 
 #endif

@@ -202,17 +202,27 @@ void writeBibKey (
 	std::ostringstream &out,
 	Glib::ustring key,
 	Glib::ustring const & value,
-	bool usebraces)
+	bool const usebraces,
+	bool const utf8)
 {
 	if (!value.validate ()) {
 		std::cerr << "bad unicode in value for '" << key << "'\n";
 	}
 	if (!value.empty ()) {
 		// Okay to always append comma, since bibtex doesn't mind the trailing one
-		if (usebraces)
-			out << "\t" << key << " = {{" << escapeBibtexAccents (value) << "}},\n";
-		else
-			out << "\t" << key << " = {" << escapeBibtexAccents (value) << "},\n";
+		if (utf8) {
+			// Waiting for feedback from fred brooks about what kind of 
+			// escaping etc is still wanted in utf8 mode
+			if (usebraces)
+				out << "\t" << key << " = {{" << value << "}},\n";
+			else
+				out << "\t" << key << " = {" << value << "},\n";
+		} else {
+			if (usebraces)
+				out << "\t" << key << " = {{" << escapeBibtexAccents (value) << "}},\n";
+			else
+				out << "\t" << key << " = {" << escapeBibtexAccents (value) << "},\n";
+		}
 	}
 }
 

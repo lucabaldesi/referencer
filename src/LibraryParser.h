@@ -50,6 +50,7 @@ class LibraryParser : public Glib::Markup::Parser {
 	Glib::ustring textBuffer_;
 
 	bool manageBraces_;
+	bool manageUTF8_;
 
 	BibData newDocBib_;
 
@@ -67,6 +68,9 @@ class LibraryParser : public Glib::Markup::Parser {
 		inRelFileName_ = false;
 		inTagged_ = false;
 		inBibItem_ = false;
+		
+		manageBraces_ = false;
+		manageUTF8_ = false;
 	}
 
 	private:
@@ -129,13 +133,21 @@ class LibraryParser : public Glib::Markup::Parser {
 		} else if (element_name == "bib_extra") {
 			inBibItem_ = true;
 			bibText_ = "";
-			Glib::Markup::Parser::AttributeMap::const_iterator foo = attributes.find ("key");
-			std::pair<Glib::ustring, Glib::ustring> item = *foo;
-			bibExtraKey_ = item.second;
+			Glib::Markup::Parser::AttributeMap::const_iterator attrib = attributes.find ("key");
+			std::pair<Glib::ustring, Glib::ustring> keyval = *attrib;
+			bibExtraKey_ = keyval.second;
 		} else if (element_name == "manage_target") {
-			Glib::Markup::Parser::AttributeMap::const_iterator foo = attributes.find ("braces");
-			std::pair<Glib::ustring, Glib::ustring> item = *foo;
-			manageBraces_ = boolFromStr (item.second);
+			Glib::Markup::Parser::AttributeMap::const_iterator attrib = attributes.find ("braces");
+			std::pair<Glib::ustring, Glib::ustring> keyval;
+			if (attrib != attributes.end ()) {
+				keyval = *attrib;
+				manageBraces_ = boolFromStr (keyval.second);
+			}
+			attrib = attributes.find ("utf8");
+			if (attrib != attributes.end ()) {
+				keyval = *attrib;
+				manageUTF8_ = boolFromStr (keyval.second);
+			}
 		}
 
 	}
@@ -199,7 +211,7 @@ class LibraryParser : public Glib::Markup::Parser {
 			inBibItem_ = false;
 			newDocBib_.addExtra (bibExtraKey_, bibText_);
 		} else if (element_name == "manage_target") {
-			library_.manageBibtex (textBuffer_, manageBraces_);
+			library_.manageBibtex (textBuffer_, manageBraces_, manageUTF8_);
 		}
 	}
 

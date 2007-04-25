@@ -1,4 +1,5 @@
 1.0.3:
+	- Option to export unicode bibtex
 	- Implement "Manage BibTeX File"
 	- Support new arXiv id format
 	- Stop reading document if DOI/Arxiv is found on first page

@@ -1238,6 +1238,8 @@ void TagWindow::onExportBibtex ()
 	// Any options here should be replicated in onManageBibtex
 	Gtk::CheckButton bracescheck (_("Protect capitalization (surround values with {})"));
 	extrabox.pack_start (bracescheck, false, false, 0);
+	Gtk::CheckButton utf8check (_("Use Unicode (UTF-8) encoding"));
+	extrabox.pack_start (utf8check, false, false, 0);
 
 	extrabox.show_all ();
 
@@ -1249,6 +1251,7 @@ void TagWindow::onExportBibtex ()
 
 	if (chooser.run() == Gtk::RESPONSE_ACCEPT) {
 		bool const usebraces = bracescheck.get_active ();
+		bool const useutf8 = utf8check.get_active ();
 		bool const selectedonly = combo.get_active_row_number () == 1;
 		exportfolder_ = Glib::path_get_dirname(chooser.get_filename());
 		Glib::ustring bibfilename = chooser.get_uri();
@@ -1269,7 +1272,7 @@ void TagWindow::onExportBibtex ()
 			}
 		}
 
-		library_->writeBibtex (bibfilename, docs, usebraces);
+		library_->writeBibtex (bibfilename, docs, usebraces, useutf8);
 	}
 }
 
@@ -1282,6 +1285,16 @@ void TagWindow::manageBrowseDialog (Gtk::Entry *entry)
 	dialog.add_button (Gtk::Stock::CANCEL, Gtk::RESPONSE_CANCEL);
 	dialog.add_button (Gtk::Stock::SAVE, Gtk::RESPONSE_OK);
 	dialog.set_do_overwrite_confirmation ();
+	
+	Gtk::FileFilter bibtexfiles;
+	bibtexfiles.add_pattern ("*.[bB][iI][bB]");
+	bibtexfiles.set_name (_("BibTeX Files"));
+	dialog.add_filter (bibtexfiles);
+
+	Gtk::FileFilter allfiles;
+	allfiles.add_pattern ("*");
+	allfiles.set_name (_("All Files"));
+	dialog.add_filter (allfiles);
 	
 	if (dialog.run() == Gtk::RESPONSE_OK) {
 	//Gnome::Vfs::get_uri_from_local_path (urientry.get_text ()
@@ -1365,6 +1378,9 @@ void TagWindow::onManageBibtex ()
 	Gtk::CheckButton bracescheck (_("Protect capitalization (surround values with {})"));
 	vbox->pack_start (bracescheck);
 	bracescheck.set_active (library_->getBibtexBraces ());
+	Gtk::CheckButton utf8check (_("Use Unicode (UTF-8) encoding"));
+	vbox->pack_start (utf8check, false, false, 0);
+	utf8check.set_active (library_->getBibtexUTF8 ());
 
 	vbox->show_all ();
 	
@@ -1391,7 +1407,8 @@ void TagWindow::onManageBibtex ()
 
 	library_->manageBibtex (
 		newtarget,
-		bracescheck.get_active ());
+		bracescheck.get_active (),
+		utf8check.get_active ());
 }
 
 

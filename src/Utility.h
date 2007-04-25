@@ -65,7 +65,8 @@ namespace Utility {
 		std::ostringstream &out,
 		Glib::ustring key,
 		Glib::ustring const & value,
-		bool usebraces);
+		bool const usebraces,
+		bool const utf8);
 
 	std::string escapeBibtexAccents (
 		Glib::ustring target);

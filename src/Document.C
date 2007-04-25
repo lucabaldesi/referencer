@@ -266,7 +266,10 @@ bool Document::hasTag(int uid)
 
 using Utility::writeBibKey;
 
-void Document::writeBibtex (std::ostringstream& out, bool const usebraces)
+void Document::writeBibtex (
+	std::ostringstream& out,
+	bool const usebraces,
+	bool const utf8)
 {
 	// BibTeX values cannot be larger than 1000 characters - should make sure of this
 	// We should strip illegal characters from key in a predictable way
@@ -282,18 +285,18 @@ void Document::writeBibtex (std::ostringstream& out, bool const usebraces)
 			out,
 			(*it).first,
 			(*it).second,
-			((*it).first.lowercase () != "editor") && usebraces);
+			((*it).first.lowercase () != "editor") && usebraces, utf8);
 	}
 
 	// Ideally should know what's a list of human names and what's an
 	// institution name be doing something different for non-human-name authors?
-	writeBibKey (out, "author",  bib_.getAuthors(), false);
-	writeBibKey (out, "title",   bib_.getTitle(), usebraces);
-	writeBibKey (out, "journal", bib_.getJournal(), usebraces);
-	writeBibKey (out, "volume",  bib_.getVolume(), usebraces);
-	writeBibKey (out, "number",  bib_.getIssue(), usebraces);
-	writeBibKey (out, "pages",   bib_.getPages(), usebraces);
-	writeBibKey (out, "year",    bib_.getYear(), usebraces);
+	writeBibKey (out, "author",  bib_.getAuthors(), false, utf8);
+	writeBibKey (out, "title",   bib_.getTitle(), usebraces, utf8);
+	writeBibKey (out, "journal", bib_.getJournal(), usebraces, utf8);
+	writeBibKey (out, "volume",  bib_.getVolume(), usebraces, utf8);
+	writeBibKey (out, "number",  bib_.getIssue(), usebraces, utf8);
+	writeBibKey (out, "pages",   bib_.getPages(), usebraces, utf8);
+	writeBibKey (out, "year",    bib_.getYear(), usebraces, utf8);
 
 	out << "}\n\n";
 }
