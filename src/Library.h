@@ -46,13 +46,13 @@ class Library {
 	void manageBibtex (
 		Glib::ustring const &target,
 		bool const brackets);
-	Glib::ustring getBibtexTarget () {return manage_target;}
-	bool getBibtexBraces () {return manage_braces;}
+	Glib::ustring getBibtexTarget () {return manage_target_;}
+	bool getBibtexBraces () {return manage_braces_;}
 
 		
 	private:
-	Glib::ustring manage_target;
-	bool manage_braces;
+	Glib::ustring manage_target_;
+	bool manage_braces_;
 };
 
 #endif

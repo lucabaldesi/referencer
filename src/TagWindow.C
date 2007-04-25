@@ -1274,7 +1274,7 @@ void TagWindow::onExportBibtex ()
 }
 
 
-static void browseUri (Gtk::Entry *entry)
+void TagWindow::manageBrowseDialog (Gtk::Entry *entry)
 {
 	Glib::ustring filename = Glib::filename_from_utf8 (entry->get_text ());
 	
@@ -1283,9 +1283,19 @@ static void browseUri (Gtk::Entry *entry)
 	dialog.add_button (Gtk::Stock::SAVE, Gtk::RESPONSE_OK);
 	dialog.set_do_overwrite_confirmation ();
 	
-	// Should be doing some kind of genius relative-path detection here
 	if (dialog.run() == Gtk::RESPONSE_OK) {
-		entry->set_text (Glib::filename_to_utf8 (dialog.get_filename()));
+	//Gnome::Vfs::get_uri_from_local_path (urientry.get_text ()
+		std::cerr << "Manage path is " << dialog.get_uri () << "\n";
+		std::cerr << "Library path is " << openedlib_ << "\n";
+		Glib::ustring relpath = Utility::relPath (openedlib_, dialog.get_uri ());
+		std::cerr << "Relative path is " << relpath << "\n";
+		// Effect is that we are always setting a UTF-8 filename
+		// NOT a URI.
+		if (!relpath.empty ()) {
+			entry->set_text (Gnome::Vfs::unescape_string (relpath));
+		} else {
+			entry->set_text (Glib::filename_to_utf8 (dialog.get_filename()));
+		}
 	}
 }
 
@@ -1319,7 +1329,18 @@ void TagWindow::onManageBibtex ()
 	hbox.pack_start (label, false, false, 0);
 	Gtk::Entry urientry;
 	hbox.pack_start (urientry);
-	urientry.set_text (Gnome::Vfs::get_local_path_from_uri (library_->getBibtexTarget ()));
+
+	std::cerr << "Got bibtextarget = " << library_->getBibtexTarget () << "\n";
+	Glib::ustring bibfilename =
+		Gnome::Vfs::get_local_path_from_uri (library_->getBibtexTarget ());
+	std::cerr << "Got absolute path " << bibfilename << "\n";
+	// Did we fail?  (if so then it's a relative path)
+	if (bibfilename.empty ()) {
+		bibfilename = Gnome::Vfs::unescape_string (library_->getBibtexTarget ());
+		std::cerr << "Got relative path " << bibfilename << "\n";
+	}
+	urientry.set_text (bibfilename);
+
 	vbox->pack_start (hbox);
 
 	Gtk::HBox hbox2;
@@ -1330,7 +1351,7 @@ void TagWindow::onManageBibtex ()
     new Gtk::Image (Gtk::Stock::OPEN, Gtk::ICON_SIZE_BUTTON));
 	browsebutton.set_image (*openicon);
 	browsebutton.signal_clicked ().connect (
-		sigc::bind(sigc::ptr_fun (browseUri), &urientry));
+		sigc::bind(sigc::mem_fun (*this, &TagWindow::manageBrowseDialog), &urientry));
 
 	browsebutton.set_use_underline (true);
 	hbox2.pack_end (browsebutton, false, false, 0);
@@ -1349,8 +1370,18 @@ void TagWindow::onManageBibtex ()
 	
 	dialog.run ();
 
-	Glib::ustring const newtarget =
-		Gnome::Vfs::get_uri_from_local_path (urientry.get_text ());
+	// Take a UTF-8 filename (relative or abs) and convert it to URI form
+	Glib::ustring newfilename = urientry.get_text ();
+
+	Glib::ustring newtarget;
+	if (Glib::path_is_absolute (newfilename)) {
+		newtarget = Gnome::Vfs::get_uri_from_local_path (newfilename);		
+	} else {
+		newtarget = Gnome::Vfs::escape_string (newfilename);
+	}
+	std::cerr << "newtarget = " << newtarget << "\n";
+
+
 	bool const newbraces = bracescheck.get_active ();
 	
 	if (newtarget != library_->getBibtexTarget ()
@@ -2144,7 +2175,7 @@ void TagWindow::updateTitle ()
 	if (openedlib_.empty ()) {
 		filename = _("Unnamed Library");
 	} else {
-		filename = Glib::path_get_basename (openedlib_);
+		filename = Gnome::Vfs::unescape_string_for_display (Glib::path_get_basename (openedlib_));
 		unsigned int pos = filename.find (".reflib");
 		if (pos != Glib::ustring::npos) {
 			filename = filename.substr (0, pos);

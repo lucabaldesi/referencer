@@ -27,7 +27,7 @@ Library::Library ()
 {
 	doclist_ = new DocumentList ();
 	taglist_ = new TagList ();
-	manage_braces = false;
+	manage_braces_ = false;
 }
 
 
@@ -46,8 +46,8 @@ Glib::ustring Library::writeXML ()
 	out << "<library>\n";
 	
 	out << "<manage_target braces=\""
-		<< (manage_braces ? "true" : "false")
-	<< "\">" << Glib::Markup::escape_text (manage_target)
+		<< (manage_braces_ ? "true" : "false")
+	<< "\">" << Glib::Markup::escape_text (manage_target_)
 	<< "</manage_target>\n";
 	
 	taglist_->writeXML (out);
@@ -93,8 +93,8 @@ void Library::clear ()
 {
 	taglist_->clear ();
 	doclist_->clear ();
-	manage_target = "";
-	manage_braces = false;
+	manage_target_ = "";
+	manage_braces_ = false;
 }
 
 
@@ -232,7 +232,13 @@ bool Library::save (Glib::ustring const &libfilename)
 	}
 
 	// Having successfully saved the library, write the bibtex if needed
-	if (!manage_target.empty ()) {
+	if (!manage_target_.empty ()) {
+		// manage_target_ is either an absolute URI or a relative URI	
+		Glib::ustring const bibtextarget = 
+			Gnome::Vfs::Uri::make_full_from_relative (
+				libfilename,
+				manage_target_);
+		
 		std::vector<Document*> docs;
 		DocumentList::Container &docrefs = doclist_->getDocs ();
 		DocumentList::Container::iterator it = docrefs.begin();
@@ -240,7 +246,7 @@ bool Library::save (Glib::ustring const &libfilename)
 		for (; it != end; it++) {
 			docs.push_back(&(*it));
 		}
-		writeBibtex (manage_target, docs, manage_braces);
+		writeBibtex (bibtextarget, docs, manage_braces_);
 	}
 
 	return true;
@@ -293,7 +299,7 @@ void Library::manageBibtex (
 	Glib::ustring const &target,
 	bool const braces)
 {
-	manage_target = target;
-	manage_braces = braces;
+	manage_target_ = target;
+	manage_braces_ = braces;
 }
 

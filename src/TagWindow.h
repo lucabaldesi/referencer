@@ -120,6 +120,7 @@ class TagWindow {
 		void onOpenLibrary ();
 		void onExportBibtex ();
 		void onManageBibtex ();
+		void manageBrowseDialog (Gtk::Entry *entry);
 		void onImport ();
 		void onPreferences ();
 		void onIconsDragData (
