@@ -93,6 +93,8 @@ void Library::clear ()
 {
 	taglist_->clear ();
 	doclist_->clear ();
+	manage_target = "";
+	manage_braces = false;
 }
 
 
