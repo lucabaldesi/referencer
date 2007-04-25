@@ -34,7 +34,6 @@ Big functionality wishlist:
 	Parse strings "Title: foo\nISBN: bar\n" like recipe manager
 	read PS files to search for DOIs as well as reading PDFs
 	Copy added (remote?) files into a local directory
-	"Manage BibTeX File" as well as one-off export
 	Formatted bibliographies with Rtfbtx?
 	Tracker?  Beagle?
 
