@@ -148,23 +148,31 @@ bool Library::load (Glib::ustring const &libfilename)
 		return false;
 	}
 	buffer[fileinfo->get_size()] = 0;
+	
+	progress.update (0.1);
 
 	Glib::ustring rawtext = buffer;
 	free (buffer);
 	libfile.close ();
 
+	progress.getLock ();
 	std::cerr << "Reading XML...\n";
-	if (!readXML (rawtext))
+	if (!readXML (rawtext)) {
+		progress.releaseLock ();
 		return false;
+	}
+	progress.releaseLock ();
 	std::cerr << "Done, got " << doclist_->getDocs ().size() << " docs\n";
+
+	progress.update (0.2);
 
 	int i = 0;
 	DocumentList::Container &docs = doclist_->getDocs ();
 	DocumentList::Container::iterator docit = docs.begin ();
 	DocumentList::Container::iterator const docend = docs.end ();
 	for (; docit != docend; ++docit) {
+		progress.update (0.2 + ((double)(i++) / (double)docs.size ()) * 0.8);
 		progress.getLock ();
-		progress.update ((double)(i++) / (double)docs.size ());
 		if (Utility::fileExists (docit->getFileName())) {
 			// Do nothing, all is well, the file is still there
 			std::cerr << "Filename still good: " << docit->getFileName() << "\n";

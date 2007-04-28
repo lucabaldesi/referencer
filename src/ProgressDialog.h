@@ -31,6 +31,7 @@ class ProgressDialog {
 
 	private:
 	void loop ();
+	void flushEvents ();
 
 	Gtk::ProgressBar *progress_;
 	Gtk::Label *label_;

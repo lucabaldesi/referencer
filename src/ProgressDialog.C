@@ -73,26 +73,35 @@ void ProgressDialog::finish ()
 
 void ProgressDialog::update (double status)
 {
+	std::cerr << "Update: " << status << "\n";
 	progress_->set_fraction (status);
+	flushEvents ();
 }
 
 
 void ProgressDialog::update ()
 {
 	progress_->pulse ();
+	flushEvents ();
 }
 
 
 void ProgressDialog::loop ()
 {
-	// Is this conflicting with Gnome::Ui::Thumbnailfactory in Document::setupThumbnail?  Do we need a mutex?
 	while (!finished_) {
 		getLock ();
-		while (Gnome::Main::events_pending())
-			Gnome::Main::iteration ();
+		flushEvents ();
 		releaseLock ();
 		Glib::usleep (100000);
 	}
+}
+
+
+void ProgressDialog::flushEvents ()
+{
+	while (Gnome::Main::events_pending())
+		Gnome::Main::iteration ();
+	std::cerr << "Refreshed UI\n";
 }
 
 
