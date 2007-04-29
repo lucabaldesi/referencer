@@ -73,7 +73,7 @@ void ProgressDialog::finish ()
 
 void ProgressDialog::update (double status)
 {
-	std::cerr << "Update: " << status << "\n";
+	//std::cerr << "Update: " << status << "\n";
 	progress_->set_fraction (status);
 	flushEvents ();
 }
@@ -101,7 +101,7 @@ void ProgressDialog::flushEvents ()
 {
 	while (Gnome::Main::events_pending())
 		Gnome::Main::iteration ();
-	std::cerr << "Refreshed UI\n";
+	//std::cerr << "Refreshed UI\n";
 }
 
 
