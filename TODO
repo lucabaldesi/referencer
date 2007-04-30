@@ -5,6 +5,7 @@ Targets for 1.0.4:
 	Implement bibtex paste
 	Investigate per-document tooltips for iconview
 	Fix Brice Goglin's bibtex import problems
+	Update absolute paths when pdf/reflib folder is copied
 
 Needed:
 	Sizing of columns in the list view
