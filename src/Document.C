@@ -211,7 +211,10 @@ void Document::setFileName (Glib::ustring const &filename)
 
 void Document::updateRelFileName (Glib::ustring const &libfilename)
 {
-	relfilename_ = Utility::relPath (libfilename, getFileName ());
+	Glib::ustring const newrelfilename =
+		Utility::relPath (libfilename, getFileName ());
+	if (!newrelfilename.empty())
+		relfilename_ = Utility::relPath (libfilename, getFileName ());
 	std::cerr << "Set relfilename_ = " << relfilename_ << "\n";
 }
 
