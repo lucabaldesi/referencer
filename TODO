@@ -1,4 +1,11 @@
 
+
+Targets for 1.0.4:
+	Check that UTF-8 export works as desired
+	Implement bibtex paste
+	Investigate per-document tooltips for iconview
+	Fix Brice Goglin's bibtex import problems
+
 Needed:
 	Sizing of columns in the list view
 	LyX citation via lyxserver (pybliographic, lyx/src/client)
