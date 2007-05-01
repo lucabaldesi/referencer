@@ -4,6 +4,7 @@ Targets for 1.0.4:
 	Check that UTF-8 export works as desired
 	Implement bibtex paste
 	Investigate per-document tooltips for iconview
+	Sync with latest bibutils
 	Fix Brice Goglin's bibtex import problems
 	Update absolute paths when pdf/reflib folder is copied
 
