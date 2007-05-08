@@ -5,15 +5,19 @@ Targets for 1.0.4:
 	Implement bibtex paste
 	Investigate per-document tooltips for iconview
 	Sync with latest bibutils
-	Fix Brice Goglin's bibtex import problems
+	Fix or forward upstream Brice Goglin's bibtex import problems
 	Update absolute paths when pdf/reflib folder is copied
+	Complete translatability (exception messages, ucompose outside tagwindow.c)
+	Create a FAQ
+		- Why do we only have the last name of the first author?
+		- Windows/mac support
+		- Can we have database searching?
+		- Can we have medline support?
 
-Needed:
+Other essential items:
 	Sizing of columns in the list view
 	LyX citation via lyxserver (pybliographic, lyx/src/client)
 	Command line reflib->bibtex
-
-	ucompose-ify all the user messages (tagwindow.c already done)
 
 	BibTeX export:
 		What about underscores?  Need an "escape everything" mode?
@@ -64,8 +68,7 @@ UI wishlist:
 	Should be able to select multiple tags for ANDing instead of ORing document selection
 	Drag and drop to make LaTeX citations
 	Drag and drop to import bibtex snippets
-	Copy document key to clipboard
-	Thumbnail generation is done in main thread and freezes UI
+	Statusbar (number of docs, progressbar)
 	Configuration of max_timeout in BibData::getCrossRef
 	click-to-edit in list view
 
