@@ -24,12 +24,27 @@
 #include <gtkmm.h>
 // The gtkmm in Ubuntu 6.04 doesn't seem to get this in <gtkmm.h>
 #include <gtkmm/icontheme.h>
+#include <glibmm/i18n.h>
+#include "ucompose.hpp"
 
 #include <iostream>
 
 #include "Utility.h"
 
 namespace Utility {
+
+
+bool uriIsFast (
+	Glib::RefPtr<Gnome::Vfs::Uri> uri)
+{
+	Glib::ustring const scheme = uri->get_scheme ();
+	if (scheme == "file" || scheme == "smb") {
+		return true;
+	} else {
+		return false;
+	}
+}
+
 
 bool DOIURLValid (
 	Glib::ustring const &url)
@@ -131,13 +146,12 @@ bool fileExists (
 void exceptionDialog (
 	Glib::Exception const *ex, Glib::ustring const &context)
 {
-	Glib::ustring message =
-		"<big><b>"
-		+ Glib::Markup::escape_text (ex->what ())
-		+ "</b></big>\n\n"
-		"This problem was encountered while "
-		+ context
-		+ ".";
+	Glib::ustring message = String::ucompose (
+		_("<big><b>%1: %2</b><big>\n\n%3 \"%4\""),
+		_("Exception"),
+		Glib::Markup::escape_text (ex->what ()),
+		_("The operation underway was:"),
+		context);
 
 	Gtk::MessageDialog dialog (
 		message, true,

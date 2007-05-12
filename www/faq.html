@@ -1,0 +1,54 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN"
+"http://www.w3.org/TR/html4/strict.dtd">
+
+<html>
+
+<head>
+<link rel="stylesheet" type="text/css" href="main.css">
+<link rel="shortcut icon" href="./favicon.png">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta name="keywords" content="GNOME BibTeX Bibliography GTK GUI latex">
+<meta name="description" content="A document organiser and bibliography manager for Gnome">
+
+<title>Referencer</title>
+
+</head>
+
+<body>
+<div id="main">
+
+<div id="titlebar">
+<a href = "index.html" class="title">
+<div style="float:right;"><img src="bookweb.png" border=0></div>
+<h1 class="maintitle">Referencer</h1>
+<h3 class="subtitle">A document organiser and bibliography manager for Gnome</h2>
+</a>
+</div>
+
+<div class="left">
+	<div id="faq">
+	<h2>Frequently Asked Questions</h2>
+	<h3>Why am I only getting the surname of the first author when I look up metadata?</h3>
+	<p>This issue appears when resolving DOIs using crossref.org.  Unfortunately, crossref.org's public OpenURL interface does not provide enough information to fully fill out author information.  crossref.org's more fully-featured interfaces are unfortunately not available without subscription.  This issue does not affect looking up metadata for ArXiV papers, and any other databases supported in the future.</p>
+	<p>This issue will be resolved either if crossref.org provides a more full-featured public interface, or if Referencer supports other metadata databases (eg. Medline) in the future.<p>
+	<h3>Is there a Windows or Mac version?</h3>
+	<p>Referencer is designed to be quite portable, using the gtkmm toolkit which can run be used both Windows and Mac platforms.  At present Referencer hasn't been compiled on either of these platforms.  Any developers wishing to work on supporting non-UNIX platforms are welcome to do so.</p>  
+	<h3>What about searching databases such as medline from within referencer?</h3>
+	<p>This is recognised as desirable functionality and may be implemented at some point in the future.</p>
+	<h3>Why are special characters like ß getting mangled in my BibTeX imports?</h3>
+	<p>Referencer assumes that BibTeX files are in ISO-8859-1 (latin1) encoding.  Other encodings, such as UTF-8 may cause problems.  The reason for this is that vanilla LaTeX doesn't support UTF-8, and Referencer assumes your BibTeX file is compatible with an unmodified LaTeX.  A quick workaround (since version 1.0.4) is to open your BibTeX file in a text editor such as gedit, and copy and paste it into Referencer -- this should work if your text editor understands the encoding of your BibTeX file and works properly with the clipboard.</p>
+	<h3>Why isn't Referencer extracting ArXiV IDs from some of my PDFs?</h3>
+	<p>Sometimes the PDFs from arxiv.org aren't formed in such a way that the ID code is readable as plain text.  This may be related to whether the paper was produced using LaTeX or Word.</p>
+	<h3>I have a question which isn't answered here</h3>
+	<p>Please send a message to the <a href="contact.html">mailing list</a></p>
+
+</div>
+
+
+<div id="footer">
+	<p>Copyright © 2007 John Spray</p>
+</div>
+
+</div>
+</body>
+</html>

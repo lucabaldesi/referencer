@@ -1,20 +1,25 @@
 
 
+
+Does the "arxivid.find ("v")" still make sense with the new naming scheme?
+
 Targets for 1.0.4:
+	Fix sensitivity of clipboard actions
 	Check that UTF-8 export works as desired
-	Implement bibtex paste
 	Investigate per-document tooltips for iconview
 	Sync with latest bibutils
+		- Need to get 3.27 tarball for diffing
 	Fix or forward upstream Brice Goglin's bibtex import problems
+		- ß etc don't work for non-iso8859 input, is this our bug (ie would bibtex accept utf8 anyway)?
 	Update absolute paths when pdf/reflib folder is copied
-	Complete translatability (exception messages, ucompose outside tagwindow.c)
-	Create a FAQ
-		- Why do we only have the last name of the first author?
-		- Windows/mac support
-		- Can we have database searching?
-		- Can we have medline support?
+		- Yes, let's have some UI for this
+	Complete translatability
+		- All exceptionDialog calls fixed up
+		- Need to sort out ensureSaved
+		- Done TagWindow.C, BibData.C, BibUtils.C, Document.C, DocumentList.C, Library.C
 
 Other essential items:
+	Import of reflib files (merge in documents, resolve tag IDs)
 	Sizing of columns in the list view
 	LyX citation via lyxserver (pybliographic, lyx/src/client)
 	Command line reflib->bibtex
@@ -24,13 +29,11 @@ Other essential items:
 		Write out tags as special bibtex field
 	Resolve symlinks before doing relative filename magic
 
-
 	Edit menu:
 		- Copy key
-		- Copy latex citation command
 		- copy filename
-		- copy bibtex
-		- paste bibtex
+		- copy bibtex ?
+		- paste bibtex ?
 
 	When importing endnote, %Y is series editor, but this is lost by bibutils for refs of inappropriate type.  %Y is used in pablo's file as generic author. - that was with endnote 3, try with more recent endnote	
 

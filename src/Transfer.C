@@ -14,6 +14,8 @@
 
 #include <libgnomeuimm.h>
 #include <libgnomevfsmm.h>
+#include <glibmm/i18n.h>
+#include "ucompose.hpp"
 
 #include "Preferences.h"
 
@@ -202,7 +204,10 @@ void fetcherThread (Glib::ustring const &filename)
 	} catch (const Gnome::Vfs::exception ex) {
 		std::cerr << "Got an exception from open\n";
 		transferfail = true;
-		Utility::exceptionDialog (&ex, "opening file on server");
+		Utility::exceptionDialog (&ex,
+			String::ucompose (
+				_("Opening URI '%1' on server"),
+				Gnome::Vfs::unescape_string_for_display (filename)));
 		return;
 	}
 
@@ -224,7 +229,10 @@ void fetcherThread (Glib::ustring const &filename)
 		std::cerr << "Got an exception from read\n";
 		// should close handle?
 		transferfail = true;
-		Utility::exceptionDialog (&ex, "reading from file on server");
+		Utility::exceptionDialog (&ex,
+			String::ucompose (
+				_("Reading URI '%1' on server"),
+				Gnome::Vfs::unescape_string_for_display (filename)));
 		return;
 	}
 
@@ -240,7 +248,10 @@ void fetcherThread (Glib::ustring const &filename)
 	} catch (const Gnome::Vfs::exception ex) {
 		std::cerr << "Got an exception from close\n";
 		transferfail = true;
-		Utility::exceptionDialog (&ex, "closing file on server");
+		Utility::exceptionDialog (&ex,
+			String::ucompose (
+				_("Closing URI '%1' on server"),
+				Gnome::Vfs::unescape_string_for_display (filename)));
 		return;
 	}
 

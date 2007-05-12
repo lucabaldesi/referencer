@@ -1,3 +1,10 @@
+1.0.4:
+	- Generate thumbnails for files on NFS mounts
+	- Improved internationalization support
+	- Prevent search box getting hidden in small windows
+	- Ability to paste bibtex
+	- Ability to copy \cite{keys}
+
 1.0.3:
 	- Option to export unicode bibtex
 	- Implement "Manage BibTeX File"

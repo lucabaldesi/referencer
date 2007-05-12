@@ -13,6 +13,7 @@
 #include <iostream>
 
 #include <libgnomevfsmm.h>
+#include <glibmm/i18n.h>
 
 #include "TagList.h"
 #include "DocumentList.h"
@@ -75,7 +76,7 @@ bool Library::readXML (Glib::ustring XMLtext)
 		context.parse (XMLtext);
 	} catch (Glib::MarkupError const ex) {
 		std::cerr << "Exception on line " << context.get_line_number () << ", character " << context.get_char_number () << ": '" << ex.what () << "'\n";
-		Utility::exceptionDialog (&ex, "parsing Library XML.");
+		Utility::exceptionDialog (&ex, _("Parsing Library XML"));
 
 		delete newtags;
 		delete newdocs;

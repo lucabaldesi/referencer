@@ -105,6 +105,8 @@ class TagWindow {
 		void onAddDocFile ();
 		void onAddDocFolder ();
 		void addDocFiles (std::vector<Glib::ustring> const &filenames);
+		void onPasteBibtex (GdkAtom selection);
+		void onCopyCite ();
 		void onRemoveDoc ();
 		void onWebLinkDoc ();
 		void onGetMetadataDoc ();

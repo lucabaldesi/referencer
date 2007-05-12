@@ -17,12 +17,15 @@
 
 #include <time.h>
 #include <boost/regex.hpp>
+#include <glibmm/i18n.h>
+#include "ucompose.hpp"
 
 #include "Transfer.h"
 #include "Preferences.h"
 #include "CrossRefParser.h"
 
 #include "BibData.h"
+
 
 std::vector<Glib::ustring> BibData::document_types;
 Glib::ustring BibData::default_document_type;
@@ -142,7 +145,7 @@ void BibData::parseCrossRefXML (Glib::ustring const &xml)
 		context.parse (xml);
 	} catch (Glib::MarkupError const ex) {
 		std::cerr << "Markuperror while parsing:\n'''\n" << xml << "\n'''\n";
-		Utility::exceptionDialog (&ex, "parsing CrossRef XML.  The DOI could be invalid, or not known to crossref.org");
+		Utility::exceptionDialog (&ex, _("Parsing CrossRef XML.  The DOI could be invalid, or not known to crossref.org"));
 	}
 	context.end_parse ();
 }
@@ -368,9 +371,11 @@ void BibData::getCrossRef ()
 		return;
 
 	Glib::ustring messagetext =
-		"<b><big>Retrieving metadata</big></b>\n\n"
-		"Contacting crossref.org to retrieve metadata for '"
-		+ doi_ + "'\n";
+		String::ucompose (
+		_("<b><big>%1</big></b>\n\n%2 '%3'\n"),
+		_("Downloading metadata"),
+		_("Contacting crossref.org to retrieve metadata for"),
+		doi_);
 
 	Utility::StringPair ends = _global_prefs->getMetadataLookup ();
 
@@ -381,10 +386,10 @@ void BibData::getCrossRef ()
 
 	try {
 		Glib::ustring &rawtext = Transfer::getRemoteFile (
-			"Retrieving Metadata", messagetext, bibfilename);
+			_("Downloading Metadata"), messagetext, bibfilename);
 		parseCrossRefXML (rawtext);
 	} catch (Transfer::Exception ex) {
-		Utility::exceptionDialog (&ex, "retrieving metadata");
+		Utility::exceptionDialog (&ex, _("Downloading metadata"));
 	}
 }
 
@@ -395,9 +400,11 @@ void BibData::getArxiv ()
 		return;
 
 	Glib::ustring messagetext =
-		"<b><big>Retrieving metadata</big></b>\n\n"
-		"Contacting citebase.org to retrieve metadata for '"
-		+ extras_["eprint"] + "'\n";
+		String::ucompose (
+		_("<b><big>%1</big></b>\n\n%2 '%3'\n"),
+		_("Retrieving metadata"),
+		_("Contacting citebase.org to retrieve metadata for"),
+		extras_["eprint"]);
 
 	Glib::ustring arxivid = extras_["eprint"];
 	unsigned int index = arxivid.find ("v");
@@ -414,10 +421,10 @@ void BibData::getArxiv ()
 	Glib::ustring *rawtext;
 	try {
 		rawtext = &Transfer::getRemoteFile (
-			"Retrieving Metadata", messagetext, filename);
+			_("Downloading Metadata"), messagetext, filename);
 		std::cerr << *rawtext << "\n\n\n";
 	} catch (Transfer::Exception ex) {
-		Utility::exceptionDialog (&ex, "retrieving metadata");
+		Utility::exceptionDialog (&ex, _("Downloading metadata"));
 		return;
 	}
 
@@ -440,7 +447,7 @@ void BibData::getArxiv ()
 		BibUtils::bibl_free( &b );
 	} catch (Glib::Error ex) {
 		BibUtils::bibl_free( &b );
-		Utility::exceptionDialog (&ex, "parsing bibtex");
+		Utility::exceptionDialog (&ex, _("Parsing BibTeX"));
 		return;
 	}
 }

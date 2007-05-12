@@ -21,8 +21,8 @@ extern "C" {
 namespace BibUtils {
 
 char progname[] = "bib2xml";
-char help1[] = "Converts a Bibtex reference file into MODS XML\n\n";
-char help2[] = "bibtex_file";
+/*char help1[] = "Converts a Bibtex reference file into MODS XML\n\n";
+char help2[] = "bibtex_file";*/
 
 lists asis  = { 0, 0, NULL };
 lists corps = { 0, 0, NULL };
@@ -373,6 +373,12 @@ Format guessFormat (Glib::ustring const &rawtext)
 static void writerThread (Glib::ustring const &raw, int pipe, volatile bool *advance)
 {
 	int len = strlen (raw.c_str());
+	if (len <= 0) {
+		*advance = true;
+		close (pipe);
+		return;
+	}
+
 	// Writing more than 65536 freezes in write()
 	int block = 1024;
 	if (block > len)
@@ -401,7 +407,7 @@ void biblFromString (
 	if (pipe(handles)) {
 		throw Glib::IOChannelError (
 			Glib::IOChannelError::BROKEN_PIPE,
-			"Couldn't get pipe");
+			"Couldn't get pipe in biblFromString");
 	}
 	int pipeout = handles[0];
 	int pipein = handles[1];

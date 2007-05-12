@@ -57,7 +57,7 @@ int main (int argc, char **argv)
 		TagWindow window;
 		window.run();
 	} catch (Glib::Error ex) {
-		Utility::exceptionDialog (&ex, "failing fatally");
+		Utility::exceptionDialog (&ex, _("Failing fatally"));
 	}
 
 	return 0;
@@ -149,7 +149,10 @@ void TagWindow::constructUI ()
 	search->pack_start (*searchentry, false, false, 0);
 	search->show_all ();
 	searchitem->add (*search);
+
 	toolbar->append (*searchitem);
+	// In order to prevent search box falling off the edge.
+	toolbar->set_show_arrow ( false);
 
 	searchentry_ = searchentry;
 	searchentry_->signal_changed ().connect (
@@ -424,13 +427,24 @@ void TagWindow::constructMenu ()
   	sigc::mem_fun(*this, &TagWindow::onImport));
 	actiongroup_->add( Gtk::ToggleAction::create("WorkOffline",
 		_("_Work Offline")));
-	actiongroup_->add( Gtk::Action::create("Preferences",
-		Gtk::Stock::PREFERENCES),
-  	sigc::mem_fun(*this, &TagWindow::onPreferences));
 	actiongroup_->add( Gtk::Action::create("Quit", Gtk::Stock::QUIT),
   	sigc::mem_fun(*this, &TagWindow::onQuit));
 
+	actiongroup_->add ( Gtk::Action::create("EditMenu", _("_Edit")) );
+
 	actiongroup_->add ( Gtk::Action::create("ViewMenu", _("_View")) );
+	actiongroup_->add( Gtk::Action::create(
+		"PasteBibtex", Gtk::Stock::PASTE, _("_Paste BibTeX"),
+		_("Import references from BibTeX on the clipboard")),
+  	sigc::bind (sigc::mem_fun(*this, &TagWindow::onPasteBibtex), GDK_SELECTION_PRIMARY));
+	actiongroup_->add( Gtk::Action::create(
+		"CopyCite", Gtk::Stock::COPY, _("_Copy LaTeX citation"),
+		_("Copy currently selected keys to the clipboard as a LaTeX citation")),
+  	sigc::mem_fun(*this, &TagWindow::onCopyCite));
+	actiongroup_->add( Gtk::Action::create("Preferences",
+		Gtk::Stock::PREFERENCES),
+  	sigc::mem_fun(*this, &TagWindow::onPreferences));
+
 	Gtk::RadioButtonGroup group;
 	actiongroup_->add( Gtk::RadioAction::create(group, "UseListView",
 		_("Use _List View")));
@@ -513,9 +527,14 @@ void TagWindow::constructMenu ()
 		"      <menuitem action='Import'/>"
 		"      <separator/>"
 		"      <menuitem action='WorkOffline'/>"
-		"      <menuitem action='Preferences'/>"
 		"      <separator/>"
 		"      <menuitem action='Quit'/>"
+		"    </menu>"
+		"    <menu action='EditMenu'>"
+		"      <menuitem action='PasteBibtex'/>"
+		"      <menuitem action='CopyCite'/>"
+		"      <separator/>"
+		"      <menuitem action='Preferences'/>"
 		"    </menu>"
 		"    <menu action='ViewMenu'>"
 		"      <menuitem action='UseIconView'/>"
@@ -553,8 +572,10 @@ void TagWindow::constructMenu ()
 		"    <toolitem action='NewLibrary'/>"
 		"    <toolitem action='OpenLibrary'/>"
 		"    <toolitem action='SaveLibrary'/>"
-		"    <separator/>"
 		"    <toolitem action='ExportBibtex'/>"
+		"    <separator/>"
+		"    <toolitem action='CopyCite'/>"
+		"    <toolitem action='PasteBibtex'/>"
 		"  </toolbar>"
 		"  <toolbar name='TagBar'>"
 		"    <toolitem action='CreateTag'/>"
@@ -944,6 +965,10 @@ bool TagWindow::docClicked (GdkEventButton* event)
 		popupmenu->popup (event->button, event->time);
 
 		return true;
+  } else if ((event->type == GDK_BUTTON_PRESS) && (event->button == 2)) {
+  	// Epic middle click pasting
+  	onPasteBibtex (GDK_SELECTION_PRIMARY);
+  	
   } else {
   	return false;
   }
@@ -1045,7 +1070,7 @@ bool TagWindow::ensureSaved (Glib::ustring const & action)
 			Gtk::BUTTONS_NONE,
 			true);
 
-		dialog.add_button ("Close _without Saving", Gtk::RESPONSE_CLOSE);
+		dialog.add_button (_("Close _without Saving"), Gtk::RESPONSE_CLOSE);
 		dialog.add_button (Gtk::Stock::CANCEL, Gtk::RESPONSE_CANCEL);
 		dialog.add_button (Gtk::Stock::SAVE, Gtk::RESPONSE_ACCEPT);
 
@@ -1558,7 +1583,8 @@ void TagWindow::onIntroduction ()
 	try {
 		Gnome::Vfs::url_show (Gnome::Vfs::get_uri_from_local_path (filename));
 	} catch (Gnome::Vfs::exception &ex) {
-		Utility::exceptionDialog (&ex, "showing '" + filename + "'");
+		Utility::exceptionDialog (&ex,
+			String::ucompose(_("Showing '%1'"), filename));
 	}
 }
 
@@ -1600,7 +1626,7 @@ void TagWindow::addDocFiles (std::vector<Glib::ustring> const &filenames)
 			Gnome::Main::iteration ();
 
 		Glib::RefPtr<Gnome::Vfs::Uri> uri = Gnome::Vfs::Uri::create (*it);
-		if (!uri->is_local ()) {
+		if (!Utility::uriIsFast (uri)) {
 			// Should prompt the user to download the file
 			std::cerr << "Ooh, a remote uri\n";
 		}
@@ -2001,7 +2027,8 @@ void TagWindow::onDeleteDoc ()
 			library_->doclist_->removeDoc(*it);
 			doclistdirty = true;
 		} catch (Glib::Exception &ex) {
-			Utility::exceptionDialog (&ex, "Deleting '" + (*it)->getFileName () + "'");
+			Utility::exceptionDialog (&ex,
+				String::ucompose (_("Deleting '%1'"), (*it)->getFileName ()));
 		}
 
 	}
@@ -2032,8 +2059,9 @@ void TagWindow::onOpenDoc ()
 				Gnome::Vfs::url_show ((*it)->getFileName());
 			} catch (const Gnome::Vfs::exception ex) {
 				Utility::exceptionDialog (&ex,
-					"trying to open file '"
-					+ Gnome::Vfs::unescape_string ((*it)->getFileName()) + "'");
+					String::ucompose (
+						_("Trying to open file '%1'"),
+						Gnome::Vfs::unescape_string ((*it)->getFileName())));
 				return;
 			}
 		}
@@ -2096,7 +2124,9 @@ void TagWindow::onIconsDragData (
 			 info = uri->get_file_info ();
 		} catch (const Gnome::Vfs::exception ex) {
 			Utility::exceptionDialog (&ex,
-				"getting info for file '" + uri->to_string () + "'");
+				String::ucompose (
+					_("Getting info for file '%1'"),
+					uri->to_string ()));
 			return;
 		}
 		if (info->get_type() == Gnome::Vfs::FILE_TYPE_DIRECTORY)
@@ -2265,7 +2295,7 @@ void TagWindow::onImport ()
 	combo.append_text ("EndNote");
 	combo.append_text ("RIS");
 	combo.append_text ("MODS");
-	//combo.append_text ("Auto Detected");
+	//combo.append_text (_("Auto Detect"));
 	combo.set_active (0);
 	extrabox.pack_start (combo, true, true, 0);
 	extrabox.show_all ();
@@ -2298,7 +2328,7 @@ void TagWindow::onImport ()
 				format = BibUtils::FORMAT_UNKNOWN;
 		}
 
-		library_->doclist_->import (filename, format);
+		library_->doclist_->import_from_file (filename, format);
 
 		populateDocStore ();
 		populateTagList ();
@@ -2306,8 +2336,85 @@ void TagWindow::onImport ()
 }
 
 
+// Selection should be GDK_SELECTION_CLIPBOARD for the windows style
+// clipboard and GDK_SELECTION_PRIMARY for middle-click style
+void TagWindow::onPasteBibtex (GdkAtom selection)
+{
+	// Should have sensitivity changing for this
+	Glib::RefPtr<Gtk::Clipboard> clipboard = Gtk::Clipboard::get (selection);
+
+/*
+Gtk::Clipboard reference:
+If you don't want to deal with providing a separate callbac		"    <toolitem action='ExportBibtex'/>"k, you can also use wait_for_contents(). This runs the GLib main loop recursively waiting for the contents. This can simplify the code flow, but you still have to be aware that other callbacks in your program can be called while this recursive mainloop is running.
+*/
+
+	Glib::ustring clipboardtext = clipboard->wait_for_text ();
+
+// Uncomment this for correct behaviour with primary clipboard
+// only once sensitivity of explicity copy is set correctly
+/*
+	if (clibboardtext.empty ())
+		return;
+*/
+	
+	std::string latintext;
+	try {
+		latintext = Glib::convert (clipboardtext, "iso-8859-1", "UTF8");
+	} catch (Glib::ConvertError &ex) {
+		Utility::exceptionDialog (&ex, _("Converting clipboard text to latin1"));
+		// On conversion failure, try passing UTF-8 straight through
+		latintext = clipboardtext;
+	}
+	
+	int imported =
+		library_->doclist_->import (latintext, BibUtils::FORMAT_BIBTEX);
+
+	std::cerr << "Imported " << imported << " references\n";
+	
+	if (imported) {
+		// Should push to the statusbar how many we got
+		populateDocStore ();
+		populateTagList ();
+	} else {
+		Glib::ustring message = String::ucompose (
+			"<b><big>%1</big></b>",
+			_("No references found on clipboard.\n"));
+			
+		Gtk::MessageDialog dialog (
+			message, true,
+			Gtk::MESSAGE_ERROR, Gtk::BUTTONS_CLOSE, true);
+
+		dialog.run ();
+	}
+}
+
+
 void TagWindow::onSearchChanged ()
 {
 	populateDocStore ();
+}
+
+
+void TagWindow::onCopyCite ()
+{
+	std::vector<Document*> docs = getSelectedDocs ();
+	std::vector<Document*>::iterator it = docs.begin ();
+	std::vector<Document*>::iterator const end = docs.end ();
+	
+	Glib::ustring citation = "\\cite{";
+	
+	for (; it != end; ++it) {
+		Glib::ustring const key = (*it)->getKey ();
+		if (it != docs.begin ()) {
+			citation += ",";
+		}
+		citation += key;
+	}
+	
+	citation += "}";
+	
+	Glib::RefPtr<Gtk::Clipboard> clipboard = Gtk::Clipboard::get ();
+
+	clipboard->set_text (citation);
 }
 

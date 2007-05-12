@@ -25,6 +25,9 @@
 namespace Utility {
 	typedef std::pair <Glib::ustring, Glib::ustring> StringPair;
 
+	bool uriIsFast (
+		Glib::RefPtr<Gnome::Vfs::Uri> uri);
+
 	bool DOIURLValid (
 		Glib::ustring const &url);
 

@@ -17,6 +17,8 @@
 #include <glibmm/markup.h>
 #include <libgnomevfsmm.h>
 #include <libgnomeuimm.h>
+#include <glibmm/i18n.h>
+#include "ucompose.hpp"
 
 #include <poppler.h>
 
@@ -93,7 +95,7 @@ Glib::ustring Document::generateKey ()
 		}
 
 	} else {
-		name = "Unnamed";
+		name = _("Unnamed");
 	}
 
 	// Don't confuse LaTeX
@@ -116,7 +118,8 @@ void Document::setupThumbnail ()
 {
 	thumbnail_.clear ();
 	Glib::RefPtr<Gnome::Vfs::Uri> uri = Gnome::Vfs::Uri::create (filename_);
-	if (!filename_.empty () && uri->is_local() && uri->uri_exists()) {
+	std::cerr << uri->get_scheme () << "\n";
+	if (!filename_.empty () && Utility::uriIsFast (uri) && uri->uri_exists()) {
 		Glib::RefPtr<Gnome::Vfs::FileInfo> fileinfo = uri->get_file_info ();
 		time_t mtime = fileinfo->get_modification_time ();
 
@@ -509,7 +512,10 @@ void Document::renameFromKey ()
 		setFileName (newuri->to_string ());
 	} catch (Gnome::Vfs::exception &ex) {
 		Utility::exceptionDialog (&ex,
-			"moving '" + olduri->to_string () + "' to '" + newuri->to_string () + "'");
+			String::ucompose (_("Moving '%1' to '%2'"),
+				olduri->to_string (),
+				newuri->to_string ())
+			);
 	}
 }
 

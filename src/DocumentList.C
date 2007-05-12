@@ -15,6 +15,8 @@
 #include <sstream>
 
 #include <libgnomevfsmm.h>
+#include <glibmm/i18n.h>
+#include "ucompose.hpp"
 
 #include "Utility.h"
 #include "DocumentList.h"
@@ -167,7 +169,8 @@ void DocumentList::writeXML (std::ostringstream& out)
 }
 
 
-bool DocumentList::import (
+// Returns the number of references imported
+int DocumentList::import_from_file (
 	Glib::ustring const & filename,
 	BibUtils::Format format)
 {
@@ -180,8 +183,10 @@ bool DocumentList::import (
 		try {
 			importfile.open (filename, Gnome::Vfs::OPEN_READ);
 		} catch (const Gnome::Vfs::exception ex) {
-			Utility::exceptionDialog (&ex, "opening file '"
-				+ Glib::filename_to_utf8 (filename) + "'");
+			Utility::exceptionDialog (&ex,
+				String::ucompose (
+					_("Opening file '%1'"),
+					Glib::filename_to_utf8 (filename)));
 			return false;
 		}
 
@@ -198,7 +203,9 @@ bool DocumentList::import (
 			importfile.read (buffer, fileinfo->get_size());
 		} catch (const Gnome::Vfs::exception ex) {
 			Utility::exceptionDialog (&ex,
-				"reading file '" + Glib::filename_to_utf8 (filename) + "'");
+				String::ucompose (
+					_("Reading file '%1'"),
+					Glib::filename_to_utf8 (filename)));
 			free (buffer);
 			return false;
 		}
@@ -209,6 +216,16 @@ bool DocumentList::import (
 		importfile.close ();
 	}
 
+	return import(rawtext, format);
+
+}
+
+
+// Returns the number of references imported
+int DocumentList::import (
+	Glib::ustring const & rawtext,
+	BibUtils::Format format)
+{
 	if (format == BibUtils::FORMAT_UNKNOWN)
 		format = BibUtils::guessFormat (rawtext);
 
@@ -220,17 +237,21 @@ bool DocumentList::import (
 
 	try {
 		BibUtils::biblFromString (b, rawtext, format, p);
-		for (int i = 0; i < b.nrefs; ++i) {
+		// Make a copy to return after we free b
+		int const nrefs = b.nrefs;
+		for (int i = 0; i < nrefs; ++i) {
 			docs_.push_back (BibUtils::parseBibUtils (b.ref[i]));
 		}
 		BibUtils::bibl_free( &b );
-		return true;
+		return nrefs;
 	} catch (Glib::Error ex) {
 		BibUtils::bibl_free( &b );
-		Utility::exceptionDialog (&ex, "parsing import");
-		return false;
+		Utility::exceptionDialog (&ex, _("Parsing import"));
+		return 0;
 	}
 
 }
+
+
 
 
