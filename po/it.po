@@ -9,8 +9,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: referencer\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2007-03-21 19:21+0000\n"
-"PO-Revision-Date: 2007-03-23 14:12+0000\n"
+"POT-Creation-Date: 2007-05-13 10:51+0100\n"
+"PO-Revision-Date: 2007-05-13 11:08+0100\n"
 "Last-Translator: Michele Mattioni <mattions@gmail.com>\n"
 "Language-Team: Italian <tp@lists.linux.it>\n"
 "MIME-Version: 1.0\n"
@@ -41,7 +41,7 @@ msgstr "Aggiungi un campo"
 msgid "Attempt to look up metadata for this document online"
 msgstr "Tentativo di ricercare i metadati di questo documento online"
 
-#: ../data/documentproperties.glade.h:7 ../src/TagWindow.C:1514
+#: ../data/documentproperties.glade.h:7 ../src/TagWindow.C:1683
 msgid "DOI:"
 msgstr "DOI:"
 
@@ -111,7 +111,7 @@ msgstr "<b>Proxy</b>"
 
 #: ../data/preferences.glade.h:2
 msgid "<b>Web services</b>"
-msgstr ""
+msgstr "<b>Servizi Web</b>"
 
 #: ../data/preferences.glade.h:3
 msgid ""
@@ -137,7 +137,7 @@ msgstr "DOI per lanciare l'URL:"
 
 #: ../data/preferences.glade.h:9
 msgid "Host:"
-msgstr ""
+msgstr "Host:"
 
 #: ../data/preferences.glade.h:10
 msgid "Metadata lookup URL:"
@@ -171,152 +171,188 @@ msgstr "Usa il proxy"
 msgid "Username:"
 msgstr "Nome Utente:"
 
+#: ../src/TagWindow.C:60
+msgid "Failing fatally"
+msgstr "Errore fatale"
+
 #: ../src/TagWindow.C:144
 msgid "_Search:"
 msgstr "_Ricerca:"
 
-#: ../src/TagWindow.C:167 ../src/TagWindow.C:188
+#: ../src/TagWindow.C:170 ../src/TagWindow.C:191
 msgid "Tags"
 msgstr "Etichette"
 
-#: ../src/TagWindow.C:214
+#: ../src/TagWindow.C:217
 msgid "This Document"
 msgstr "Questo Documento"
 
-#: ../src/TagWindow.C:324
+#: ../src/TagWindow.C:327
 msgid "Key"
 msgstr "Chaive"
 
-#: ../src/TagWindow.C:328
+#: ../src/TagWindow.C:331
 msgid "Title"
 msgstr "Titolo"
 
-#: ../src/TagWindow.C:335
+#: ../src/TagWindow.C:338
 msgid "Authors"
 msgstr "Autori"
 
-#: ../src/TagWindow.C:342
+#: ../src/TagWindow.C:345
 msgid "Year  "
 msgstr "Anno"
 
-#: ../src/TagWindow.C:403
+#: ../src/TagWindow.C:406
 msgid "_Library"
 msgstr "_Libreria"
 
-#: ../src/TagWindow.C:417
+#: ../src/TagWindow.C:420
 msgid "E_xport as BibTeX..."
 msgstr "E_sporta come BibTex"
 
-#: ../src/TagWindow.C:420
+#: ../src/TagWindow.C:423
+msgid "_Manage BibTeX File..."
+msgstr "_Gestisci File BibTeX"
+
+#: ../src/TagWindow.C:426
 msgid "_Import..."
 msgstr "_Importa..."
 
-#: ../src/TagWindow.C:423
+#: ../src/TagWindow.C:429
 msgid "_Work Offline"
 msgstr "_Lavora Disconnesso"
 
-#: ../src/TagWindow.C:430
+#: ../src/TagWindow.C:433
+msgid "_Edit"
+msgstr "_Modifica"
+
+#: ../src/TagWindow.C:435
 msgid "_View"
 msgstr "_Visualizza"
 
-#: ../src/TagWindow.C:433
+#: ../src/TagWindow.C:437
+msgid "_Paste BibTeX"
+msgstr "_Incolla BibTex"
+
+#: ../src/TagWindow.C:438
+msgid "Import references from BibTeX on the clipboard"
+msgstr "Importa i riferimenti da BibTex sulla clipboard"
+
+#: ../src/TagWindow.C:441
+msgid "_Copy LaTeX citation"
+msgstr "_Copia citazione LaTeX"
+
+#: ../src/TagWindow.C:442
+msgid "Copy currently selected keys to the clipboard as a LaTeX citation"
+msgstr "Copia le chiavi correntemente selezionate sulla clipboard come citazioni LaTeX"
+
+#: ../src/TagWindow.C:450
 msgid "Use _List View"
 msgstr "Vedi come _Elenco"
 
-#: ../src/TagWindow.C:435
+#: ../src/TagWindow.C:452
 msgid "Use _Icon View"
 msgstr "Vedi come _Icone"
 
-#: ../src/TagWindow.C:437
+#: ../src/TagWindow.C:454
 msgid "_Show Tag Pane"
 msgstr "_Visualizza Pannello Etichette"
 
-#: ../src/TagWindow.C:439
+#: ../src/TagWindow.C:456
 msgid "_Tags"
 msgstr "_Etichette"
 
-#: ../src/TagWindow.C:441
+#: ../src/TagWindow.C:458
 msgid "_Create Tag..."
 msgstr "_Crea Etichetta..."
 
-#: ../src/TagWindow.C:444
+#: ../src/TagWindow.C:461
 msgid "_Delete Tag"
 msgstr "_Rimuovi Etichetta"
 
-#: ../src/TagWindow.C:447
+#: ../src/TagWindow.C:464
 msgid "_Rename Tag"
 msgstr "_Rinomina Etichetta"
 
-#: ../src/TagWindow.C:450
+#: ../src/TagWindow.C:467
 msgid "_Documents"
 msgstr "_Documenti"
 
-#: ../src/TagWindow.C:452
+#: ../src/TagWindow.C:469
 msgid "_Add File..."
 msgstr "_Aggiungi un File"
 
-#: ../src/TagWindow.C:455
+#: ../src/TagWindow.C:472
 msgid "_Add Folder..."
 msgstr "_Aggiungi Cartella"
 
-#: ../src/TagWindow.C:458
+#: ../src/TagWindow.C:475
 msgid "_Add Empty Reference..."
 msgstr "_Aggiungi Un Riferimento Vuoto"
 
-#: ../src/TagWindow.C:461
+#: ../src/TagWindow.C:478
 msgid "_Add Reference with DOI..."
 msgstr "_Aggiungi Riferimento DOI"
 
-#: ../src/TagWindow.C:464
+#: ../src/TagWindow.C:481
 msgid "_Remove"
 msgstr "_Elimina"
 
-#: ../src/TagWindow.C:468
+#: ../src/TagWindow.C:485
 msgid "_Web Link..."
 msgstr "_Collegamento Internet"
 
-#: ../src/TagWindow.C:471
+#: ../src/TagWindow.C:488
 msgid "_Open..."
 msgstr "_Apri..."
 
-#: ../src/TagWindow.C:478
+#: ../src/TagWindow.C:495
 msgid "_Get Metadata"
 msgstr "_Ottieni Metadati"
 
-#: ../src/TagWindow.C:481
+#: ../src/TagWindow.C:498
 msgid "_Delete File from drive"
 msgstr "_Rimuovi File dal Disco"
 
-#: ../src/TagWindow.C:485
+#: ../src/TagWindow.C:502
 msgid "_Rename File from Key"
 msgstr "_Rinomina File usando la Chiave"
 
-#: ../src/TagWindow.C:488
+#: ../src/TagWindow.C:505
 msgid "_Help"
 msgstr "_Aiuto"
 
-#: ../src/TagWindow.C:490
+#: ../src/TagWindow.C:507
 msgid "Introduction"
 msgstr "Introduzione"
 
-#: ../src/TagWindow.C:673
+#: ../src/TagWindow.C:698
 msgid "All"
 msgstr "Tutti"
 
-#: ../src/TagWindow.C:677
+#: ../src/TagWindow.C:702
 msgid "Untagged"
 msgstr "Non Etichettati"
 
+#: ../src/TagWindow.C:1073
+msgid "Close _without Saving"
+msgstr "Chiudi _Senza Salvare"
+
 #. For intelligent tags we'll need a dialog here.
-#: ../src/TagWindow.C:1078
+#: ../src/TagWindow.C:1107
 msgid "New tag"
 msgstr "Nuova etichetta"
 
-#: ../src/TagWindow.C:1090
+#: ../src/TagWindow.C:1119
 msgid "Name:"
 msgstr "Nome:"
 
-#: ../src/TagWindow.C:1147
+#: ../src/TagWindow.C:1169
+msgid "Are you sure you want to delete \"%1\"?"
+msgstr "Sei sicuro di voler rimuovere \"%1\"?"
+
+#: ../src/TagWindow.C:1176
 msgid ""
 "When a tag is deleted it is also permanently removed from all documents it "
 "is currently associated with."
@@ -324,60 +360,92 @@ msgstr ""
 "Quando un'etichetta viene cancellata essa viene anche rimossa da tutti i "
 "documenti con cui era associata."
 
-#: ../src/TagWindow.C:1200
+#: ../src/TagWindow.C:1229
 msgid "Export BibTeX"
 msgstr "Esporta come BibTex"
 
-#: ../src/TagWindow.C:1209 ../src/TagWindow.C:2109
+#: ../src/TagWindow.C:1238 ../src/TagWindow.C:1316 ../src/TagWindow.C:2285
 msgid "BibTeX Files"
 msgstr "File BibTeX"
 
-#: ../src/TagWindow.C:1214 ../src/TagWindow.C:1311 ../src/TagWindow.C:1360
-#: ../src/TagWindow.C:2096
+#: ../src/TagWindow.C:1243 ../src/TagWindow.C:1321 ../src/TagWindow.C:1479
+#: ../src/TagWindow.C:1528 ../src/TagWindow.C:2272
 msgid "All Files"
 msgstr "Tutti i Files"
 
-#: ../src/TagWindow.C:1225
+#: ../src/TagWindow.C:1254
 msgid "Selection:"
 msgstr "Selezione:"
 
-#: ../src/TagWindow.C:1228
+#: ../src/TagWindow.C:1257
 msgid "All Documents"
 msgstr "Tutti i Documenti"
 
-#: ../src/TagWindow.C:1229
+#: ../src/TagWindow.C:1258
 msgid "Selected Documents"
 msgstr "Documenti Selezionati"
 
-#: ../src/TagWindow.C:1234
+#. Any options here should be replicated in onManageBibtex
+#. Any options here should be replicated in onExportBibtex
+#: ../src/TagWindow.C:1264 ../src/TagWindow.C:1403
 msgid "Protect capitalization (surround values with {})"
 msgstr "Impedire la capitalizzazione (circondare I valori con {})"
 
-#: ../src/TagWindow.C:1289
+#: ../src/TagWindow.C:1266 ../src/TagWindow.C:1406
+msgid "Use Unicode (UTF-8) encoding"
+msgstr "Usa la codifica Unicode (UTF-8)"
+
+#: ../src/TagWindow.C:1309
+msgid "Browse"
+msgstr "Sfoglia"
+
+#: ../src/TagWindow.C:1343 ../src/TagWindow.C:1358
+msgid "Manage BibTeX File"
+msgstr "Gestisci File BibTeX"
+
+#: ../src/TagWindow.C:1359
+msgid ""
+"If you choose a file here, it will be overwritten whenever this library is "
+"saved."
+msgstr "se scegli un file qui, questo verrà sovrascritto ognivolta che questa libreria viene salvata"
+
+#: ../src/TagWindow.C:1366
+msgid "BibTeX file:"
+msgstr "File BibTeX:"
+
+#: ../src/TagWindow.C:1387
+msgid "_Browse..."
+msgstr "_Sfoglia..."
+
+#: ../src/TagWindow.C:1457
 msgid "Open Library"
 msgstr "Apri Libreria"
 
-#: ../src/TagWindow.C:1306 ../src/TagWindow.C:1355
+#: ../src/TagWindow.C:1474 ../src/TagWindow.C:1523
 msgid "Referencer Libraries"
 msgstr "Libreria Referencer"
 
-#: ../src/TagWindow.C:1346
+#: ../src/TagWindow.C:1514
 msgid "Save Library As"
 msgstr "Salva come Libreria"
 
-#: ../src/TagWindow.C:1399
+#: ../src/TagWindow.C:1567
 msgid "translator-credits"
 msgstr "crediti traduttori"
 
-#: ../src/TagWindow.C:1425
+#: ../src/TagWindow.C:1587
+msgid "Showing '%1'"
+msgstr "Mostrando '%1'"
+
+#: ../src/TagWindow.C:1594
 msgid "Add Document Files"
 msgstr "Aggiungi un Documento"
 
-#: ../src/TagWindow.C:1431
+#: ../src/TagWindow.C:1600
 msgid "Adding document files"
 msgstr "Aggiungere un Documento"
 
-#: ../src/TagWindow.C:1432
+#: ../src/TagWindow.C:1601
 msgid ""
 "This process may take some time as the bibliographic information for each "
 "document is looked up."
@@ -385,27 +453,27 @@ msgstr ""
 "Ricerca delle informazioni bibliografiche on-line. Questo processo potrebbe "
 "richiedere del tempo."
 
-#: ../src/TagWindow.C:1454
+#: ../src/TagWindow.C:1623
 msgid "%1 of %2 documents"
 msgstr "%1 di %2 documenti"
 
-#: ../src/TagWindow.C:1506
+#: ../src/TagWindow.C:1675
 msgid "Add Document with DOI"
 msgstr "Aggiungi un Documento con un riferimento DOI"
 
-#: ../src/TagWindow.C:1542
+#: ../src/TagWindow.C:1711
 msgid "Add Document"
 msgstr "Aggiungi Documento"
 
-#: ../src/TagWindow.C:1573
+#: ../src/TagWindow.C:1742
 msgid "Add Folder"
 msgstr "Aggiungi Cartella"
 
-#: ../src/TagWindow.C:1682
+#: ../src/TagWindow.C:1851
 msgid "Are you sure you want to remove these %1 documents?"
 msgstr "Sei sicuro di voler rimuovere questi %1 documenti?"
 
-#: ../src/TagWindow.C:1684
+#: ../src/TagWindow.C:1853
 msgid ""
 "All tag associations and metadata for these documents will be permanently "
 "lost."
@@ -413,38 +481,38 @@ msgstr ""
 "Tutte le etichette ed i metadati associati con questi documenti saranno "
 "persi per sempre."
 
-#: ../src/TagWindow.C:1689
+#: ../src/TagWindow.C:1858
 msgid "Are you sure you want to remove '%1'?"
 msgstr "Sei sicuro di voler rimuovere '%1'?"
 
-#: ../src/TagWindow.C:1691
+#: ../src/TagWindow.C:1860
 msgid ""
 "All tag associations and metadata for the document will be permanently lost."
 msgstr ""
 "Tutte le etichette ed i metadati associati con questo documento verranno "
 "persi per sempre."
 
-#: ../src/TagWindow.C:1779
+#: ../src/TagWindow.C:1948
 msgid "Really rename this file to '%1'?"
 msgstr "Rinominare questo file to '%1'?"
 
-#: ../src/TagWindow.C:1782
+#: ../src/TagWindow.C:1951
 msgid "Really rename these %1 files to their keys?"
 msgstr "Rinominarere questi files %1 come le loro chiavi?"
 
-#: ../src/TagWindow.C:1790
+#: ../src/TagWindow.C:1959
 msgid "This action <b>cannot be undone</b>."
 msgstr "Quest'azione <b>non potrà essere annullata</b>"
 
-#: ../src/TagWindow.C:1793
-msgid "Rename from Tag"
-msgstr "Rinomina Etichetta"
+#: ../src/TagWindow.C:1962
+msgid "Rename from Key"
+msgstr "Rinomina usando la Chiave"
 
-#: ../src/TagWindow.C:1821
+#: ../src/TagWindow.C:1993
 msgid "Are you sure you want to delete the files of these %1 documents?"
 msgstr "Sei sicuro di voler rimuovere i files di questi %1 documenti?"
 
-#: ../src/TagWindow.C:1823
+#: ../src/TagWindow.C:1995
 msgid ""
 "All tag associations and metadata for these documents will be permanently "
 "lost, and the files they refer to will be irretrievably deleted."
@@ -452,11 +520,11 @@ msgstr ""
 "Tutte le etichette ed i metadati di questi documenti verranno cancellati per "
 "sempre ed i lor files verranno irrimediabilmente cancellati."
 
-#: ../src/TagWindow.C:1829
+#: ../src/TagWindow.C:2001
 msgid "Are you sure you want to delete the file of '%1'?"
 msgstr "Sei sicuro di voler rimuovere il file di '%1'?"
 
-#: ../src/TagWindow.C:1831
+#: ../src/TagWindow.C:2003
 msgid ""
 "All tag associations and metadata for the document will be permanently lost, "
 "and the file it refers to will be irretrievably deleted."
@@ -464,19 +532,132 @@ msgstr ""
 "Tutte le etichette ed i metadati per questo documento verranno "
 "permanentemente cancellati e il file verrà irrimediabilmente cancellato."
 
-#: ../src/TagWindow.C:2047
+#: ../src/TagWindow.C:2031
+msgid "Deleting '%1'"
+msgstr "Cancellando '%1'"
+
+#: ../src/TagWindow.C:2063
+msgid "Trying to open file '%1'"
+msgstr "Aprendo il file '%1'"
+
+#: ../src/TagWindow.C:2128
+msgid "Getting info for file '%1'"
+msgstr "Ottenendo le informazioni per il file '%1'"
+
+#: ../src/TagWindow.C:2223
 msgid "Unnamed Library"
 msgstr "Libreria"
 
-#: ../src/TagWindow.C:2081
+#: ../src/TagWindow.C:2257
 msgid "Import References"
 msgstr "Importa Riferimenti"
 
-#: ../src/TagWindow.C:2104
+#: ../src/TagWindow.C:2280
 msgid "Bibliography Files"
 msgstr "Files Bibliografici"
 
-#: ../src/TagWindow.C:2115
+#: ../src/TagWindow.C:2291
 msgid "Format:"
 msgstr "Formato:"
 
+#: ../src/TagWindow.C:2364
+msgid "Converting clipboard text to latin1"
+msgstr "Converto il testo della clipboard in latin1"
+
+#: ../src/TagWindow.C:2381
+msgid "No references found on clipboard.\n"
+msgstr "Nessuna riferimento trovato sulla clipboard.\n"
+
+#: ../src/Utility.C:150
+msgid ""
+"<big><b>%1: %2</b><big>\n"
+"\n"
+"%3 \"%4\""
+msgstr "<big><b>%1: %2</b><big>\n"
+"\n"
+"%3 \"%4\""
+
+#: ../src/Utility.C:151
+msgid "Exception"
+msgstr "Eccezione"
+
+#: ../src/Utility.C:153
+msgid "The operation underway was:"
+msgstr "La corrente operazione era:"
+
+#: ../src/DocumentList.C:188
+msgid "Opening file '%1'"
+msgstr "Aprendo il file '%1'"
+
+#: ../src/DocumentList.C:207
+msgid "Reading file '%1'"
+msgstr "Leggendo il file '%1'"
+
+#: ../src/DocumentList.C:249
+msgid "Parsing import"
+msgstr "Importando"
+
+#: ../src/Document.C:98
+msgid "Unnamed"
+msgstr "Non Etichettati"
+
+#: ../src/Document.C:515
+msgid "Moving '%1' to '%2'"
+msgstr "Spostando '%1' a '%2'"
+
+#: ../src/Transfer.C:209
+msgid "Opening URI '%1' on server"
+msgstr "Aprendo URI '%1' sul server"
+
+#: ../src/Transfer.C:234
+msgid "Reading URI '%1' on server"
+msgstr "Leggendo URI '%1' sul server"
+
+#: ../src/Transfer.C:253
+msgid "Closing URI '%1' on server"
+msgstr "Chiudendo URI '%1' sul server"
+
+#: ../src/BibData.C:148
+msgid ""
+"Parsing CrossRef XML.  The DOI could be invalid, or not known to crossref.org"
+msgstr "Leggendo CrossRef XML.  Il DOI potrebbe essere non valido, o sconosciuto su crossref.org"
+
+#: ../src/BibData.C:375 ../src/BibData.C:404
+msgid ""
+"<b><big>%1</big></b>\n"
+"\n"
+"%2 '%3'\n"
+msgstr "<b><big>%1</big></b>\n"
+"\n"
+"%2·'%3'\n"
+
+#: ../src/BibData.C:376 ../src/BibData.C:392 ../src/BibData.C:427
+msgid "Downloading metadata"
+msgstr "scaricando i metadati"
+
+#: ../src/BibData.C:377
+msgid "Contacting crossref.org to retrieve metadata for"
+msgstr "Contattando crossref.org per ottenere i metadati per "
+
+#: ../src/BibData.C:389 ../src/BibData.C:424
+msgid "Downloading Metadata"
+msgstr "Scaricando i metadati"
+
+#: ../src/BibData.C:405
+msgid "Retrieving metadata"
+msgstr "Ottienendo i metadati"
+
+#: ../src/BibData.C:406
+msgid "Contacting citebase.org to retrieve metadata for"
+msgstr "Contattando citabase.org per ottenere i metadati per"
+
+#: ../src/BibData.C:450
+msgid "Parsing BibTeX"
+msgstr "Leggendo BibTex"
+
+#: ../src/Library.C:79
+msgid "Parsing Library XML"
+msgstr "Leggendo la libreria XML"
+
+#~ msgid "Rename from Tag"
+#~ msgstr "Rinomina Etichetta"
