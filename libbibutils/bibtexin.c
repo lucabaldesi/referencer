@@ -1,7 +1,7 @@
 /*
  * bibtexin.c
  *
- * Copyright (c) Chris Putnam 2003-5
+ * Copyright (c) Chris Putnam 2003-7
  *
  * Program and source code released under the GPL
  *
@@ -49,31 +49,29 @@ readmore( FILE *fp, char *buf, int bufsize, int *bufpos, newstr *line )
  * returns 1 if last reference in file, 2 if reference within file
  */
 int
-bibtexin_readf( FILE *fp, char *buf, int bufsize, int *bufpos, newstr *line, 
-newstr *reference, int *fcharset )
+bibtexin_readf( FILE *fp, char *buf, int bufsize, int *bufpos, newstr *line, newstr *reference, int *fcharset )
 {
-        int haveref = 0;
-        char *p;
-        while ( haveref!=2 && readmore( fp, buf, bufsize, bufpos, line ) ) {
-                if ( line->len == 0 ) continue; /* blank line */
-                p = &(line->data[0]);
-                while ( is_ws( *p ) ) p++;
-                if ( *p == '%' ) { /* commented out line */
-                        newstr_empty( line );
-                        continue;
-                }
-                if ( *p == '@' ) haveref++;
-                if ( haveref && haveref<2 ) {
-                        newstr_strcat( reference, p );
-                        newstr_addchar( reference, '\n' );
-                        newstr_empty( line );
-                } else if ( !haveref ) newstr_empty( line );
-
-        }
-        *fcharset = CHARSET_UNKNOWN;
-        return haveref;
+	int haveref = 0;
+	char *p;
+	while ( haveref!=2 && readmore( fp, buf, bufsize, bufpos, line ) ) {
+		if ( line->len == 0 ) continue; /* blank line */
+		p = &(line->data[0]);
+		while ( is_ws( *p ) ) p++;
+		if ( *p == '%' ) { /* commented out line */
+			newstr_empty( line );
+			continue;
+		}
+		if ( *p == '@' ) haveref++;
+		if ( haveref && haveref<2 ) {
+			newstr_strcat( reference, p );
+			newstr_addchar( reference, '\n' );
+			newstr_empty( line );
+		} else if ( !haveref ) newstr_empty( line );
+	
+	}
+	*fcharset = CHARSET_UNKNOWN;
+	return haveref;
 }
-
 #ifdef NOCOMPILE
 void
 bibtex_strfree( void )
@@ -82,8 +80,6 @@ bibtex_strfree( void )
 	lists_free( &replace );
 }
 #endif
-
-
 
 static char *
 bibtex_item( char *p, newstr *s )
@@ -135,13 +131,31 @@ process_bibtexline( char *p, newstr *tag, newstr *data )
 static void
 bibtex_cleantoken( newstr *s )
 {
+
+	/* 'textcomp' annotations */
+	newstr_findreplace( s, "\\textit", "" );
+	newstr_findreplace( s, "\\textbf", "" );
+	newstr_findreplace( s, "\\textsl", "" );
+	newstr_findreplace( s, "\\textsc", "" );
+	newstr_findreplace( s, "\\textsf", "" );
+	newstr_findreplace( s, "\\texttt", "" );
+	newstr_findreplace( s, "\\textsubscript", "" );
+	newstr_findreplace( s, "\\textsuperscript", "" );
+	newstr_findreplace( s, "\\emph", "" );
+
+	/* Other text annotations */
 	newstr_findreplace( s, "\\it ", "" );
 	newstr_findreplace( s, "\\em ", "" );
+
 	newstr_findreplace( s, "\\%", "%" );
 	newstr_findreplace( s, "\\$", "$" );
 	newstr_findreplace( s, "{", "" );
 	newstr_findreplace( s, "}", "" );
 	while ( newstr_findreplace( s, "  ", " " ) ) {}
+
+	/* 'textcomp' annotations that we don't want to substitute on output*/
+	newstr_findreplace( s, "\\textdollar", "$" );
+	newstr_findreplace( s, "\\textunderscore", "_" );
 }
 
 static void
@@ -296,6 +310,9 @@ bibtexin_processf( fields *bibin, char *data, char *filename, long nref )
 {
 	if ( !strncasecmp( data, "@STRING", 7 ) ) {
 		process_string( data );
+		return 0;
+	} else if ( !strncasecmp( data, "@COMMENT", 8 ) ) {
+		/* Not sure if these are real Bibtex, but not references */
 		return 0;
 	} else {
 		process_cite( bibin, data, filename, nref );
@@ -486,16 +503,21 @@ process_url( fields *info, char *p, int level )
 }
 
 int
-bibtexin_typef( fields *bibin, char *filename, int nrefs, 
-	variants *all, int nall )
+bibtexin_typef( fields *bibin, char *filename, int nrefs, variants *all, 
+		int nall )
 {
-	int reftype, n;
+	char *refnum = "";
+	int reftype, n, nrefnum;
 	n = fields_find( bibin, "TYPE", 0 );
+	nrefnum = fields_find( bibin, "REFNUM", 0 );
+	if ( nrefnum!=-1 ) refnum = (bibin->data[nrefnum]).data;
 	if ( n!=-1 )
+		/* figure out type */
 		reftype = get_reftype( (bibin->data[n]).data, nrefs,
-			all, nall );
+			all, nall, refnum );
 	else
-		reftype = get_reftype( "", nrefs, all, nall ); /*default */
+		/* no type info, go for default */
+		reftype = get_reftype( "", nrefs, all, nall, refnum );
 	return reftype;
 }
 

@@ -1,7 +1,7 @@
 /*
  * modsin.c
  *
- * Copyright (c) Chris Putnam 2004-5
+ * Copyright (c) Chris Putnam 2004-7
  *
  * Source code released under the GPL
  *
@@ -443,6 +443,13 @@ modsin_resource( xml *node, fields *info, int level )
 }
 
 static void
+modsin_language( xml *node, fields *info, int level )
+{
+	if ( node->value && node->value->len )
+		fields_add( info, "LANGUAGE", node->value->data, level );
+}
+
+static void
 modsin_toc( xml *node, fields *info, int level )
 {
 	if ( node->value && node->value->len )
@@ -559,7 +566,8 @@ modsin_identifier( xml *node, fields *info, int level )
 		{ "uri",     "URL"    },
 		{ "pubmed",  "PUBMED" },
 		{ "medline", "MEDLINE" },
-		{ "pii",     "PII" }
+		{ "pii",     "PII" },
+		{ "isi",     "ISIREFNUM" }
 	};
 	int i , n = sizeof( ids ) / sizeof( ids[0] );
 	if ( !node->value || !node->value->data ) return;
@@ -588,6 +596,8 @@ modsin_mods( xml *node, fields *info, int level )
 		modsin_origininfo( node, info, level );
 	else if ( xml_tagexact( node, "typeOfResource" ) )
 		modsin_resource( node, info, level );
+	else if ( xml_tagexact( node, "language" ) )
+		modsin_language( node, info, level );
 	else if ( xml_tagexact( node, "tableOfContents" ) )
 		modsin_toc( node, info, level );
 	else if ( xml_tagexact( node, "genre" ) )

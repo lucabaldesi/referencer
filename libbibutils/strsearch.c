@@ -1,6 +1,6 @@
 /* strsearch.c
  *
- * Copyright (c) Chris Putnam 1995-2005
+ * Copyright (c) Chris Putnam 1995-2007
  *
  * Source code released under the GPL
  *

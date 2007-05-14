@@ -1,7 +1,7 @@
 /*
  * bibl.c
  *
- * Copyright (c) Chris Putnam 2005
+ * Copyright (c) Chris Putnam 2005-7
  *
  * Source code released under the GPL
  *

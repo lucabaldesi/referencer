@@ -1,7 +1,7 @@
 /*
  * reftypes.c
  *
- * Copyright (c) Chris Putnam 2003-5
+ * Copyright (c) Chris Putnam 2003-7
  *
  * Program and source code released under the GPL
  *
@@ -13,16 +13,19 @@
 #include "fields.h"
 #include "reftypes.h"
 
+extern char progname[];
+
 int
-get_reftype( char *p, long refnum, variants *all, int nall )
+get_reftype( char *p, long refnum, variants *all, int nall, char *tag )
 {
 	int i;
 	while ( is_ws( *p ) ) p++;
 	for ( i=0; i<nall; ++i )
 		if ( !strncasecmp( all[i].type, p, strlen(all[i].type) ) ) 
 			return i;
-	fprintf( stderr, "Warning: Did not recognize '%s' of refnum %ld, "
-			"defaulting to article.\n", p, refnum );
+	fprintf( stderr, "%s warning: "
+		"Did not recognize type '%s' of refnum %ld (%s).\n"
+		"\tDefaulting to article.\n", progname, p, refnum, tag );
 	return 0;
 }
 

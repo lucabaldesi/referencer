@@ -1,7 +1,7 @@
 /*
  * risout.c
  *
- * Copyright (c) Chris Putnam 2003-5
+ * Copyright (c) Chris Putnam 2003-7
  *
  * Program and source code released under the GPL
  *
@@ -29,7 +29,9 @@ enum {
 	TYPE_MPCT    = 10,
 	TYPE_PCOMM   = 11,    /* personal communication */
 	TYPE_PAMP    = 12,    /* pamphlet */
-	TYPE_ELEC    = 13     /* electronic */
+	TYPE_ELEC    = 13,    /* electronic */
+	TYPE_THESIS  = 14,
+	TYPE_REPORT  = 15
 };
 
 /* Try to determine type of reference from <genre></genre> */
@@ -62,6 +64,14 @@ get_type_genre( fields *info )
 			if ( info->level[i]==0 ) type=TYPE_BOOK;
 			else type=TYPE_INBOOK;
 		}
+		else if ( !strcasecmp( info->data[i].data, "collection" ) ) {
+			if ( info->level[i]==0 ) type=TYPE_BOOK;
+			else type=TYPE_INBOOK;
+		}
+		else if ( !strcasecmp( info->data[i].data, "thesis" ) )
+			type = TYPE_THESIS;
+		else if ( !strcasecmp( info->data[i].data, "report" ) )
+			type = TYPE_REPORT;
 	}
 	return type;
 }
@@ -119,6 +129,8 @@ output_type( FILE *fp, int type )
 		case TYPE_PCOMM: fprintf( fp, "PCOMM\n" ); break;
 		case TYPE_PAMP: fprintf( fp, "PAMP\n" ); break;
 		case TYPE_ELEC: fprintf( fp, "ELEC\n" ); break;
+		case TYPE_THESIS: fprintf( fp, "THES\n" ); break;
+		case TYPE_REPORT: fprintf( fp, "RPRT\n" ); break;
 	}
 }
 

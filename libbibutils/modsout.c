@@ -1,7 +1,7 @@
 /*
  * modsout.c
  *
- * Copyright (c) Chris Putnam 2003-5
+ * Copyright (c) Chris Putnam 2003-7
  *
  * Source code released under the GPL
  *
@@ -17,8 +17,8 @@
 #include "modsout.h"
 
 typedef struct convert {
-	char oldstr[25];
-	char newstr[25];
+	char oldtag[25];
+	char newtag[25];
 	int  code;
 } convert;
 
@@ -228,7 +228,7 @@ output_names( fields *info, FILE *outptr, int level )
 	for ( n=0; n<ntypes; ++n ) {
 		for ( i=0; i<info->nfields; ++i ) {
 			if ( info->level[i]!=level ) continue;
-			if ( strcasecmp(info->tag[i].data,names[n].oldstr) )
+			if ( strcasecmp(info->tag[i].data,names[n].oldtag) )
 				continue;
 			if ( names[n].code & NAME_ASIS ) {
 				output_tab0( outptr, level );
@@ -246,7 +246,7 @@ output_names( fields *info, FILE *outptr, int level )
 			if ( names[n].code & MARC_AUTHORITY )
 				fprintf( outptr, " authority=\"marcrelator\"");
 			fprintf( outptr, " type=\"text\">");
-			fprintf( outptr, "%s", names[n].newstr );
+			fprintf( outptr, "%s", names[n].newtag );
 			fprintf( outptr, "</roleTerm>\n");
 			output_tab1( outptr, level+1, "</role>\n" );
 			output_tab1( outptr, level, "</name>\n" );
@@ -307,13 +307,13 @@ output_origin( fields *info, FILE *outptr, int level )
 		{ "ADDRESS",	"place",	1 },
 		{ "EDITION",	"edition",	0 }
 	};
-	int	  n, ntypes = sizeof( origin ) / sizeof ( convert );
-	int       found, datefound, pos[5], date[3];
+	int n, ntypes = sizeof( origin ) / sizeof ( convert );
+	int found, datefound, pos[5], date[3];
 
 	/* find all information to be outputted */
 	found = -1;
 	for ( n=0; n<ntypes; ++n ) {
-		pos[n] = fields_find( info, origin[n].oldstr, level );
+		pos[n] = fields_find( info, origin[n].oldtag, level );
 		if ( pos[n]!=-1 ) found = pos[n];
 	}
 	datefound = output_finddateissued( info, level, date );
@@ -326,7 +326,7 @@ output_origin( fields *info, FILE *outptr, int level )
 	for ( n=1; n<ntypes; n++ ) {
 		if ( pos[n]==-1 ) continue;
 		output_tab0( outptr, level+1 );
-		fprintf( outptr, "<%s", origin[n].newstr );
+		fprintf( outptr, "<%s", origin[n].newtag );
 		fprintf( outptr, ">" );
 		if ( origin[n].code ) {
 			fprintf( outptr, "\n" );
@@ -337,7 +337,7 @@ output_origin( fields *info, FILE *outptr, int level )
 			fprintf( outptr, "%s", info->data[pos[n]].data );
 			info->used[ pos[n] ] = 1;
 		}
-		fprintf( outptr, "</%s>\n", origin[n].newstr );
+		fprintf( outptr, "</%s>\n", origin[n].newtag );
 	}
 	output_tab1( outptr, level, "</originInfo>\n" );
 }
@@ -369,30 +369,44 @@ output_toc( fields *info, FILE *outptr, int level )
  *
  */
 static void
-mods_output_partdate( fields *info, FILE *outptr, int year, int month, int day,
-		int level )
+output_partdate( fields *info, FILE *outptr, int level, int *wrote_header )
 {
-	if ( year==-1 && month==-1 && day==-1 ) return;
+	convert parts[3] = {
+		{ "PARTYEAR",        "",                -1 },
+		{ "PARTMONTH",       "",                -1 },
+		{ "PARTDAY",         "",                -1 },
+	};
+	int i, found = 0;
+	for ( i=0; i<3; ++i ) {
+		parts[i].code = fields_find( info, parts[i].oldtag, level );
+		found += ( parts[i].code!=-1 );
+	}
+	if ( !found ) return;
+
+	if ( !*wrote_header ) {
+		output_tab1( outptr, level, "<part>\n" );
+		*wrote_header = 1;
+	}
 
 	output_tab1( outptr, level+1, "<date>" );
 
-	if ( year!=-1 ) {
-		fprintf( outptr, "%s", info->data[year].data);
-		info->used[year]=1;
+	if ( parts[0].code!=-1 ) {
+		fprintf( outptr, "%s", info->data[ parts[0].code ].data);
+		info->used[ parts[0].code ]=1;
 	}
 
-	if ( month!=-1 ) {
-		if ( year!=-1 ) fprintf( outptr, "-" );
+	if ( parts[1].code!=-1 ) {
+		if ( parts[0].code!=-1 ) fprintf( outptr, "-" );
 		else fprintf( outptr, "XXXX-" );
-		fprintf( outptr, "%s", info->data[month].data );
-		info->used[month]=1;
+		fprintf( outptr, "%s", info->data[parts[1].code].data );
+		info->used[parts[1].code]=1;
 	}
 
-	if ( day!=-1 ) {
-		if ( month!=-1 ) fprintf( outptr, "-" );
-		else if ( year!=-1 ) fprintf( outptr, "-XX-" );
-		fprintf( outptr, "%s", info->data[day].data );
-		info->used[day]=1;
+	if ( parts[2].code!=-1 ) {
+		if ( parts[1].code!=-1 ) fprintf( outptr, "-" );
+		else if ( parts[0].code!=-1 ) fprintf( outptr, "-XX-" );
+		fprintf( outptr, "%s", info->data[parts[2].code].data );
+		info->used[parts[2].code]=1;
 	}
 
 	fprintf( outptr,"</date>\n");
@@ -436,61 +450,79 @@ mods_output_extents( fields *info, FILE *outptr, int start, int end,
 }
 
 static void
-mods_output_part( fields *info, FILE *outptr, int level )
+mods_output_partpages( fields *info, FILE *outptr, int level, int *wrote_header )
 {
-	typedef struct {
-		char *tag;
-		int  n;
-		char *ntag;
-	} struct_mods_part;
-
-	struct_mods_part parts[12] = {
-		{ "PARTYEAR",        -1, "" },
-		{ "PARTMONTH",       -1, "" },
-		{ "PARTDAY",         -1, "" },
-		{ "PAGESTART",       -1, "" },
-		{ "PAGEEND",         -1, "" },
-		{ "VOLUME",          -1, "volume" },
-		{ "SECTION",         -1, "section" },
-		{ "ISSUE",           -1, "issue" },
-		{ "NUMBER",          -1, "number" },
-		{ "PUBLICLAWNUMBER", -1, "publiclawnumber" },
-		{ "SESSION",         -1, "session" },
-		{ "TOTALPAGES",      -1, "" }
+	convert parts[3] = {
+		{ "PAGESTART",       "",                -1 },
+		{ "PAGEEND",         "",                -1 },
+		{ "TOTALPAGES",      "",                -1 }
 	};
-
-	int j, found;
-
-	found = 0;
-	for ( j=0; j<12; ++j ) {
-		parts[j].n = fields_find( info, parts[j].tag, level );
-		found += ( parts[j].n!=-1 );
+	int i, found = 0;
+	for ( i=0; i<3; ++i ) {
+		parts[i].code = fields_find( info, parts[i].oldtag, level );
+		found += ( parts[i].code!=-1 );
 	}
 	if ( !found ) return;
-
-	output_tab1( outptr, level, "<part>\n" );
-
-	mods_output_partdate( info, outptr, parts[0].n, parts[1].n, parts[2].n, 
-			level );
-
-	for ( j=5; j<11; ++j )
-		mods_output_detail( info, outptr, parts[j].n, parts[j].ntag,
-				level );
-
-	if ( parts[3].n==-1 || parts[4].n==-1 ) {
-		if ( parts[3].n!=-1 ) j=3;
-		else j=4;
-		mods_output_detail( info, outptr, parts[j].n, "page", level );
+	if ( !*wrote_header ) {
+		output_tab1( outptr, level, "<part>\n" );
+		*wrote_header = 1;
 	}
-	if ( ( parts[3].n!=-1 && parts[4].n!=-1 ) || ( parts[11].n!=-1 ) ) {
-		if ( parts[3].n==-1 || parts[4].n==-1 ) {
-			parts[3].n = parts[4].n = -1;
-		}
-		mods_output_extents( info, outptr, 
-			parts[3].n, parts[4].n, parts[11].n, "page", level ); 
+	/* If PAGESTART or PAGEEND are  undefined */
+	if ( parts[0].code==-1 || parts[1].code==-1 ) {
+		if ( parts[0].code!=-1 )
+			mods_output_detail( info, outptr, parts[0].code,
+				"page", level );
+		if ( parts[1].code!=-1 )
+			mods_output_detail( info, outptr, parts[1].code,
+				"page", level );
+		if ( parts[2].code!=-1 )
+			mods_output_extents( info, outptr, -1, -1,
+					parts[2].code, "page", level ); 
 	}
+	/* If both PAGESTART and PAGEEND are defined */
+	else {
+		mods_output_extents( info, outptr, parts[0].code, 
+			parts[1].code, parts[2].code, "page", level ); 
+	}
+}
 
-	output_tab1( outptr, level, "</part>\n" );
+static void
+output_partelement( fields *info, FILE *outptr, int level, int *wrote_header )
+{
+	convert parts[] = {
+		{ "VOLUME",          "volume",          -1 },
+		{ "SECTION",         "section",         -1 },
+		{ "ISSUE",           "issue",           -1 },
+		{ "NUMBER",          "number",          -1 },
+		{ "PUBLICLAWNUMBER", "publiclawnumber", -1 },
+		{ "SESSION",         "session",         -1 },
+	};
+	int i, nparts = sizeof( parts ) / sizeof( convert ), found = 0;
+	for ( i=0; i<nparts; ++i ) {
+		parts[i].code = fields_find( info, parts[i].oldtag, level );
+		found += ( parts[i].code!=-1 );
+	}
+	if ( !found ) return;
+	if ( !(*wrote_header) ) {
+		output_tab1( outptr, level, "<part>\n" );
+		*wrote_header = 1;
+	}
+	for ( i=0; i<nparts; ++i ) {
+		if ( parts[i].code==-1 ) continue;
+		mods_output_detail( info, outptr, parts[i].code, 
+			parts[i].newtag, level );
+	}
+}
+
+static void
+output_part( fields *info, FILE *outptr, int level )
+{
+	int wrote_header = 0;
+	output_partdate( info, outptr, level, &wrote_header );
+	output_partelement( info, outptr, level, &wrote_header );
+	mods_output_partpages( info, outptr, level, &wrote_header );
+	if ( wrote_header )
+		output_tab1( outptr, level, "</part>\n" );
 }
 
 static void
@@ -532,7 +564,7 @@ output_genre( fields *info, FILE *outptr, int level )
 		}
 		output_tab1( outptr, level, "<genre" );
 		if ( ismarc ) 
-			fprintf( outptr, " authority=\"marc\"" );
+			fprintf( outptr, " authority=\"marcgt\"" );
 		fprintf( outptr, ">%s</genre>\n", info->data[i].data );
 		info->used[i] = 1;
 	}
@@ -630,9 +662,9 @@ static void
 output_sn( fields *info, FILE *outptr, int level )
 {
 	char      *internal_names[] = { "ISBN", "LCCN", "ISSN", "REFNUM", 
-		"DOI" , "PUBMED", "MEDLINE", "PII" };
+		"DOI" , "PUBMED", "MEDLINE", "PII", "ISIREFNUM", "ACCESSNUM" };
 	char      *mods_types[] = { "isbn", "lccn", "issn", "citekey", "doi",
-		"pubmed", "medline", "pii" };
+		"pubmed", "medline", "pii", "isi", "accessnum" };
 	int       n, ntypes = sizeof( internal_names ) / sizeof( char* );
 	int       found, i;
 
@@ -741,28 +773,30 @@ output_citeparts( fields *info, FILE *outptr, int level, int max )
 	output_url( info, outptr, level );
 	/* as of MODS 3.1, <part> tags can be in the main items */
 	/*if ( level>0 ) */
-	mods_output_part( info, outptr, level );
+	output_part( info, outptr, level );
 }
 
 void
-modsout_write( fields *info, FILE *outptr, /*int charset, int latexin,*/
-	/*int unicode,*/ int format_opts, /*int dropkey,*/ unsigned long numrefs )
+modsout_write( fields *info, FILE *outptr, int format_opts, 
+			unsigned long numrefs )
 {
-	int i, max = fields_maxlevel( info );
-	int dropkey = ( format_opts & MODSOUT_DROPKEY );
+	int i, max, dropkey;
+	max = fields_maxlevel( info );
+	dropkey = ( format_opts & MODSOUT_DROPKEY );
 
 	output_head( info, outptr, dropkey, numrefs );
 	output_citeparts( info, outptr, 0, max );
-
 	for ( i=0; i<info->nfields; ++i ) {
 		if ( !info->used[i] ) {
-			fprintf( stderr, "%s warning: unused tag: '%s' "
-				"value: '%s' level: %d\n", progname,
+			fprintf( stderr, "%s warning: ref %ld "
+				"unused tag: '%s' "
+				"value: '%s' level: %d\n", 
+				progname,
+				numrefs+1,
 				info->tag[i].data, 
 				info->data[i].data, info->level[i] );
 		}
 	}
-
 	fprintf( outptr, "</mods>\n" );
 	fflush( outptr );
 }

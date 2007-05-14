@@ -1,7 +1,7 @@
 /*
  * risin.c
  *
- * Copyright (c) Chris Putnam 2003-5
+ * Copyright (c) Chris Putnam 2003-7
  *
  * Program and source code released under the GPL
  *
@@ -203,12 +203,16 @@ adddate( fields *info, char *tag, char *p, int level )
 int
 risin_typef( fields *risin, char *filename, int nref, variants *all, int nall )
 {
-	int n, reftype;
+	char *refnum = "";
+	int n, reftype, nreftype;
 	n = fields_find( risin, "TY", 0 );
+	nreftype = fields_find( risin, "ID", 0 );
+	if ( nreftype!=-1 ) refnum = risin[n].data->data;
 	if ( n!=-1 )
-		reftype = get_reftype( (risin[n].data)->data, nref, all, nall );
+		reftype = get_reftype( (risin[n].data)->data, nref, all, nall,
+			refnum );
 	else
-		reftype = get_reftype( "", nref, all, nall ); /*default */
+		reftype = get_reftype( "", nref, all, nall, refnum ); /*default */
 	return reftype;
 }
 

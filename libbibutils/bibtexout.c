@@ -1,7 +1,7 @@
 /*
  * bibtexout.c
  *
- * Copyright (c) Chris Putnam 2003-6
+ * Copyright (c) Chris Putnam 2003-7
  *
  * Program and source code released under the GPL
  *
@@ -31,6 +31,7 @@ enum {
 	TYPE_REPORT,
 	TYPE_MANUAL,
 	TYPE_UNPUBLISHED,
+	TYPE_ELECTRONIC,
 	TYPE_MISC
 };
 
@@ -106,6 +107,8 @@ bibtexout_type( fields *info, char *filename, int refnum )
 			type = TYPE_PHDTHESIS;
 		else if ( !strcasecmp( genre, "Masters thesis" ) )
 			type = TYPE_MASTERSTHESIS;
+		else  if ( !strcasecmp( genre, "electronic" ) )
+			type = TYPE_ELECTRONIC;
 	}
 	if ( type==TYPE_UNKNOWN ) {
 		for ( i=0; i<info->nfields; ++i ) {
@@ -122,12 +125,12 @@ bibtexout_type( fields *info, char *filename, int refnum )
 		maxlevel = fields_maxlevel( info );
 		if ( maxlevel > 0 ) type = TYPE_INBOOK;
 		else {
-			fprintf( stderr, "xml2bib: cannot identify TYPE" 
-				" in reference %d",refnum+1 );
+			fprintf( stderr, "xml2bib warning: cannot identify "
+				"TYPE in reference %d ",refnum+1 );
 			n = fields_find( info, "REFNUM", -1 );
 			if ( n!=-1 ) 
 				fprintf( stderr, " %s", info->data[n].data);
-			fprintf( stderr, "\n" );
+			fprintf( stderr, " (defaulting to @Misc)\n" );
 			type = TYPE_MISC;
 		}
 	}
@@ -155,6 +158,7 @@ output_type( FILE *fp, int type, int format_opts )
 		{ TYPE_COLLECTION, "Collection" },
 		{ TYPE_INCOLLECTION, "InCollection" },
 		{ TYPE_UNPUBLISHED, "Unpublished" },
+		{ TYPE_ELECTRONIC, "Electronic" },
 		{ TYPE_MISC, "Misc" } };
 	int i, len, ntypes = sizeof( types ) / sizeof( types[0] );
 	char *s = NULL;

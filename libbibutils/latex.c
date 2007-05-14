@@ -3,7 +3,7 @@
  *
  * convert between latex special chars and unicode
  *
- * Copyright (c) Chris Putnam 2004-5
+ * Copyright (c) Chris Putnam 2004-7
  *
  * Source code released under the GPL
  *
@@ -24,12 +24,12 @@ static struct latex_chars latex_chars[] = {
    {  37, "\\%",     "",   ""        }, /* Percent Sign */
    {  38, "\\&",     "",   ""        }, /* Ampersand */
    {  92, "\\backslash", "", ""   }, /* Backslash */
-   { 123, "\\{",     "", ""        }, /* Left Curly Bracket */
-   { 125, "\\}",     "", ""        }, /* Right Curly Bracket */
+   { 123, "\\{", "\\textbraceleft", "" }, /* Left Curly Bracket */
+   { 125, "\\}", "\\textbraceright", "" }, /* Right Curly Bracket */
    {  95, "\\_",     "", ""        }, /* Underscore alone indicates subscript */
-   { 176, "$^\\circ$", "^\\circ", ""        }, /* Degree sign */
+   { 176, "\\textdegree", "$^\\circ$", "^\\circ" }, /* Degree sign */
    {  32, "~",       "", ""        }, /* Tilde is a sticky space */
-   { 126, "\\~{}",   "", ""        }, /* How to get a tilde in latex */
+   { 126, "\\textasciitilde", "\\~{}", "" }, /* How to get a tilde in latex */
                                  /* This is a cheat, should use "\verb" */
                                  /* Need same for ^ character */
 
@@ -138,6 +138,10 @@ static struct latex_chars latex_chars[] = {
    { 253, "{\\'y}",  "\\'{y}", "\\'y"   }, /*               with acute */
    { 255, "{\\\"y}", "\\\"{y}", "\\\"y" }, /*               with diaeresis */
 
+
+                                /* Hacek-containing */
+   { 269, "{\\v c}", "{\\v{c}}", "\\v{c}" }, /* c with a hacek */
+
    { 913, "$\\Alpha$", "\\Alpha", ""       }, /*GREEKCAPITALLETTERALPHA*/
    /* 902 = GREEKCAPITALLETTERALPHAWITHTONOS*/
    { 914, "$\\Beta$",  "\\Beta", ""       }, /*GREEKCAPITALLETTERBETA*/
@@ -208,26 +212,100 @@ static struct latex_chars latex_chars[] = {
    /* 944 = GREEKSMALLLETTERUPSILONWITHDIALYTIKAANDTONOS*/
    { 950, "$\\zeta$", "\\zeta", ""        },  /*GREEKSMALLLETTERZETA*/
 
-   { 181, "$\\mu$", "\\mu", "" }, /* 181=micro sign, techically  */
+   { 181, "\\textmu", "$\\mu$", "" }, /* 181=micro sign, techically &#xB5; */
 
 /* Make sure that these don't stomp on other latex things above */
 
-   { 8242, "$'$",    "", "" },  /* Prime symbol &#x2032 */
-   { 769,  "\\'",    "", "" },  /* Acute accent &#x0301--apply to next char */
-   { 768,  "\\`",    "", "" },  /* Grave accent &#x0300--apply to next char */
-   { 8220, "``",     "", "" },  /* Opening double quote &#x201C */
-   { 8221, "''",     "", "" },  /* Closing double quote &#x201D */
-   { 8216, "`",      "", "" },  /* Opening single quote &#x2018 */
-   { 8217, "'",      "", "" },  /* Closing single quote &#x2019 */
-   { 8243, "$''$",   "", "" },  /* Double prime &#x2033 */
-   { 8194, "\\enspace",     "", "" },  /* En-space &#x2002 */
-   { 8195, "\\emspace",    "", "" },  /* Em-space &#x2003 */
-   { 8201, "\\thinspace",    "", "" },  /* Thin space &#x2009 */
-   { 8211, "--",     "", "" },  /* En-dash &#x2013 */
-   { 8212, "---",    "", "" },  /* Em-dash &#x2014 */
-   { 8230, "\\ldots", "", "" },  /* Ellipsis &#x2026 */
-   { 8195, "\\hspace{1em}", "", "" }, /* Em-space &#x2003 */
-   { 8194, "\\hspace{.5em}","", "" }, /* En-space &#x2002 */
+   { 8242, "\\textasciiacutex", "$'$", "" },  /* Prime symbol &#x2032; */
+   { 180, "\\textasciiacute", "\\'", "" }, /* acute accent &#xB4; */
+/*   { 769,  "\\'",    "", "" },*/  /* Acute accent &#x0301;--apply to next char */
+
+   { 8243, "\\textacutedbl", "$''$", "" },  /* Double prime &#x2033; */
+   { 8245, "\\textasciigrave", "\\`", "" }, /* Grave accent &#x2035; */
+/*   { 768,  "\\`",    "", "" },*/  /* Grave accent &#x0300;--apply to next char */
+
+   { 8963, "\\textasciicircum", "", "" } , /* &#x2303; */
+   { 184, "\\textasciicedilla", "", "" },  /* cedilla &#xB8; */
+   { 168, "\\textasciidieresis", "", "" }, /* dieresis &#xA8; */
+   { 175, "\\textasciimacron", "", "" }, /* macron &#xAF; */
+
+   { 8593, "\\textuparrow", "", "" },    /* Up arrow &#x2191; */
+   { 8595, "\\textdownarrow", "", "" },  /* Down arrow &#x2193; */
+   { 8594, "\\textrightarrow", "", "" }, /* Right arrow &#x2192; */
+   { 8592, "\\textleftarrow", "", "" },  /* Left arrow &#x2190; */
+   { 12296, "\\textlangle", "", "" } ,   /* L-angle &#x3008; */
+   { 12297, "\\textrangle", "", "" } ,   /* L-angle &#x3009; */
+
+   { 166, "\\textbrokenbar", "", "" }, /* Broken vertical bar &#xA6; */
+   { 167, "\\textsection", "", "" },   /* Section sign, &#xA7; */
+   { 170, "\\textordfeminine", "", "" }, /* &#xAA; */
+   { 172, "\\textlnot", "", "" },      /* Lnot &#xAC; */
+   { 182, "\\textparagraph", "", "" }, /* Paragraph sign &#xB6; */
+   { 183, "\\textperiodcentered", "", "" }, /* Period-centered &#xB7; */
+   { 186, "\\textordmasculine", "", "" }, /* &#xBA; */
+   { 8214, "\\textbardbl", "", "" },   /* Double vertical bar &#x2016; */
+   { 8224, "\\textdagger", "", "" },   /* Dagger &#x2020; */
+   { 8225, "\\textdaggerdbl", "", "" },/* Double dagger &x2021; */
+   { 8226, "\\textbullet", "", "" },   /* Bullet &#x2022; */
+   { 8494, "\\textestimated", "", "" },/* Estimated &#x212E; */
+   { 9526, "\\textopenbullet", "", "" },/* &#x2536; */
+
+   { 8220, "``", "\\textquotedblleft", "" }, /* Opening double quote &#x201C; */
+   { 8221, "''", "\\textquotedblright","" }, /* Closing double quote &#x201D; */
+   { 8216, "`",  "\\textquoteleft", "" },    /* Opening single quote &#x2018; */
+   { 8217, "'",  "\\textquoteright", "" },   /* Closing single quote &#x2019; */
+   { 8261, "\\textlquill", "", "" },         /* Left quill &#x2045; */
+   { 8262, "\\textrquill", "", "" },         /* Right quill &#x2046; */
+
+   { 8211, "--",      "\\textendash", "" },     /* En-dash &#x2013; */
+   { 8212, "---",     "\\textemdash", "" },     /* Em-dash &#x2014; */
+   { 8230, "\\ldots", "\\textellipsis", "" },   /* Ellipsis &#x2026; */
+
+   { 8194, "\\enspace", "\\hspace{.5em}", "" }, /* En-space &#x2002; */
+   { 8195, "\\emspace", "\\hspace{1em}",  "" }, /* Em-space &#x2003; */
+   { 8201, "\\thinspace", "", ""},              /* Thin space &#x2009; */
+   { 8203, "\\textnospace", "", "" },           /* No space &#x200B; */
+   { 9251, "\\textvisiblespace", "", "" },      /* Visible space &#x2423; */
+
+   { 215, "\\texttimes", "", "" }, /* Multiplication symbol &#xD7; */
+   { 247, "\\textdiv", "", "" },   /* Division symbol &#xF7; */
+   { 177, "\\textpm", "", "" }, /* Plus-minus character &#B1; */
+   { 189, "\\textonehalf", "", "" }, /* Vulgar fraction one half &#xBD; */
+   { 189, "\\textonequarter", "", "" }, /* Vulgar fraction one quarter &#xBD; */
+   { 190, "\\textthreequarters", "", "" }, /* Vulgar fraction three quarters &#xBE; */
+   { 8240, "\\texttenthousand", "", "" }, /* Per thousand sign &#x2030; */
+   { 8241, "\\textpertenthousand", "", "" }, /* Per ten thousand sign &#x2031;*/
+   { 8260, "\\textfractionsolidus", "", "" }, /* &x8260; */
+   { 8451, "\\textcelcius", "", "" }, /* Celcicus &#x2103; */
+   { 8470, "\\textnumero", "", "" },  /* Numero symbol &#x2116; */
+   { 8486, "\\textohm", "", "" }, /* Ohm symbol &#x2126; */
+   { 8487, "\\textmho", "", "" }, /* Mho symbol &#x2127; */
+   { 8730, "\\textsurd", "", "" }, /* &#x221A; */
+
+   { 185, "\\textonesuperior", "", "" },   /*Superscript 1 &#xB9; */
+   { 178, "\\texttwosuperior", "", "" },   /*Superscript 2 &#xB2; */
+   { 179, "\\textthreesuperior", "", "" }, /*Superscript 3 &#xB3; */
+
+   { 161, "\\textexclamdown", "", "" },   /* Inverted exclamation mark &#xA1;*/
+   { 191, "\\textquestiondown", "", "" }, /* Inverted question mark &#xBF; */
+
+   { 162, "\\textcent", "", "" },         /* Cent sign &#xA2; */
+   { 163, "\\textsterling", "\\pounds", "" },     /* Pound sign &#xA3; */
+   { 165, "\\textyen", "", "" },          /* Yen sign &#xA5; */
+   { 402, "\\textflorin", "", "" },       /* Florin sign &#x192; */
+   { 3647, "\\textbaht", "", "" },        /* Thai currency &#xE3F; */
+   { 8355, "\\textfrenchfranc", "", "" }, /* French franc &#x20A3; */
+   { 8356, "\\textlira", "", "" },        /* Lira &#x20A4; */
+   { 8358, "\\textnaira", "", "" },       /* Naira &#x20A6; */
+   { 8361, "\\textwon", "", "" },         /* &#x20A9; */
+   { 8363, "\\textdong", "", "" },        /* Vietnamese currency &#x20AB; */
+   { 8364, "\\texteuro", "", "" },        /* Euro sign */
+
+   { 169, "\\textcopyright", "", "" },           /* Copyright (C) &#xA9; */
+   { 175, "\\textregistered", "", "" },          /* Registered sign (R) &#xAF;*/
+   { 8482, "\\texttrademark", "$^{TM}$", "" },   /* Trademark (TM) &#x2122; */
+   { 8480, "\\textservicemark", "$^{SM}$", "" }, /* Servicemark (SM) &#x2120;*/
+   { 8471, "\\textcircledP", "", "" },           /* Circled P &#2117; */
 
 };
 

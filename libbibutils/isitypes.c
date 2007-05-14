@@ -1,7 +1,7 @@
 /*
  * isitypes.c
  *
- * Copyright (c) Chris Putnam 2004-5
+ * Copyright (c) Chris Putnam 2004-7
  *
  * Program and source code released under the GPL
  *
@@ -45,6 +45,8 @@ static lookups article[] = {
 	{ "DT",     "DOCUMENTTYPE", TYPE, LEVEL_MAIN },
 	{ "GA",     "ISIDELIVERNUM", SIMPLE, LEVEL_MAIN}, /*ISI document delivery number */
 	{ "UT",     "ISIREFNUM", SIMPLE, LEVEL_MAIN }, /* ISI unique article identifer */
+	{ "DI",     "DOI",       SIMPLE, LEVEL_MAIN },
+
 	{ " ",      "TYPE|ARTICLE",           ALWAYS, LEVEL_MAIN },
 	{ " ",      "ISSUANCE|continuing",    ALWAYS, LEVEL_HOST },
 	{ " ",      "RESOURCE|text",          ALWAYS, LEVEL_MAIN },
@@ -85,6 +87,7 @@ static lookups book[] = {
 	{ "UT",     "ISIREFNUM", SIMPLE, LEVEL_MAIN }, /* ISI unique article identifer */
 	
 	{ "PT",     " ",         TYPE,   LEVEL_HOST },
+	{ "DI",     "DOI",       SIMPLE, LEVEL_MAIN },
 	{ " ",         "TYPE|BOOK",       ALWAYS, LEVEL_MAIN },
 	{ " ",         "ISSUANCE|monographic",    ALWAYS, LEVEL_MAIN },
 	{ " ",         "RESOURCE|text",   ALWAYS, LEVEL_MAIN },
@@ -122,6 +125,7 @@ static lookups inbook[] = {
 	{ "DT",     "DOCUMENTTYPE", TYPE, LEVEL_MAIN },
 	{ "GA",     "ISIDELIVERNUM", SIMPLE, LEVEL_MAIN}, /*ISI document delivery number */
 	{ "UT",     "ISIREFNUM", SIMPLE, LEVEL_MAIN }, /* ISI unique article identifer */
+	{ "DI",     "DOI",       SIMPLE, LEVEL_MAIN },
 	{ " ",         "TYPE|INBOOK",   ALWAYS, LEVEL_MAIN },
 	{ " ",         "RESOURCE|text", ALWAYS, LEVEL_MAIN },
 	{ " ",         "ISSUANCE|monographic",    ALWAYS, LEVEL_HOST },

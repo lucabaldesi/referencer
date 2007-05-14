@@ -1,7 +1,7 @@
 /*
  * endout.c
  *
- * Copyright (c) Chris Putnam 2004-5
+ * Copyright (c) Chris Putnam 2004-7
  *
  * Program and source code released under the GPL
  *
@@ -63,6 +63,10 @@ get_type( fields *info )
 		else if ( !strcasecmp( info->data[i].data, "legal case and case notes" ) )
 			type = TYPE_CASE;
 		else if ( !strcasecmp( info->data[i].data, "book" ) ) {
+			if ( info->level[i]==0 ) type = TYPE_BOOK;
+			else type = TYPE_INBOOK;
+		}
+		else if ( !strcasecmp( info->data[i].data, "collection" ) ) {
 			if ( info->level[i]==0 ) type = TYPE_BOOK;
 			else type = TYPE_INBOOK;
 		}

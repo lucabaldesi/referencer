@@ -1,7 +1,7 @@
 /*
  * newstring.h
  *
- * Copyright (c) Chris Putnam 1999-2005
+ * Copyright (c) Chris Putnam 1999-2007
  *
  * Source code released under the GPL
  *

@@ -1,7 +1,7 @@
 /*
  * bibutils.h
  *
- * Copyright (c) Chris Putnam 2005
+ * Copyright (c) Chris Putnam 2005-7
  *
  */
 #ifndef BIBUTILS_H
@@ -32,7 +32,9 @@
 #define BIBL_BIBTEXOUT    (BIBL_FIRSTOUT+1)
 #define BIBL_RISOUT       (BIBL_FIRSTOUT+2)
 #define BIBL_ENDNOTEOUT   (BIBL_FIRSTOUT+3)
-#define BIBL_LASTOUT      (BIBL_FIRSTOUT+3)
+#define BIBL_ISIOUT       (BIBL_FIRSTOUT+4)
+#define BIBL_WORD2007OUT  (BIBL_FIRSTOUT+5)
+#define BIBL_LASTOUT      (BIBL_FIRSTOUT+5)
 
 #define BIBL_RAW_WITHCHARCONVERT (4)
 #define BIBL_RAW_WITHMAKEREFID   (8)

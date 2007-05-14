@@ -1,7 +1,7 @@
 /*
  * copactypes.c
  *
- * Copyright (c) Chris Putnam 2004-5
+ * Copyright (c) Chris Putnam 2004-7
  *
  * Program and source code released under the GPL
  *
@@ -43,19 +43,4 @@ variants copac_all[] = {
 
 int copac_nall = sizeof( copac_all ) / sizeof( variants );
 
-#ifdef NOCOMPILE
-int
-get_reftype( char *p, long refnum )
-{
-	int i;
-	while ( is_ws( *p ) ) p++;
-	for ( i=0; i<nall; ++i ) {
-		if ( !strncasecmp( all[i].type, p, strlen(all[i].type)) )
-			return i;
-	}
-	fprintf( stderr, "Warning: Did not recognize type '%s' of refnum %ld, defaulting to generic.\n",
-			p, refnum );
-	return 0;
-}
-#endif
 

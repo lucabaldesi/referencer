@@ -1,7 +1,7 @@
 /*
  * newstr_conv.c
  *
- * Copyright (c) Chris Putnam 1999-2005
+ * Copyright (c) Chris Putnam 1999-2007
  *
  * Source code released under the GPL
  *
@@ -141,7 +141,6 @@ get_unicode( newstr *s, unsigned int *pi, int charsetin, int latexin, int utf8in
 {
 	unsigned int ch;
 	int unicode = 0, err = 0;
-	int charset = charsetin;
 	if ( s->data[*pi]=='&' && xmlin ) 
 		ch = decode_entity( s->data, pi, &unicode, &err );
 	else if ( latexin ) ch = latex2char( s->data, pi, &unicode );
@@ -150,8 +149,8 @@ get_unicode( newstr *s, unsigned int *pi, int charsetin, int latexin, int utf8in
 		ch = (unsigned int) s->data[*pi];
 		*pi = *pi + 1;
 	}
-	if ( unicode ) charset = CHARSET_UNICODE;
-	if ( charset!=CHARSET_UNICODE ) ch = lookupchar( charsetin, ch );
+	if ( !unicode && charsetin!=CHARSET_UNICODE )
+		ch = lookupchar( charsetin, ch );
 	return ch;
 }
 

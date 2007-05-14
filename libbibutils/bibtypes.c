@@ -1,7 +1,7 @@
 /*
  * bibtypes.c
  *
- * Copyright (c) Chris Putnam 2003-5
+ * Copyright (c) Chris Putnam 2003-7
  *
  * Program and source code released under the GPL
  *
@@ -270,7 +270,7 @@ static lookups incollection[] = {
 	{ "keywords",     "KEYWORD",   SIMPLE, LEVEL_MAIN },
 	{ " ",         "TYPE|INCOLLECTION",   ALWAYS, LEVEL_MAIN },
 	{ " ",         "RESOURCE|text", ALWAYS, LEVEL_MAIN },
-	{ " ",         "ISSUANCE|monograpic", ALWAYS, LEVEL_MAIN },
+	{ " ",         "ISSUANCE|monographic", ALWAYS, LEVEL_MAIN },
 	{ " ",         "GENRE|collection",    ALWAYS, LEVEL_HOST }
 };
 
@@ -528,6 +528,7 @@ static lookups electronic[] = {
 	{ "key",       "BIBKEY",       SIMPLE, LEVEL_MAIN },
 	{ "language",  "LANGUAGE",  SIMPLE, LEVEL_MAIN },
 	{ "keywords",     "KEYWORD",   SIMPLE, LEVEL_MAIN },
+        { " ",  "RESOURCE|software, multimedia",    ALWAYS, LEVEL_MAIN },
 	{ " ",         "GENRE|electronic",       ALWAYS, LEVEL_MAIN },
 };
 

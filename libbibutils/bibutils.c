@@ -1,6 +1,10 @@
 /*
  * bibutils.c
  *
+ * Copyright (c) Chris Putnam 2005-7
+ *
+ * Source code released under the GPL
+ *
  */
 #include <stdio.h>
 #include <stdlib.h>
@@ -12,13 +16,16 @@
 #include "bibtexout.h"
 #include "copacin.h"
 #include "endin.h"
+#include "endxmlin.h"
 #include "endout.h"
 #include "isiin.h"
+#include "isiout.h"
 #include "medin.h"
 #include "modsin.h"
 #include "risin.h"
 #include "risout.h"
 #include "modsout.h"
+#include "wordout.h"
 #include "newstr_conv.h"
 
 typedef struct convert_rules {
@@ -68,10 +75,16 @@ bibl_initparams( param *p, int readmode, int writemode )
 		p->xmlin = 1;
 		p->output_raw = BIBL_RAW_WITHMAKEREFID |
 				BIBL_RAW_WITHCHARCONVERT;
+	} else if ( readmode == BIBL_ENDNOTEXMLIN ) {
+		p->xmlin = 1;
+		p->utf8in = 1;
 	}
 
 	if ( writemode == BIBL_BIBTEXOUT ) p->latexout = 1;
 	if ( writemode == BIBL_MODSOUT ) {
+		if ( !p->utf8out ) p->xmlout = 1;
+		p->charsetout = BIBL_CHARSET_UNICODE;
+	} else if ( writemode == BIBL_WORD2007OUT ) {
 		if ( !p->utf8out ) p->xmlout = 1;
 		p->charsetout = BIBL_CHARSET_UNICODE;
 	} else p->xmlout = 0;
@@ -323,6 +336,15 @@ rules_init( convert_rules *r, int mode )
 			r->all      = end_all;
 			r->nall     = end_nall;
 			break;
+		case BIBL_ENDNOTEXMLIN:
+			r->readf    = endxmlin_readf;
+			r->cleanf   = NULL;
+			r->processf = endxmlin_processf;
+			r->typef    = endin_typef;
+			r->convertf = endin_convertf;
+			r->all      = end_all;
+			r->nall     = end_nall;
+			break;
 		case BIBL_ENDNOTEOUT:
 			r->headerf = NULL;
 			r->footerf = NULL;
@@ -350,6 +372,11 @@ rules_init( convert_rules *r, int mode )
 			r->convertf = isiin_convertf;
 			r->all      = isi_all;
 			r->nall     = isi_nall;
+			break;
+		case BIBL_ISIOUT:
+			r->headerf  = NULL;
+			r->footerf  = NULL;
+			r->writef   = isi_write;
 			break;
 		case BIBL_COPACIN:
 			r->readf    = copacin_readf;
@@ -383,6 +410,10 @@ rules_init( convert_rules *r, int mode )
 			r->footerf = modsout_writefooter;
 			r->writef  = modsout_write;
 			break;
+		case BIBL_WORD2007OUT:
+			r->headerf = wordout_writeheader;
+			r->footerf = wordout_writefooter;
+			r->writef  = wordout_write;
 	}
 }
 

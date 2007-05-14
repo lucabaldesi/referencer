@@ -44,6 +44,8 @@ INPUT_SOURCES =		\
 	endtypes.c	\
 	endout.c	\
 	endout.h	\
+	endxmlin.c \
+	endxmlin.h \
 	isiin.c		\
 	isiin.h		\
 	isitypes.c	\
@@ -60,8 +62,12 @@ INPUT_SOURCES =		\
 	reftypes.h
 
 OUTPUT_SOURCES =	\
+	isiout.c \
+	isiout.h \
 	modsout.c	\
-	modsout.h
+	modsout.h \
+	wordout.c \
+	wordout.h
 
 libbibutils_a_SOURCES = 	\
 	$(SIMPLE_SOURCES)	\

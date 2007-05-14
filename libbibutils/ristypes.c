@@ -1,7 +1,7 @@
 /*
  * ristypes.c
  *
- * Copyright (c) Chris Putnam 2003-5
+ * Copyright (c) Chris Putnam 2003-7
  *
  * Program and source code released under the GPL
  *
@@ -12,7 +12,6 @@
 #include <string.h>
 #include "fields.h"
 #include "reftypes.h"
-/*#include "is_ws.h"*/
 	
 static lookups generic[] = {
 	{ "AU", "AUTHOR",       PERSON,  LEVEL_MAIN },
@@ -505,6 +504,108 @@ static lookups communication[] = {
 	{ "  ", "GENRE|communication",    ALWAYS, LEVEL_MAIN }
 };
 
+static lookups thesis[] = {
+	{ "AU", "AUTHOR",       PERSON,  LEVEL_MAIN },
+	{ "A1", "AUTHOR",       PERSON,  LEVEL_MAIN },
+	{ "A2", "AUTHOR",       PERSON,  LEVEL_HOST },
+	{ "A3", "AUTHOR",       PERSON,  LEVEL_SERIES }, 
+	{ "ED", "EDITOR",       PERSON,  LEVEL_MAIN },
+	{ "PY", "YEAR",         DATE,    LEVEL_MAIN },
+	{ "Y1", "YEAR",         DATE,    LEVEL_MAIN },
+	{ "Y2", "MONTHDAY",     SIMPLE,  LEVEL_MAIN },
+	{ "SN", "SERIALNUMBER", SERIALNO,LEVEL_MAIN },
+	{ "TI", "TITLE",        TITLE,   LEVEL_MAIN },
+	{ "T1", "TITLE",        TITLE,   LEVEL_MAIN },
+	{ "T2", "SHORTTITLE",   SIMPLE,  LEVEL_HOST },
+	{ "T3", "TITLE",        SIMPLE,  LEVEL_SERIES },
+	{ "JO", "TITLE",        SIMPLE,  LEVEL_HOST }, /* JOURNAL */
+	{ "JA", "TITLE",        SIMPLE,  LEVEL_HOST },
+	{ "JF", "TITLE",        SIMPLE,  LEVEL_HOST },
+	{ "J1", "TITLE",        SIMPLE,  LEVEL_HOST },
+	{ "J2", "TITLE",        SIMPLE,  LEVEL_HOST },
+	{ "VL", "VOLUME",       SIMPLE,  LEVEL_MAIN },
+	{ "VO", "VOLUME",       SIMPLE,  LEVEL_MAIN },
+	{ "IS", "ISSUE",        SIMPLE,  LEVEL_MAIN },
+	{ "CP", "ISSUE",        SIMPLE,  LEVEL_MAIN },
+	{ "SP", "PAGESTART",    SIMPLE,  LEVEL_MAIN },
+	{ "EP", "PAGEEND",      SIMPLE,  LEVEL_MAIN },
+	{ "AB", "ABSTRACT",     SIMPLE,  LEVEL_MAIN },
+	{ "N1", "NOTES",        SIMPLE,  LEVEL_MAIN },
+	{ "N2", "ABSTRACT",     SIMPLE,  LEVEL_MAIN }, 
+	{ "KW", "KEYWORD",      SIMPLE,  LEVEL_MAIN },
+	{ "PB", "PUBLISHER",    SIMPLE,  LEVEL_MAIN },
+	{ "BT", "TITLE",        SIMPLE,  LEVEL_HOST }, 
+	{ "CT", "ADDRESS",      SIMPLE,  LEVEL_MAIN },
+	{ "AD", "AUTHORADDRESS",SIMPLE,  LEVEL_MAIN },
+	{ "CY", "ADDRESS",      SIMPLE,  LEVEL_MAIN },
+	{ "RP", "REPRINTSTATUS",SIMPLE,  LEVEL_MAIN },
+	{ "UR", "URL",          SIMPLE,  LEVEL_MAIN },
+	{ "ID", "REFNUM",       SIMPLE,  LEVEL_MAIN },
+	{ "U1", "NOTES",        SIMPLE,  LEVEL_MAIN }, /*user defined */
+	{ "U2", "NOTES",        SIMPLE,  LEVEL_MAIN }, /* put in "notes" */
+	{ "U3", "NOTES",        SIMPLE,  LEVEL_MAIN },
+	{ "U4", "NOTES",        SIMPLE,  LEVEL_MAIN },
+	{ "U5", "NOTES",        SIMPLE,  LEVEL_MAIN },
+	{ "M1", "NOTES",        SIMPLE,  LEVEL_MAIN }, /*misc */
+	{ "M2", "NOTES",        SIMPLE,  LEVEL_MAIN }, /* put in "notes" */
+	{ "M3", "NOTES",        SIMPLE,  LEVEL_MAIN },
+	{ "  ", "TYPE|THESIS",  ALWAYS,  LEVEL_MAIN },
+	{ "  ", "RESOURCE|text",ALWAYS,  LEVEL_MAIN },
+	{ "  ", "GENRE|theses", ALWAYS,  LEVEL_MAIN },
+};
+
+static lookups report[] = {
+	{ "AU", "AUTHOR",       PERSON,  LEVEL_MAIN },
+	{ "A1", "AUTHOR",       PERSON,  LEVEL_MAIN },
+	{ "A2", "AUTHOR",       PERSON,  LEVEL_HOST },
+	{ "A3", "AUTHOR",       PERSON,  LEVEL_SERIES }, 
+	{ "ED", "EDITOR",       PERSON,  LEVEL_MAIN },
+	{ "PY", "YEAR",         DATE,    LEVEL_MAIN },
+	{ "Y1", "YEAR",         DATE,    LEVEL_MAIN },
+	{ "Y2", "MONTHDAY",     SIMPLE,  LEVEL_MAIN },
+	{ "SN", "SERIALNUMBER", SERIALNO,LEVEL_MAIN },
+	{ "TI", "TITLE",        TITLE,   LEVEL_MAIN },
+	{ "T1", "TITLE",        TITLE,   LEVEL_MAIN },
+	{ "T2", "SHORTTITLE",   SIMPLE,  LEVEL_HOST },
+	{ "T3", "TITLE",        SIMPLE,  LEVEL_SERIES },
+	{ "JO", "TITLE",        SIMPLE,  LEVEL_HOST }, /* JOURNAL */
+	{ "JA", "TITLE",        SIMPLE,  LEVEL_HOST },
+	{ "JF", "TITLE",        SIMPLE,  LEVEL_HOST },
+	{ "J1", "TITLE",        SIMPLE,  LEVEL_HOST },
+	{ "J2", "TITLE",        SIMPLE,  LEVEL_HOST },
+	{ "VL", "VOLUME",       SIMPLE,  LEVEL_MAIN },
+	{ "VO", "VOLUME",       SIMPLE,  LEVEL_MAIN },
+	{ "IS", "ISSUE",        SIMPLE,  LEVEL_MAIN },
+	{ "CP", "ISSUE",        SIMPLE,  LEVEL_MAIN },
+	{ "SP", "PAGESTART",    SIMPLE,  LEVEL_MAIN },
+	{ "EP", "PAGEEND",      SIMPLE,  LEVEL_MAIN },
+	{ "AB", "ABSTRACT",     SIMPLE,  LEVEL_MAIN },
+	{ "N1", "NOTES",        SIMPLE,  LEVEL_MAIN },
+	{ "N2", "ABSTRACT",     SIMPLE,  LEVEL_MAIN }, 
+	{ "KW", "KEYWORD",      SIMPLE,  LEVEL_MAIN },
+	{ "PB", "PUBLISHER",    SIMPLE,  LEVEL_MAIN },
+	{ "BT", "TITLE",        SIMPLE,  LEVEL_HOST }, 
+	{ "CT", "ADDRESS",      SIMPLE,  LEVEL_MAIN },
+	{ "AD", "AUTHORADDRESS",SIMPLE,  LEVEL_MAIN },
+	{ "CY", "ADDRESS",      SIMPLE,  LEVEL_MAIN },
+	{ "RP", "REPRINTSTATUS",SIMPLE,  LEVEL_MAIN },
+	{ "UR", "URL",          SIMPLE,  LEVEL_MAIN },
+	{ "ID", "REFNUM",       SIMPLE,  LEVEL_MAIN },
+	{ "U1", "NOTES",        SIMPLE,  LEVEL_MAIN }, /*user defined */
+	{ "U2", "NOTES",        SIMPLE,  LEVEL_MAIN }, /* put in "notes" */
+	{ "U3", "NOTES",        SIMPLE,  LEVEL_MAIN },
+	{ "U4", "NOTES",        SIMPLE,  LEVEL_MAIN },
+	{ "U5", "NOTES",        SIMPLE,  LEVEL_MAIN },
+	{ "M1", "NOTES",        SIMPLE,  LEVEL_MAIN }, /*misc */
+	{ "M2", "NOTES",        SIMPLE,  LEVEL_MAIN }, /* put in "notes" */
+	{ "M3", "NOTES",        SIMPLE,  LEVEL_MAIN },
+	{ "  ", "TYPE|REPORT",  ALWAYS,  LEVEL_MAIN },
+	{ "  ", "RESOURCE|text",ALWAYS,  LEVEL_MAIN },
+	{ "  ", "GENRE|report", ALWAYS,  LEVEL_MAIN }
+};
+
+
+
 variants ris_all[] = {
 	{ "STD",  &(generic[0]), sizeof(generic)/sizeof(lookups)},
 	{ "GEN",  &(generic[0]), sizeof(generic)/sizeof(lookups)},
@@ -519,22 +620,10 @@ variants ris_all[] = {
 	{ "MPCT", &(generic[0]), sizeof(generic)/sizeof(lookups)},
 	{ "PCOMM", &(communication[0]), sizeof(communication)/sizeof(lookups)},
 	{ "PAMP", &(generic[0]), sizeof(generic)/sizeof(lookups)},
-	{ "ELEC", &(generic[0]), sizeof(generic)/sizeof(lookups)}
+	{ "ELEC", &(generic[0]), sizeof(generic)/sizeof(lookups)},
+	{ "THES", &(thesis[0]), sizeof(thesis)/sizeof(lookups)},
+	{ "RPRT", &(report[0]), sizeof(report)/sizeof(lookups)}
 };
 
 int ris_nall = sizeof( ris_all ) / sizeof( variants );
 
-#ifdef NOCOMPILE
-int
-get_reftype( char *p, long refnum )
-{
-	int i;
-	while ( is_ws( *p ) ) p++;
-	for ( i=0; i<nall; ++i ) 
-		if ( !strncasecmp( all[i].type, p, strlen(all[i].type) ) )
-			return i;
-	fprintf( stderr, "Warning: Did not recognize '%s' of refnum %ld, defaulting to generic.\n",
-			p, refnum );
-	return 0;
-}
-#endif

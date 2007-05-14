@@ -110,6 +110,7 @@ static char *
 xml_processattrib( char *p, xml_attrib **ap, int *type )
 {
 	xml_attrib *a = NULL;
+	char quote_character = '\"';
 	int inquotes = 0;
 	newstr aname, aval;
 	newstr_init( &aname );
@@ -125,12 +126,13 @@ xml_processattrib( char *p, xml_attrib **ap, int *type )
 		if ( *p=='=' ) p++;
 		/* get attribute value */
 		while ( *p==' ' || *p=='\t' ) p++;
-		if ( *p=='\"' ) {
+		if ( *p=='\"' || *p=='\'' ) {
+			if ( *p=='\'' ) quote_character = *p;
 			inquotes=1;
 			p++;
 		}
 		while ( *p && ((!xml_terminator(p,type) && !strchr("= \t", *p ))||inquotes)){
-			if ( *p=='\"' ) inquotes=0;
+			if ( *p==quote_character ) inquotes=0;
 			else newstr_addchar( &aval, *p );
 			p++;
 		}

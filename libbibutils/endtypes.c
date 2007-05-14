@@ -1,7 +1,7 @@
 /*
  * endtypes.c
  *
- * Copyright (c) Chris Putnam 2003-5
+ * Copyright (c) Chris Putnam 2003-7
  *
  * Program and source code released under the GPL
  *
@@ -34,7 +34,7 @@ static lookups generic[] = {
 	{ "%7", "EDITION",      SIMPLE, LEVEL_MAIN },
 	{ "%8", "MONTHDATE",    DATE,   LEVEL_MAIN },
 	{ "%9", "GENRE",        SIMPLE, LEVEL_MAIN },
-	{ "%?", "SUB_AUTHOR",   PERSON, LEVEL_MAIN },
+	{ "%?", "SUB_AUTHOR",   PERSON, LEVEL_MAIN }, /* subsidiary-authors */
 	{ "%!", "SHORTTITLE",   TITLE,  LEVEL_MAIN },
 	{ "%@", "SERIALNUM", SERIALNO,  LEVEL_MAIN },
 	{ "%(", "ORIGINALPUB",  SIMPLE, LEVEL_MAIN },
@@ -65,6 +65,7 @@ static lookups journalarticle[] = {
 	{ "%T", "TITLE" ,    TITLE,    LEVEL_MAIN },
 	{ "%J", "TITLE",     TITLE,    LEVEL_HOST }, /* journal title */
 	{ "%B", "TITLE",     TITLE,    LEVEL_HOST }, /* journal title */
+	{ "%C", "ADDRESS",   SIMPLE, LEVEL_MAIN },
 	{ "%V", "VOLUME" ,   SIMPLE,   LEVEL_MAIN },
 	{ "%N", "ISSUE",     SIMPLE,   LEVEL_MAIN },
 	{ "%P", "PAGES",     PAGES,    LEVEL_MAIN },
@@ -99,6 +100,7 @@ static lookups magazinearticle[] = {
 	{ "%T", "TITLE",     TITLE,   LEVEL_MAIN },
 	{ "%J", "TITLE",     TITLE,   LEVEL_HOST }, /* magazine name */
 	{ "%B", "TITLE",     TITLE,   LEVEL_HOST }, /* magazine name */
+	{ "%C", "ADDRESS",   SIMPLE, LEVEL_MAIN },
 	{ "%V", "VOLUME",    SIMPLE,  LEVEL_MAIN },
 	{ "%N", "ISSUE",     SIMPLE,  LEVEL_MAIN },
 	{ "%P", "PAGES",     PAGES,   LEVEL_MAIN },
@@ -133,6 +135,7 @@ static lookups newspaperarticle[] = {
 	{ "%J", "TITLE",     TITLE,   LEVEL_HOST }, /* newspaper name */
 	{ "%B", "TITLE",     TITLE,   LEVEL_HOST }, /* newspaper name */
 	{ "%V", "VOLUME" ,   SIMPLE,  LEVEL_MAIN },
+	{ "%C", "ADDRESS",   SIMPLE, LEVEL_MAIN },
 	{ "%N", "ISSUE",     SIMPLE,  LEVEL_MAIN },
 	{ "%P", "PAGES",     PAGES,   LEVEL_MAIN },
 	{ "%7", "EDITION",   SIMPLE,  LEVEL_MAIN },
@@ -164,6 +167,7 @@ static lookups book[] = {
 	{ "%T", "TITLE" ,    TITLE,     LEVEL_MAIN },
 	{ "%E", "AUTHOR",    PERSON,    LEVEL_HOST }, /* SERIES_AUTHOR */
 	{ "%B", "TITLE",     TITLE,     LEVEL_HOST }, /* SERIES_TITLE */
+	{ "%S", "TITLE",     TITLE,     LEVEL_SERIES },
 	{ "%C", "ADDRESS",   SIMPLE,    LEVEL_MAIN },
 	{ "%I", "PUBLISHER", SIMPLE,    LEVEL_MAIN }, 
 	{ "%V", "VOLUME" ,   SIMPLE,    LEVEL_MAIN },
@@ -512,6 +516,7 @@ static lookups electronic[] = {
 	{ "%A", "AUTHOR",    PERSON    , LEVEL_MAIN },
 	{ "%D", "YEAR",      SIMPLE    , LEVEL_MAIN },
 	{ "%T", "TITLE" ,    TITLE     , LEVEL_MAIN },
+	{ "%C", "ADDRESS",   SIMPLE, LEVEL_MAIN },
 	{ "%I", "PUBLISHER", SIMPLE    , LEVEL_MAIN }, 
 	{ "%V", "ACCESS_YEAR",  SIMPLE , LEVEL_MAIN },
 	{ "%N", "ACCESS_DATE",  DATE   , LEVEL_MAIN },
@@ -535,7 +540,9 @@ static lookups electronic[] = {
 	{ "%Z", "NOTES",     SIMPLE    , LEVEL_MAIN },
 	{ "%W", "PHYSICALLOC",  SIMPLE, LEVEL_MAIN },  /* physical location */
 	{ "%+", "AUTHORADDRESS",SIMPLE , LEVEL_MAIN },
-        { " ",         "TYPE|electronic",       ALWAYS, LEVEL_MAIN },
+        { " ",  "RESOURCE|software, multimedia",    ALWAYS, LEVEL_MAIN },
+        { " ",  "GENRE|electronic",       ALWAYS, LEVEL_MAIN },
+
 };
 
 static lookups artwork[] = {

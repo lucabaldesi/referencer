@@ -1,7 +1,7 @@
 /*
  * endin.c
  *
- * Copyright (c) Chris Putnam 2003-5
+ * Copyright (c) Chris Putnam 2003-7
  *
  * Program and source code released under the GPL
  *
@@ -22,6 +22,7 @@
 
 extern lists asis;
 extern lists corps;
+extern char progname[];
 
 /* Endnote tag definition:
     character 1 = '%'
@@ -51,10 +52,21 @@ int
 endin_readf( FILE *fp, char *buf, int bufsize, int *bufpos, newstr *line, newstr *reference, int *fcharset )
 {
 	int haveref = 0, inref = 0;
+	unsigned char *up;
 	char *p;
+	*fcharset = CHARSET_UNKNOWN;
 	while ( !haveref && readmore( fp, buf, bufsize, bufpos, line ) ) {
 		if ( !line->data ) continue;
 		p = &(line->data[0]);
+
+		/* Skip <feff> Unicode header information */
+		/* <feff> = ef bb bf */
+		up = (unsigned char* ) p;
+		if ( *up==239 && *(up+1)==187 && *(up+2)==191 ) {
+			*fcharset = CHARSET_UNICODE;
+			p += 3;
+		}
+
 		if ( !*p ) {
 			if ( inref ) haveref = 1; /* blank line separates */
 			else continue; /* blank line to ignore */
@@ -71,7 +83,6 @@ endin_readf( FILE *fp, char *buf, int bufsize, int *bufpos, newstr *line, newstr
 		newstr_empty( line );
 	}
 	if ( reference->len ) haveref = 1;
-	*fcharset = CHARSET_UNKNOWN;
 	return haveref;
 }
 
@@ -258,29 +269,42 @@ int
 endin_typef( fields *endin, char *filename, int nrefs, variants *all,
 		int nall )
 {
-	int n, reftype;
+	char *refnum = "";
+	int n, reftype, nrefnum;
 	n = fields_find( endin, "%0", 0 );
+	nrefnum = fields_find( endin, "%F", 0 );
+	if ( nrefnum!=-1 ) refnum = endin->data[nrefnum].data;
 	if ( n!=-1 )
-		reftype = get_reftype( endin->data[n].data, nrefs, all, nall );
+		reftype = get_reftype( endin->data[n].data, nrefs, all, nall,
+			refnum );
 	else
-		reftype = get_reftype( "", nrefs, all, nall ); /* default */
+		reftype = get_reftype( "", nrefs, all, nall, refnum ); /* default */
 	return reftype;
 }
 
 void
 endin_convertf( fields *endin, fields *info, int reftype, int verbose, variants *all, int nall )
 {
-	newstr *t, *d;
+	newstr *d;
 	int  i, level, n, process;
-	char *newtag;
+	char *newtag, *t;
 	for ( i=0; i<endin->nfields; ++i ) {
-		t = &( endin->tag[i] );
+		t = endin->tag[i].data;
 		d = &( endin->data[i] );
-		n = process_findoldtag( t->data, reftype, all, nall );
+		/*
+		 * All refer format tags start with '%'.  If we have one
+		 * that doesn't, assume that it comes from endx2xml
+		 * and just copy and paste to output
+		 */
+		if ( t[0]!='%' ) {
+			fields_add( info, t, d->data, endin->level[i] );
+			continue;
+		}
+		n = process_findoldtag( t, reftype, all, nall );
 		if ( n==-1 ) {
 			if ( verbose )
-				fprintf( stderr, "Cannot find tag '%s'\n",
-					t->data );
+				fprintf( stderr, "%s: Cannot find tag '%s'='%s'\n",
+					progname, t, d->data );
 			continue;
 		}
 		process = ((all[reftype]).tags[n]).processingtype;
@@ -296,7 +320,7 @@ endin_convertf( fields *endin, fields *info, int reftype, int verbose, variants 
 		else if ( process==PERSON )
 			name_add( info, newtag, d->data, level );
 		else if ( process==DATE )
-			adddate(info,endin->tag[i].data,newtag,d->data,level);
+			adddate( info, t, newtag,d->data,level);
 		else if ( process==PAGES )
 			addpage( info, d->data, level );
 		else if ( process==SERIALNO )

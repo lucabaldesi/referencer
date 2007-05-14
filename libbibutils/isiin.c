@@ -1,7 +1,7 @@
 /*
  * isiin.c
  *
- * Copyright (c) Chris Putnam 2004-5
+ * Copyright (c) Chris Putnam 2004-7
  *
  * Program and source code released under the GPL
  *
@@ -158,12 +158,15 @@ keyword_process( fields *info, char *newtag, char *p, int level )
 int
 isiin_typef( fields *isiin, char *filename, int nref, variants *all, int nall )
 {
-	int n, reftype;
+	char *refnum = "";
+	int n, reftype, nrefnum;
 	n = fields_find( isiin, "PT", 0 );
+	nrefnum = fields_find ( isiin, "UT", 0 );
+	if ( nrefnum!=-1 ) refnum = isiin->data[nrefnum].data;
 	if ( n!=-1 )
-		reftype = get_reftype( (isiin->data[n]).data, nref, all, nall );
+		reftype = get_reftype( (isiin->data[n]).data, nref, all, nall, refnum );
 	else
-		reftype = get_reftype( "", nref, all, nall); /* default */
+		reftype = get_reftype( "", nref, all, nall, refnum ); /* default */
 	return reftype;
 }
 
