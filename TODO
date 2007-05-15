@@ -1,14 +1,8 @@
 
 
-
-Does the "arxivid.find ("v")" still make sense with the new naming scheme?
-
 Targets for 1.0.4:
-	Fix sensitivity of clipboard actions
 	Check that UTF-8 export works as desired
 	Investigate per-document tooltips for iconview
-	Sync with latest bibutils
-		- Need to get 3.27 tarball for diffing
 	Fix or forward upstream Brice Goglin's bibtex import problems
 		- ß etc don't work for non-iso8859 input, is this our bug (ie would bibtex accept utf8 anyway)?
 	Update absolute paths when pdf/reflib folder is copied
@@ -16,7 +10,7 @@ Targets for 1.0.4:
 	Complete translatability
 		- All exceptionDialog calls fixed up
 		- Need to sort out ensureSaved
-		- Done TagWindow.C, BibData.C, BibUtils.C, Document.C, DocumentList.C, Library.C
+		- Done TagWindow.C, BibData.C, BibUtils.C, Document.C, DocumentList.C, Library.C, 
 
 Other essential items:
 	Import of reflib files (merge in documents, resolve tag IDs)
@@ -28,6 +22,8 @@ Other essential items:
 		What about underscores?  Need an "escape everything" mode?
 		Write out tags as special bibtex field
 	Resolve symlinks before doing relative filename magic
+
+	Support new endxmlin, isiout and wordout from bibutils 3.31?
 
 	Edit menu:
 		- Copy key

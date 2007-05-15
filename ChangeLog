@@ -1,4 +1,5 @@
 1.0.4:
+	- Update bibutils to 3.31
 	- Generate thumbnails for files on NFS mounts
 	- Improved internationalization support
 	- Prevent search box getting hidden in small windows

@@ -898,6 +898,8 @@ void TagWindow::docSelectionChanged ()
 
 	bool const somethingselected = selectcount > 0;
 	bool const onlyoneselected = selectcount == 1;
+	
+	actiongroup_->get_action("CopyCite")->set_sensitive (somethingselected);
 
 	actiongroup_->get_action("RemoveDoc")->set_sensitive (somethingselected);
 	actiongroup_->get_action("DeleteDoc")->set_sensitive (somethingselected);
