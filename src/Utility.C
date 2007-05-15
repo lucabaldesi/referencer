@@ -244,10 +244,10 @@ void writeBibKey (
 std::string escapeBibtexAccents (
 	Glib::ustring target)
 {
-	std::cerr << "escapeBibtexAccents '" << target << "'\n";
+	//std::cerr << "escapeBibtexAccents '" << target << "'\n";
 	for (unsigned int i = 0; i < target.length(); ++i) {
 		gunichar letter = target[i];
-		std::cerr << (char)letter << "\n";
+		//std::cerr << (char)letter << "\n";
 		if (letter < 128) {
 			// Rationale: although in general we pass through {,},\ etc to allow
 			// the user to use his own latex-isms, the ampersand has no legitimate
@@ -256,7 +256,7 @@ std::string escapeBibtexAccents (
 				target.erase (i, 1);
 				target.insert (i, "\\&");
 				i += 1;
-				std::cerr << target << "\n";
+				//std::cerr << target << "\n";
 			}
 			continue;
 		} else {
