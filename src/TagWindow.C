@@ -1045,14 +1045,14 @@ void TagWindow::tagClicked (GdkEventButton* event)
 
 void TagWindow::onQuit ()
 {
-	if (ensureSaved ("closing"))
+	if (ensureSaved ())
 		Gnome::Main::quit ();
 }
 
 
 bool TagWindow::onDelete (GdkEventAny *ev)
 {
-	if (ensureSaved ("closing"))
+	if (ensureSaved ())
 		return false;
 	else
 		return true;
@@ -1062,11 +1062,12 @@ bool TagWindow::onDelete (GdkEventAny *ev)
 // Prompts the user to save if necessary, and returns whether
 // it is save for the caller to proceed (false if the user
 // says to cancel, or saving failed)
-bool TagWindow::ensureSaved (Glib::ustring const & action)
+bool TagWindow::ensureSaved ()
 {
 	if (getDirty ()) {
 		Gtk::MessageDialog dialog (
-			"<b><big>Save changes to library before " + action + "?</big></b>",
+			String::ucompose ("<b><big>%1</big></b>"
+			, _("Save changes to library before closing?"))
 			true,
 			Gtk::MESSAGE_WARNING,
 			Gtk::BUTTONS_NONE,
@@ -1441,7 +1442,7 @@ void TagWindow::onManageBibtex ()
 
 void TagWindow::onNewLibrary ()
 {
-	if (ensureSaved ("creating a new library")) {
+	if (ensureSaved ()) {
 		setDirty (false);
 
 		setOpenedLib ("");
@@ -1462,7 +1463,7 @@ void TagWindow::onOpenLibrary ()
 	// remote not working?
 	//chooser.set_local_only (false);
 
-	if (!ensureSaved ("opening another library"))
+	if (!ensureSaved ())
 		return;
 
 	if (!libraryfolder_.empty())

@@ -5,10 +5,6 @@ Targets for 1.0.4:
 	Investigate per-document tooltips for iconview
 	Fix or forward upstream Brice Goglin's bibtex import problems
 		- ß etc don't work for non-iso8859 input, is this our bug (ie would bibtex accept utf8 anyway)?
-	Complete translatability
-		- All exceptionDialog calls fixed up
-		- Need to sort out ensureSaved
-		- Done TagWindow.C, BibData.C, BibUtils.C, Document.C, DocumentList.C, Library.C, 
 
 Other essential items:
 	Import of reflib files (merge in documents, resolve tag IDs)

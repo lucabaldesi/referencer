@@ -82,7 +82,7 @@ class LibraryParser : public Glib::Markup::Parser {
 			return false;
 		} else {
 			throw new Glib::MarkupError (Glib::MarkupError::INVALID_CONTENT,
-				String::ucompose ("'%s' is not a valid boolean value", str));
+				String::ucompose (_("'%s' is not a valid boolean value"), str));
 		}
 	}
 

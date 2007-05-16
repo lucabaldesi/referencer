@@ -134,7 +134,7 @@ class TagWindow {
 		void onUseListViewPrefChanged ();
 		void onWorkOfflinePrefChanged ();
 		bool onDelete (GdkEventAny *ev);
-		bool ensureSaved (Glib::ustring const &action);
+		bool ensureSaved ();
 
 		void onDivine ();
 
