@@ -34,6 +34,19 @@
 namespace Utility {
 
 
+Glib::ustring uriToDisplayFileName (
+	Glib::ustring const &uri)
+{
+	Glib::ustring display;
+	if (Gnome::Vfs::Uri::create(uri)->get_scheme () == "file")
+		display = Gnome::Vfs::get_local_path_from_uri (uri);
+	else
+		display = Gnome::Vfs::unescape_string (uri);
+
+	return display;
+}
+
+
 bool uriIsFast (
 	Glib::RefPtr<Gnome::Vfs::Uri> uri)
 {
@@ -147,7 +160,7 @@ void exceptionDialog (
 	Glib::Exception const *ex, Glib::ustring const &context)
 {
 	Glib::ustring message = String::ucompose (
-		_("<big><b>%1: %2</b><big>\n\n%3 \"%4\""),
+		_("<big><b>%1: %2</b></big>\n\n%3 \"%4\""),
 		_("Exception"),
 		Glib::Markup::escape_text (ex->what ()),
 		_("The operation underway was:"),

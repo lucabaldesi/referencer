@@ -1,4 +1,5 @@
 1.0.4:
+	- Prompt user to resolve duplicated files
 	- Update bibutils to 3.31
 	- Generate thumbnails for files on NFS mounts
 	- Improved internationalization support

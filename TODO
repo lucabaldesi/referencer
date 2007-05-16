@@ -5,8 +5,6 @@ Targets for 1.0.4:
 	Investigate per-document tooltips for iconview
 	Fix or forward upstream Brice Goglin's bibtex import problems
 		- ß etc don't work for non-iso8859 input, is this our bug (ie would bibtex accept utf8 anyway)?
-	Update absolute paths when pdf/reflib folder is copied
-		- Yes, let's have some UI for this
 	Complete translatability
 		- All exceptionDialog calls fixed up
 		- Need to sort out ensureSaved

@@ -25,6 +25,9 @@
 namespace Utility {
 	typedef std::pair <Glib::ustring, Glib::ustring> StringPair;
 
+	Glib::ustring uriToDisplayFileName (
+		Glib::ustring const &uri);
+
 	bool uriIsFast (
 		Glib::RefPtr<Gnome::Vfs::Uri> uri);
 

@@ -171,6 +171,14 @@ bool Library::load (Glib::ustring const &libfilename)
 	// Resolve relative paths
 	// ======================
 	
+		typedef enum {
+			NONE,
+			ORIG_LOC,
+			NEW_LOC
+		} ambiguouschoice;
+		
+	ambiguouschoice ambiguous_action_all = NONE;
+	
 	int i = 0;
 	DocumentList::Container &docs = doclist_->getDocs ();
 	DocumentList::Container::iterator docit = docs.begin ();
@@ -197,24 +205,50 @@ bool Library::load (Glib::ustring const &libfilename)
 		if (!absexists && relexists) {
 			docit->setFileName (relfilename);
 		} else if (absexists && relexists && relfilename != absfilename) {
-			// Put up some UI to ask the user which one they want
-			
-			Glib::ustring const message = 
-				String::ucompose (
-					"<b><big>%1</big></b>\n\n%2",
-					_("Document location ambiguity"),
+			ambiguouschoice action = ambiguous_action_all;
+			if (action == NONE) {
+				// Put up some UI to ask the user which one they want
+				Glib::ustring const shortname =
+					Gnome::Vfs::Uri::create (absfilename)->extract_short_path_name ();
+
+				Glib::ustring const message = 
 					String::ucompose (
-						_("The file '%1' exists in two locations:\n"
-						"Original: %2\nNew: %3\n\n"
-						"Do you want to keep the original location, or update it "
-						"to the new one?"
-						),
-						// short filename,
-						// absfilename,
-						//relfilename,
-					)
-				);
+						"<b><big>%1</big></b>\n\n%2",
+						_("Document location ambiguity"),
+						String::ucompose (
+							_("The file '%1' exists in two locations:\n"
+							"\tOriginal: <b>%2</b>\n\tNew: <b>%3</b>\n\n"
+							"Do you want to keep the original location, or update it "
+							"to the new one?"
+							),
+							shortname,
+							Utility::uriToDisplayFileName (absfilename),
+							Utility::uriToDisplayFileName (relfilename)
+						)
+					);
+					
+				Gtk::MessageDialog dialog (
+					message, true,
+					Gtk::MESSAGE_QUESTION, Gtk::BUTTONS_NONE,
+					true);
+				
+				Gtk::CheckButton applytoall (_("Apply choice to all ambiguous locations"));
+				dialog.get_vbox ()->pack_start (applytoall, 0, false, false);
+				applytoall.show ();
+				
+				dialog.add_button (_("Keep _Original"), ORIG_LOC);
+				dialog.add_button (_("Use _New"), NEW_LOC);
+				dialog.set_default_response (ORIG_LOC);
+				
+				action = (ambiguouschoice) dialog.run ();
+				if (applytoall.get_active ()) {
+					ambiguous_action_all = action;
+				}
+			}
 			
+			if (action == NEW_LOC) {
+				docit->setFileName (relfilename);
+			}
 		}
 
 		progress.releaseLock ();
