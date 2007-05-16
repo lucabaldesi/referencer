@@ -167,6 +167,10 @@ bool Library::load (Glib::ustring const &libfilename)
 
 	progress.update (0.2);
 
+
+	// Resolve relative paths
+	// ======================
+	
 	int i = 0;
 	DocumentList::Container &docs = doclist_->getDocs ();
 	DocumentList::Container::iterator docit = docs.begin ();
@@ -174,20 +178,45 @@ bool Library::load (Glib::ustring const &libfilename)
 	for (; docit != docend; ++docit) {
 		progress.update (0.2 + ((double)(i++) / (double)docs.size ()) * 0.8);
 		progress.getLock ();
-		if (Utility::fileExists (docit->getFileName())) {
-			// Do nothing, all is well, the file is still there
-			std::cerr << "Filename still good: " << docit->getFileName() << "\n";
-		} else if (!docit->getRelFileName().empty()) {
-			// Oh no!  We lost the file!  But we've got a relfilename!  Is relfilename still valid?
-			Glib::ustring filename = Glib::build_filename (
+
+		Glib::ustring const absfilename = docit->getFileName();
+
+		Glib::ustring relfilename;
+		if (!docit->getRelFileName().empty()) {
+			relfilename = Glib::build_filename (
 				Glib::path_get_dirname (libfilename),
 				docit->getRelFileName());
-			std::cerr << "Derived from relative: " << filename << "\n";
-			if (Utility::fileExists (filename)) {
-				std::cerr << "\tValid\n";
-				docit->setFileName (filename);
-			}
 		}
+		
+		std::cerr << "Abs: " << absfilename
+			<< "\nRel: " << relfilename << "\n\n";
+		
+		bool const absexists = Utility::fileExists (absfilename);
+		bool const relexists = Utility::fileExists (relfilename);
+		
+		if (!absexists && relexists) {
+			docit->setFileName (relfilename);
+		} else if (absexists && relexists && relfilename != absfilename) {
+			// Put up some UI to ask the user which one they want
+			
+			Glib::ustring const message = 
+				String::ucompose (
+					"<b><big>%1</big></b>\n\n%2",
+					_("Document location ambiguity"),
+					String::ucompose (
+						_("The file '%1' exists in two locations:\n"
+						"Original: %2\nNew: %3\n\n"
+						"Do you want to keep the original location, or update it "
+						"to the new one?"
+						),
+						// short filename,
+						// absfilename,
+						//relfilename,
+					)
+				);
+			
+		}
+
 		progress.releaseLock ();
 	}
 
