@@ -17,13 +17,14 @@
 
 class DocumentList;
 class TagList;
+class TagWindow;
 
 class Library {
 	public:
 	DocumentList *doclist_;
 	TagList *taglist_;
 
-	Library ();
+	Library (TagWindow &tagwindow);
 	~Library ();
 
 	void clear ();
@@ -57,6 +58,7 @@ class Library {
 	Glib::ustring manage_target_;
 	bool manage_braces_;
 	bool manage_utf8_;
+	TagWindow &tagwindow_;
 };
 
 #endif

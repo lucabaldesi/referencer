@@ -61,7 +61,6 @@ UI wishlist:
 	Should be able to select multiple tags for ANDing instead of ORing document selection
 	Drag and drop to make LaTeX citations
 	Drag and drop to import bibtex snippets
-	Statusbar (number of docs, progressbar)
 	Configuration of max_timeout in BibData::getCrossRef
 	click-to-edit in list view
 

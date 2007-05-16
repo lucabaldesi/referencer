@@ -24,7 +24,8 @@
 #include "Library.h"
 
 
-Library::Library ()
+Library::Library (TagWindow &tagwindow)
+	: tagwindow_ (tagwindow)
 {
 	doclist_ = new DocumentList ();
 	taglist_ = new TagList ();
@@ -113,13 +114,14 @@ bool Library::load (Glib::ustring const &libfilename)
 
 	Glib::RefPtr<Gnome::Vfs::Uri> liburi = Gnome::Vfs::Uri::create (libfilename);
 
-	ProgressDialog progress;
+	ProgressDialog progress (tagwindow_);
 
-	progress.setLabel (
+	/*progress.setLabel (
 		"<b><big>Opening "
 		+ liburi->extract_short_name ()
 		+ "</big></b>\n\nThis process may take some time, particularly\n"
-		+ "if the library has been moved since it was last opened.");
+		+ "if the library has been moved since it was last opened.");*/
+	progress.setLabel (String::ucompose (_("Opening %1"), liburi->extract_short_name ()));
 
 	// If we get an exception and return, progress::~Progress should
 	// take care of calling finish() for us.
@@ -211,7 +213,7 @@ bool Library::load (Glib::ustring const &libfilename)
 			if (action == NONE) {
 				// Put up some UI to ask the user which one they want
 				Glib::ustring const shortname =
-					Gnome::Vfs::Uri::create (absfilename)->extract_short_path_name ();
+					Gnome::Vfs::Uri::create (absfilename)->extract_short_name ();
 
 				Glib::ustring const message = 
 					String::ucompose (

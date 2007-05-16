@@ -1,4 +1,6 @@
 1.0.4:
+	- Add statusbar, replace progressdialog with progressbar
+		in statusbar.
 	- Prompt user to resolve duplicated files
 	- Update bibutils to 3.31
 	- Generate thumbnails for files on NFS mounts

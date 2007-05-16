@@ -15,9 +15,11 @@
 
 #include <gtkmm.h>
 
+class TagWindow;
+
 class ProgressDialog {
 	public:
-	ProgressDialog ();
+	ProgressDialog (TagWindow &tagwindow);
 	~ProgressDialog ();
 
 	void setLabel (Glib::ustring const &text);
@@ -39,6 +41,7 @@ class ProgressDialog {
 	bool finished_;
 	Glib::Thread *loopthread_;
 	Glib::Mutex lock_;
+	TagWindow &tagwindow_;
 };
 
 #endif

@@ -23,7 +23,6 @@
 #include "Document.h"
 #include "DocumentProperties.h"
 #include "Preferences.h"
-#include "ProgressDialog.h"
 
 #include "LibraryParser.h"
 
@@ -71,7 +70,7 @@ TagWindow::TagWindow ()
 	docselectionignore_ = false;
 	dirty_ = false;
 
-	library_ = new Library ();
+	library_ = new Library (*this);
 
 	usinglistview_ = _global_prefs->getUseListView ();
 
@@ -355,6 +354,13 @@ void TagWindow::constructUI ()
 	vbox->pack_start(*tablescroll, true, true, 0);
 
 	docslistscroll_ = tablescroll;
+
+	// The statusbar
+	statusbar_ = Gtk::manage (new Gtk::Statusbar ());
+	vbox->pack_start (*statusbar_, false, false, 0);
+	
+	progressbar_ = Gtk::manage (new Gtk::ProgressBar ());
+	statusbar_->pack_start (*progressbar_, false, false, 0);
 
 	window_->show_all ();
 
@@ -929,6 +935,21 @@ void TagWindow::docSelectionChanged ()
 		}
 	}
 	ignoretaggerchecktoggled_ = false;
+	
+	// Update the statusbar text
+	int visibledocs = docstore_->children().size();
+	Glib::ustring statustext;
+	if (somethingselected) {
+		statustext = String::ucompose (
+			_("%1 documents (%2 selected)"),
+			visibledocs, selectcount);
+	} else {
+		statustext = String::ucompose (
+			_("%1 documents"),
+			visibledocs);
+	}
+	statusbar_->push (statustext, 0);
+
 }
 
 
@@ -2378,6 +2399,8 @@ If you don't want to deal with providing a separate callbac		"    <toolitem acti
 		// Should push to the statusbar how many we got
 		populateDocStore ();
 		populateTagList ();
+		statusbar_->push (String::ucompose 
+			(_("Imported %1 BibTeX references"), imported), 0);
 	} else {
 		Glib::ustring message = String::ucompose (
 			"<b><big>%1</big></b>",

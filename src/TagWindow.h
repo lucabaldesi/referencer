@@ -16,6 +16,8 @@
 #include <vector>
 #include <map>
 
+#include <gtkmm.h>
+
 class Document;
 class DocumentList;
 class DocumentProperties;
@@ -31,6 +33,15 @@ class Library;
 #define VERSION "1.0.4"
 
 class TagWindow {
+
+
+	private:
+		Gtk::Statusbar *statusbar_;
+		Gtk::ProgressBar *progressbar_;
+	public:
+		Gtk::Window * getWindow () {return window_;}
+		void setStatusText (Glib::ustring const &text) {statusbar_->push (text, 0);};
+		Gtk::ProgressBar *getProgressBar () {return progressbar_;}
 
 	private:
 		int memberint;
@@ -70,6 +81,7 @@ class TagWindow {
 		Gtk::ScrolledWindow *docslistscroll_;
 		Gtk::Widget *tagpane_;
 		Gtk::Entry *searchentry_;
+
 
 		Glib::RefPtr<Gtk::TreeSelection> tagselection_;
 		Gtk::TreeView *tagview_;

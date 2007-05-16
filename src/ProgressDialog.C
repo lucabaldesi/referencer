@@ -9,7 +9,7 @@
  */
 
 
-
+#include "TagWindow.h"
 
 #include "ProgressDialog.h"
 
@@ -17,7 +17,8 @@
 
 #include <iostream>
 
-ProgressDialog::ProgressDialog ()
+ProgressDialog::ProgressDialog (TagWindow &tagwindow)
+	: tagwindow_ (tagwindow)
 {
 	dialog_ = new Gtk::Dialog ();
 	dialog_->set_modal (true);
@@ -29,7 +30,8 @@ ProgressDialog::ProgressDialog ()
 	vbox = myvbox;
 	vbox->set_border_width (6);
 
-	progress_ = Gtk::manage (new Gtk::ProgressBar);
+	//progress_ = Gtk::manage (new Gtk::ProgressBar);
+	progress_ = tagwindow_.getProgressBar ();
 	label_ = Gtk::manage (new Gtk::Label ("", false));
 
 	vbox->pack_start (*label_, true, true, 0);
@@ -48,15 +50,18 @@ ProgressDialog::~ProgressDialog ()
 void ProgressDialog::setLabel (Glib::ustring const &markup)
 {
 	label_->set_markup (markup);
+	tagwindow_.setStatusText (markup);
 }
 
 
 void ProgressDialog::start ()
 {
-	dialog_->show_all ();
+	//dialog_->show_all ();
 
 	// Flag that the loop thread waits for
 	finished_ = false;
+	
+	tagwindow_.getWindow ()->set_sensitive (false);
 
 	// Spawn the loop thread
 	loopthread_ = Glib::Thread::create (
@@ -67,6 +72,8 @@ void ProgressDialog::start ()
 void ProgressDialog::finish ()
 {
 	finished_ = true;
+	tagwindow_.getProgressBar()->set_fraction (1.0);
+	tagwindow_.getWindow ()->set_sensitive (true);
 	loopthread_->join ();
 }
 
@@ -89,9 +96,9 @@ void ProgressDialog::update ()
 void ProgressDialog::loop ()
 {
 	while (!finished_) {
-		getLock ();
+		/*getLock ();
 		flushEvents ();
-		releaseLock ();
+		releaseLock ();*/
 		Glib::usleep (100000);
 	}
 }
@@ -99,8 +106,10 @@ void ProgressDialog::loop ()
 
 void ProgressDialog::flushEvents ()
 {
+	//gdk_threads_enter ();
 	while (Gnome::Main::events_pending())
 		Gnome::Main::iteration ();
+	//gdk_threads_leave ();
 	//std::cerr << "Refreshed UI\n";
 }
 
