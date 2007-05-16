@@ -128,7 +128,8 @@ bool Library::load (Glib::ustring const &libfilename)
 	try {
 		libfile.open (libfilename, Gnome::Vfs::OPEN_READ);
 	} catch (const Gnome::Vfs::exception ex) {
-		Utility::exceptionDialog (&ex, "opening library '" + libfilename + "'");
+		Utility::exceptionDialog (&ex, "opening library '"
+			+ Utility::uriToDisplayFileName (libfilename) + "'");
 		return false;
 	}
 
@@ -144,7 +145,8 @@ bool Library::load (Glib::ustring const &libfilename)
 	try {
 		libfile.read (buffer, fileinfo->get_size());
 	} catch (const Gnome::Vfs::exception ex) {
-		Utility::exceptionDialog (&ex, "reading library '" + libfilename + "'");
+		Utility::exceptionDialog (&ex, "reading library '"
+			+ Utility::uriToDisplayFileName (libfilename) + "'");
 		free (buffer);
 		return false;
 	}
