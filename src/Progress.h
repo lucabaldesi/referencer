@@ -10,17 +10,17 @@
 
 
 
-#ifndef PROGRESSDIALOG_H
-#define PROGRESSDIALOG_H
+#ifndef PROGRESS_H
+#define PROGRESS_H
 
 #include <gtkmm.h>
 
 class TagWindow;
 
-class ProgressDialog {
+class Progress {
 	public:
-	ProgressDialog (TagWindow &tagwindow);
-	~ProgressDialog ();
+	Progress (TagWindow &tagwindow);
+	~Progress ();
 
 	void setLabel (Glib::ustring const &text);
 	void start ();
@@ -50,17 +50,17 @@ class ProgressDialog {
 
 {
 
-	ProgressDialog prog (false);
+	Progress prog (false);
 
-	ProgressDialog.setLabel ("Working, please show some fucking patience for once");
-	ProgressDialog.start ();
+	Progress.setLabel ("Working, please show some fucking patience for once");
+	Progress.start ();
 
 	for (int i = 0; i < 100; ++i) {
-		ProgressDialog.update ((double)i / 100.0);
+		Progress.update ((double)i / 100.0);
 		fuck_about_a_bit (i);
 	}
 
-	ProgressDialog.finish ();
+	Progress.finish ();
 
 }
 

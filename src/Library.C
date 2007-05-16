@@ -18,7 +18,7 @@
 #include "TagList.h"
 #include "DocumentList.h"
 #include "LibraryParser.h"
-#include "ProgressDialog.h"
+#include "Progress.h"
 #include "Utility.h"
 
 #include "Library.h"
@@ -114,7 +114,7 @@ bool Library::load (Glib::ustring const &libfilename)
 
 	Glib::RefPtr<Gnome::Vfs::Uri> liburi = Gnome::Vfs::Uri::create (libfilename);
 
-	ProgressDialog progress (tagwindow_);
+	Progress progress (tagwindow_);
 
 	/*progress.setLabel (
 		"<b><big>Opening "

@@ -11,13 +11,13 @@
 
 #include "TagWindow.h"
 
-#include "ProgressDialog.h"
+#include "Progress.h"
 
 #include <libgnomemm/main.h>
 
 #include <iostream>
 
-ProgressDialog::ProgressDialog (TagWindow &tagwindow)
+Progress::Progress (TagWindow &tagwindow)
 	: tagwindow_ (tagwindow)
 {
 	dialog_ = new Gtk::Dialog ();
@@ -39,7 +39,7 @@ ProgressDialog::ProgressDialog (TagWindow &tagwindow)
 }
 
 
-ProgressDialog::~ProgressDialog ()
+Progress::~Progress ()
 {
 	if (!finished_)
 		finish ();
@@ -47,14 +47,14 @@ ProgressDialog::~ProgressDialog ()
 }
 
 
-void ProgressDialog::setLabel (Glib::ustring const &markup)
+void Progress::setLabel (Glib::ustring const &markup)
 {
 	label_->set_markup (markup);
 	tagwindow_.setStatusText (markup);
 }
 
 
-void ProgressDialog::start ()
+void Progress::start ()
 {
 	//dialog_->show_all ();
 
@@ -65,11 +65,11 @@ void ProgressDialog::start ()
 
 	// Spawn the loop thread
 	loopthread_ = Glib::Thread::create (
-		sigc::mem_fun (this, &ProgressDialog::loop), true);
+		sigc::mem_fun (this, &Progress::loop), true);
 }
 
 
-void ProgressDialog::finish ()
+void Progress::finish ()
 {
 	finished_ = true;
 	tagwindow_.getProgressBar()->set_fraction (1.0);
@@ -78,7 +78,7 @@ void ProgressDialog::finish ()
 }
 
 
-void ProgressDialog::update (double status)
+void Progress::update (double status)
 {
 	//std::cerr << "Update: " << status << "\n";
 	progress_->set_fraction (status);
@@ -86,14 +86,14 @@ void ProgressDialog::update (double status)
 }
 
 
-void ProgressDialog::update ()
+void Progress::update ()
 {
 	progress_->pulse ();
 	flushEvents ();
 }
 
 
-void ProgressDialog::loop ()
+void Progress::loop ()
 {
 	while (!finished_) {
 		/*getLock ();
@@ -104,7 +104,7 @@ void ProgressDialog::loop ()
 }
 
 
-void ProgressDialog::flushEvents ()
+void Progress::flushEvents ()
 {
 	//gdk_threads_enter ();
 	while (Gnome::Main::events_pending())
@@ -114,13 +114,13 @@ void ProgressDialog::flushEvents ()
 }
 
 
-void ProgressDialog::getLock ()
+void Progress::getLock ()
 {
 	lock_.lock ();
 }
 
 
-void ProgressDialog::releaseLock ()
+void Progress::releaseLock ()
 {
 	lock_.unlock ();
 }
