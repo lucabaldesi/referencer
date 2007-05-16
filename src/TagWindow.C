@@ -1067,7 +1067,7 @@ bool TagWindow::ensureSaved ()
 	if (getDirty ()) {
 		Gtk::MessageDialog dialog (
 			String::ucompose ("<b><big>%1</big></b>"
-			, _("Save changes to library before closing?"))
+			, _("Save changes to library before closing?")),
 			true,
 			Gtk::MESSAGE_WARNING,
 			Gtk::BUTTONS_NONE,
