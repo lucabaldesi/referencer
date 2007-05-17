@@ -1,4 +1,5 @@
 1.0.4:
+	- Remove "Add Tag" dialog (Eric Lesh)
 	- Add statusbar, replace progressdialog with progressbar
 		in statusbar.
 	- Prompt user to resolve duplicated files

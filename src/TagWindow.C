@@ -1127,41 +1127,14 @@ bool TagWindow::ensureSaved ()
 
 void TagWindow::onCreateTag  ()
 {
-	// For intelligent tags we'll need a dialog here.
-	Glib::ustring message = String::ucompose ("<b><big>%1</big></b>\n\n", _("New tag"));
-	Gtk::MessageDialog dialog(message, true, Gtk::MESSAGE_QUESTION,
-		Gtk::BUTTONS_NONE, true);
-
-	dialog.add_button (Gtk::Stock::CANCEL, Gtk::RESPONSE_CANCEL);
-	dialog.add_button (Gtk::Stock::OK, Gtk::RESPONSE_ACCEPT);
-	dialog.set_default_response (Gtk::RESPONSE_ACCEPT);
-
-	Gtk::Entry nameentry;
-	nameentry.set_activates_default (true);
-	Gtk::HBox hbox;
-	hbox.set_spacing (6);
-	Gtk::Label label (_("Name:"));
-	hbox.pack_start (label, false, false, 0);
-	hbox.pack_start (nameentry, true, true, 0);
-	dialog.get_vbox()->pack_start (hbox, false, false, 0);
-	hbox.show_all ();
-
-	bool invalid = true;
-
-	while (invalid && dialog.run() == Gtk::RESPONSE_ACCEPT) {
-		Glib::ustring newname = nameentry.get_text ();
-		// Later displayed in markup'd cellrenderer
-		newname = Glib::Markup::escape_text (newname);
-		if (newname.empty()) {
-			invalid = true;
-		} else {
-			invalid = false;
-			setDirty (true);
-			library_->taglist_->newTag (newname, Tag::ATTACH);
-			populateTagList();
-		}
-
-	}
+	Glib::ustring newname = (_("Type a tag"));
+	Glib::ustring tagsnum = String::ucompose ("%1",
+                library_->taglist_->getTags().size() + 2);
+	Gtk::TreePath path (tagsnum);
+	setDirty (true);
+	library_->taglist_->newTag (newname, Tag::ATTACH);
+	populateTagList();
+	tagview_->set_cursor (path, *tagview_->get_column (0), true);
 }
 
 
