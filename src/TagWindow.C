@@ -2220,7 +2220,7 @@ void TagWindow::updateTitle ()
 		filename = _("Unnamed Library");
 	} else {
 		filename = Gnome::Vfs::unescape_string_for_display (Glib::path_get_basename (openedlib_));
-		unsigned int pos = filename.find (".reflib");
+		int pos = filename.find (".reflib");
 		if (pos != Glib::ustring::npos) {
 			filename = filename.substr (0, pos);
 		}
@@ -2417,3 +2417,8 @@ void TagWindow::onCopyCite ()
 	clipboard->set_text (citation);
 }
 
+
+void TagWindow::setSensitive (bool const sensitive)
+{
+	window_->set_sensitive (sensitive);
+}
