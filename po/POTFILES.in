@@ -11,7 +11,7 @@ src/Document.C
 src/Transfer.C
 src/BibData.C
 src/DocumentProperties.C
-src/ProgressDialog.C
+src/Progress.C
 src/Library.C
 src/CrossRefParser.h
 src/LibraryParser.h
