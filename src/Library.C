@@ -116,11 +116,6 @@ bool Library::load (Glib::ustring const &libfilename)
 
 	Progress progress (tagwindow_);
 
-	/*progress.setLabel (
-		"<b><big>Opening "
-		+ liburi->extract_short_name ()
-		+ "</big></b>\n\nThis process may take some time, particularly\n"
-		+ "if the library has been moved since it was last opened.");*/
 	progress.setLabel (String::ucompose (_("Opening %1"), liburi->extract_short_name ()));
 
 	// If we get an exception and return, progress::~Progress should

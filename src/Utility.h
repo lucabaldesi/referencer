@@ -25,6 +25,11 @@
 namespace Utility {
 	typedef std::pair <Glib::ustring, Glib::ustring> StringPair;
 
+
+bool hasExtension (
+	Glib::ustring const &filename,
+	Glib::ustring const &ex);
+
 	Glib::ustring uriToDisplayFileName (
 		Glib::ustring const &uri);
 

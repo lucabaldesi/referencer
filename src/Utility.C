@@ -33,6 +33,20 @@
 
 namespace Utility {
 
+bool hasExtension (
+	Glib::ustring const &filename,
+	Glib::ustring const &ex)
+{
+	Glib::ustring::size_type pos = filename.find ("." + ex);
+	if (pos != Glib::ustring::npos) {
+		if (pos + ex.size () + 1 == filename.size())  {
+			return true;
+		}
+	}
+
+	return false;
+}
+
 
 Glib::ustring uriToDisplayFileName (
 	Glib::ustring const &uri)
@@ -185,7 +199,15 @@ bool onAddDocFolderRecurse (const Glib::ustring& rel_path, const Glib::RefPtr<co
 		Glib::build_filename (
 			_basepath, Gnome::Vfs::escape_string(info->get_name()));
 
-	if (info->get_type () == Gnome::Vfs::FILE_TYPE_DIRECTORY) {
+	Glib::ustring basename = Glib::filename_display_basename (info->get_name ());
+
+	bool is_reflib = Utility::hasExtension (basename, "reflib");
+	bool is_bib = Utility::hasExtension (basename, "bib");
+	bool is_dotfile = basename[0] == '.';
+
+	if (basename == ".svn" || basename == "CVS" || is_reflib || is_bib || is_dotfile) {
+		return true;
+	} else if (info->get_type () == Gnome::Vfs::FILE_TYPE_DIRECTORY) {
 		Gnome::Vfs::DirectoryHandle dir;
 		Glib::ustring tmp = _basepath;
 		_basepath = fullname;
