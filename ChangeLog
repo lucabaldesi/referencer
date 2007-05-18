@@ -1,4 +1,5 @@
 1.0.4:
+	- Fixes for 64 bit architecture
 	- Remove "Add Tag" dialog (Eric Lesh)
 	- Add statusbar, replace progressdialog with progressbar
 		in statusbar.

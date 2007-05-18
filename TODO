@@ -1,7 +1,6 @@
 
 
 Targets for 1.0.4:
-	Fix memory-eating when saving on x86_64 linux
 	Check that UTF-8 export works as desired
 	Investigate per-document tooltips for iconview
 
