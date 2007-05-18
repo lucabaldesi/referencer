@@ -2,24 +2,21 @@
 
 div#titlebar
 {
-	background-color:#adc2df;
-	border-style: solid;
+	background-color:#DDF;
 	border-width: 0px;
-	/*border-bottom: 2px solid black;*/
-
 	padding:10px;
 }
 
 
 body {
-background-color:white;
-color:black;
-margin:0px;
-padding:0px;
-border-bottom: 1px solid black;
-border-right: 1px solid black;
-width: 800px;
-font: small Lucida Grande, Trebuchet MS, sans-serif;
+	background-color:white;
+	color:black;
+	margin:0px;
+	padding:0px;
+	border-bottom: 1px solid black;
+	border-right: 1px solid black;
+	width: 780px;
+	font: small Lucida Grande, Trebuchet MS, sans-serif;
 }
 
 
@@ -35,7 +32,8 @@ a.title {
 
 
 div#main {
-	width: 800px;
+	/*width: 780px;*/
+		background-color:#DDF;
 }
 
 
@@ -58,21 +56,16 @@ div#footer p
 
 div.rightbox {
 	float:				right;
-	width:				225px;
-	margin-right:			15px;
-}
-
-
-div.rightbox h2 {
-	color:				black;
-	font-weight:			bold;
+	width:				200px;
+	/*margin-right:			15px;*/
 }
 
 
 div.rightbox div {
 	padding:			8px;
 	padding-top:			0;
-	background-color:		#adc2df;
+	padding-right: 0;
+	background-color:		#DDF;
 	border:				1px solid #54482e;
 	margin-top:			10px;
 }
@@ -80,10 +73,18 @@ div.rightbox div {
 
 div.left {
 	margin:				0;
-	border-width: 0px;
+	border-width: 1px;
+	border-style: solid;
 	float:				left;
 	width:				525px;
 	padding-left:			15px;
+	margin-left:15px;
+	margin-top:15px;
+	background-color:#DDF;
+}
+
+div.left p {
+	padding-right: 10px;
 }
 
 
@@ -95,31 +96,6 @@ div#screenshots p {
 	margin-bottom:35px;
 }
 
-
-ul.menubar
-{
-	background-color:#CCE;
-	margin:0px;
-	padding:5px;
-	padding-left:10px;
-	border-color: #005;
-	border-style: solid;
-	border-width: 0px;
-	border-bottom-width: 2px;
-	border-top-width: 2px;
-}
-
-ul.menubar li
-{
-	display: inline;
-	list-style-type: none;
-	padding: 0.2em 1em;
-	border-right: 1px solid #fff;
-	margin-top:-5px;
-	margin-left:0px;
-	margin-right:0px;
-	
-}
 
 h1, h2, h3, h4, h5, h6 {
 	font-family: Trebuchet MS, Lucida Grande, sans-serif;
@@ -135,11 +111,14 @@ h3.subtitle{
 	padding-left: 20px;
 	margin-top:5px;
 	font-style: italic;
+
 }
 
 h2
 {
-	border-width: 0;
-	/*border-style: solid;
-	border-bottom:1px solid #54482e;*/
+	border-bottom: 1px solid;
+	border-left: 1px solid;
+	border-top: 1px solid;
+	padding-left: 3px;
+	background-color: #BBF;
 }
