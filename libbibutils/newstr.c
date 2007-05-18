@@ -192,9 +192,9 @@ newstr_segcat( newstr *string, char *startat, char *endat )
 	char *p, *q;
 
 	if (string==NULL || startat==NULL || endat==NULL ) return;
-	if ( (unsigned int) startat > (unsigned int) endat ) return;
+	if ( (size_t) startat > (size_t) endat ) return;
 
-	seglength=(unsigned int) endat - (unsigned int) startat;
+	seglength=(size_t) endat - (size_t) startat;
 	if (string->data==NULL || string->dim==0)
 		newstr_initalloc(string, seglength+1);
 	else {
