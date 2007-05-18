@@ -1,6 +1,6 @@
 #!/bin/bash
 
-export IMAGES="*.png"
+export IMAGES="*.png *.ico"
 export TEXT="*.html *.css ChangeLog"
 export DOWNLOADS="downloads"
 
