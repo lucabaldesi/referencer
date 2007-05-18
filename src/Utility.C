@@ -258,7 +258,7 @@ std::string escapeBibtexAccents (
 	Glib::ustring target)
 {
 	//std::cerr << "escapeBibtexAccents '" << target << "'\n";
-	for (unsigned int i = 0; i < target.length(); ++i) {
+	for (Glib::ustring::size_type i = 0; i < target.length(); ++i) {
 		gunichar letter = target[i];
 		//std::cerr << (char)letter << "\n";
 		if (letter < 128) {
@@ -310,14 +310,12 @@ Glib::ustring relPath (
 		return "";
 	}
 
-//	std::cerr << "\n\t" << parent << "\n\t" << child << "\n";
-
 	Glib::ustring separator = Glib::build_filename ("-", "-");
 	separator = separator.substr (1, separator.length() - 2);
 
 	std::vector<Glib::ustring> libparts;
 
-	unsigned int next;
+	int next;
 	while ((next = parent.find (separator)) != Glib::ustring::npos) {
 		Glib::ustring chunk = parent.substr (0, next);
 		libparts.push_back (chunk);

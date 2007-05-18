@@ -61,7 +61,7 @@ void Progress::start ()
 	// Flag that the loop thread waits for
 	finished_ = false;
 	
-	tagwindow_.getWindow ()->set_sensitive (false);
+	tagwindow_.setSensitive (false);
 
 	// Spawn the loop thread
 	loopthread_ = Glib::Thread::create (
@@ -73,7 +73,7 @@ void Progress::finish ()
 {
 	finished_ = true;
 	tagwindow_.getProgressBar()->set_fraction (1.0);
-	tagwindow_.getWindow ()->set_sensitive (true);
+	tagwindow_.setSensitive (true);
 	loopthread_->join ();
 }
 

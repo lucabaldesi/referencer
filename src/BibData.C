@@ -407,7 +407,7 @@ void BibData::getArxiv ()
 		extras_["eprint"]);
 
 	Glib::ustring arxivid = extras_["eprint"];
-	unsigned int index = arxivid.find ("v");
+	int index = arxivid.find ("v");
 	if (index != Glib::ustring::npos) {
 		arxivid = arxivid.substr (0, index);
 	}

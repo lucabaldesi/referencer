@@ -64,7 +64,7 @@ Glib::ustring Document::generateKey ()
 	// If not then Unnamed-5
 	Glib::ustring name;
 
-	unsigned int const maxlen = 14;
+	Glib::ustring::size_type const maxlen = 14;
 
 	if (!bib_.getAuthors().empty ()) {
 		Glib::ustring year = bib_.getYear ();
@@ -84,7 +84,7 @@ Glib::ustring Document::generateKey ()
 		Glib::ustring filename = Gnome::Vfs::unescape_string_for_display (
 			Glib::path_get_basename (filename_));
 
-		unsigned int periodpos = filename.find_last_of (".");
+		int periodpos = filename.find_last_of (".");
 		if (periodpos != std::string::npos) {
 			filename = filename.substr (0, periodpos);
 		}
@@ -492,7 +492,7 @@ void Document::renameFromKey ()
 	Glib::ustring dirname = olduri->extract_dirname ();
 	std::cerr << "Dirname = " << dirname << "\n";
 
-	unsigned int pos = shortname.rfind (".");
+	int pos = shortname.rfind (".");
 	Glib::ustring extension = "";
 	if (pos != Glib::ustring::npos)
 		extension = shortname.substr (pos, shortname.length() - 1);

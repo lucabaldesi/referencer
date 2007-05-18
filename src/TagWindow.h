@@ -39,9 +39,10 @@ class TagWindow {
 		Gtk::Statusbar *statusbar_;
 		Gtk::ProgressBar *progressbar_;
 	public:
-		Gtk::Window * getWindow () {return window_;}
+		//Gtk::Window * getWindow () {return window_;}
 		void setStatusText (Glib::ustring const &text) {statusbar_->push (text, 0);};
 		Gtk::ProgressBar *getProgressBar () {return progressbar_;}
+		void setSensitive (bool const sensitive);
 
 	private:
 		int memberint;
