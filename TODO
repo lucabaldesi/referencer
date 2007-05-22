@@ -55,6 +55,8 @@ Little functionality wishlist:
 	Should have GPL headers in all files to qualify for debian packaging
 
 UI wishlist:
+	say "1 document" instead of "1 documents" in statusbar
+	Size-varying list of tags, bold for toggling on/off
 	Sorting of tags
 	Save in Preferences the sorting of the list view.
 	Should be able to select multiple tags for ANDing instead of ORing document selection

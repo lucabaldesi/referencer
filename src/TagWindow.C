@@ -685,6 +685,11 @@ void TagWindow::populateDocStore ()
 	} else {
 		docsiconview_->select_path (initialpath);
 	}
+	
+	// If we set the selection in a valid way
+	// this probably already got called, although not for
+	// opening library etc.
+	updateStatusBar ();
 }
 
 
@@ -936,6 +941,16 @@ void TagWindow::docSelectionChanged ()
 	}
 	ignoretaggerchecktoggled_ = false;
 	
+	updateStatusBar ();
+}
+
+
+void TagWindow::updateStatusBar ()
+{
+	int selectcount = getSelectedDocCount ();
+
+	bool const somethingselected = selectcount > 0;
+
 	// Update the statusbar text
 	int visibledocs = docstore_->children().size();
 	Glib::ustring statustext;
@@ -949,7 +964,6 @@ void TagWindow::docSelectionChanged ()
 			visibledocs);
 	}
 	statusbar_->push (statustext, 0);
-
 }
 
 

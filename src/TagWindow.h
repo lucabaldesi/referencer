@@ -103,6 +103,7 @@ class TagWindow {
 		}
 		void tagSelectionChanged ();
 		void docSelectionChanged ();
+		void updateStatusBar ();
 		bool docClicked (GdkEventButton* event);
 		void tagClicked (GdkEventButton* event);
 		void tagNameEdited (Glib::ustring const &text1, Glib::ustring const &text2);
