@@ -170,7 +170,7 @@ void DocumentList::writeXML (std::ostringstream& out)
 
 
 // Returns the number of references imported
-int DocumentList::import_from_file (
+int DocumentList::importFromFile (
 	Glib::ustring const & filename,
 	BibUtils::Format format)
 {

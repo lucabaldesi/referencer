@@ -52,7 +52,7 @@ class DocumentList {
 	void writeXML (std::ostringstream& out);
 	void clear () {docs_.clear ();}
 
-	int import_from_file (Glib::ustring const &filename, BibUtils::Format format);
+	int importFromFile (Glib::ustring const &filename, BibUtils::Format format);
 	int import (Glib::ustring const &rawtext, BibUtils::Format format);
 	Document parseBibUtils (BibUtils::fields *ref);
 };

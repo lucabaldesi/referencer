@@ -2339,7 +2339,7 @@ void TagWindow::onImport ()
 				format = BibUtils::FORMAT_UNKNOWN;
 		}
 
-		library_->doclist_->import_from_file (filename, format);
+		library_->doclist_->importFromFile (filename, format);
 
 		populateDocStore ();
 		populateTagList ();
