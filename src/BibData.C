@@ -369,13 +369,15 @@ void BibData::getCrossRef ()
 {
 	if (doi_.empty() || _global_prefs->getWorkOffline())
 		return;
-
+		
 	Glib::ustring messagetext =
-		String::ucompose (
-		_("<b><big>%1</big></b>\n\n%2 '%3'\n"),
+	String::ucompose (
+		"<b><big>%1</big></b>\n\n%2\n",
 		_("Downloading metadata"),
-		_("Contacting crossref.org to retrieve metadata for"),
-		doi_);
+		String::ucompose (
+			_("Contacting crossref.org to retrieve metadata for '%1'"),
+			doi_)
+		);
 
 	Utility::StringPair ends = _global_prefs->getMetadataLookup ();
 
@@ -401,10 +403,12 @@ void BibData::getArxiv ()
 
 	Glib::ustring messagetext =
 		String::ucompose (
-		_("<b><big>%1</big></b>\n\n%2 '%3'\n"),
-		_("Retrieving metadata"),
-		_("Contacting citebase.org to retrieve metadata for"),
-		extras_["eprint"]);
+			"<b><big>%1</big></b>\n\n%2\n",
+			_("Retrieving metadata"),
+			String::ucompose (
+				_("Contacting citebase.org to retrieve metadata for '%1'"),
+				extras_["eprint"])
+		);
 
 	Glib::ustring arxivid = extras_["eprint"];
 	int index = arxivid.find ("v");
