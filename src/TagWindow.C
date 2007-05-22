@@ -56,7 +56,7 @@ int main (int argc, char **argv)
 		TagWindow window;
 		window.run();
 	} catch (Glib::Error ex) {
-		Utility::exceptionDialog (&ex, _("Failing fatally"));
+		Utility::exceptionDialog (&ex, _("Terminating due to unhandled exception"));
 	}
 
 	return 0;

@@ -174,11 +174,13 @@ void exceptionDialog (
 	Glib::Exception const *ex, Glib::ustring const &context)
 {
 	Glib::ustring message = String::ucompose (
-		_("<big><b>%1: %2</b></big>\n\n%3 \"%4\""),
+		_("<big><b>%1: %2</b></big>\n\n%2"),
 		_("Exception"),
 		Glib::Markup::escape_text (ex->what ()),
-		_("The operation underway was:"),
-		context);
+		String::ucompose (
+			_("The operation underway was: \"%1\""),
+			context)
+		);
 
 	Gtk::MessageDialog dialog (
 		message, true,
