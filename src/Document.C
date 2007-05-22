@@ -118,7 +118,6 @@ void Document::setupThumbnail ()
 {
 	thumbnail_.clear ();
 	Glib::RefPtr<Gnome::Vfs::Uri> uri = Gnome::Vfs::Uri::create (filename_);
-	std::cerr << uri->get_scheme () << "\n";
 	if (!filename_.empty () && Utility::uriIsFast (uri) && uri->uri_exists()) {
 		Glib::RefPtr<Gnome::Vfs::FileInfo> fileinfo = uri->get_file_info ();
 		time_t mtime = fileinfo->get_modification_time ();
@@ -202,7 +201,6 @@ Glib::ustring& Document::getRelFileName()
 
 void Document::setFileName (Glib::ustring const &filename)
 {
-	std::cerr << "Document::setFileName: got '" << filename << "'\n";
 	if (filename != filename_) {
 		filename_ = filename;
 		setupThumbnail ();

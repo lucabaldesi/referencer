@@ -195,8 +195,8 @@ bool Library::load (Glib::ustring const &libfilename)
 				docit->getRelFileName());
 		}
 		
-		std::cerr << "Abs: " << absfilename
-			<< "\nRel: " << relfilename << "\n\n";
+		//std::cerr << "Abs: " << absfilename
+		//	<< "\nRel: " << relfilename << "\n\n";
 		
 		bool const absexists = Utility::fileExists (absfilename);
 		bool const relexists = Utility::fileExists (relfilename);
