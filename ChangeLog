@@ -1,4 +1,5 @@
 1.0.4:
+	- German translation (Joachim Sauer)
 	- Don't add .svn,CVS,.bib,.reflib when adding folder
 	- Spanish translation (Mario César Señoranis Ayala)
 	- Fixes for 64 bit architecture
