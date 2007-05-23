@@ -142,6 +142,7 @@ bibtex_cleantoken( newstr *s )
 	newstr_findreplace( s, "\\textsubscript", "" );
 	newstr_findreplace( s, "\\textsuperscript", "" );
 	newstr_findreplace( s, "\\emph", "" );
+	newstr_findreplace( s, "\\url", "" );
 
 	/* Other text annotations */
 	newstr_findreplace( s, "\\it ", "" );
@@ -433,8 +434,9 @@ bibtexin_cleanref( fields *bibin )
 			newstr_findreplace( d, "\n", " " );
 			newstr_findreplace( d, "\r", " " );
 		}
-		else if ( !strsearch( t->data, "ABSTRACT" ) &&
-		     !strsearch( t->data, "SUMMARY" ) ) {
+		else if ( !strsearch( t->data, "ABSTRACT" ) ||
+		     !strsearch( t->data, "SUMMARY" ) || 
+		     !strsearch( t->data, "NOTE" ) ) {
 			newstr_findreplace( d, "\n", "" );
 			newstr_findreplace( d, "\r", "" );
 		}

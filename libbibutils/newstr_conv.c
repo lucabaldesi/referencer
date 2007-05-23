@@ -141,9 +141,14 @@ get_unicode( newstr *s, unsigned int *pi, int charsetin, int latexin, int utf8in
 {
 	unsigned int ch;
 	int unicode = 0, err = 0;
-	if ( s->data[*pi]=='&' && xmlin ) 
+	if ( xmlin && s->data[*pi]=='&' ) 
 		ch = decode_entity( s->data, pi, &unicode, &err );
-	else if ( latexin ) ch = latex2char( s->data, pi, &unicode );
+	else if ( latexin ) {
+		/* Must handle bibtex files in UTF8 */
+		if ( utf8in && ( s->data[*pi] & 128 ) ) {
+			ch = utf8_decode( s->data, pi );
+		} else ch = latex2char( s->data, pi, &unicode );
+	}
 	else if ( utf8in ) ch = utf8_decode( s->data, pi );
 	else {
 		ch = (unsigned int) s->data[*pi];

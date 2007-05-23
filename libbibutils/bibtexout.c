@@ -137,14 +137,14 @@ bibtexout_type( fields *info, char *filename, int refnum )
 	return type;
 }
 
-typedef struct {
-	int bib_type;
-	char *type_name;
-} typenames;
-
 static void
 output_type( FILE *fp, int type, int format_opts )
 {
+	typedef struct {
+		int bib_type;
+		char *type_name;
+	} typenames;
+
 	typenames types[] = {
 		{ TYPE_ARTICLE, "Article" },
 		{ TYPE_INBOOK, "Inbook" },
@@ -234,7 +234,6 @@ add_person( newstr *s, char *p )
 		if ( nseps==0 ) newstr_addchar( s, ',' );
 		else if ( nch==1 ) newstr_addchar( s, '.' );
 		nseps++;
-
 	}
 }
 
@@ -263,6 +262,7 @@ output_people( FILE *fp, fields *info, unsigned long refnum, char *tag,
 				newstr_strcat( &allpeople, info->data[i].data );
 				newstr_addchar( &allpeople, '}' );
 			} else add_person( &allpeople, info->data[i].data ); 
+			info->used[i] = 1;
 			npeople++;
 		}
 	}
@@ -281,11 +281,13 @@ output_title( FILE *fp, fields *info, unsigned long refnum, char *bibtag, int le
 	if ( n1!=-1 ) {
 		newstr_init( &title );
 		newstr_strcpy( &title, info->data[n1].data );
+		info->used[n1] = 1;
 		if ( n2!=-1 ) {
 			if ( info->data[n1].data[info->data[n1].len]!='?' )
 				newstr_strcat( &title, ": " );
 			else newstr_addchar( &title, ' ' );
 			newstr_strcat( &title, info->data[n2].data );
+			info->used[n2] = 1;
 		}
 		output_element( fp, bibtag, title.data, format_opts );
 		newstr_free( &title );
@@ -300,7 +302,10 @@ output_date( FILE *fp, fields *info, unsigned long refnum, int format_opts )
 	int n, month;
 	n = fields_find( info, "YEAR", -1 );
 	if ( n==-1 ) n = fields_find( info, "PARTYEAR", -1 );
-	if ( n!=-1 ) output_element( fp, "year", info->data[n].data, format_opts );
+	if ( n!=-1 ) {
+		output_element( fp, "year", info->data[n].data, format_opts );
+		info->used[n] = 1;
+	}
 	n = fields_find( info, "MONTH", -1 );
 	if ( n==-1 ) n = fields_find( info, "PARTMONTH", -1 );
 	if ( n!=-1 ) {
@@ -309,10 +314,14 @@ output_date( FILE *fp, fields *info, unsigned long refnum, int format_opts )
 			output_element( fp, "month", months[month-1], format_opts );
 		else
 			output_element( fp, "month", info->data[n].data, format_opts );
+		info->used[n] = 1;
 	}
 	n = fields_find( info, "DAY", -1 );
 	if ( n==-1 ) n = fields_find( info, "PARTDAY", -1 );
-	if ( n!=-1 ) output_element( fp, "day", info->data[n].data, format_opts );
+	if ( n!=-1 ) {
+		output_element( fp, "day", info->data[n].data, format_opts );
+		info->used[n] = 1;
+	}
 }
 
 static void
@@ -324,14 +333,20 @@ output_pages( FILE *fp, fields *info, unsigned long refnum, int format_opts )
 	en = fields_find( info, "PAGEEND", -1 );
 	if ( sn==-1 && en==-1 ) return;
 	newstr_init( &pages );
-	if ( sn!=-1 ) newstr_strcat( &pages, info->data[sn].data );
+	if ( sn!=-1 ) {
+		newstr_strcat( &pages, info->data[sn].data );
+		info->used[sn] = 1;
+	}
 	if ( sn!=-1 && en!=-1 ) {
 		if ( format_opts & BIBOUT_SINGLEDASH ) 
 			newstr_strcat( &pages, "-" );
 		else
 			newstr_strcat( &pages, "--" );
 	}
-	if ( en!=-1 ) newstr_strcat( &pages, info->data[en].data );
+	if ( en!=-1 ) {
+		newstr_strcat( &pages, info->data[en].data );
+		info->used[en] = 1;
+	}
 	output_element( fp, "pages", pages.data, format_opts );
 	newstr_free( &pages );
 }
@@ -341,8 +356,10 @@ output_simple( FILE *fp, fields *info, char *intag, char *outtag,
 		int format_opts )
 {
 	int n = fields_find( info, intag, -1 );
-	if ( n!=-1 )
+	if ( n!=-1 ) {
 		output_element( fp, outtag, info->data[n].data, format_opts );
+		info->used[n] = 1;
+	}
 }
 
 static void
@@ -353,21 +370,19 @@ output_simpleall( FILE *fp, fields *info, char *intag, char *outtag,
 	for ( i=0; i<info->nfields; ++i ) {
 		if ( strcasecmp( info->tag[i].data, intag ) ) continue;
 		output_element( fp, outtag, info->data[i].data, format_opts );
+		info->used[i] = 1;
 	}
 }
 
 void
 bibtexout_write( fields *info, FILE *fp, int format_opts, unsigned long refnum )
 {
-	int type;
-#ifdef NOCOMPILE
-{
-int i;
-for ( i=0; i<info->nfields; ++i )
-	fprintf(stderr,"%s - %s\n",info->tag[i].data,info->data[i].data);
-fprintf(stderr,"\n");
-}
-#endif
+	int i, type;
+
+	/* Clear all used fields */
+	for ( i=0; i<info->nfields; ++i )
+		info->used[i] = 0;
+
 	type = bibtexout_type( info, "", refnum );
 	output_type( fp, type, format_opts );
 	output_citekey( fp, info, refnum );

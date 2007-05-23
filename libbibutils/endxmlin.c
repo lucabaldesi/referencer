@@ -209,6 +209,7 @@ endxmlin_urls( xml *node, fields *info )
 		endxmlin_urls( node->next, info );
 }
 
+#ifdef NOCOMPILE
 /*
  * There are a lot of elements in the end2xml stuff buried in element
  * attributes for which it's not clear where they should get stuck
@@ -232,7 +233,9 @@ endxmlin_makeattribnotes( xml *node, fields *info, int level, attribs *a, int na
 	}
 	newstr_free( &note );
 }
+#endif
 
+#ifdef NOCOMPILE
 /* <!ELEMENT source-app (#PCDATA)>
  * <!ATTLIST source-app
  *        name CDATA #IMPLIED
@@ -266,6 +269,7 @@ endxmlin_database( xml *node, fields *info )
 	int na = sizeof( a ) / sizeof( a[0] );
 	endxmlin_makeattribnotes( node, info, 0, a, na );
 }
+#endif
 
 /*
  * <ref-type name="Journal Article">17</ref-type>

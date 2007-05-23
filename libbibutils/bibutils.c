@@ -57,15 +57,15 @@ bibl_initparams( param *p, int readmode, int writemode )
 	p->verbose          = 0;
 	p->addcount         = 0;
 	p->singlerefperfile = 0;
-	p->output_raw       = 0;
+	p->output_raw       = 0;	/* keep MODS tags for output filter */
 
-	/* default medline to UTF8 Unicode */
 	if ( readmode == BIBL_MEDLINEIN ) {
+		/* default medline to UTF8 Unicode */
 		p->charsetin = BIBL_CHARSET_UNICODE;
 		p->utf8in = 1;
-	}
-	if ( readmode == BIBL_BIBTEXIN ) p->latexin = 1;
-	else if ( readmode == BIBL_MODSIN ) {
+	} else if ( readmode == BIBL_BIBTEXIN ) {
+		p->latexin = 1;
+	} else if ( readmode == BIBL_MODSIN ) {
 		p->xmlin = 1;
 		p->utf8in = 1;
 		p->output_raw = BIBL_RAW_WITHMAKEREFID |
@@ -80,8 +80,9 @@ bibl_initparams( param *p, int readmode, int writemode )
 		p->utf8in = 1;
 	}
 
-	if ( writemode == BIBL_BIBTEXOUT ) p->latexout = 1;
-	if ( writemode == BIBL_MODSOUT ) {
+	if ( writemode == BIBL_BIBTEXOUT ) {
+		p->latexout = 1;
+	} else if ( writemode == BIBL_MODSOUT ) {
 		if ( !p->utf8out ) p->xmlout = 1;
 		p->charsetout = BIBL_CHARSET_UNICODE;
 	} else if ( writemode == BIBL_WORD2007OUT ) {
@@ -124,8 +125,21 @@ bibl_illegaloutmode( int mode )
 	else return 0;
 }
 
-static void
-verbose( fields *info, fields *orig, char *filename, long nrefs )
+void
+bibl_verbose2( fields *info, char *filename, long nrefs )
+{
+	int i;
+	fprintf( stderr, "======== %s %ld : converted\n", filename, nrefs );
+	for ( i=0; i<info->nfields; ++i ) {
+		fprintf( stderr, "'%s'='%s' level=%d\n", info->tag[i].data,
+				info->data[i].data , info->level[i]);
+	}
+	fprintf( stderr, "\n" );
+	fflush( stderr );
+}
+
+void
+bibl_verbose1( fields *info, fields *orig, char *filename, long nrefs )
 {
 	int i;
 	fprintf( stderr, "======== %s %ld : processed\n", filename, nrefs );
@@ -133,12 +147,15 @@ verbose( fields *info, fields *orig, char *filename, long nrefs )
 		fprintf( stderr, "'%s'='%s' level=%d\n", orig->tag[i].data,
 				orig->data[i].data , orig->level[i]);
 	}
-	fprintf( stderr, "======== %s %ld : converted\n", filename, nrefs );
-	for ( i=0; i<info->nfields; ++i ) {
-		fprintf( stderr, "'%s'='%s' level=%d\n", info->tag[i].data,
-				info->data[i].data , info->level[i]);
-	}
-	fflush( stderr );
+	bibl_verbose2( info, filename, nrefs );
+}
+
+void
+bibl_verbose0( bibl *bin )
+{
+	int i;
+	for ( i=0; i<bin->nrefs; ++i )
+		bibl_verbose2( bin->ref[i], "", i+1 );
 }
 
 static void
@@ -303,7 +320,7 @@ convert_ref( bibl *bin, char *fname, bibl *bout, convert_rules *r, param *p )
 		r->convertf( rin, rout, reftype, p->verbose, r->all, r->nall );
 		if ( r->all ) process_alwaysadd( rout, reftype, r );
 		if ( p->verbose>1 ) 
-			verbose( rout, rin, fname, i+1 );
+			bibl_verbose1( rout, rin, fname, i+1 );
 		bibl_addref( bout, rout );
 	}
 	return BIBL_OK;
@@ -454,7 +471,10 @@ bibl_read( bibl *b, FILE *fp, char *filename, int mode, param *p )
 		bibl_fixcharsets( &bin, &lp );
 	if ( !lp.output_raw )
 		convert_ref( &bin, filename, b, &r, &lp );
-	else bibl_copy( b, &bin );
+	else {
+		if ( p->verbose > 1 ) bibl_verbose0( &bin );
+		bibl_copy( b, &bin );
+	}
 	if ( !lp.output_raw || ( lp.output_raw & BIBL_RAW_WITHMAKEREFID ) )
 		bibl_checkrefid( b, &lp );
 	bibl_free( &bin );

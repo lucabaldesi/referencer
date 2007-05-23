@@ -24,12 +24,12 @@ static struct latex_chars latex_chars[] = {
    {  37, "\\%",     "",   ""        }, /* Percent Sign */
    {  38, "\\&",     "",   ""        }, /* Ampersand */
    {  92, "\\backslash", "", ""   }, /* Backslash */
-   { 123, "\\{", "\\textbraceleft", "" }, /* Left Curly Bracket */
-   { 125, "\\}", "\\textbraceright", "" }, /* Right Curly Bracket */
+   { 123, "\\{", "{\\textbraceleft}", "\\textbraceleft" }, /* Left Curly Bracket */
+   { 125, "\\}", "{\\textbraceright}", "\\textbraceright" }, /* Right Curly Bracket */
    {  95, "\\_",     "", ""        }, /* Underscore alone indicates subscript */
-   { 176, "\\textdegree", "$^\\circ$", "^\\circ" }, /* Degree sign */
+   { 176, "{\\textdegree}", "\\textdegree", "^\\circ" }, /* Degree sign */
    {  32, "~",       "", ""        }, /* Tilde is a sticky space */
-   { 126, "\\textasciitilde", "\\~{}", "" }, /* How to get a tilde in latex */
+   { 126, "{\\textasciitilde}", "\\textasciitilde", "\\~{}" }, /* How to get a tilde in latex */
                                  /* This is a cheat, should use "\verb" */
                                  /* Need same for ^ character */
 
@@ -142,6 +142,9 @@ static struct latex_chars latex_chars[] = {
                                 /* Hacek-containing */
    { 269, "{\\v c}", "{\\v{c}}", "\\v{c}" }, /* c with a hacek */
 
+				/* Needs to be before \nu */
+   { 8203, "$\\null$", "\\null", "" },           /* No space &#x200B; */
+
    { 913, "$\\Alpha$", "\\Alpha", ""       }, /*GREEKCAPITALLETTERALPHA*/
    /* 902 = GREEKCAPITALLETTERALPHAWITHTONOS*/
    { 914, "$\\Beta$",  "\\Beta", ""       }, /*GREEKCAPITALLETTERBETA*/
@@ -212,22 +215,22 @@ static struct latex_chars latex_chars[] = {
    /* 944 = GREEKSMALLLETTERUPSILONWITHDIALYTIKAANDTONOS*/
    { 950, "$\\zeta$", "\\zeta", ""        },  /*GREEKSMALLLETTERZETA*/
 
-   { 181, "\\textmu", "$\\mu$", "" }, /* 181=micro sign, techically &#xB5; */
+   { 181, "{\\textmu}", "\\textmu", "$\\mu$" }, /* 181=micro sign, techically &#xB5; */
 
 /* Make sure that these don't stomp on other latex things above */
 
-   { 8242, "\\textasciiacutex", "$'$", "" },  /* Prime symbol &#x2032; */
-   { 180, "\\textasciiacute", "\\'", "" }, /* acute accent &#xB4; */
+   { 8242, "{\\textasciiacutex}", "\\textasciiacutex", "$'$" },  /* Prime symbol &#x2032; */
+   { 180, "{\\textasciiacute}", "\\textasciiacute", "\\'" }, /* acute accent &#xB4; */
 /*   { 769,  "\\'",    "", "" },*/  /* Acute accent &#x0301;--apply to next char */
 
-   { 8243, "\\textacutedbl", "$''$", "" },  /* Double prime &#x2033; */
-   { 8245, "\\textasciigrave", "\\`", "" }, /* Grave accent &#x2035; */
+   { 8243, "{\\textacutedbl}", "\\textacutedbl", "$''$" },  /* Double prime &#x2033; */
+   { 8245, "{\\textasciigrave}", "\\textasciigrave", "\\`" }, /* Grave accent &#x2035; */
 /*   { 768,  "\\`",    "", "" },*/  /* Grave accent &#x0300;--apply to next char */
 
-   { 8963, "\\textasciicircum", "", "" } , /* &#x2303; */
-   { 184, "\\textasciicedilla", "", "" },  /* cedilla &#xB8; */
-   { 168, "\\textasciidieresis", "", "" }, /* dieresis &#xA8; */
-   { 175, "\\textasciimacron", "", "" }, /* macron &#xAF; */
+   { 8963, "{\\textasciicircum}", "\\textasciicircum", ""} , /* &#x2303; */
+   { 184,  "{\\textasciicedilla}", "\\textasciicedilla", "" },  /* cedilla &#xB8; */
+   { 168,  "{\\textasciidieresis}", "\\textasciidieresis", "" }, /* dieresis &#xA8; */
+   { 175,  "{\\textasciimacron}", "\\textasciimacron", "" }, /* macron &#xAF; */
 
    { 8593, "\\textuparrow", "", "" },    /* Up arrow &#x2191; */
    { 8595, "\\textdownarrow", "", "" },  /* Down arrow &#x2193; */
@@ -271,7 +274,7 @@ static struct latex_chars latex_chars[] = {
    { 247, "\\textdiv", "", "" },   /* Division symbol &#xF7; */
    { 177, "\\textpm", "", "" }, /* Plus-minus character &#B1; */
    { 189, "\\textonehalf", "", "" }, /* Vulgar fraction one half &#xBD; */
-   { 189, "\\textonequarter", "", "" }, /* Vulgar fraction one quarter &#xBD; */
+   { 188, "\\textonequarter", "", "" }, /* Vulgar fraction one quarter &#xBD; */
    { 190, "\\textthreequarters", "", "" }, /* Vulgar fraction three quarters &#xBE; */
    { 8240, "\\texttenthousand", "", "" }, /* Per thousand sign &#x2030; */
    { 8241, "\\textpertenthousand", "", "" }, /* Per ten thousand sign &#x2031;*/

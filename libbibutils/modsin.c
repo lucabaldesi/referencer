@@ -531,6 +531,8 @@ modsin_partr( xml *node, fields *info, int level )
 		modsin_detail( node, info, level );
 	else if ( xml_tag_attrib( node, "extent", "unit", "page" ) )
 		modsin_page( node, info, level );
+	else if ( xml_tag_attrib( node, "extent", "unit", "pages" ) )
+		modsin_page( node, info, level );
 	else if ( xml_tagexact( node, "date" ) )
 		modsin_date( node, info, level, 1 );
 	if ( node->next ) modsin_partr( node->next, info, level );
