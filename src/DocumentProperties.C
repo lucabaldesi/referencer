@@ -200,7 +200,7 @@ void DocumentProperties::onNewExtraField ()
 	entry.set_activates_default (true);
 	hbox.pack_start (entry, true, true, 0);
 
-	dialog.add_button (Gtk::Stock::CANCEL, Gtk::RESPONSE_ACCEPT);
+	dialog.add_button (Gtk::Stock::CANCEL, Gtk::RESPONSE_CANCEL);
 	dialog.add_button (Gtk::Stock::OK, Gtk::RESPONSE_ACCEPT);
 	dialog.set_default_response (Gtk::RESPONSE_ACCEPT);
 
