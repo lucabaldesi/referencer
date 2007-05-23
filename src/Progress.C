@@ -90,10 +90,10 @@ void Progress::loop ()
 
 void Progress::flushEvents ()
 {
-	gdk_threads_enter ();
+	/*gdk_threads_enter ();
 	while (Gnome::Main::events_pending())
 		Gnome::Main::iteration ();
-	gdk_threads_leave ();
+	gdk_threads_leave ();*/
 }
 
 
