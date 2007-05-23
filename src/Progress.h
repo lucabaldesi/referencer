@@ -28,19 +28,13 @@ class Progress {
 	void update ();
 	void finish ();
 
-	void getLock ();
-	void releaseLock ();
-
 	private:
 	void loop ();
 	void flushEvents ();
 
 	Gtk::ProgressBar *progress_;
-	Gtk::Label *label_;
-	Gtk::Dialog *dialog_;
 	bool finished_;
 	Glib::Thread *loopthread_;
-	Glib::Mutex lock_;
 	TagWindow &tagwindow_;
 };
 
@@ -50,9 +44,9 @@ class Progress {
 
 {
 
-	Progress prog (false);
+	Progress prog (window_);
 
-	Progress.setLabel ("Working, please show some fucking patience for once");
+	Progress.setLabel ("Working, please show some patience");
 	Progress.start ();
 
 	for (int i = 0; i < 100; ++i) {

@@ -155,13 +155,10 @@ bool Library::load (Glib::ustring const &libfilename)
 	free (buffer);
 	libfile.close ();
 
-	progress.getLock ();
 	std::cerr << "Reading XML...\n";
 	if (!readXML (rawtext)) {
-		progress.releaseLock ();
 		return false;
 	}
-	progress.releaseLock ();
 	std::cerr << "Done, got " << doclist_->getDocs ().size() << " docs\n";
 
 	progress.update (0.2);
@@ -184,7 +181,6 @@ bool Library::load (Glib::ustring const &libfilename)
 	DocumentList::Container::iterator const docend = docs.end ();
 	for (; docit != docend; ++docit) {
 		progress.update (0.2 + ((double)(i++) / (double)docs.size ()) * 0.8);
-		progress.getLock ();
 
 		Glib::ustring const absfilename = docit->getFileName();
 
@@ -249,8 +245,6 @@ bool Library::load (Glib::ustring const &libfilename)
 				docit->setFileName (relfilename);
 			}
 		}
-
-		progress.releaseLock ();
 	}
 
 	progress.finish ();
