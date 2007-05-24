@@ -7,7 +7,7 @@
 	- Add statusbar, replace progressdialog with progressbar
 		in statusbar.
 	- Prompt user to resolve duplicated files
-	- Update bibutils to 3.31
+	- Update bibutils to 3.32
 	- Generate thumbnails for files on NFS mounts
 	- Improved internationalization support
 	- Prevent search box getting hidden in small windows
