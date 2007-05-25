@@ -41,6 +41,7 @@ Big functionality wishlist:
 	Tracker?  Beagle?
 
 Little functionality wishlist:
+	import/export "keywords" field in bibtex, map to referencer tags
 	Some support for moving file to trash instead of deleting
 	Set tags based on folder names when doing recursive import (Wilhelms, C.)
 	gconf schema
@@ -55,6 +56,7 @@ Little functionality wishlist:
 	Should have GPL headers in all files to qualify for debian packaging
 
 UI wishlist:
+	entry for tags in the properties dialog "foo, bar, baz"
 	say "1 document" instead of "1 documents" in statusbar
 	Size-varying list of tags, bold for toggling on/off
 	Sorting of tags
