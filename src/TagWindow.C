@@ -2472,10 +2472,11 @@ void TagWindow::onDocMouseMotion (GdkEventMotion* event)
 		if (doc) {
 			BibData &bib = doc->getBibData ();
 			Glib::ustring tiptext = String::ucompose (
-				"<b>%1</b>\n%2\n<i>%3</i>",
-				doc->getKey(),
-				 bib.getTitle(),
-				 bib.getAuthors());
+				// Translators: this is the format for the document tooltips
+				_("<b>%1</b>\n%2\n<i>%3</i>"),
+				Glib::Markup::escape_text (doc->getKey()),
+				Glib::Markup::escape_text (bib.getTitle()),
+				Glib::Markup::escape_text (bib.getAuthors()));
 			
 			int xoffset = (int) docsiconscroll_->get_hadjustment ()->get_value ();
 			int yoffset = (int) docsiconscroll_->get_vadjustment ()->get_value ();
