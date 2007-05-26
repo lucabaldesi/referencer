@@ -184,6 +184,9 @@ void TagWindow::constructUI ()
 	tagcols.add(taguidcol_);
 	tagcols.add(tagnamecol_);
 	tagstore_ = Gtk::ListStore::create(tagcols);
+	
+	tagstore_->set_sort_func (tagnamecol_, sigc::mem_fun (*this, &TagWindow::sortTags));
+	tagstore_->set_sort_column (tagnamecol_, Gtk::SORT_ASCENDING);
 
 	// Create the treeview for the tag list
 	Gtk::TreeView *tags = Gtk::manage(new Gtk::TreeView(tagstore_));
@@ -2496,3 +2499,40 @@ void TagWindow::onDocMouseLeave (GdkEventCrossing *event)
 {
 	ev_tooltip_deactivate (EV_TOOLTIP (doctooltip_));
 }
+
+
+int TagWindow::sortTags (
+	const Gtk::TreeModel::iterator& a,
+	const Gtk::TreeModel::iterator& b)
+{
+	// This callback should return
+	//  * -1 if a compares before b
+	//  *  0 if they compare equal
+	//  *  1 if a compares after b
+
+	int const & a_uid = (*a)[taguidcol_];
+	int const & b_uid = (*b)[taguidcol_];
+
+	bool const a_is_special = a_uid < 0;
+	bool const b_is_special = b_uid < 0;
+
+	Glib::ustring const & a_name = (*a)[tagnamecol_]; 
+	Glib::ustring const & b_name = (*b)[tagnamecol_];
+	
+	if (a_is_special && b_is_special) {
+		if (a_uid > b_uid) {
+			return -1;
+		} else if (a_uid < b_uid) {
+			return 1;
+		} else {
+			return 0;
+		}
+	} else if (a_is_special) {
+		return -1;
+	} else if (b_is_special) {
+		return 1;
+	} else {
+		return a_name.compare (b_name);
+	}
+}
+

@@ -1,4 +1,5 @@
 1.0.4:
+	- Tags sorted by name
 	- Tooltips in icon view
 	- German translation (Joachim Sauer)
 	- Don't add .svn,CVS,.bib,.reflib when adding folder

@@ -56,6 +56,9 @@ class TagWindow {
 		Glib::RefPtr<Gtk::ListStore> tagstore_;
 		Gtk::TreeModelColumn<int> taguidcol_;
 		Gtk::TreeModelColumn<Glib::ustring> tagnamecol_;
+		int sortTags (
+			const Gtk::TreeModel::iterator& a,
+			const Gtk::TreeModel::iterator& b);
 
 		Glib::RefPtr<Gtk::ListStore> docstore_;
 		Gtk::TreeModelColumn<Document*> docpointercol_;
