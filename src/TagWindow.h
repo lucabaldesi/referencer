@@ -121,9 +121,9 @@ class TagWindow {
 		bool tagselectionignore_;
 		bool docselectionignore_;
 		std::vector<int> filtertags_;
-		std::map<int, Gtk::CheckButton*> taggerchecks_;
+		std::map<int, Gtk::ToggleButton*> taggerchecks_;
 		bool ignoretaggerchecktoggled_;
-		void taggerCheckToggled (Gtk::CheckButton *check, int taguid);
+		void taggerCheckToggled (Gtk::ToggleButton *check, int taguid);
 		void tagSelectionChanged ();
 		void tagClicked (GdkEventButton* event);
 		void tagNameEdited (Glib::ustring const &text1, Glib::ustring const &text2);

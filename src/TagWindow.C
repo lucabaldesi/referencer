@@ -210,6 +210,8 @@ void TagWindow::constructUI ()
 	tagsscroll->set_shadow_type (Gtk::SHADOW_NONE);
 	tagsscroll->add (*tags);
 	filtervbox->pack_start(*tagsscroll, true, true, 0);
+	
+	filtervbox->pack_start (*tags);
 
 	tagview_ = tags;
 
@@ -766,11 +768,14 @@ void TagWindow::populateTagList ()
 
 		int timesused = tagusecounts[(*it).uid_];
 		float factor;
+		float maxfactor = 1.55;
 		if (doccount > 0)
-			factor = 1.0 + ((float)timesused / (float)doccount) * 0.75;
+			factor = 0.75 + (logf((float)timesused / (float)doccount + 0.1) - logf(0.1)) * 0.4;
 		else
-			factor = 1.0;
-		std::cerr << "factor for " << (*it).name_ << " = " << factor << "\n";
+			factor = 1.5;
+		if (factor > maxfactor)
+			factor = maxfactor;
+		//std::cerr << "factor for " << (*it).name_ << " = " << factor << "\n";
 
 		int basesize = window_->get_style ()->get_font().get_size ();
 		int size = (int) (factor * (float)basesize);
@@ -779,7 +784,7 @@ void TagWindow::populateTagList ()
 		font.set_weight (Pango::WEIGHT_SEMIBOLD);
 		(*item)[tagfontcol_] = font;
 
-		Gtk::CheckButton *check =
+		Gtk::ToggleButton *check =
 			Gtk::manage (new Gtk::CheckButton ((*it).name_));
 		check->signal_toggled().connect(
 			sigc::bind(
@@ -807,7 +812,7 @@ void TagWindow::populateTagList ()
 }
 
 
-void TagWindow::taggerCheckToggled (Gtk::CheckButton *check, int taguid)
+void TagWindow::taggerCheckToggled (Gtk::ToggleButton *check, int taguid)
 {
 	if (ignoretaggerchecktoggled_)
 		return;
@@ -855,6 +860,9 @@ void TagWindow::taggerCheckToggled (Gtk::CheckButton *check, int taguid)
 	    ) {
 		populateDocStore ();
 	}
+	
+	// All tag changes influence the fonts in the tag list
+	populateTagList ();
 
 
 }
@@ -979,7 +987,7 @@ void TagWindow::docSelectionChanged ()
 	ignoretaggerchecktoggled_ = true;
 	for (std::vector<Tag>::iterator tagit = library_->taglist_->getTags().begin();
 	     tagit != library_->taglist_->getTags().end(); ++tagit) {
-		Gtk::CheckButton *check = taggerchecks_[(*tagit).uid_];
+		Gtk::ToggleButton *check = taggerchecks_[(*tagit).uid_];
 		SubSet state = selectedDocsHaveTag ((*tagit).uid_);
 		if (state == ALL) {
 			check->set_active (true);
@@ -1204,7 +1212,6 @@ void TagWindow::onCreateTag  ()
 	Gtk::TreeModel::iterator const end = tagstore_->children().end();
 	for (; it != end; ++it) {
 		if ((*it)[taguidcol_] == newuid) {
-			std::cerr << "tag uid" << newuid << ", name " << (*it)[tagnamecol_] << "\n";
 			// Assume tagview's first column is the name field
 			tagview_->set_cursor (Gtk::TreePath(it), *tagview_->get_column (0), true);
 			break;
