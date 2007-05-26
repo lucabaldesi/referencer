@@ -2478,6 +2478,18 @@ If you don't want to deal with providing a separate callbac		"    <toolitem acti
 
 void TagWindow::onSearchChanged ()
 {
+	Gdk::Color yellowish ("#f7f7be");
+	Gdk::Color black ("#000000");
+	
+	if (!searchentry_->get_text ().empty()) {
+	/*if (entry->priv->is_a11y_theme)
+		return;*/
+		searchentry_->modify_base (Gtk::STATE_NORMAL, yellowish);
+		searchentry_->modify_text (Gtk::STATE_NORMAL, black);
+	} else {
+		searchentry_->unset_base (Gtk::STATE_NORMAL);
+		searchentry_->unset_text (Gtk::STATE_NORMAL);
+	}
 	populateDocStore ();
 }
 
