@@ -173,6 +173,7 @@ bool fileExists (
 void exceptionDialog (
 	Glib::Exception const *ex, Glib::ustring const &context)
 {
+	//gdk_threads_enter ();
 	Glib::ustring message = String::ucompose (
 		_("<big><b>%1: %2</b></big>\n\n%3"),
 		_("Exception"),
@@ -185,8 +186,18 @@ void exceptionDialog (
 	Gtk::MessageDialog dialog (
 		message, true,
 		Gtk::MESSAGE_ERROR, Gtk::BUTTONS_CLOSE, true);
-
+	//gdk_threads_leave ();
+	
+	/*
+		run() contains this:
+		
+	  GDK_THREADS_LEAVE ();
+  g_main_loop_run (ri.loop);
+  GDK_THREADS_ENTER ();  
+  */
+	
 	dialog.run ();
+
 }
 
 
