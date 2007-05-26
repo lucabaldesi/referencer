@@ -26,6 +26,8 @@
 
 #include "LibraryParser.h"
 
+#include "ev-tooltip.h"
+
 #include "config.h"
 
 int main (int argc, char **argv)
@@ -86,6 +88,8 @@ TagWindow::TagWindow ()
 		onNewLibrary ();
 	}
 
+	hoverdoc_ = NULL;
+
 	setDirty (false);
 
 	populateDocStore ();
@@ -96,6 +100,8 @@ TagWindow::TagWindow ()
 TagWindow::~TagWindow ()
 {
 	_global_prefs->setLibraryFilename (openedlib_);
+
+	gtk_widget_destroy (doctooltip_);
 
 	delete library_;
 	delete docpropertiesdialog_;
@@ -279,6 +285,11 @@ void TagWindow::constructUI ()
 
 	icons->signal_drag_data_received ().connect (
 		sigc::mem_fun (*this, &TagWindow::onIconsDragData));
+	icons->set_events (Gdk::POINTER_MOTION_MASK | Gdk::LEAVE_NOTIFY_MASK);
+	icons->signal_motion_notify_event ().connect_notify (
+		sigc::mem_fun (*this, &TagWindow::onDocMouseMotion));
+	icons->signal_leave_notify_event ().connect_notify (
+		sigc::mem_fun (*this, &TagWindow::onDocMouseLeave));
 
 	docsiconview_ = icons;
 
@@ -288,6 +299,9 @@ void TagWindow::constructUI ()
 	vbox->pack_start(*iconsscroll, true, true, 0);
 
 	docsiconscroll_ = iconsscroll;
+	
+	
+	doctooltip_ = ev_tooltip_new (GTK_WIDGET(docsiconview_->gobj()));
 
 	/*Gtk::Toolbar& docbar = (Gtk::Toolbar&) *uimanager_->get_widget("/DocBar");
 	vbox->pack_start (docbar, false, false, 0);
@@ -989,7 +1003,7 @@ bool TagWindow::docClicked (GdkEventButton* event)
 			Gtk::TreeModel::Path clickedpath =
 				docsiconview_->get_path_at_pos ((int)event->x, (int)event->y);
 
-			if (!clickedpath.empty()) {
+			if (clickedpath.gobj() != NULL) {
 				if (!docsiconview_->path_is_selected (clickedpath)) {
 					docsiconview_->unselect_all ();
 					docsiconview_->select_path (clickedpath);
@@ -2435,4 +2449,48 @@ void TagWindow::onCopyCite ()
 void TagWindow::setSensitive (bool const sensitive)
 {
 	window_->set_sensitive (sensitive);
+}
+
+
+void TagWindow::onDocMouseMotion (GdkEventMotion* event)
+{
+	// Guh, it's giving me these in the iconview, so doesn't work when scrolled down
+	int x = (int)event->x;
+	int y = (int)event->y;
+
+	Gtk::TreeModel::Path path = docsiconview_->get_path_at_pos (x, y);
+	bool havepath = path.gobj() != NULL;
+	
+	Document *doc = NULL;
+	if (havepath) {
+		Gtk::ListStore::iterator it = docstore_->get_iter (path);
+		doc = (*it)[docpointercol_];
+	}
+	
+	if (doc != hoverdoc_) {
+		if (doc) {
+			BibData &bib = doc->getBibData ();
+			Glib::ustring tiptext = String::ucompose (
+				"<b>%1</b>\n%2\n<i>%3</i>",
+				doc->getKey(),
+				 bib.getTitle(),
+				 bib.getAuthors());
+			
+			int xoffset = (int) docsiconscroll_->get_hadjustment ()->get_value ();
+			int yoffset = (int) docsiconscroll_->get_vadjustment ()->get_value ();
+
+			ev_tooltip_set_position (EV_TOOLTIP (doctooltip_), x - xoffset, y - yoffset);
+			ev_tooltip_set_text (EV_TOOLTIP (doctooltip_), tiptext.c_str());
+			ev_tooltip_activate (EV_TOOLTIP (doctooltip_));
+		} else {
+			ev_tooltip_deactivate (EV_TOOLTIP (doctooltip_));
+		}
+		hoverdoc_ = doc;
+	}
+}
+
+
+void TagWindow::onDocMouseLeave (GdkEventCrossing *event)
+{
+	ev_tooltip_deactivate (EV_TOOLTIP (doctooltip_));
 }

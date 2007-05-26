@@ -4,6 +4,8 @@ INCLUDES = -DDATADIR=\""$(pkgdatadir)"\" \
 	 -DGNOMELOCALEDIR=\"$(datadir)/locale\"
 
 referencer_SOURCES =	\
+	ev-tooltip.c \
+	ev-tooltip.h \
 	TagWindow.C	\
 	TagWindow.h	\
 	Library.C \
@@ -33,6 +35,7 @@ referencer_SOURCES =	\
 	ucompose.hpp
 
 AM_CXXFLAGS = @CXXFLAGS@ $(DEPS_CFLAGS) -I$(top_srcdir)
+AM_CFLAGS = @CXXFLAGS@ $(DEPS_CFLAGS) -I$(top_srcdir)
 LDADD = \
 	$(DEPS_LIBS) \
 	$(top_builddir)/libbibutils/libbibutils.a

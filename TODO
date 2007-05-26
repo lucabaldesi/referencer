@@ -2,7 +2,6 @@
 
 Targets for 1.0.4:
 	Check that UTF-8 export works as desired
-	Investigate per-document tooltips for iconview
 
 Other essential items:
 	Import of reflib files (merge in documents, resolve tag IDs)

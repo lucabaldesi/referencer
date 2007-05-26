@@ -53,60 +53,90 @@ class TagWindow {
 		
 		Library *library_;
 
+		Glib::RefPtr<Gtk::ListStore> tagstore_;
 		Gtk::TreeModelColumn<int> taguidcol_;
 		Gtk::TreeModelColumn<Glib::ustring> tagnamecol_;
 
+		Glib::RefPtr<Gtk::ListStore> docstore_;
 		Gtk::TreeModelColumn<Document*> docpointercol_;
 		Gtk::TreeModelColumn<Glib::ustring> dockeycol_;
 		Gtk::TreeModelColumn<Glib::ustring> doctitlecol_;
 		Gtk::TreeModelColumn<Glib::ustring> docauthorscol_;
 		Gtk::TreeModelColumn<Glib::ustring> docyearcol_;
 		Gtk::TreeModelColumn<Glib::RefPtr<Gdk::Pixbuf> > docthumbnailcol_;
-
-		Glib::RefPtr<Gtk::ListStore> tagstore_;
-		Glib::RefPtr<Gtk::ListStore> docstore_;
+		Glib::RefPtr<Gtk::TreeSelection> docslistselection_;
 
 		// Keep an up-to-date local copy of this, since it's
 		// used so often
 		bool usinglistview_;
 
+
+		/* The Document View */
 		Gtk::IconView *docsiconview_;
+		void docActivated (const Gtk::TreePath& path);
 		Gtk::TreeView *docslistview_;
-		Glib::RefPtr<Gtk::TreeSelection> docslistselection_;
-		Gtk::VBox *taggerbox_;
-		std::map<int, Gtk::CheckButton*> taggerchecks_;
-		bool ignoretaggerchecktoggled_;
-		Gtk::Window *window_;
-		// Hold on to these for controlling visibility
+		// treeviews want a different prototype for the signal
+		void docListActivated (const Gtk::TreePath& path, Gtk::TreeViewColumn*) {
+			docActivated (path);
+		}
+		GtkWidget *doctooltip_;
+		Document *hoverdoc_;
+		void onDocMouseMotion (GdkEventMotion* event);
+		void onDocMouseLeave (GdkEventCrossing *event);
+		Gtk::Menu doccontextmenu_;
 		Gtk::ScrolledWindow *docsiconscroll_;
 		Gtk::ScrolledWindow *docslistscroll_;
+		void docSelectionChanged ();
+		Document *getSelectedDoc ();
+		std::vector<Document*> getSelectedDocs ();
+		int getSelectedDocCount ();
+		typedef enum {
+			NONE = 0,
+			ALL,
+			SOME
+		} SubSet;
+		SubSet selectedDocsHaveTag (int uid);
+		bool docClicked (GdkEventButton* event);
+		void onIconsDragData (
+			const Glib::RefPtr <Gdk::DragContext> &context,
+			int n1, int n2, const Gtk::SelectionData &sel, guint n3, guint n4);
+		class Capabilities {
+			public:
+			bool weblink;
+			bool open;
+			bool getmetadata;
+			Capabilities () {weblink = open = getmetadata = false;}
+		};
+		Capabilities getDocSelectionCapabilities ();
+
+		/* The Tags View */
 		Gtk::Widget *tagpane_;
-		Gtk::Entry *searchentry_;
-
-
+		Gtk::VBox *taggerbox_;
 		Glib::RefPtr<Gtk::TreeSelection> tagselection_;
 		Gtk::TreeView *tagview_;
 		bool tagselectionignore_;
 		bool docselectionignore_;
 		std::vector<int> filtertags_;
+		std::map<int, Gtk::CheckButton*> taggerchecks_;
+		bool ignoretaggerchecktoggled_;
+		void taggerCheckToggled (Gtk::CheckButton *check, int taguid);
+		void tagSelectionChanged ();
+		void tagClicked (GdkEventButton* event);
+		void tagNameEdited (Glib::ustring const &text1, Glib::ustring const &text2);
 
+		/* The search box */
+		Gtk::Entry *searchentry_;
+		void onSearchChanged ();
+		
+		/* The Document Properties dialog */
+		DocumentProperties *docpropertiesdialog_;
+		
+		/* Other main window UI */
+		Gtk::Window *window_;
 		Glib::RefPtr<Gtk::UIManager> uimanager_;
 		Glib::RefPtr<Gtk::ActionGroup> actiongroup_;
 
-		DocumentProperties *docpropertiesdialog_;
 
-		void taggerCheckToggled (Gtk::CheckButton *check, int taguid);
-		void docActivated (const Gtk::TreePath& path);
-		// treeviews want a different prototype for the signal
-		void docListActivated (const Gtk::TreePath& path, Gtk::TreeViewColumn*) {
-			docActivated (path);
-		}
-		void tagSelectionChanged ();
-		void docSelectionChanged ();
-		void updateStatusBar ();
-		bool docClicked (GdkEventButton* event);
-		void tagClicked (GdkEventButton* event);
-		void tagNameEdited (Glib::ustring const &text1, Glib::ustring const &text2);
 		void onWorkOfflineToggled ();
 		void onQuit ();
 		void onUseListViewToggled ();
@@ -139,54 +169,30 @@ class TagWindow {
 		void manageBrowseDialog (Gtk::Entry *entry);
 		void onImport ();
 		void onPreferences ();
-		void onIconsDragData (
-			const Glib::RefPtr <Gdk::DragContext> &context,
-			int n1, int n2, const Gtk::SelectionData &sel, guint n3, guint n4);
+		bool onDelete (GdkEventAny *ev);
 
-		void onSearchChanged ();
+
+		/* Pick up preference changes */
 		void onShowTagPanePrefChanged ();
 		void onUseListViewPrefChanged ();
 		void onWorkOfflinePrefChanged ();
-		bool onDelete (GdkEventAny *ev);
-		bool ensureSaved ();
 
-		void onDivine ();
-
-		Gtk::Menu doccontextmenu_;
-
-
-
-		class Capabilities {
-			public:
-			bool weblink;
-			bool open;
-			bool getmetadata;
-			Capabilities () {weblink = open = getmetadata = false;}
-		};
-
-		Capabilities getDocSelectionCapabilities ();
-
-		typedef enum {
-			NONE = 0,
-			ALL,
-			SOME
-		} SubSet;
-
-		SubSet selectedDocsHaveTag (int uid);
-
-		Document *getSelectedDoc ();
-		std::vector<Document*> getSelectedDocs ();
-		int getSelectedDocCount ();
-
-		// Memory of where the user added files from
+		/* Remember which folders the user browsed last */
 		Glib::ustring addfolder_;
 		Glib::ustring exportfolder_;
 		Glib::ustring libraryfolder_;
 
+		/* Update UI text */
 		void updateTitle ();
+		void updateStatusBar ();
+		
+		/* Handle dirtyness */
+		bool ensureSaved ();
 		void setDirty (bool const &dirty);
 		bool getDirty () {return dirty_;}
 		bool dirty_;
+		
+		/* Remember which file is open */
 		Glib::ustring openedlib_;
 		void setOpenedLib (Glib::ustring const &openedlib);
 
