@@ -202,6 +202,7 @@ void TagWindow::constructUI ()
 	tags->signal_button_press_event().connect_notify(
 		sigc::mem_fun (*this, &TagWindow::tagClicked));
 	tags->set_headers_visible (false);
+	tags->set_search_column (tagnamecol_);
 
 	Gtk::ScrolledWindow *tagsscroll = Gtk::manage(new Gtk::ScrolledWindow());
 	tagsscroll->set_policy (Gtk::POLICY_NEVER, Gtk::POLICY_AUTOMATIC);
@@ -1169,6 +1170,7 @@ void TagWindow::onCreateTag  ()
 	for (; it != end; ++it) {
 		if ((*it)[taguidcol_] == newuid) {
 			std::cerr << "tag uid" << newuid << ", name " << (*it)[tagnamecol_] << "\n";
+			// Assume tagview's first column is the name field
 			tagview_->set_cursor (Gtk::TreePath(it), *tagview_->get_column (0), true);
 			break;		
 		}
