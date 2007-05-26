@@ -2143,10 +2143,11 @@ void TagWindow::onIconsDragData (
 	for (; it != end; ++it) {
 		bool is_dir = false;
 		Glib::RefPtr<Gnome::Vfs::Uri> uri = Gnome::Vfs::Uri::create (*it);
+
 		//if (uri->is_local()) {
 		Glib::RefPtr<Gnome::Vfs::FileInfo> info;
 		try {
-			 info = uri->get_file_info ();
+			info = uri->get_file_info ();
 		} catch (const Gnome::Vfs::exception ex) {
 			Utility::exceptionDialog (&ex,
 				String::ucompose (
