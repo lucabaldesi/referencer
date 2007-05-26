@@ -41,7 +41,7 @@ void Progress::start ()
 {
 	// Flag that the loop thread waits for
 	finished_ = false;
-	
+
 	tagwindow_.setSensitive (false);
 
 	// Spawn the loop thread
@@ -84,7 +84,7 @@ void Progress::loop ()
 /*
  * A DEFUNCT note on threading:
  * If the caller is inside a gtk_threads_enter block, for
- * example if the main loop is thus surrounded, then this 
+ * example if the main loop is thus surrounded, then this
  * is liable to freeze.
 */
 

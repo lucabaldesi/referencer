@@ -44,10 +44,10 @@ Library::~Library ()
 Glib::ustring Library::writeXML ()
 {
 	std::ostringstream out;
-	
+
 	out << "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n";
 	out << "<library>\n";
-	
+
 	out << "<manage_target"
 		<< " braces=\""
 		<< (manage_braces_ ? "true" : "false")
@@ -56,12 +56,12 @@ Glib::ustring Library::writeXML ()
 	<< "\">"
 	<< Glib::Markup::escape_text (manage_target_)
 	<< "</manage_target>\n";
-	
+
 	taglist_->writeXML (out);
 	doclist_->writeXML (out);
-	
+
 	out << "</library>\n";
-	
+
 	return out.str ();
 }
 
@@ -148,7 +148,7 @@ bool Library::load (Glib::ustring const &libfilename)
 		return false;
 	}
 	buffer[fileinfo->get_size()] = 0;
-	
+
 	progress.update (0.1);
 
 	Glib::ustring rawtext = buffer;
@@ -166,15 +166,15 @@ bool Library::load (Glib::ustring const &libfilename)
 
 	// Resolve relative paths
 	// ======================
-	
+
 		typedef enum {
 			NONE,
 			ORIG_LOC,
 			NEW_LOC
 		} ambiguouschoice;
-		
+
 	ambiguouschoice ambiguous_action_all = NONE;
-	
+
 	int i = 0;
 	DocumentList::Container &docs = doclist_->getDocs ();
 	DocumentList::Container::iterator docit = docs.begin ();
@@ -190,13 +190,13 @@ bool Library::load (Glib::ustring const &libfilename)
 				Glib::path_get_dirname (libfilename),
 				docit->getRelFileName());
 		}
-		
+
 		//std::cerr << "Abs: " << absfilename
 		//	<< "\nRel: " << relfilename << "\n\n";
-		
+
 		bool const absexists = Utility::fileExists (absfilename);
 		bool const relexists = Utility::fileExists (relfilename);
-		
+
 		if (!absexists && relexists) {
 			docit->setFileName (relfilename);
 		} else if (absexists && relexists && relfilename != absfilename) {
@@ -206,7 +206,7 @@ bool Library::load (Glib::ustring const &libfilename)
 				Glib::ustring const shortname =
 					Gnome::Vfs::Uri::create (absfilename)->extract_short_name ();
 
-				Glib::ustring const message = 
+				Glib::ustring const message =
 					String::ucompose (
 						"<b><big>%1</big></b>\n\n%2",
 						_("Document location ambiguity"),
@@ -221,26 +221,26 @@ bool Library::load (Glib::ustring const &libfilename)
 							Utility::uriToDisplayFileName (relfilename)
 						)
 					);
-					
+
 				Gtk::MessageDialog dialog (
 					message, true,
 					Gtk::MESSAGE_QUESTION, Gtk::BUTTONS_NONE,
 					true);
-				
+
 				Gtk::CheckButton applytoall (_("Apply choice to all ambiguous locations"));
 				dialog.get_vbox ()->pack_start (applytoall, 0, false, false);
 				applytoall.show ();
-				
+
 				dialog.add_button (_("Keep _Original"), ORIG_LOC);
 				dialog.add_button (_("Use _New"), NEW_LOC);
 				dialog.set_default_response (ORIG_LOC);
-				
+
 				action = (ambiguouschoice) dialog.run ();
 				if (applytoall.get_active ()) {
 					ambiguous_action_all = action;
 				}
 			}
-			
+
 			if (action == NEW_LOC) {
 				docit->setFileName (relfilename);
 			}
@@ -304,12 +304,12 @@ bool Library::save (Glib::ustring const &libfilename)
 
 	// Having successfully saved the library, write the bibtex if needed
 	if (!manage_target_.empty ()) {
-		// manage_target_ is either an absolute URI or a relative URI	
-		Glib::ustring const bibtextarget = 
+		// manage_target_ is either an absolute URI or a relative URI
+		Glib::ustring const bibtextarget =
 			Gnome::Vfs::Uri::make_full_from_relative (
 				libfilename,
 				manage_target_);
-		
+
 		std::vector<Document*> docs;
 		DocumentList::Container &docrefs = doclist_->getDocs ();
 		DocumentList::Container::iterator it = docrefs.begin();

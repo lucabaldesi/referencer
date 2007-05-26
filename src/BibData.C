@@ -301,9 +301,9 @@ void BibData::guessDoi (Glib::ustring const &raw_)
 	boost::regex expression(
 		"(?:"
 		"(?:[Dd][Oo][Ii]:? *)"
-		"|"		
+		"|"
 		"(?:[Dd]igital *[Oo]bject *[Ii]denti(?:fi|ﬁ)er:? *)"
-		")"		
+		")"
 		"("
 		"[^\\.\\s]+"
 		"\\."
@@ -369,7 +369,7 @@ void BibData::getCrossRef ()
 {
 	if (doi_.empty() || _global_prefs->getWorkOffline())
 		return;
-		
+
 	Glib::ustring messagetext =
 	String::ucompose (
 		"<b><big>%1</big></b>\n\n%2\n",

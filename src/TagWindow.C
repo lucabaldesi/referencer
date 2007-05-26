@@ -183,7 +183,7 @@ void TagWindow::constructUI ()
 	tagcols.add(tagnamecol_);
 	tagcols.add(tagfontcol_);
 	tagstore_ = Gtk::ListStore::create(tagcols);
-	
+
 	tagstore_->set_sort_func (tagnamecol_, sigc::mem_fun (*this, &TagWindow::sortTags));
 	tagstore_->set_sort_column (tagnamecol_, Gtk::SORT_ASCENDING);
 
@@ -304,8 +304,8 @@ void TagWindow::constructUI ()
 	vbox->pack_start(*iconsscroll, true, true, 0);
 
 	docsiconscroll_ = iconsscroll;
-	
-	
+
+
 	doctooltip_ = ev_tooltip_new (GTK_WIDGET(docsiconview_->gobj()));
 
 	/*Gtk::Toolbar& docbar = (Gtk::Toolbar&) *uimanager_->get_widget("/DocBar");
@@ -377,7 +377,7 @@ void TagWindow::constructUI ()
 	// The statusbar
 	statusbar_ = Gtk::manage (new Gtk::Statusbar ());
 	vbox->pack_start (*statusbar_, false, false, 0);
-	
+
 	progressbar_ = Gtk::manage (new Gtk::ProgressBar ());
 	statusbar_->pack_start (*progressbar_, false, false, 0);
 
@@ -704,7 +704,7 @@ void TagWindow::populateDocStore ()
 	} else {
 		docsiconview_->select_path (initialpath);
 	}
-	
+
 	// If we set the selection in a valid way
 	// this probably already got called, although not for
 	// opening library etc.
@@ -741,7 +741,7 @@ void TagWindow::populateTagList ()
 	taggerchecks_.clear();
 
 	std::map <int, int> tagusecounts;
-	
+
 	DocumentList::Container &docrefs = library_->doclist_->getDocs ();
 	int const doccount = docrefs.size ();
 	DocumentList::Container::iterator docit = docrefs.begin();
@@ -962,7 +962,7 @@ void TagWindow::docSelectionChanged ()
 
 	bool const somethingselected = selectcount > 0;
 	bool const onlyoneselected = selectcount == 1;
-	
+
 	actiongroup_->get_action("CopyCite")->set_sensitive (somethingselected);
 
 	actiongroup_->get_action("RemoveDoc")->set_sensitive (somethingselected);
@@ -993,7 +993,7 @@ void TagWindow::docSelectionChanged ()
 		}
 	}
 	ignoretaggerchecktoggled_ = false;
-	
+
 	updateStatusBar ();
 }
 
@@ -1058,7 +1058,7 @@ bool TagWindow::docClicked (GdkEventButton* event)
   } else if ((event->type == GDK_BUTTON_PRESS) && (event->button == 2)) {
   	// Epic middle click pasting
   	onPasteBibtex (GDK_SELECTION_PRIMARY);
-  	
+
   } else {
   	return false;
   }
@@ -1207,7 +1207,7 @@ void TagWindow::onCreateTag  ()
 			std::cerr << "tag uid" << newuid << ", name " << (*it)[tagnamecol_] << "\n";
 			// Assume tagview's first column is the name field
 			tagview_->set_cursor (Gtk::TreePath(it), *tagview_->get_column (0), true);
-			break;		
+			break;
 		}
 	}
 
@@ -1379,12 +1379,12 @@ void TagWindow::onExportBibtex ()
 void TagWindow::manageBrowseDialog (Gtk::Entry *entry)
 {
 	Glib::ustring filename = Glib::filename_from_utf8 (entry->get_text ());
-	
+
 	Gtk::FileChooserDialog dialog (_("Browse"), Gtk::FILE_CHOOSER_ACTION_SAVE);
 	dialog.add_button (Gtk::Stock::CANCEL, Gtk::RESPONSE_CANCEL);
 	dialog.add_button (Gtk::Stock::SAVE, Gtk::RESPONSE_OK);
 	dialog.set_do_overwrite_confirmation ();
-	
+
 	Gtk::FileFilter bibtexfiles;
 	bibtexfiles.add_pattern ("*.[bB][iI][bB]");
 	bibtexfiles.set_name (_("BibTeX Files"));
@@ -1394,7 +1394,7 @@ void TagWindow::manageBrowseDialog (Gtk::Entry *entry)
 	allfiles.add_pattern ("*");
 	allfiles.set_name (_("All Files"));
 	dialog.add_filter (allfiles);
-	
+
 	if (dialog.run() == Gtk::RESPONSE_OK) {
 	//Gnome::Vfs::get_uri_from_local_path (urientry.get_text ()
 		std::cerr << "Manage path is " << dialog.get_uri () << "\n";
@@ -1417,10 +1417,10 @@ void TagWindow::onManageBibtex ()
 	Gtk::Dialog dialog (_("Manage BibTeX File"), true, false);
 
 	dialog.add_button (Gtk::Stock::CLOSE, Gtk::RESPONSE_CANCEL);
-	
+
 	Gtk::VBox *vbox = dialog.get_vbox ();
 	Gtk::VBox mybox;
-	vbox->pack_start (mybox);	
+	vbox->pack_start (mybox);
 	vbox = &mybox;
 	vbox->set_border_width (6);
 	vbox->set_spacing (6);
@@ -1434,7 +1434,7 @@ void TagWindow::onManageBibtex ()
 		"whenever this library is saved."))
 		);
 	vbox->pack_start (explanation);
-	
+
 	Gtk::HBox hbox;
 	hbox.set_spacing (6);
 	Gtk::Label label (_("BibTeX file:"));
@@ -1457,7 +1457,7 @@ void TagWindow::onManageBibtex ()
 
 	Gtk::HBox hbox2;
 	hbox2.set_spacing (6);
-	
+
 	Gtk::Button browsebutton (_("_Browse..."), true);
   Gtk::Image *openicon = Gtk::manage (
     new Gtk::Image (Gtk::Stock::OPEN, Gtk::ICON_SIZE_BUTTON));
@@ -1482,7 +1482,7 @@ void TagWindow::onManageBibtex ()
 	utf8check.set_active (library_->getBibtexUTF8 ());
 
 	vbox->show_all ();
-	
+
 	dialog.run ();
 
 	// Take a UTF-8 filename (relative or abs) and convert it to URI form
@@ -1490,7 +1490,7 @@ void TagWindow::onManageBibtex ()
 
 	Glib::ustring newtarget;
 	if (Glib::path_is_absolute (newfilename)) {
-		newtarget = Gnome::Vfs::get_uri_from_local_path (newfilename);		
+		newtarget = Gnome::Vfs::get_uri_from_local_path (newfilename);
 	} else {
 		newtarget = Gnome::Vfs::escape_string (newfilename);
 	}
@@ -1498,7 +1498,7 @@ void TagWindow::onManageBibtex ()
 
 
 	bool const newbraces = bracescheck.get_active ();
-	
+
 	if (newtarget != library_->getBibtexTarget ()
 	    || newbraces != library_->getBibtexBraces () ) {
 		setDirty (true);
@@ -2431,7 +2431,7 @@ If you don't want to deal with providing a separate callbac		"    <toolitem acti
 	if (clibboardtext.empty ())
 		return;
 */
-	
+
 	std::string latintext;
 	try {
 		latintext = Glib::convert (clipboardtext, "iso-8859-1", "UTF8");
@@ -2440,23 +2440,23 @@ If you don't want to deal with providing a separate callbac		"    <toolitem acti
 		// On conversion failure, try passing UTF-8 straight through
 		latintext = clipboardtext;
 	}
-	
+
 	int imported =
 		library_->doclist_->import (latintext, BibUtils::FORMAT_BIBTEX);
 
 	std::cerr << "Imported " << imported << " references\n";
-	
+
 	if (imported) {
 		// Should push to the statusbar how many we got
 		populateDocStore ();
 		populateTagList ();
-		statusbar_->push (String::ucompose 
+		statusbar_->push (String::ucompose
 			(_("Imported %1 BibTeX references"), imported), 0);
 	} else {
 		Glib::ustring message = String::ucompose (
 			"<b><big>%1</big></b>",
 			_("No references found on clipboard.\n"));
-			
+
 		Gtk::MessageDialog dialog (
 			message, true,
 			Gtk::MESSAGE_ERROR, Gtk::BUTTONS_CLOSE, true);
@@ -2477,9 +2477,9 @@ void TagWindow::onCopyCite ()
 	std::vector<Document*> docs = getSelectedDocs ();
 	std::vector<Document*>::iterator it = docs.begin ();
 	std::vector<Document*>::iterator const end = docs.end ();
-	
+
 	Glib::ustring citation = "\\cite{";
-	
+
 	for (; it != end; ++it) {
 		Glib::ustring const key = (*it)->getKey ();
 		if (it != docs.begin ()) {
@@ -2487,9 +2487,9 @@ void TagWindow::onCopyCite ()
 		}
 		citation += key;
 	}
-	
+
 	citation += "}";
-	
+
 	Glib::RefPtr<Gtk::Clipboard> clipboard = Gtk::Clipboard::get ();
 
 	clipboard->set_text (citation);
@@ -2510,13 +2510,13 @@ void TagWindow::onDocMouseMotion (GdkEventMotion* event)
 
 	Gtk::TreeModel::Path path = docsiconview_->get_path_at_pos (x, y);
 	bool havepath = path.gobj() != NULL;
-	
+
 	Document *doc = NULL;
 	if (havepath) {
 		Gtk::ListStore::iterator it = docstore_->get_iter (path);
 		doc = (*it)[docpointercol_];
 	}
-	
+
 	if (doc != hoverdoc_) {
 		if (doc) {
 			BibData &bib = doc->getBibData ();
@@ -2526,7 +2526,7 @@ void TagWindow::onDocMouseMotion (GdkEventMotion* event)
 				Glib::Markup::escape_text (doc->getKey()),
 				Glib::Markup::escape_text (bib.getTitle()),
 				Glib::Markup::escape_text (bib.getAuthors()));
-			
+
 			int xoffset = (int) docsiconscroll_->get_hadjustment ()->get_value ();
 			int yoffset = (int) docsiconscroll_->get_vadjustment ()->get_value ();
 
@@ -2562,9 +2562,9 @@ int TagWindow::sortTags (
 	bool const a_is_special = a_uid < 0;
 	bool const b_is_special = b_uid < 0;
 
-	Glib::ustring const & a_name = (*a)[tagnamecol_]; 
+	Glib::ustring const & a_name = (*a)[tagnamecol_];
 	Glib::ustring const & b_name = (*b)[tagnamecol_];
-	
+
 	if (a_is_special && b_is_special) {
 		if (a_uid > b_uid) {
 			return -1;

@@ -389,11 +389,11 @@ void Document::readPDF ()
 		rect->y2 = height;
 
 		// FIXME: add something before/after appending text to signal pagebreak?
-		textdump += poppler_page_get_text (page, rect); 
+		textdump += poppler_page_get_text (page, rect);
 
 		poppler_rectangle_free (rect);
 		g_object_unref (page);
-		
+
 		// When we read the first page, see if it has the doc ID
 		// and if it does then don't bother reading the rest.
 		if (i == 0) {

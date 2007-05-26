@@ -50,7 +50,7 @@ class TagWindow {
 		void populateTagList ();
 		void constructUI ();
 		void constructMenu ();
-		
+
 		Library *library_;
 
 		Glib::RefPtr<Gtk::ListStore> tagstore_;
@@ -131,10 +131,10 @@ class TagWindow {
 		/* The search box */
 		Gtk::Entry *searchentry_;
 		void onSearchChanged ();
-		
+
 		/* The Document Properties dialog */
 		DocumentProperties *docpropertiesdialog_;
-		
+
 		/* Other main window UI */
 		Gtk::Window *window_;
 		Glib::RefPtr<Gtk::UIManager> uimanager_;
@@ -173,7 +173,7 @@ class TagWindow {
 		void manageBrowseDialog (Gtk::Entry *entry);
 		void onImport ();
 		void onPreferences ();
-		
+
 		/* WM events */
 		bool onDelete (GdkEventAny *ev);
 		void onResize (GdkEventConfigure *event);
@@ -192,13 +192,13 @@ class TagWindow {
 		/* Update UI text */
 		void updateTitle ();
 		void updateStatusBar ();
-		
+
 		/* Handle dirtyness */
 		bool ensureSaved ();
 		void setDirty (bool const &dirty);
 		bool getDirty () {return dirty_;}
 		bool dirty_;
-		
+
 		/* Remember which file is open */
 		Glib::ustring openedlib_;
 		void setOpenedLib (Glib::ustring const &openedlib);

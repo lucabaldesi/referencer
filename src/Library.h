@@ -40,11 +40,11 @@ class Library {
 		std::vector<Document*> const &docs,
 		bool const usebraces,
 		bool const utf8);
-		
+
 
 	// The naming is BibtexFoo everywhere else, but in Library
 	// we use the manage_ prefix to be consistent with the file format
-	// which uses manage_ to be future-proof with more general manage 
+	// which uses manage_ to be future-proof with more general manage
 	// functionality
 	void manageBibtex (
 		Glib::ustring const &target,
@@ -54,7 +54,7 @@ class Library {
 	bool getBibtexBraces () {return manage_braces_;}
 	bool getBibtexUTF8 () {return manage_utf8_;}
 
-		
+
 	private:
 	Glib::ustring manage_target_;
 	bool manage_braces_;

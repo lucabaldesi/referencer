@@ -100,7 +100,7 @@ class CrossRefParser : public Glib::Markup::Parser {
 		Glib::Markup::ParseContext& context,
 		const Glib::ustring& text)
 	{
-		text_ += text;	
+		text_ += text;
 	}
 };
 

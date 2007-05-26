@@ -187,15 +187,15 @@ void exceptionDialog (
 		message, true,
 		Gtk::MESSAGE_ERROR, Gtk::BUTTONS_CLOSE, true);
 	//gdk_threads_leave ();
-	
+
 	/*
 		run() contains this:
-		
+
 	  GDK_THREADS_LEAVE ();
   g_main_loop_run (ri.loop);
-  GDK_THREADS_ENTER ();  
+  GDK_THREADS_ENTER ();
   */
-	
+
 	dialog.run ();
 
 }
@@ -273,7 +273,7 @@ void writeBibKey (
 	if (!value.empty ()) {
 		// Okay to always append comma, since bibtex doesn't mind the trailing one
 		if (utf8) {
-			// Waiting for feedback from fred brooks about what kind of 
+			// Waiting for feedback from fred brooks about what kind of
 			// escaping etc is still wanted in utf8 mode
 			if (usebraces)
 				out << "\t" << key << " = {{" << value << "}},\n";
@@ -309,14 +309,14 @@ std::string escapeBibtexAccents (
 			continue;
 		} else {
 			Glib::ustring replacement;
-			
+
 			int gotone = wvConvertUnicodeToLaTeX (letter, replacement);
 			if (!gotone) {
 				std::cerr << "escapeBibtexAccents: no replacement found for '"
 					<< letter << "'\n";
 				replacement = "*";
 			}
-			
+
 			target.erase (i, 1);
 			target.insert (i, replacement);
 			i += replacement.length () - 1;

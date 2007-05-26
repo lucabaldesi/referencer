@@ -68,7 +68,7 @@ class LibraryParser : public Glib::Markup::Parser {
 		inRelFileName_ = false;
 		inTagged_ = false;
 		inBibItem_ = false;
-		
+
 		manageBraces_ = false;
 		manageUTF8_ = false;
 	}
