@@ -150,13 +150,14 @@ void TagWindow::constructUI ()
 
 	Gtk::ToolItem *searchitem = Gtk::manage (new Gtk::ToolItem);
 	Gtk::HBox *search = Gtk::manage (new Gtk::HBox);
-	Gtk::Label *searchlabel = Gtk::manage (new Gtk::Label (_("_Search:"), true));
-	//Gtk::Entry *searchentry = Gtk::manage (new Gtk::Entry);
+	//Gtk::Label *searchlabel = Gtk::manage (new Gtk::Label (_("_Search:"), true));
 	Sexy::IconEntry *searchentry = Gtk::manage (new Sexy::IconEntry ());
-	searchentry->add_clear_button ();
-	searchlabel->set_mnemonic_widget (*searchentry);
+	Gtk::Image *searchicon = Gtk::manage (
+		new Gtk::Image (Gtk::Stock::FIND, Gtk::ICON_SIZE_BUTTON));
+	searchentry->set_icon (Sexy::ICON_ENTRY_PRIMARY, searchicon);
+	//searchlabel->set_mnemonic_widget (*searchentry);
 	search->set_spacing (6);
-	search->pack_start (*searchlabel, false, false, 0);
+	//search->pack_start (*searchlabel, false, false, 0);
 	search->pack_start (*searchentry, false, false, 0);
 	search->show_all ();
 	searchitem->add (*search);
@@ -2481,14 +2482,21 @@ void TagWindow::onSearchChanged ()
 	Gdk::Color yellowish ("#f7f7be");
 	Gdk::Color black ("#000000");
 	
+	bool hasclearbutton =
+		((Sexy::IconEntry*) searchentry_)->get_icon (Sexy::ICON_ENTRY_SECONDARY);
+	
 	if (!searchentry_->get_text ().empty()) {
 	/*if (entry->priv->is_a11y_theme)
 		return;*/
 		searchentry_->modify_base (Gtk::STATE_NORMAL, yellowish);
 		searchentry_->modify_text (Gtk::STATE_NORMAL, black);
+		if (!hasclearbutton)
+			((Sexy::IconEntry*) searchentry_)->add_clear_button ();
 	} else {
 		searchentry_->unset_base (Gtk::STATE_NORMAL);
 		searchentry_->unset_text (Gtk::STATE_NORMAL);
+		if (hasclearbutton)
+			((Sexy::IconEntry*) searchentry_)->set_icon (Sexy::ICON_ENTRY_SECONDARY, NULL);
 	}
 	populateDocStore ();
 }
