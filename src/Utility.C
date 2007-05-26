@@ -163,6 +163,9 @@ Glib::ustring findDataFile (
 bool fileExists (
 	Glib::ustring const &filename)
 {
+	if (filename.empty ())
+		return false;
+
 	Glib::RefPtr<Gnome::Vfs::Uri> uri =
 		Gnome::Vfs::Uri::create (filename);
 

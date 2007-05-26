@@ -167,11 +167,11 @@ bool Library::load (Glib::ustring const &libfilename)
 	// Resolve relative paths
 	// ======================
 
-		typedef enum {
-			NONE,
-			ORIG_LOC,
-			NEW_LOC
-		} ambiguouschoice;
+	typedef enum {
+		NONE,
+		ORIG_LOC,
+		NEW_LOC
+	} ambiguouschoice;
 
 	ambiguouschoice ambiguous_action_all = NONE;
 
@@ -190,7 +190,7 @@ bool Library::load (Glib::ustring const &libfilename)
 				Glib::path_get_dirname (libfilename),
 				docit->getRelFileName());
 		}
-
+		
 		//std::cerr << "Abs: " << absfilename
 		//	<< "\nRel: " << relfilename << "\n\n";
 
