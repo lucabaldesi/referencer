@@ -76,13 +76,13 @@ void Progress::update ()
 void Progress::loop ()
 {
 	while (!finished_) {
-		flushEvents ();
+		//flushEvents ();
 		Glib::usleep (100000);
 	}
 }
 
 /*
- * A note on threading:
+ * A DEFUNCT note on threading:
  * If the caller is inside a gtk_threads_enter block, for
  * example if the main loop is thus surrounded, then this 
  * is liable to freeze.
@@ -90,10 +90,10 @@ void Progress::loop ()
 
 void Progress::flushEvents ()
 {
-	/*gdk_threads_enter ();
+	//gdk_threads_enter ();
 	while (Gnome::Main::events_pending())
 		Gnome::Main::iteration ();
-	gdk_threads_leave ();*/
+	//gdk_threads_leave ();
 }
 
 
