@@ -49,6 +49,7 @@ The eel_* functions are copied from libeel, Copyright © 2000 Eazel, Inc.
 The art_rgb_run_alpha function is copied from libart, Copyright © Raph Levien 1998
 The thumbnail_frame.png graphic is copied from Nautilus, Copyright © 2003 Redhat, Inc
 ucompose.hpp is from the string composition library, Copyright © 2003 Ole Laursen, licensed under the LGPL
+The ev-tooltip class is Copyright (C) 2004 Red Hat, Inc
 
 Apart from the aforementioned items, Referencer is Copyright © 2007 John Spray
 Referencer is released under the terms of the GNU GPLv2 (see COPYING)
