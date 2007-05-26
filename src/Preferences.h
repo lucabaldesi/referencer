@@ -13,6 +13,8 @@
 #ifndef PREFERENCES_H
 #define PREFERENCES_H
 
+#include <utility>
+
 #include <libglademm.h>
 #include <gtkmm.h>
 #include <gconfmm.h>
@@ -49,6 +51,8 @@ private:
 	Gnome::Conf::Entry uselistview_;
 	Gnome::Conf::Entry showtagpane_;
 	Gnome::Conf::Entry libraryfilename_;
+	Gnome::Conf::Entry width_;
+	Gnome::Conf::Entry height_;
 
 	Gnome::Conf::Entry proxymode_;
 	Gnome::Conf::Entry proxyuseproxy_;
@@ -103,6 +107,9 @@ public:
 
 	Utility::StringPair getMetadataLookup ();
 	void setMetadataLookup (Glib::ustring const &metadatalookup);
+
+	std::pair<int, int> getWindowSize ();
+	void setWindowSize (std::pair<int, int> size);
 
 	bool const getFirstTime () {return firsttime_;}
 };

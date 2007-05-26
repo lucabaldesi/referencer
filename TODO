@@ -1,6 +1,8 @@
 
 
 Targets for 1.0.4:
+	Algorithm for prettifying tags
+	populateTagList calls as tags added/removed
 	Check that UTF-8 export works as desired
 
 Other essential items:

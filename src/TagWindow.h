@@ -173,7 +173,10 @@ class TagWindow {
 		void manageBrowseDialog (Gtk::Entry *entry);
 		void onImport ();
 		void onPreferences ();
+		
+		/* WM events */
 		bool onDelete (GdkEventAny *ev);
+		void onResize (GdkEventConfigure *event);
 
 
 		/* Pick up preference changes */

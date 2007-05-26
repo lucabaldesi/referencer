@@ -119,9 +119,12 @@ void TagWindow::run ()
 void TagWindow::constructUI ()
 {
 	window_ = new Gtk::Window(Gtk::WINDOW_TOPLEVEL);
-	window_->set_default_size (700, 500);
+	std::pair<int, int> size = _global_prefs->getWindowSize ();
+	window_->set_default_size (size.first, size.second);
 	window_->signal_delete_event().connect (
 		sigc::mem_fun (*this, &TagWindow::onDelete));
+	window_->signal_configure_event().connect_notify (
+		sigc::mem_fun (*this, &TagWindow::onResize));
 
 	window_->set_icon (
 		Gdk::Pixbuf::create_from_file(
@@ -2577,5 +2580,14 @@ int TagWindow::sortTags (
 	} else {
 		return a_name.compare (b_name);
 	}
+}
+
+
+void TagWindow::onResize (GdkEventConfigure *event)
+{
+	_global_prefs->setWindowSize (
+		std::pair<int,int> (
+			event->width,
+			event->height));
 }
 

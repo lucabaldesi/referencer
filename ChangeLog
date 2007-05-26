@@ -1,4 +1,5 @@
 1.0.4:
+	- Remember window size
 	- Tags sorted by name
 	- Tooltips in icon view
 	- German translation (Joachim Sauer)

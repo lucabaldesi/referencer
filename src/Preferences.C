@@ -39,6 +39,8 @@ Preferences::Preferences ()
 	showtagpane_ = confclient_->get_entry (CONF_PATH "/showtagpane");
 	doilaunch_ = confclient_->get_entry (CONF_PATH "/doilaunch");
 	metadatalookup_ = confclient_->get_entry (CONF_PATH "/metadatalookup");
+	width_ = confclient_->get_entry (CONF_PATH "/width");
+	height_ = confclient_->get_entry (CONF_PATH "/height");
 
 	doilaunchdefault_ = "http://dx.doi.org/<!DOI!>";
 	metadatalookupdefault_ =
@@ -62,6 +64,7 @@ Preferences::Preferences ()
 		setWorkOffline (false);
 		setDoiLaunch (doilaunchdefault_);
 		setMetadataLookup (metadatalookupdefault_);
+		setWindowSize (std::pair<int,int>(700,500));
 		firsttime_ = true;
 	} else {
 		firsttime_ = false;
@@ -135,7 +138,7 @@ Preferences::~Preferences ()
 
 void Preferences::onConfChange (int number, Gnome::Conf::Entry entry)
 {
-	std::cerr << "onConfChange: '" << entry.get_key () << "'\n";
+	//std::cerr << "onConfChange: '" << entry.get_key () << "'\n";
 	ignorechanges_ = true;
 	Glib::ustring key = entry.get_key ();
 
@@ -176,11 +179,16 @@ void Preferences::onConfChange (int number, Gnome::Conf::Entry entry)
 	} else if (key == HTTP_USE_AUTH_KEY) {
 		useauthcheck_->set_active (entry.get_value ().get_bool ());
 		updateSensitivity ();
+	/* keys to ignore */
+	} else if (
+	    key == CONF_PATH "/width"
+	    || key == CONF_PATH "/height") {
+		;
 	} else {
 		std::cerr << "Warning: Preferences::onConfChange: "
 			"unhandled key '" << key << "'\n";
 	}
-	std::cerr << "Complete.\n";
+	//std::cerr << "Complete.\n";
 
 	ignorechanges_ = false;
 }
@@ -388,3 +396,18 @@ void Preferences::setMetadataLookup (Glib::ustring const &metadatalookup)
 	confclient_->set (metadatalookup_.get_key(), metadatalookup);
 }
 
+
+std::pair<int, int> Preferences::getWindowSize ()
+{
+	std::pair<int, int> size;
+	size.first = confclient_->get_int (width_.get_key ());
+	size.second = confclient_->get_int (height_.get_key ());
+	return size;
+}
+
+
+void Preferences::setWindowSize (std::pair<int, int> size)
+{
+	confclient_->set (width_.get_key (), size.first);
+	confclient_->set (height_.get_key (), size.second);
+}

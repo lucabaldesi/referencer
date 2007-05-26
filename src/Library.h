@@ -15,6 +15,7 @@
 
 #include <glibmm/ustring.h>
 
+class Document;
 class DocumentList;
 class TagList;
 class TagWindow;
