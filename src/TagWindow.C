@@ -9,6 +9,7 @@
  */
 
 
+#include <map>
 
 #include <gtkmm.h>
 #include <libgnomeuimm.h>
@@ -16,19 +17,18 @@
 #include <glibmm/i18n.h>
 #include "ucompose.hpp"
 
-#include "TagWindow.h"
 #include "Library.h"
 #include "DocumentList.h"
 #include "TagList.h"
 #include "Document.h"
 #include "DocumentProperties.h"
 #include "Preferences.h"
-
 #include "LibraryParser.h"
-
 #include "ev-tooltip.h"
 
 #include "config.h"
+#include "TagWindow.h"
+
 
 int main (int argc, char **argv)
 {
@@ -171,11 +171,6 @@ void TagWindow::constructUI ()
 
 	tagpane_ = tagsframe;
 
-	Gtk::Label *tagslabel = Gtk::manage (new Gtk::Label (""));
-	tagslabel->set_markup (Glib::ustring("<b> ") + _("Tags") + " </b>");
-	tagslabel->set_alignment (0.0, 0.0);
-	vbox->pack_start (*tagslabel, false, true, 3);
-
 	Gtk::VBox *filtervbox = Gtk::manage (new Gtk::VBox);
 	vbox->pack_start (*filtervbox, true, true, 0);
 
@@ -183,6 +178,7 @@ void TagWindow::constructUI ()
 	Gtk::TreeModel::ColumnRecord tagcols;
 	tagcols.add(taguidcol_);
 	tagcols.add(tagnamecol_);
+	tagcols.add(tagfontcol_);
 	tagstore_ = Gtk::ListStore::create(tagcols);
 	
 	tagstore_->set_sort_func (tagnamecol_, sigc::mem_fun (*this, &TagWindow::sortTags));
@@ -195,9 +191,11 @@ void TagWindow::constructUI ()
 	render->property_editable() = true;
 	render->signal_edited().connect (
 		sigc::mem_fun (*this, &TagWindow::tagNameEdited));
+	render->property_xalign () = 0.5;
 	Gtk::TreeView::Column *namecol = Gtk::manage(
 		new Gtk::TreeView::Column (_("Tags"), *render));
 	namecol->add_attribute (render->property_markup (), tagnamecol_);
+	namecol->add_attribute (render->property_font_desc (), tagfontcol_);
 	tags->append_column (*namecol);
 	tags->signal_button_press_event().connect_notify(
 		sigc::mem_fun (*this, &TagWindow::tagClicked));
@@ -722,17 +720,37 @@ void TagWindow::populateTagList ()
 	tagselectionignore_ = true;
 	tagstore_->clear();
 
+	Pango::FontDescription font_special;
+	//font_special.set_weight (Pango::WEIGHT_LIGHT);
+
 	Gtk::TreeModel::iterator all = tagstore_->append();
 	(*all)[taguidcol_] = ALL_TAGS_UID;
-	(*all)[tagnamecol_] = String::ucompose ("<b>%1</b>", _("All"));
+	(*all)[tagnamecol_] = String::ucompose ("%1", _("All"));
+	(*all)[tagfontcol_] = font_special;
 
 	Gtk::TreeModel::iterator none = tagstore_->append();
 	(*none)[taguidcol_] = NO_TAGS_UID;
-	(*none)[tagnamecol_] = String::ucompose ("<b>%1</b>", _("Untagged"));
+	(*none)[tagnamecol_] = String::ucompose ("%1", _("Untagged"));
+	(*none)[tagfontcol_] = font_special;
 
 	taggerbox_->children().clear();
 
 	taggerchecks_.clear();
+
+	std::map <int, int> tagusecounts;
+	
+	DocumentList::Container &docrefs = library_->doclist_->getDocs ();
+	int const doccount = docrefs.size ();
+	DocumentList::Container::iterator docit = docrefs.begin();
+	DocumentList::Container::iterator const docend = docrefs.end();
+	for (; docit != docend; docit++) {
+		std::vector<int>& tags = (*docit).getTags ();
+		std::vector<int>::iterator tagit = tags.begin ();
+		std::vector<int>::iterator const tagend = tags.end ();
+		for (; tagit != tagend; ++tagit) {
+			tagusecounts[*tagit]++;
+		}
+	}
 
 	// Populate from library_->taglist_
 	std::vector<Tag> tagvec = library_->taglist_->getTags();
@@ -743,7 +761,21 @@ void TagWindow::populateTagList ()
 		(*item)[taguidcol_] = (*it).uid_;
 		(*item)[tagnamecol_] = (*it).name_;
 
-		std::cerr << "Creating check for '" << (*it).name_ << "'\n";
+		int timesused = tagusecounts[(*it).uid_];
+		float factor;
+		if (doccount > 0)
+			factor = 1.0 + ((float)timesused / (float)doccount) * 0.75;
+		else
+			factor = 1.0;
+		std::cerr << "factor for " << (*it).name_ << " = " << factor << "\n";
+
+		int basesize = window_->get_style ()->get_font().get_size ();
+		int size = (int) (factor * (float)basesize);
+		Pango::FontDescription font;
+		font.set_size (size);
+		font.set_weight (Pango::WEIGHT_SEMIBOLD);
+		(*item)[tagfontcol_] = font;
+
 		Gtk::CheckButton *check =
 			Gtk::manage (new Gtk::CheckButton ((*it).name_));
 		check->signal_toggled().connect(
@@ -751,7 +783,7 @@ void TagWindow::populateTagList ()
 				sigc::mem_fun (*this, &TagWindow::taggerCheckToggled),
 				check,
 				(*it).uid_));
-		taggerbox_->pack_start (*check, false, false, 6);
+		taggerbox_->pack_start (*check, false, false, 1);
 		taggerchecks_[(*it).uid_] = check;
 	}
 

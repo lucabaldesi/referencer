@@ -56,6 +56,7 @@ class TagWindow {
 		Glib::RefPtr<Gtk::ListStore> tagstore_;
 		Gtk::TreeModelColumn<int> taguidcol_;
 		Gtk::TreeModelColumn<Glib::ustring> tagnamecol_;
+		Gtk::TreeModelColumn<Pango::FontDescription> tagfontcol_;
 		int sortTags (
 			const Gtk::TreeModel::iterator& a,
 			const Gtk::TreeModel::iterator& b);
