@@ -1159,13 +1159,22 @@ bool TagWindow::ensureSaved ()
 void TagWindow::onCreateTag  ()
 {
 	Glib::ustring newname = (_("Type a tag"));
-	Glib::ustring tagsnum = String::ucompose ("%1",
-                library_->taglist_->getTags().size() + 2);
-	Gtk::TreePath path (tagsnum);
-	setDirty (true);
-	library_->taglist_->newTag (newname, Tag::ATTACH);
+
+	int newuid = library_->taglist_->newTag (newname, Tag::ATTACH);
+
 	populateTagList();
-	tagview_->set_cursor (path, *tagview_->get_column (0), true);
+
+	Gtk::TreeModel::iterator it = tagstore_->children().begin();
+	Gtk::TreeModel::iterator const end = tagstore_->children().end();
+	for (; it != end; ++it) {
+		if ((*it)[taguidcol_] == newuid) {
+			std::cerr << "tag uid" << newuid << ", name " << (*it)[tagnamecol_] << "\n";
+			tagview_->set_cursor (Gtk::TreePath(it), *tagview_->get_column (0), true);
+			break;		
+		}
+	}
+
+	setDirty (true);
 }
 
 
