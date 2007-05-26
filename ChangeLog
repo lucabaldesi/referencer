@@ -1,4 +1,5 @@
 1.0.4:
+	- Add clear icon to search entry
 	- Remember window size
 	- Tags sorted by name
 	- Tooltips in icon view

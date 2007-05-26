@@ -25,6 +25,7 @@
 #include "Preferences.h"
 #include "LibraryParser.h"
 #include "ev-tooltip.h"
+#include "icon-entry.h"
 
 #include "config.h"
 #include "TagWindow.h"
@@ -150,7 +151,9 @@ void TagWindow::constructUI ()
 	Gtk::ToolItem *searchitem = Gtk::manage (new Gtk::ToolItem);
 	Gtk::HBox *search = Gtk::manage (new Gtk::HBox);
 	Gtk::Label *searchlabel = Gtk::manage (new Gtk::Label (_("_Search:"), true));
-	Gtk::Entry *searchentry = Gtk::manage (new Gtk::Entry);
+	//Gtk::Entry *searchentry = Gtk::manage (new Gtk::Entry);
+	Sexy::IconEntry *searchentry = Gtk::manage (new Sexy::IconEntry ());
+	searchentry->add_clear_button ();
 	searchlabel->set_mnemonic_widget (*searchentry);
 	search->set_spacing (6);
 	search->pack_start (*searchlabel, false, false, 0);

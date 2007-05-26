@@ -4,6 +4,10 @@ INCLUDES = -DDATADIR=\""$(pkgdatadir)"\" \
 	 -DGNOMELOCALEDIR=\"$(datadir)/locale\"
 
 referencer_SOURCES =	\
+	sexy-icon-entry.c \
+	sexy-icon-entry.h \
+	icon-entry.cc \
+	icon-entry.h \
 	ev-tooltip.c \
 	ev-tooltip.h \
 	TagWindow.C	\
