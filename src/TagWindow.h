@@ -130,7 +130,7 @@ class TagWindow {
 
 		/* The search box */
 		Gtk::Entry *searchentry_;
-		void onSearchChanged (Gtk::Entry &entry);
+		void onSearchChanged ();
 
 		/* The Document Properties dialog */
 		DocumentProperties *docpropertiesdialog_;
