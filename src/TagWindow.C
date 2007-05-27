@@ -540,6 +540,12 @@ void TagWindow::constructMenu ()
 	actiongroup_->add( Gtk::Action::create(
 		"About", Gtk::Stock::ABOUT),
   	sigc::mem_fun(*this, &TagWindow::onAbout));
+  	
+  // Just for the keyboard shortcut
+	actiongroup_->add( Gtk::Action::create(
+		"Find", Gtk::Stock::FIND),
+		Gtk::AccelKey ("<control>f"),
+  	sigc::mem_fun(*this, &TagWindow::onFind));
 
 	uimanager_ = Gtk::UIManager::create ();
 	uimanager_->insert_action_group (actiongroup_);
@@ -632,6 +638,7 @@ void TagWindow::constructMenu ()
 		"    <menuitem action='DeleteTag'/>"
 		"    <menuitem action='RenameTag'/>"
 		"  </popup>"
+		"  <accelerator action='Find'/>"
 		"</ui>";
 
 	uimanager_->add_ui_from_string (ui);
@@ -2619,5 +2626,11 @@ void TagWindow::onResize (GdkEventConfigure *event)
 		std::pair<int,int> (
 			event->width,
 			event->height));
+}
+
+
+void TagWindow::onFind ()
+{
+	searchentry_->grab_focus ();
 }
 
