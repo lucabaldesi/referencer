@@ -1,15 +1,12 @@
 
 
-Targets for 1.0.4:
-	Algorithm for prettifying tags
-	populateTagList calls as tags added/removed
-	Check that UTF-8 export works as desired
 
 Other essential items:
 	Import of reflib files (merge in documents, resolve tag IDs)
 	Sizing of columns in the list view
 	LyX citation via lyxserver (pybliographic, lyx/src/client)
 	Command line reflib->bibtex
+	Check that UTF-8 export works as desired
 
 	BibTeX export:
 		What about underscores?  Need an "escape everything" mode?

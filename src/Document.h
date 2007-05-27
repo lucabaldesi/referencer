@@ -15,6 +15,8 @@
 
 #include "BibData.h"
 
+class Library;
+
 class Document {
 	private:
 	Glib::ustring filename_;
@@ -56,6 +58,7 @@ class Document {
 	bool matchesSearch (Glib::ustring const &search);
 
 	void writeBibtex (
+		Library const &lib,
 		std::ostringstream& out,
 		bool const usebraces,
 		bool const utf8);

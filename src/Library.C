@@ -349,7 +349,7 @@ void Library::writeBibtex (
 	std::vector<Document*>::const_iterator it = docs.begin ();
 	std::vector<Document*>::const_iterator const end = docs.end ();
 	for (; it != end; ++it) {
-		(*it)->writeBibtex (bibtext, usebraces, utf8);
+		(*it)->writeBibtex (*this, bibtext, usebraces, utf8);
 	}
 
 	try {

@@ -23,6 +23,9 @@
 #include <poppler.h>
 
 #include "Utility.h"
+#include "Library.h"
+#include "TagList.h"
+
 
 #include "Document.h"
 
@@ -271,6 +274,7 @@ bool Document::hasTag(int uid)
 using Utility::writeBibKey;
 
 void Document::writeBibtex (
+	Library const &lib,
 	std::ostringstream& out,
 	bool const usebraces,
 	bool const utf8)
@@ -301,6 +305,18 @@ void Document::writeBibtex (
 	writeBibKey (out, "number",  bib_.getIssue(), usebraces, utf8);
 	writeBibKey (out, "pages",   bib_.getPages(), usebraces, utf8);
 	writeBibKey (out, "year",    bib_.getYear(), usebraces, utf8);
+	
+	if (tagUids_.size () > 0) {
+		out << "\tkeywords = \"";
+		std::vector<int>::iterator tagit = tagUids_.begin ();
+		std::vector<int>::iterator const tagend = tagUids_.end ();
+		for (; tagit != tagend; ++tagit) {
+			if (tagit != tagUids_.begin ())
+				out << ", ";
+			out << lib.taglist_->getName (*tagit);
+		}
+		out << "\"\n";
+	}
 
 	out << "}\n\n";
 }

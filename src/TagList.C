@@ -88,6 +88,18 @@ void TagList::deleteTag (int uid)
 }
 
 
+Glib::ustring TagList::getName (int const &uid)
+{
+	std::vector<Tag>::iterator it = tags_.begin();
+	std::vector<Tag>::iterator const end = tags_.end();
+	for (; it != end; it++) {
+		if ((*it).uid_ == uid) {
+			return (*it).name_;
+		}
+	}
+	return Glib::ustring();
+}
+
 
 using Glib::Markup::escape_text;
 
