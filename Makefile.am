@@ -6,7 +6,8 @@ EXTRA_DIST =	\
 	intltool-merge.in	\
 	intltool-update.in	\
 	referencer.spec.in	\
-	referencer.spec
+	referencer.spec \
+	libsexymm
 
 DISTCLEANFILES =	\
 	intltool-extract	\
