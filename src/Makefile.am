@@ -4,6 +4,7 @@ INCLUDES = -DDATADIR=\""$(pkgdatadir)"\" \
 	 -DGNOMELOCALEDIR=\"$(datadir)/locale\"
 
 referencer_SOURCES =	\
+	sexy-enum-types.h \
 	sexy-icon-entry.c \
 	sexy-icon-entry.h \
 	icon-entry.cc \
