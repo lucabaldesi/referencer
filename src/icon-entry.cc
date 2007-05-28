@@ -3,7 +3,7 @@
 #include <libsexymm/icon-entry.h>
 #include <libsexymm/private/icon-entry_p.h>
 
-#include <libsexy/sexy-enum-types.h>
+#include <sexy-enum-types.h>
 /**
  * @file libsexymm/icon-entry.cc Icon entry widget
  *
