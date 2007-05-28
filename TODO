@@ -1,5 +1,6 @@
 
 
+Use installed libsexy if available, a la rhythmbox
 
 Other essential items:
 	Import of reflib files (merge in documents, resolve tag IDs)
