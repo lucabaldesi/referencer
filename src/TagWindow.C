@@ -609,7 +609,6 @@ void TagWindow::constructMenu ()
 		"    <toolitem action='NewLibrary'/>"
 		"    <toolitem action='OpenLibrary'/>"
 		"    <toolitem action='SaveLibrary'/>"
-		"    <toolitem action='ExportBibtex'/>"
 		"    <separator/>"
 		"    <toolitem action='CopyCite'/>"
 		"    <toolitem action='PasteBibtex'/>"
@@ -1656,6 +1655,7 @@ void TagWindow::onAbout ()
 	dialog.set_comments ("A document organiser and bibliography manager");
 	dialog.set_copyright ("Copyright © 2007 John Spray");
 	dialog.set_website ("http://icculus.org/referencer/");
+	// Translators: your name here!
 	dialog.set_translator_credits (_("translator-credits"));
 	dialog.set_logo (
 		Gdk::Pixbuf::create_from_file (
