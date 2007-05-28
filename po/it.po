@@ -442,7 +442,7 @@ msgstr "Salva come Libreria"
 
 #: ../src/TagWindow.C:1641
 msgid "translator-credits"
-msgstr "crediti traduttori"
+msgstr "Michele Mattioni"
 
 #: ../src/TagWindow.C:1661
 msgid "Showing '%1'"
@@ -591,7 +591,7 @@ msgid ""
 msgstr ""
 "<b>%1</b>\n"
 "%2\n"
-"<i><%3</i>"
+"<i>%3</i>"
 
 #: ../src/Utility.C:178
 msgid ""
