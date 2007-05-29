@@ -1,6 +1,7 @@
 
 
 Use installed libsexy if available, a la rhythmbox
+Mnemonics in Document menu are clashing
 
 Other essential items:
 	Import of reflib files (merge in documents, resolve tag IDs)
@@ -80,3 +81,4 @@ Competition on Science biblio export:
 also: Zotero
 also: Yep
 also: http://mekentosj.com/papers/
+http://refbase.sourceforge.net/
