@@ -174,7 +174,7 @@ int DocumentList::importFromFile (
 	Glib::ustring const & filename,
 	BibUtils::Format format)
 {
-	Glib::ustring rawtext;
+	std::string rawtext;
 	{
 		Gnome::Vfs::Handle importfile;
 
@@ -211,7 +211,13 @@ int DocumentList::importFromFile (
 		}
 		buffer[fileinfo->get_size()] = 0;
 
+		/*
+		 * Do no conversion -- assume the input file is what
+		 * bibutils expects (default latin1, not changed 
+		 * anywhere here)
+		 */
 		rawtext = buffer;
+		
 		free (buffer);
 		importfile.close ();
 	}
@@ -223,33 +229,47 @@ int DocumentList::importFromFile (
 
 // Returns the number of references imported
 int DocumentList::import (
-	Glib::ustring const & rawtext,
+	std::string const & rawtext,
 	BibUtils::Format format)
 {
 	if (format == BibUtils::FORMAT_UNKNOWN)
 		format = BibUtils::guessFormat (rawtext);
 
 	BibUtils::param p;
+
 	BibUtils::bibl b;
 	BibUtils::bibl_init( &b );
 	// BIBL_* are #defines, so not in namespace
 	BibUtils::bibl_initparams( &p, format, BIBL_MODSOUT);
+	/** We are actually assuming iso-8859 at the minute, but
+	 *  if you wanted this fn to take utf8 this would be how.
 
+	    p.charsetin = BIBL_CHARSET_UNICODE;
+	*/
 	try {
 		BibUtils::biblFromString (b, rawtext, format, p);
-		// Make a copy to return after we free b
-		int const nrefs = b.nrefs;
-		for (int i = 0; i < nrefs; ++i) {
-			docs_.push_back (BibUtils::parseBibUtils (b.ref[i]));
-		}
-		BibUtils::bibl_free( &b );
-		return nrefs;
 	} catch (Glib::Error ex) {
 		BibUtils::bibl_free( &b );
 		Utility::exceptionDialog (&ex, _("Parsing import"));
 		return 0;
 	}
 
+	// Make a copy to return after we free b	
+	int const nrefs = b.nrefs;
+	
+	for (int i = 0; i < nrefs; ++i) {
+		try {
+			docs_.push_back (BibUtils::parseBibUtils (b.ref[i]));
+		} catch (Glib::Error ex) {
+			BibUtils::bibl_free( &b );
+			Utility::exceptionDialog (&ex,
+				String::ucompose(_("Extracting document %1 from bibutils structure"), i));
+			return 0;
+		}
+	}
+
+	BibUtils::bibl_free( &b );
+	return nrefs;
 }
 
 

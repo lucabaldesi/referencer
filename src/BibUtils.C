@@ -20,9 +20,7 @@ extern "C" {
 
 namespace BibUtils {
 
-char progname[] = "bib2xml";
-/*char help1[] = "Converts a Bibtex reference file into MODS XML\n\n";
-char help2[] = "bibtex_file";*/
+char progname[] = "referencer";
 
 lists asis  = { 0, 0, NULL };
 lists corps = { 0, 0, NULL };
@@ -123,7 +121,7 @@ int getType (fields *info)
 }
 
 
-Glib::ustring formatType (fields *info)
+std::string formatType (fields *info)
 {
 	int const type = bibtexout_type (info);
 
@@ -152,11 +150,11 @@ Glib::ustring formatType (fields *info)
 	}
 	if ( !s ) s = types[ntypes-1].type_name; /* default to TYPE_MISC */
 
-	return Glib::ustring (s);
+	return std::string (s);
 }
 
 
-Glib::ustring formatTitle (BibUtils::fields *ref, int level)
+std::string formatTitle (BibUtils::fields *ref, int level)
 {
 	int kmain;
 	int ksub;
@@ -164,31 +162,25 @@ Glib::ustring formatTitle (BibUtils::fields *ref, int level)
 	kmain = fields_find (ref, "TITLE", level);
 	ksub = fields_find (ref, "SUBTITLE", level);
 
-	Glib::ustring title;
+	std::string title;
 
 	if (kmain >= 0) {
 		title = ref->data[kmain].data;
 		ref->used[kmain] = 1;
 		if (ksub >= 0) {
 			title += ": ";
-			title += Glib::ustring (ref->data[ksub].data);
+			title += std::string (ref->data[ksub].data);
 			ref->used[ksub] = 1;
 		}
-	}
-
-	if (!title.validate ()) {
-		throw (Glib::ConvertError (
-			Glib::ConvertError::FAILED,
-			"Invalid UTF-8 from libbibutils in formatTitle"));
 	}
 
 	return title;
 }
 
 
-Glib::ustring formatPerson (Glib::ustring const &munged)
+std::string formatPerson (std::string const &munged)
 {
-	Glib::ustring output;
+	std::string output;
 	int nseps = 0, nch;
 	char *p = (char *) munged.c_str ();
 	while ( *p ) {
@@ -204,21 +196,15 @@ Glib::ustring formatPerson (Glib::ustring const &munged)
 		nseps++;
 	}
 
-	if (!output.validate ()) {
-		throw (Glib::ConvertError (
-			Glib::ConvertError::FAILED,
-			"Invalid UTF-8 from libbibutils in formatPerson"));
-	}
-
 	return output;
 }
 
 
-Glib::ustring formatPeople(fields *info, char *tag, char *ctag, int level)
+std::string formatPeople(fields *info, char *tag, char *ctag, int level)
 {
 	int i, npeople, person, corp;
 
-	Glib::ustring output;
+	std::string output;
 
 	/* primary citation authors */
 	npeople = 0;
@@ -231,7 +217,7 @@ Glib::ustring formatPeople(fields *info, char *tag, char *ctag, int level)
 				output += " and ";
 
 			if (corp)
-				output += Glib::ustring (info->data[i].data);
+				output += std::string (info->data[i].data);
 			else
 				output += formatPerson (info->data[i].data);
 
@@ -239,15 +225,21 @@ Glib::ustring formatPeople(fields *info, char *tag, char *ctag, int level)
 		}
 	}
 
-	if (!output.validate ()) {
-		throw (Glib::ConvertError (
-			Glib::ConvertError::FAILED,
-			"Invalid UTF-8 from libbibutils in formatPeople"));
-	}
-
 	return output;
 }
 
+/**
+	IMPORTANT
+	=========
+	
+	All the newdoc.getBibData.().setFoo have Glib::ustring 
+	arguments.  That means that the std::strings we're using 
+	have to be in utf8: there is NO conversion, not even from 
+	the current locale.
+	
+	Current (3.32) version of bibutils seems to be using utf8 
+	internally even when importing a file from latin1.
+*/
 
 Document parseBibUtils (BibUtils::fields *ref)
 {
@@ -284,9 +276,9 @@ Document parseBibUtils (BibUtils::fields *ref)
 	else if ( type==TYPE_BOOK || type==TYPE_COLLECTION || type==TYPE_PROCEEDINGS )
 		newdoc.getBibData().addExtra ("Series", formatTitle (ref, 1));
 
-	Glib::ustring authors = formatPeople (ref, "AUTHOR", "CORPAUTHOR", 0);
-	Glib::ustring editors = formatPeople (ref, "EDITOR", "CORPEDITOR", -1);
-	Glib::ustring translators = formatPeople (ref, "TRANSLATOR", "CORPTRANSLATOR", -1);
+	std::string authors = formatPeople (ref, "AUTHOR", "CORPAUTHOR", 0);
+	std::string editors = formatPeople (ref, "EDITOR", "CORPEDITOR", -1);
+	std::string translators = formatPeople (ref, "TRANSLATOR", "CORPTRANSLATOR", -1);
 	newdoc.getBibData().setAuthors (authors);
 	if (!editors.empty ()) {
 		newdoc.getBibData().addExtra ("Editor", editors);
@@ -298,14 +290,8 @@ Document parseBibUtils (BibUtils::fields *ref)
 	bool someunused = false;
 
 	for (int j = 0; j < ref->nfields; ++j) {
-		Glib::ustring key = ref->tag[j].data;
-		Glib::ustring value = ref->data[j].data;
-
-		if (!value.validate ()) {
-			throw (Glib::ConvertError (
-				Glib::ConvertError::FAILED,
-				"Invalid UTF-8 from libbibutils"));
-		}
+		std::string key = ref->tag[j].data;
+		std::string value = ref->data[j].data;
 
 		int used = 1;
 		if (key == "REFNUM") {
@@ -358,19 +344,19 @@ Document parseBibUtils (BibUtils::fields *ref)
 	}
 
 	if (someunused) {
-		std::cerr << "(" << newdoc.getKey () << ")\n";
+		//std::cerr << "(" << newdoc.getKey () << ")\n";
 	}
 
 	return newdoc;
 }
 
 
-Format guessFormat (Glib::ustring const &rawtext)
+Format guessFormat (std::string const &rawtext)
 {
 	return (Format) BIBL_BIBTEXIN;
 }
 
-static void writerThread (Glib::ustring const &raw, int pipe, volatile bool *advance)
+static void writerThread (std::string const &raw, int pipe, volatile bool *advance)
 {
 	int len = strlen (raw.c_str());
 	if (len <= 0) {
@@ -398,7 +384,7 @@ static void writerThread (Glib::ustring const &raw, int pipe, volatile bool *adv
 
 void biblFromString (
 	bibl &b,
-	Glib::ustring const &rawtext,
+	std::string const &rawtext,
 	Format format,
 	param &p
 	)

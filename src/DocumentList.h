@@ -53,7 +53,7 @@ class DocumentList {
 	void clear () {docs_.clear ();}
 
 	int importFromFile (Glib::ustring const &filename, BibUtils::Format format);
-	int import (Glib::ustring const &rawtext, BibUtils::Format format);
+	int import (std::string const &rawtext, BibUtils::Format format);
 	Document parseBibUtils (BibUtils::fields *ref);
 };
 

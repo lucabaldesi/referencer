@@ -1,4 +1,5 @@
 1.0.4:
+	- Fix import in non-UTF8 locales
 	- Tags exported as "keywords" bibtex field
 	- Add clear icon to search entry
 	- Remember window size

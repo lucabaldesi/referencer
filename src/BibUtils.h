@@ -29,19 +29,19 @@ typedef enum {
 	FORMAT_UNKNOWN = -1
 } Format;
 
-Glib::ustring formatType (fields *info);
+std::string formatType (fields *info);
 int getType (fields *info);
 
-Glib::ustring formatPeople(fields *info, char *tag, char *ctag, int level);
-Glib::ustring formatPerson (Glib::ustring const &munged);
+std::string formatPeople(fields *info, char *tag, char *ctag, int level);
+std::string formatPerson (std::string const &munged);
 
 Document parseBibUtils (BibUtils::fields *ref);
 
-Format guessFormat (Glib::ustring const &rawtext);
+Format guessFormat (std::string const &rawtext);
 
 void biblFromString (
 	bibl &b,
-	Glib::ustring const &rawtext,
+	std::string const &rawtext,
 	Format format,
 	param &p);
 
