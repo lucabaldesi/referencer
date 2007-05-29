@@ -30,7 +30,6 @@ class Library;
 #define NO_TAGS_UID -2
 
 #define PROGRAM_NAME "Referencer"
-#define VERSION "1.0.4"
 
 class TagWindow {
 
