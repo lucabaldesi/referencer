@@ -124,7 +124,7 @@ namespace UStringPrivate
     os << obj;
 
     std::wstring str = os.str();
-    
+
     return Glib::convert(std::string(reinterpret_cast<const char *>(str.data()),
 				     str.size() * sizeof(wchar_t)),
 			 "UTF-8", "WCHAR_T");
@@ -151,6 +151,15 @@ namespace UStringPrivate
   {
     return obj;
   }
+  
+	
+  template <>
+  inline std::string
+  Composition::stringify<char *>(char *obj)
+  {
+    return obj;
+  }
+	
   
   // implementation of class Composition
   template <typename T>
