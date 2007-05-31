@@ -1,35 +1,70 @@
 
+Release schedule
+================
 
-Use installed libsexy if available, a la rhythmbox
-Mnemonics in Document menu are clashing
+Goals for 1.0.5:
+	ListView users are people too:
+		- Sort out the column sizing
+		- Make the fields editable without opening document properties
+		- (Maybe) Look into adding/removing columns
+		- Save the sorting state between sessions
+	Getting text from .ps files (a la ps2ascii)
+	Refine tagging UI:
+		Add/remove tags in document context menu
+		Text entry view of tags
+		AND vs OR when selecting multiple tags
+		Tag toggling with double click in cloud
+	Deal with external added URIs
+		Download remote files to "library directory"
+		UI for setting "library directory"
+		Offer to move files not in subdir of reflib location
 
-Other essential items:
-	Import of reflib files (merge in documents, resolve tag IDs)
-	Sizing of columns in the list view
-	LyX citation via lyxserver (pybliographic, lyx/src/client)
-	Command line reflib->bibtex
-	Check that UTF-8 export works as desired
 
-	BibTeX export:
-		What about underscores?  Need an "escape everything" mode?
-		Write out tags as special bibtex field
-	Resolve symlinks before doing relative filename magic
+Goals for 1.1:
+	Browse/search:
+		Z39.50
+		PubMed
 
-	Support new endxmlin, isiout and wordout from bibutils 3.31?
+	OAI support:
+		Arxiv database
+		PubMed database
+		http://www.pubmedcentral.nih.gov/oai/oai.cgi
+		http://arxiv.org/oai2
 
-	Edit menu:
-		- Copy key
-		- copy filename
-		- copy bibtex ?
-		- paste bibtex ?
+Bugs
+====
 
-	When importing endnote, %Y is series editor, but this is lost by bibutils for refs of inappropriate type.  %Y is used in pablo's file as generic author. - that was with endnote 3, try with more recent endnote	
+In TagWindow::onIconsDragData, we do get_file_info on remote URIs synchronously
+	in order to support directory recursion on remote filesystems -- this is a 
+	bad thing when adding stuff from really remote things like websites
+
+When importing endnote, %Y is series editor, but this is lost by bibutils for refs of inappropriate type.  %Y is used in pablo's file as generic author. - that was with endnote 3, try with more recent endnote	
+
+
+Unscheduled items
+=================
+
+Fix clashing mnemonics in document menu
+
+Import of reflib files (merge in documents, resolve tag IDs)
+
+LyX citation via lyxserver (pybliographic, lyx/src/client)
+
+Check that UTF-8 export works as desired
+
+BibTeX export robustness
+	What about underscores?  Need an "escape everything" mode?
+
+Support new endxmlin, isiout and wordout from bibutils >= 3.31
+
+Edit menu:
+	- Copy key
+	- copy filename
+	- copy bibtex ?
+	- paste bibtex ?
 
 Big functionality wishlist:
 	OAI support for arXiv and CrossRef (and possibly many others)
-		http://www.pubmedcentral.nih.gov/oai/oai.cgi
-		http://arxiv.org/oai2
-		http://oai.crossref.org/OAIHandler/
 	add by pubmed/medline ID (pubmed OAI)	
 
 	searching databases?
@@ -40,11 +75,11 @@ Big functionality wishlist:
 	Formatted bibliographies with Rtfbtx?
 	Tracker?  Beagle?
 
-Little functionality wishlist:
-	import/export "keywords" field in bibtex, map to referencer tags
-	Some support for moving file to trash instead of deleting
+Small functionality wishlist:
+	import "keywords" field in bibtex, map to referencer tags
+	Move file to trash instead of deleting
 	Set tags based on folder names when doing recursive import (Wilhelms, C.)
-	gconf schema
+	Create a gconf schema
 	Get document type from crossref XML instead of assuming Article
 	When generating keys from authorYEAR, should get rid of LaTeX unfriendly accented characters
 	Where we use ".tmp" in writing files, we should use something more unique
@@ -52,27 +87,17 @@ Little functionality wishlist:
 	Make search bar match more fields
 	Tell the user somehow in addDocFiles when we don't add files b/c they're already in the documentlist.
 	Assign a color to a tag and highlight refs with it
-	Should take relative filenames over absolute ones, if the two differ
 	Should have GPL headers in all files to qualify for debian packaging
+	Use installed libsexy if available, a la rhythmbox
+	Resolve symlinks before doing relative filename magic
 
 UI wishlist:
-	entry for tags in the properties dialog "foo, bar, baz"
 	say "1 document" instead of "1 documents" in statusbar
-	Size-varying list of tags, bold for toggling on/off
-	Save in Preferences the sorting of the list view.
-	Should be able to select multiple tags for ANDing instead of ORing document selection
 	Drag and drop to make LaTeX citations
 	Drag and drop to import bibtex snippets
 	Configuration of max_timeout in BibData::getCrossRef
-	click-to-edit in list view
 
-Bugs:
-	In TagWindow::onIconsDragData, we do get_file_info on remote URIs synchronously
-		in order to support directory recursion on remote filesystems -- this is a 
-		bad thing when adding stuff from really remote things like websites
-
-
-Competition on Science biblio export:
+The competition:
 	EndNote
 		EndNote is also somewhat DOI aware, dx.doi.org URLs generated when importing reference from eg INSPEC
 	Reference Manager
