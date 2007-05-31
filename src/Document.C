@@ -87,7 +87,7 @@ Glib::ustring Document::generateKey ()
 		Glib::ustring filename = Gnome::Vfs::unescape_string_for_display (
 			Glib::path_get_basename (filename_));
 
-		int periodpos = filename.find_last_of (".");
+		Glib::ustring::size_type periodpos = filename.find_last_of (".");
 		if (periodpos != std::string::npos) {
 			filename = filename.substr (0, periodpos);
 		}
@@ -346,28 +346,6 @@ void Document::writeXML (std::ostringstream &out)
 }
 
 
-static void *textfunc (void *stream, char *text, int len)
-{
-	Glib::ustring *str = (Glib::ustring *)stream;
-
-	int size = len;
-	if (size < 1)
-		return NULL;
-
-	// Note ustring DOESN'T WORK for addition, I think because the units of
-	// len are unicode characters and not bytes, or vice versa
-	// This should break eventually and get really fixed.
-	//Glib::ustring addition (text, size);
-	std::string addition (text, size);
-	//std::cerr << "addition = '" << addition << "'\n";
-	//str->append(text, len - 1);
-	*str += addition;
-
-	// What is this retval used for?
-	return NULL;
-}
-
-
 void Document::readPDF ()
 {
 	if (filename_.empty()) {
@@ -387,7 +365,6 @@ void Document::readPDF ()
 
 	Glib::ustring textdump;
 	int num_pages = poppler_document_get_n_pages (popplerdoc);
-	char **page_text;
 	bool got_id = false;
 
 	for (int i = 0; i < num_pages; i++) {
@@ -506,7 +483,7 @@ void Document::renameFromKey ()
 	Glib::ustring dirname = olduri->extract_dirname ();
 	std::cerr << "Dirname = " << dirname << "\n";
 
-	int pos = shortname.rfind (".");
+	Glib::ustring::size_type pos = shortname.rfind (".");
 	Glib::ustring extension = "";
 	if (pos != Glib::ustring::npos)
 		extension = shortname.substr (pos, shortname.length() - 1);

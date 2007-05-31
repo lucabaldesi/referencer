@@ -353,7 +353,7 @@ Glib::ustring relPath (
 
 	std::vector<Glib::ustring> libparts;
 
-	int next;
+	Glib::ustring::size_type next;
 	while ((next = parent.find (separator)) != Glib::ustring::npos) {
 		Glib::ustring chunk = parent.substr (0, next);
 		libparts.push_back (chunk);
@@ -373,7 +373,7 @@ Glib::ustring relPath (
 
 	bool ischild = true;
 
-	for (int i = 0; i < libparts.size() - 1; ++i) {
+	for (Glib::ustring::size_type i = 0; i < libparts.size() - 1; ++i) {
 		if (docparts.size() < i + 1 || libparts[i] != docparts[i]) {
 			ischild = false;
 			break;
@@ -382,7 +382,7 @@ Glib::ustring relPath (
 
 	Glib::ustring relfilename = "";
 	if (ischild) {
-		for (int i = libparts.size(); i < docparts.size(); ++i) {
+		for (Glib::ustring::size_type i = libparts.size(); i < docparts.size(); ++i) {
 			relfilename += docparts[i];
 			relfilename += separator;
 		}

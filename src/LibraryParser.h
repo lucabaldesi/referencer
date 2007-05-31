@@ -56,7 +56,7 @@ class LibraryParser : public Glib::Markup::Parser {
 
 	public:
 	LibraryParser (Library &library, TagList &taglist, DocumentList &doclist)
-		: doclist_(doclist), taglist_(taglist), library_(library)
+		: library_(library), doclist_(doclist), taglist_(taglist)
 	{
 		inTag_ = false;
 		inUid_ = false;
