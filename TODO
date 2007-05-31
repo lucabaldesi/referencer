@@ -18,18 +18,22 @@ Goals for 1.0.5:
 		Download remote files to "library directory"
 		UI for setting "library directory"
 		Offer to move files not in subdir of reflib location
+	Fix clashing mnemonics in document menu
 
 
 Goals for 1.1:
 	Browse/search:
 		Z39.50
-		PubMed
+		PubMed (inc. "Add by Medline ID")
 
 	OAI support:
 		Arxiv database
+			http://arxiv.org/oai2
 		PubMed database
-		http://www.pubmedcentral.nih.gov/oai/oai.cgi
-		http://arxiv.org/oai2
+			http://www.pubmedcentral.nih.gov/oai/oai.cgi
+
+	Integration with Tracker and/or Beagle
+	
 
 Bugs
 ====
@@ -44,39 +48,31 @@ When importing endnote, %Y is series editor, but this is lost by bibutils for re
 Unscheduled items
 =================
 
-Fix clashing mnemonics in document menu
-
 Import of reflib files (merge in documents, resolve tag IDs)
 
 LyX citation via lyxserver (pybliographic, lyx/src/client)
 
-Check that UTF-8 export works as desired
+Verify that UTF-8 export works as per user expectations
 
-BibTeX export robustness
+Improve BibTeX export robustness
 	What about underscores?  Need an "escape everything" mode?
+	Document requirements/exceptions
 
 Support new endxmlin, isiout and wordout from bibutils >= 3.31
+
+Possible items
+==============
 
 Edit menu:
 	- Copy key
 	- copy filename
-	- copy bibtex ?
-	- paste bibtex ?
+	- copy bibtex
 
-Big functionality wishlist:
-	OAI support for arXiv and CrossRef (and possibly many others)
-	add by pubmed/medline ID (pubmed OAI)	
-
-	searching databases?
+Functionality wishlist:
 	Google scholar link?  Arbitrary links?
 	Parse strings "Title: foo\nISBN: bar\n" like recipe manager
-	read PS files to search for DOIs as well as reading PDFs
-	Copy added (remote?) files into a local directory
 	Formatted bibliographies with Rtfbtx?
-	Tracker?  Beagle?
-
-Small functionality wishlist:
-	import "keywords" field in bibtex, map to referencer tags
+	Import "keywords" field in bibtex, map to referencer tags
 	Move file to trash instead of deleting
 	Set tags based on folder names when doing recursive import (Wilhelms, C.)
 	Create a gconf schema
@@ -97,13 +93,15 @@ UI wishlist:
 	Drag and drop to import bibtex snippets
 	Configuration of max_timeout in BibData::getCrossRef
 
-The competition:
-	EndNote
-		EndNote is also somewhat DOI aware, dx.doi.org URLs generated when importing reference from eg INSPEC
-	Reference Manager
-	ProCite
-	RefWorks
-also: Zotero
-also: Yep
-also: http://mekentosj.com/papers/
+The Competition
+===============
+
+EndNote
+	EndNote is somewhat DOI aware, dx.doi.org URLs generated when importing reference from eg INSPEC
+Reference Manager
+ProCite
+RefWorks
+Zotero
+Yep
+http://mekentosj.com/papers/
 http://refbase.sourceforge.net/
