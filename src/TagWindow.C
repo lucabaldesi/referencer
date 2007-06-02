@@ -215,8 +215,6 @@ void TagWindow::constructUI ()
 	tagsscroll->set_shadow_type (Gtk::SHADOW_NONE);
 	tagsscroll->add (*tags);
 	filtervbox->pack_start(*tagsscroll, true, true, 0);
-	
-	filtervbox->pack_start (*tags);
 
 	tagview_ = tags;
 
@@ -387,7 +385,7 @@ void TagWindow::constructUI ()
 
 	progressbar_ = Gtk::manage (new Gtk::ProgressBar ());
 	statusbar_->pack_start (*progressbar_, false, false, 0);
-
+	
 	window_->show_all ();
 
 
@@ -1757,8 +1755,11 @@ void TagWindow::onAddDocUnnamed ()
 	setDirty (true);
 	Document *newdoc = library_->doclist_->newDocUnnamed ();
 	newdoc->setKey (library_->doclist_->uniqueKey (newdoc->generateKey ()));
-	docpropertiesdialog_->show (newdoc);
-	populateDocStore ();
+	if (docpropertiesdialog_->show (newdoc)) {
+		populateDocStore ();
+	} else {
+		library_->doclist_->removeDoc (newdoc);
+	}
 }
 
 
