@@ -438,13 +438,13 @@ void TagWindow::constructMenu ()
 		Gtk::Stock::NEW),
   	sigc::mem_fun(*this, &TagWindow::onNewLibrary));
 	actiongroup_->add( Gtk::Action::create("OpenLibrary",
-		Gtk::Stock::OPEN),
+		Gtk::Stock::OPEN, _("_Open...")),
   	sigc::mem_fun(*this, &TagWindow::onOpenLibrary));
 	actiongroup_->add( Gtk::Action::create("SaveLibrary",
 		Gtk::Stock::SAVE),
   	sigc::mem_fun(*this, &TagWindow::onSaveLibrary));
 	actiongroup_->add( Gtk::Action::create("SaveAsLibrary",
-		Gtk::Stock::SAVE_AS), Gtk::AccelKey ("<control><shift>s"),
+		Gtk::Stock::SAVE_AS, _("Save _As...")), Gtk::AccelKey ("<control><shift>s"),
   	sigc::mem_fun(*this, &TagWindow::onSaveAsLibrary));
 	actiongroup_->add( Gtk::Action::create("ExportBibtex",
 		Gtk::Stock::CONVERT, _("E_xport as BibTeX...")), Gtk::AccelKey ("<control>b"),
@@ -499,13 +499,13 @@ void TagWindow::constructMenu ()
 		"AddDocFile", Gtk::Stock::ADD, _("_Add File...")),
   	sigc::mem_fun(*this, &TagWindow::onAddDocFile));
 	actiongroup_->add( Gtk::Action::create(
-		"AddDocFolder", Gtk::Stock::ADD, _("_Add Folder...")),
+		"AddDocFolder", Gtk::Stock::ADD, _("Add _Folder...")),
   	sigc::mem_fun(*this, &TagWindow::onAddDocFolder));
  	actiongroup_->add( Gtk::Action::create(
-		"AddDocUnnamed", Gtk::Stock::ADD, _("_Add Empty Reference...")),
+		"AddDocUnnamed", Gtk::Stock::ADD, _("Add E_mpty Reference...")),
   	sigc::mem_fun(*this, &TagWindow::onAddDocUnnamed));
 	actiongroup_->add( Gtk::Action::create(
-		"AddDocDoi", Gtk::Stock::ADD, _("_Add Reference with DOI...")),
+		"AddDocDoi", Gtk::Stock::ADD, _("Add Refere_nce with DOI...")),
   	sigc::mem_fun(*this, &TagWindow::onAddDocByDoi));
 	actiongroup_->add( Gtk::Action::create(
 		"RemoveDoc", Gtk::Stock::REMOVE, _("_Remove")),
@@ -529,7 +529,7 @@ void TagWindow::constructMenu ()
 		Gtk::AccelKey ("<control><shift>Delete"),
   	sigc::mem_fun(*this, &TagWindow::onDeleteDoc));
 	actiongroup_->add( Gtk::Action::create(
-		"RenameDoc", Gtk::Stock::EDIT, _("_Rename File from Key")),
+		"RenameDoc", Gtk::Stock::EDIT, _("R_ename File from Key")),
   	sigc::mem_fun(*this, &TagWindow::onRenameDoc));
 
 	actiongroup_->add ( Gtk::Action::create("HelpMenu", _("_Help")) );
