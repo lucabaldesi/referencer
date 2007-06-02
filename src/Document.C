@@ -138,7 +138,10 @@ void Document::setupThumbnail ()
 				std::cerr << "Has valid failed thumbnail: '" << filename_ << "'\n";
 			} else {
 				std::cerr << "Generate thumbnail: '" << filename_ << "'\n";
-				thumbnail_ = thumbfac->generate_thumbnail (filename_, "application/pdf");
+				Glib::ustring mimetype = 
+					(uri->get_file_info (Gnome::Vfs::FILE_INFO_GET_MIME_TYPE))->get_mime_type ();
+
+				thumbnail_ = thumbfac->generate_thumbnail (filename_, mimetype);
 				if (thumbnail_) {
 					thumbfac->save_thumbnail (thumbnail_, filename_, mtime);
 				} else {
