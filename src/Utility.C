@@ -49,13 +49,14 @@ bool hasExtension (
 
 
 Glib::ustring uriToDisplayFileName (
-	Glib::ustring const &uri)
+	Glib::ustring const &uristr)
 {
 	Glib::ustring display;
-	if (Gnome::Vfs::Uri::create(uri)->get_scheme () == "file")
-		display = Gnome::Vfs::get_local_path_from_uri (uri);
+	Glib::RefPtr<Gnome::Vfs::Uri> uri = Gnome::Vfs::Uri::create(uristr);
+	if (uri && uri->get_scheme () == "file")
+		display = Gnome::Vfs::get_local_path_from_uri (uristr);
 	else
-		display = Gnome::Vfs::unescape_string (uri);
+		display = Gnome::Vfs::unescape_string (uristr);
 
 	return display;
 }
