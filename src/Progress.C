@@ -9,7 +9,7 @@
  */
 
 
-#include "TagWindow.h"
+#include "RefWindow.h"
 
 #include "Progress.h"
 
@@ -17,7 +17,7 @@
 
 #include <iostream>
 
-Progress::Progress (TagWindow &tagwindow)
+Progress::Progress (RefWindow &tagwindow)
 	: tagwindow_ (tagwindow)
 {
 	progress_ = tagwindow_.getProgressBar ();

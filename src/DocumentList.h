@@ -15,7 +15,6 @@
 
 #include <gtkmm.h>
 #include <sstream>
-//#include <vector>
 #include <list>
 
 #include "BibUtils.h"

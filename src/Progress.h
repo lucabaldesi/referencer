@@ -15,11 +15,11 @@
 
 #include <gtkmm.h>
 
-class TagWindow;
+class RefWindow;
 
 class Progress {
 	public:
-	Progress (TagWindow &tagwindow);
+	Progress (RefWindow &tagwindow);
 	~Progress ();
 
 	void setLabel (Glib::ustring const &text);
@@ -35,7 +35,7 @@ class Progress {
 	Gtk::ProgressBar *progress_;
 	bool finished_;
 	Glib::Thread *loopthread_;
-	TagWindow &tagwindow_;
+	RefWindow &tagwindow_;
 };
 
 #endif

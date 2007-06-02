@@ -24,7 +24,7 @@
 #include "Library.h"
 
 
-Library::Library (TagWindow &tagwindow)
+Library::Library (RefWindow &tagwindow)
 	: tagwindow_ (tagwindow)
 {
 	doclist_ = new DocumentList ();
@@ -135,7 +135,7 @@ bool Library::load (Glib::ustring const &libfilename)
 
 	char *buffer = (char *) malloc (sizeof(char) * (fileinfo->get_size() + 1));
 	if (!buffer) {
-		std::cerr << "Warning: TagWindow::loadLibrary: couldn't allocate buffer\n";
+		std::cerr << "Warning: RefWindow::loadLibrary: couldn't allocate buffer\n";
 		return false;
 	}
 
@@ -338,7 +338,7 @@ void Library::writeBibtex (
 		bibfile.create (tmpbibfilename, Gnome::Vfs::OPEN_WRITE,
 			false, Gnome::Vfs::PERM_USER_READ | Gnome::Vfs::PERM_USER_WRITE);
 	} catch (const Gnome::Vfs::exception ex) {
-		std::cerr << "TagWindow::onExportBibtex: "
+		std::cerr << "RefWindow::onExportBibtex: "
 			"exception in create '" << ex.what() << "'\n";
 		Utility::exceptionDialog (&ex, "opening BibTex file");
 		return;

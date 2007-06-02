@@ -18,34 +18,47 @@
 
 #include <gtkmm.h>
 
+class Gtk::TreePath;
+class Glib::ustring;
+
 class Document;
 class DocumentList;
 class DocumentProperties;
-class TagList;
-class Gtk::TreePath;
-class Glib::ustring;
+class DocumentView;
 class Library;
+class TagList;
 
 #define ALL_TAGS_UID -1
 #define NO_TAGS_UID -2
 
-#define PROGRAM_NAME "Referencer"
+#define DISPLAY_PROGRAM "Referencer"
 
-class TagWindow {
-
-
+class RefWindow {
 	private:
 		Gtk::Statusbar *statusbar_;
 		Gtk::ProgressBar *progressbar_;
 	public:
 		//Gtk::Window * getWindow () {return window_;}
 		void setStatusText (Glib::ustring const &text) {statusbar_->push (text, 0);};
-		Gtk::ProgressBar *getProgressBar () {return progressbar_;}
+		Gtk::ProgressBar *getProgressBar ()
+			{return progressbar_;}
 		void setSensitive (bool const sensitive);
+		
+		
+		void addDocFiles (std::vector<Glib::ustring> const &filenames);
 
+
+		/* Other main window UI */
+		// DocumentView needs this for its tooltip
+		Gtk::Window *window_;
+		// DocumentView needs this for popup menu
+		Glib::RefPtr<Gtk::UIManager> uimanager_;
+		// DocumentView needs this for sensitibity
+		Glib::RefPtr<Gtk::ActionGroup> actiongroup_;
+		// DocumentView needs this for populateDocStore
+		std::vector<int> filtertags_;
+		
 	private:
-		int memberint;
-		void populateDocStore ();
 		void populateTagList ();
 		void constructUI ();
 		void constructMenu ();
@@ -60,57 +73,8 @@ class TagWindow {
 			const Gtk::TreeModel::iterator& a,
 			const Gtk::TreeModel::iterator& b);
 
-		Glib::RefPtr<Gtk::ListStore> docstore_;
-		Gtk::TreeModelColumn<Document*> docpointercol_;
-		Gtk::TreeModelColumn<Glib::ustring> dockeycol_;
-		Gtk::TreeModelColumn<Glib::ustring> doctitlecol_;
-		Gtk::TreeModelColumn<Glib::ustring> docauthorscol_;
-		Gtk::TreeModelColumn<Glib::ustring> docyearcol_;
-		Gtk::TreeModelColumn<Glib::RefPtr<Gdk::Pixbuf> > docthumbnailcol_;
-		Glib::RefPtr<Gtk::TreeSelection> docslistselection_;
-
-		// Keep an up-to-date local copy of this, since it's
-		// used so often
-		bool usinglistview_;
-
-
-		/* The Document View */
-		Gtk::IconView *docsiconview_;
-		void docActivated (const Gtk::TreePath& path);
-		Gtk::TreeView *docslistview_;
-		// treeviews want a different prototype for the signal
-		void docListActivated (const Gtk::TreePath& path, Gtk::TreeViewColumn*) {
-			docActivated (path);
-		}
-		GtkWidget *doctooltip_;
-		Document *hoverdoc_;
-		void onDocMouseMotion (GdkEventMotion* event);
-		void onDocMouseLeave (GdkEventCrossing *event);
-		Gtk::Menu doccontextmenu_;
-		Gtk::ScrolledWindow *docsiconscroll_;
-		Gtk::ScrolledWindow *docslistscroll_;
-		void docSelectionChanged ();
-		Document *getSelectedDoc ();
-		std::vector<Document*> getSelectedDocs ();
-		int getSelectedDocCount ();
-		typedef enum {
-			NONE = 0,
-			ALL,
-			SOME
-		} SubSet;
-		SubSet selectedDocsHaveTag (int uid);
-		bool docClicked (GdkEventButton* event);
-		void onIconsDragData (
-			const Glib::RefPtr <Gdk::DragContext> &context,
-			int n1, int n2, const Gtk::SelectionData &sel, guint n3, guint n4);
-		class Capabilities {
-			public:
-			bool weblink;
-			bool open;
-			bool getmetadata;
-			Capabilities () {weblink = open = getmetadata = false;}
-		};
-		Capabilities getDocSelectionCapabilities ();
+		/* The Documents View */
+		DocumentView *docview_;
 
 		/* The Tags View */
 		Gtk::Widget *tagpane_;
@@ -119,7 +83,6 @@ class TagWindow {
 		Gtk::TreeView *tagview_;
 		bool tagselectionignore_;
 		bool docselectionignore_;
-		std::vector<int> filtertags_;
 		std::map<int, Gtk::ToggleButton*> taggerchecks_;
 		bool ignoretaggerchecktoggled_;
 		void taggerCheckToggled (Gtk::ToggleButton *check, int taguid);
@@ -127,19 +90,9 @@ class TagWindow {
 		void tagClicked (GdkEventButton* event);
 		void tagNameEdited (Glib::ustring const &text1, Glib::ustring const &text2);
 
-		/* The search box */
-		Gtk::Entry *searchentry_;
-		void onSearchChanged ();
-		void onFind ();
-
 		/* The Document Properties dialog */
 		DocumentProperties *docpropertiesdialog_;
-
-		/* Other main window UI */
-		Gtk::Window *window_;
-		Glib::RefPtr<Gtk::UIManager> uimanager_;
-		Glib::RefPtr<Gtk::ActionGroup> actiongroup_;
-
+		void docSelectionChanged ();
 
 		void onWorkOfflineToggled ();
 		void onQuit ();
@@ -152,16 +105,19 @@ class TagWindow {
 		void onAddDocByDoi ();
 		void onAddDocFile ();
 		void onAddDocFolder ();
-		void addDocFiles (std::vector<Glib::ustring> const &filenames);
+		public:
 		void onPasteBibtex (GdkAtom selection);
+		private:
 		void onCopyCite ();
 		void onRemoveDoc ();
-		void onWebLinkDoc ();
 		void onGetMetadataDoc ();
 		void onDeleteDoc ();
 		void onRenameDoc ();
+		public:
 		void onOpenDoc ();
 		void onDocProperties ();
+		void onWebLinkDoc ();
+		private:
 		void onIntroduction ();
 		void onAbout ();
 		void onNewLibrary ();
@@ -173,11 +129,11 @@ class TagWindow {
 		void manageBrowseDialog (Gtk::Entry *entry);
 		void onImport ();
 		void onPreferences ();
+		void onFind ();
 
 		/* WM events */
 		bool onDelete (GdkEventAny *ev);
 		void onResize (GdkEventConfigure *event);
-
 
 		/* Pick up preference changes */
 		void onShowTagPanePrefChanged ();
@@ -191,7 +147,9 @@ class TagWindow {
 
 		/* Update UI text */
 		void updateTitle ();
+		public:
 		void updateStatusBar ();
+		private:
 
 		/* Handle dirtyness */
 		bool ensureSaved ();
@@ -205,8 +163,8 @@ class TagWindow {
 
 
 	public:
-		TagWindow ();
-		~TagWindow ();
+		RefWindow ();
+		~RefWindow ();
 		void run ();
 };
 

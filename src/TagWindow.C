@@ -11,6 +11,7 @@
 
 #include <map>
 #include <cmath>
+#include <iostream>
 
 #include <gtkmm.h>
 #include <libgnomeuimm.h>
@@ -18,56 +19,20 @@
 #include <glibmm/i18n.h>
 #include "ucompose.hpp"
 
-#include "Library.h"
-#include "DocumentList.h"
-#include "TagList.h"
 #include "Document.h"
+#include "DocumentList.h"
 #include "DocumentProperties.h"
-#include "Preferences.h"
+#include "DocumentView.h"
+#include "Library.h"
 #include "LibraryParser.h"
-#include "ev-tooltip.h"
-#include "icon-entry.h"
+#include "Preferences.h"
+#include "TagList.h"
 
 #include "config.h"
-#include "TagWindow.h"
+#include "RefWindow.h"
 
 
-int main (int argc, char **argv)
-{
-	bindtextdomain (GETTEXT_PACKAGE, GNOMELOCALEDIR);
-	bind_textdomain_codeset (GETTEXT_PACKAGE, "UTF-8");
-	textdomain (GETTEXT_PACKAGE);
-
-	Gnome::Main gui (PROGRAM_NAME, VERSION,
-		Gnome::UI::module_info_get(), argc, argv);
-
-	Gnome::Vfs::init ();
-
-	_global_prefs = new Preferences();
-
-	if (argc > 1) {
-		Glib::ustring libfile = argv[1];
-		if (!Glib::path_is_absolute (libfile)) {
-			libfile = Glib::build_filename (Glib::get_current_dir (), libfile);
-		}
-
-		libfile = Gnome::Vfs::get_uri_from_local_path (libfile);
-
-		_global_prefs->setLibraryFilename (libfile);
-	}
-
-	try {
-		TagWindow window;
-		window.run();
-	} catch (Glib::Error ex) {
-		Utility::exceptionDialog (&ex, _("Terminating due to unhandled exception"));
-	}
-
-	return 0;
-}
-
-
-TagWindow::TagWindow ()
+RefWindow::RefWindow ()
 {
 	tagselectionignore_ = false;
 	ignoretaggerchecktoggled_ = false;
@@ -75,8 +40,6 @@ TagWindow::TagWindow ()
 	dirty_ = false;
 
 	library_ = new Library (*this);
-
-	usinglistview_ = _global_prefs->getUseListView ();
 
 	docpropertiesdialog_ = new DocumentProperties ();
 
@@ -90,20 +53,16 @@ TagWindow::TagWindow ()
 		onNewLibrary ();
 	}
 
-	hoverdoc_ = NULL;
-
 	setDirty (false);
 
-	populateDocStore ();
+	docview_->populateDocStore ();
 	populateTagList ();
 }
 
 
-TagWindow::~TagWindow ()
+RefWindow::~RefWindow ()
 {
 	_global_prefs->setLibraryFilename (openedlib_);
-
-	gtk_widget_destroy (doctooltip_);
 
 	delete library_;
 	delete docpropertiesdialog_;
@@ -112,66 +71,73 @@ TagWindow::~TagWindow ()
 }
 
 
-void TagWindow::run ()
+void RefWindow::run ()
 {
 	Gnome::Main::run (*window_);
 }
 
 
-void TagWindow::constructUI ()
+void RefWindow::constructUI ()
 {
+	/* The main window */
 	window_ = new Gtk::Window(Gtk::WINDOW_TOPLEVEL);
+
 	std::pair<int, int> size = _global_prefs->getWindowSize ();
 	window_->set_default_size (size.first, size.second);
 	window_->signal_delete_event().connect (
-		sigc::mem_fun (*this, &TagWindow::onDelete));
+		sigc::mem_fun (*this, &RefWindow::onDelete));
 	window_->signal_configure_event().connect_notify (
-		sigc::mem_fun (*this, &TagWindow::onResize));
+		sigc::mem_fun (*this, &RefWindow::onResize));
 
 	window_->set_icon (
 		Gdk::Pixbuf::create_from_file(
 			Utility::findDataFile("referencer.svg")));
 
-	constructMenu ();
-
+	/* Vbox fills the whole window */
 	Gtk::VBox *vbox = Gtk::manage(new Gtk::VBox);
 	window_->add (*vbox);
 
+	/* The menu bar */
+	constructMenu ();
 	vbox->pack_start (*uimanager_->get_widget("/MenuBar"), false, false, 0);
+
+	/* The tool bar */
 	vbox->pack_start (*uimanager_->get_widget("/ToolBar"), false, false, 0);
+	Gtk::Toolbar *toolbar = (Gtk::Toolbar *) uimanager_->get_widget("/ToolBar");
+	Gtk::ToolItem *paditem = Gtk::manage (new Gtk::ToolItem);
+	paditem->set_expand (true);
+	// To put the search box on the right
+	toolbar->append (*paditem);
+	// In order to prevent search box falling off the edge.
+	toolbar->set_show_arrow (false);
+
+	/* Contains tags and document view */
 	Gtk::HPaned *hpaned = Gtk::manage(new Gtk::HPaned());
 	vbox->pack_start (*hpaned, true, true, 0);
 
+	/* The statusbar */
+	statusbar_ = Gtk::manage (new Gtk::Statusbar ());
+	vbox->pack_start (*statusbar_, false, false, 0);
 
-	Gtk::Toolbar *toolbar = (Gtk::Toolbar *) uimanager_->get_widget("/ToolBar");
+	progressbar_ = Gtk::manage (new Gtk::ProgressBar ());
+	statusbar_->pack_start (*progressbar_, false, false, 0);
+	
+	/* The document view */
+	docview_ = Gtk::manage (
+		new DocumentView(
+			*this,
+			*library_,
+			_global_prefs->getUseListView ()));
+	docview_->getSelectionChangedSignal ().connect (
+		sigc::mem_fun (*this, &RefWindow::docSelectionChanged));
+	hpaned->pack2(*docview_, Gtk::EXPAND);
 
-	Gtk::ToolItem *paditem = Gtk::manage (new Gtk::ToolItem);
-	paditem->set_expand (true);
-	toolbar->append (*paditem);
-
+	/* Drop in the search box */
 	Gtk::ToolItem *searchitem = Gtk::manage (new Gtk::ToolItem);
-	Gtk::HBox *search = Gtk::manage (new Gtk::HBox);
-	//Gtk::Label *searchlabel = Gtk::manage (new Gtk::Label (_("_Search:"), true));
-	Sexy::IconEntry *searchentry = Gtk::manage (new Sexy::IconEntry ());
-	Gtk::Image *searchicon = Gtk::manage (
-		new Gtk::Image (Gtk::Stock::FIND, Gtk::ICON_SIZE_BUTTON));
-	searchentry->set_icon (Sexy::ICON_ENTRY_PRIMARY, searchicon);
-	//searchlabel->set_mnemonic_widget (*searchentry);
-	search->set_spacing (6);
-	//search->pack_start (*searchlabel, false, false, 0);
-	search->pack_start (*searchentry, false, false, 0);
-	search->show_all ();
-	searchitem->add (*search);
-
+	searchitem->add (docview_->getSearchEntry());
 	toolbar->append (*searchitem);
-	// In order to prevent search box falling off the edge.
-	toolbar->set_show_arrow ( false);
-
-	searchentry_ = searchentry;
-	searchentry_->signal_changed ().connect (
-		sigc::mem_fun (*this, &TagWindow::onSearchChanged));
-
-
+		
+	/* The tags */
 	vbox = Gtk::manage(new Gtk::VBox);
 	Gtk::Frame *tagsframe = new Gtk::Frame ();
 	tagsframe->add(*vbox);
@@ -189,7 +155,7 @@ void TagWindow::constructUI ()
 	tagcols.add(tagfontcol_);
 	tagstore_ = Gtk::ListStore::create(tagcols);
 
-	tagstore_->set_sort_func (tagnamecol_, sigc::mem_fun (*this, &TagWindow::sortTags));
+	tagstore_->set_sort_func (tagnamecol_, sigc::mem_fun (*this, &RefWindow::sortTags));
 	tagstore_->set_sort_column (tagnamecol_, Gtk::SORT_ASCENDING);
 
 	// Create the treeview for the tag list
@@ -198,7 +164,7 @@ void TagWindow::constructUI ()
 	Gtk::CellRendererText *render = Gtk::manage(new Gtk::CellRendererText());
 	render->property_editable() = true;
 	render->signal_edited().connect (
-		sigc::mem_fun (*this, &TagWindow::tagNameEdited));
+		sigc::mem_fun (*this, &RefWindow::tagNameEdited));
 	render->property_xalign () = 0.5;
 	Gtk::TreeView::Column *namecol = Gtk::manage(
 		new Gtk::TreeView::Column (_("Tags"), *render));
@@ -206,7 +172,7 @@ void TagWindow::constructUI ()
 	namecol->add_attribute (render->property_font_desc (), tagfontcol_);
 	tags->append_column (*namecol);
 	tags->signal_button_press_event().connect_notify(
-		sigc::mem_fun (*this, &TagWindow::tagClicked));
+		sigc::mem_fun (*this, &RefWindow::tagClicked));
 	tags->set_headers_visible (false);
 	tags->set_search_column (tagnamecol_);
 
@@ -220,7 +186,7 @@ void TagWindow::constructUI ()
 
 	tagselection_ = tags->get_selection();
 	tagselection_->signal_changed().connect_notify (
-		sigc::mem_fun (*this, &TagWindow::tagSelectionChanged));
+		sigc::mem_fun (*this, &RefWindow::tagSelectionChanged));
 	tagselection_->set_mode (Gtk::SELECTION_MULTIPLE);
 
 	Gtk::Toolbar& tagbar = (Gtk::Toolbar&) *uimanager_->get_widget("/TagBar");
@@ -245,165 +211,11 @@ void TagWindow::constructUI ()
 	vbox->pack_start (*taggerscroll, true, true, 0);
 
 	taggerbox_ = taggervbox;
-
-	// The iconview side
-	vbox = Gtk::manage(new Gtk::VBox);
-	Gtk::Frame *iconsframe = new Gtk::Frame ();
-	iconsframe->add (*vbox);
-	hpaned->pack2(*iconsframe, Gtk::EXPAND);
-
-	// Create the store for the document icons
-	Gtk::TreeModel::ColumnRecord iconcols;
-	iconcols.add(docpointercol_);
-	iconcols.add(dockeycol_);
-	iconcols.add(doctitlecol_);
-	iconcols.add(docauthorscol_);
-	iconcols.add(docyearcol_);
-	iconcols.add(docthumbnailcol_);
-	docstore_ = Gtk::ListStore::create(iconcols);
-
-	// Create the IconView for the document icons
-	Gtk::IconView *icons = Gtk::manage(new Gtk::IconView(docstore_));
-	icons->set_text_column(dockeycol_);
-	icons->set_pixbuf_column(docthumbnailcol_);
-	icons->signal_item_activated().connect (
-		sigc::mem_fun (*this, &TagWindow::docActivated));
-
-	icons->signal_button_press_event().connect(
-		sigc::mem_fun (*this, &TagWindow::docClicked), false);
-
-	icons->signal_selection_changed().connect(
-		sigc::mem_fun (*this, &TagWindow::docSelectionChanged));
-
-	icons->set_selection_mode (Gtk::SELECTION_MULTIPLE);
-	/*icons->set_column_spacing (50);
-	icons->set_icon_width (10);*/
-	icons->set_columns (-1);
-
-	std::vector<Gtk::TargetEntry> dragtypes;
-	Gtk::TargetEntry urilist;
-	urilist.set_info (0);
-	urilist.set_target ("text/uri-list");
-	dragtypes.push_back (urilist);
-	urilist.set_target ("text/x-moz-url-data");
-	dragtypes.push_back (urilist);
-
-	icons->drag_dest_set (
-		dragtypes,
-		Gtk::DEST_DEFAULT_ALL,
-		Gdk::ACTION_COPY | Gdk::ACTION_MOVE | Gdk::ACTION_LINK);
-
-	icons->signal_drag_data_received ().connect (
-		sigc::mem_fun (*this, &TagWindow::onIconsDragData));
-	icons->set_events (Gdk::POINTER_MOTION_MASK | Gdk::LEAVE_NOTIFY_MASK);
-	icons->signal_motion_notify_event ().connect_notify (
-		sigc::mem_fun (*this, &TagWindow::onDocMouseMotion));
-	icons->signal_leave_notify_event ().connect_notify (
-		sigc::mem_fun (*this, &TagWindow::onDocMouseLeave));
-
-	docsiconview_ = icons;
-
-	Gtk::ScrolledWindow *iconsscroll = Gtk::manage(new Gtk::ScrolledWindow());
-	iconsscroll->add(*icons);
-	iconsscroll->set_policy (Gtk::POLICY_NEVER, Gtk::POLICY_AUTOMATIC);
-	vbox->pack_start(*iconsscroll, true, true, 0);
-
-	docsiconscroll_ = iconsscroll;
-
-
-	doctooltip_ = ev_tooltip_new (GTK_WIDGET(docsiconview_->gobj()));
-
-	/*Gtk::Toolbar& docbar = (Gtk::Toolbar&) *uimanager_->get_widget("/DocBar");
-	vbox->pack_start (docbar, false, false, 0);
-	docbar.set_toolbar_style (Gtk::TOOLBAR_ICONS);
-	docbar.set_show_arrow (false);*/
-
-	// The TreeView for the document list
-	Gtk::TreeView *table = Gtk::manage (new Gtk::TreeView(docstore_));
-	table->set_enable_search (true);
-	table->set_search_column (1);
-	table->set_rules_hint (true);
-
-	table->drag_dest_set (
-		dragtypes,
-		Gtk::DEST_DEFAULT_ALL,
-		Gdk::ACTION_COPY | Gdk::ACTION_MOVE | Gdk::ACTION_LINK);
-
-	table->signal_drag_data_received ().connect (
-		sigc::mem_fun (*this, &TagWindow::onIconsDragData));
-
-	table->signal_row_activated ().connect (
-		sigc::mem_fun (*this, &TagWindow::docListActivated));
-
-	table->signal_button_press_event().connect(
-		sigc::mem_fun (*this, &TagWindow::docClicked), false);
-
-	docslistselection_ = table->get_selection ();
-	docslistselection_->set_mode (Gtk::SELECTION_MULTIPLE);
-	docslistselection_->signal_changed ().connect (
-		sigc::mem_fun (*this, &TagWindow::docSelectionChanged));
-
-	// Er, we're actually passing this as reference, is this the right way
-	// to create it?  Will the treeview actually copy it?
-	Gtk::CellRendererText *cell;
-	Gtk::TreeViewColumn *col;
-	col = Gtk::manage (new Gtk::TreeViewColumn (_("Key"), dockeycol_));
-	col->set_resizable (true);
-	col->set_sort_column (dockeycol_);
-	table->append_column (*col);
-	col = Gtk::manage (new Gtk::TreeViewColumn (_("Title"), doctitlecol_));
-	col->set_resizable (true);
-	col->set_expand (true);
-	col->set_sort_column (doctitlecol_);
-	cell = (Gtk::CellRendererText *) col->get_first_cell_renderer ();
-	cell->property_ellipsize () = Pango::ELLIPSIZE_END;
-	table->append_column (*col);
-	col = Gtk::manage (new Gtk::TreeViewColumn (_("Authors"), docauthorscol_));
-	col->set_resizable (true);
-	//col->set_expand (true);
-	col->set_sort_column (docauthorscol_);
-	cell = (Gtk::CellRendererText *) col->get_first_cell_renderer ();
-	cell->property_ellipsize () = Pango::ELLIPSIZE_END;
-	table->append_column (*col);
-	col = Gtk::manage (new Gtk::TreeViewColumn (_("Year  "), docyearcol_));
-	col->set_resizable (true);
-	col->set_sort_column (docyearcol_);
-	table->append_column (*col);
-
-	docslistview_ = table;
-
-	Gtk::ScrolledWindow *tablescroll = Gtk::manage(new Gtk::ScrolledWindow());
-	tablescroll->add(*table);
-	tablescroll->set_policy (Gtk::POLICY_NEVER, Gtk::POLICY_AUTOMATIC);
-	vbox->pack_start(*tablescroll, true, true, 0);
-
-	docslistscroll_ = tablescroll;
-
-	// The statusbar
-	statusbar_ = Gtk::manage (new Gtk::Statusbar ());
-	vbox->pack_start (*statusbar_, false, false, 0);
-
-	progressbar_ = Gtk::manage (new Gtk::ProgressBar ());
-	statusbar_->pack_start (*progressbar_, false, false, 0);
 	
 	window_->show_all ();
-
-
-	// usinglistview_ was initialised immediately after new Preferences
-	// Initialise widgets and listen for prefs change or user input
-	Glib::RefPtr <Gtk::RadioAction>::cast_static(
-			actiongroup_->get_action ("UseListView"))->set_active(
-				usinglistview_);
-	Glib::RefPtr <Gtk::RadioAction>::cast_static(
-			actiongroup_->get_action ("UseIconView"))->set_active(
-				!usinglistview_);
-	onUseListViewPrefChanged ();
-	_global_prefs->getUseListViewSignal ().connect (
-		sigc::mem_fun (*this, &TagWindow::onUseListViewPrefChanged));
-
-	Glib::RefPtr <Gtk::RadioAction>::cast_static(
-		actiongroup_->get_action ("UseListView"))->signal_toggled ().connect (
-			sigc::mem_fun(*this, &TagWindow::onUseListViewToggled));
+	// Update visibilities
+	docview_->setUseListView (!docview_->getUseListView());
+	docview_->setUseListView (!docview_->getUseListView());
 
 	// Initialise and listen for prefs change or user input
 	Glib::RefPtr <Gtk::ToggleAction>::cast_static(
@@ -411,54 +223,68 @@ void TagWindow::constructUI ()
 				_global_prefs->getShowTagPane ());
 	onShowTagPanePrefChanged ();
 	_global_prefs->getShowTagPaneSignal ().connect (
-		sigc::mem_fun (*this, &TagWindow::onShowTagPanePrefChanged));
+		sigc::mem_fun (*this, &RefWindow::onShowTagPanePrefChanged));
 
 	Glib::RefPtr <Gtk::ToggleAction>::cast_static(
 			actiongroup_->get_action ("ShowTagPane"))->signal_toggled ().connect (
-				sigc::mem_fun(*this, &TagWindow::onShowTagPaneToggled));
+				sigc::mem_fun(*this, &RefWindow::onShowTagPaneToggled));
 
 	Glib::RefPtr <Gtk::ToggleAction>::cast_static(
 			actiongroup_->get_action ("WorkOffline"))->set_active(
 				_global_prefs->getWorkOffline());
 	_global_prefs->getWorkOfflineSignal ().connect (
-		sigc::mem_fun (*this, &TagWindow::onWorkOfflinePrefChanged));
+		sigc::mem_fun (*this, &RefWindow::onWorkOfflinePrefChanged));
 
 	Glib::RefPtr <Gtk::ToggleAction>::cast_static(
 			actiongroup_->get_action ("WorkOffline"))->signal_toggled ().connect (
-				sigc::mem_fun(*this, &TagWindow::onWorkOfflineToggled));
+				sigc::mem_fun(*this, &RefWindow::onWorkOfflineToggled));
+				
+	Glib::RefPtr <Gtk::RadioAction>::cast_static(
+			actiongroup_->get_action ("UseListView"))->set_active(
+				docview_->getUseListView());
+	Glib::RefPtr <Gtk::RadioAction>::cast_static(
+			actiongroup_->get_action ("UseIconView"))->set_active(
+				!docview_->getUseListView());
+
+	_global_prefs->getUseListViewSignal ().connect (
+		sigc::mem_fun (*this, &RefWindow::onUseListViewPrefChanged));
+
+	Glib::RefPtr <Gtk::RadioAction>::cast_static(
+		actiongroup_->get_action ("UseListView"))->signal_toggled ().connect (
+			sigc::mem_fun(*this, &RefWindow::onUseListViewToggled));
 }
 
 
-void TagWindow::constructMenu ()
+void RefWindow::constructMenu ()
 {
 	actiongroup_ = Gtk::ActionGroup::create();
 
 	actiongroup_->add ( Gtk::Action::create("LibraryMenu", _("_Library")) );
 	actiongroup_->add( Gtk::Action::create("NewLibrary",
 		Gtk::Stock::NEW),
-  	sigc::mem_fun(*this, &TagWindow::onNewLibrary));
+  	sigc::mem_fun(*this, &RefWindow::onNewLibrary));
 	actiongroup_->add( Gtk::Action::create("OpenLibrary",
 		Gtk::Stock::OPEN, _("_Open...")),
-  	sigc::mem_fun(*this, &TagWindow::onOpenLibrary));
+  	sigc::mem_fun(*this, &RefWindow::onOpenLibrary));
 	actiongroup_->add( Gtk::Action::create("SaveLibrary",
 		Gtk::Stock::SAVE),
-  	sigc::mem_fun(*this, &TagWindow::onSaveLibrary));
+  	sigc::mem_fun(*this, &RefWindow::onSaveLibrary));
 	actiongroup_->add( Gtk::Action::create("SaveAsLibrary",
 		Gtk::Stock::SAVE_AS, _("Save _As...")), Gtk::AccelKey ("<control><shift>s"),
-  	sigc::mem_fun(*this, &TagWindow::onSaveAsLibrary));
+  	sigc::mem_fun(*this, &RefWindow::onSaveAsLibrary));
 	actiongroup_->add( Gtk::Action::create("ExportBibtex",
 		Gtk::Stock::CONVERT, _("E_xport as BibTeX...")), Gtk::AccelKey ("<control>b"),
-  	sigc::mem_fun(*this, &TagWindow::onExportBibtex));
+  	sigc::mem_fun(*this, &RefWindow::onExportBibtex));
 	actiongroup_->add( Gtk::Action::create("ManageBibtex",
 		Gtk::Stock::CONVERT, _("_Manage BibTeX File...")), Gtk::AccelKey ("<control><shift>b"),
-  	sigc::mem_fun(*this, &TagWindow::onManageBibtex));
+  	sigc::mem_fun(*this, &RefWindow::onManageBibtex));
 	actiongroup_->add( Gtk::Action::create("Import",
 		_("_Import...")),
-  	sigc::mem_fun(*this, &TagWindow::onImport));
+  	sigc::mem_fun(*this, &RefWindow::onImport));
 	actiongroup_->add( Gtk::ToggleAction::create("WorkOffline",
 		_("_Work Offline")));
 	actiongroup_->add( Gtk::Action::create("Quit", Gtk::Stock::QUIT),
-  	sigc::mem_fun(*this, &TagWindow::onQuit));
+  	sigc::mem_fun(*this, &RefWindow::onQuit));
 
 	actiongroup_->add ( Gtk::Action::create("EditMenu", _("_Edit")) );
 
@@ -466,14 +292,14 @@ void TagWindow::constructMenu ()
 	actiongroup_->add( Gtk::Action::create(
 		"PasteBibtex", Gtk::Stock::PASTE, _("_Paste BibTeX"),
 		_("Import references from BibTeX on the clipboard")),
-  	sigc::bind (sigc::mem_fun(*this, &TagWindow::onPasteBibtex), GDK_SELECTION_PRIMARY));
+  	sigc::bind (sigc::mem_fun(*this, &RefWindow::onPasteBibtex), GDK_SELECTION_PRIMARY));
 	actiongroup_->add( Gtk::Action::create(
 		"CopyCite", Gtk::Stock::COPY, _("_Copy LaTeX citation"),
 		_("Copy currently selected keys to the clipboard as a LaTeX citation")),
-  	sigc::mem_fun(*this, &TagWindow::onCopyCite));
+  	sigc::mem_fun(*this, &RefWindow::onCopyCite));
 	actiongroup_->add( Gtk::Action::create("Preferences",
 		Gtk::Stock::PREFERENCES),
-  	sigc::mem_fun(*this, &TagWindow::onPreferences));
+  	sigc::mem_fun(*this, &RefWindow::onPreferences));
 
 	Gtk::RadioButtonGroup group;
 	actiongroup_->add( Gtk::RadioAction::create(group, "UseListView",
@@ -486,65 +312,65 @@ void TagWindow::constructMenu ()
 	actiongroup_->add ( Gtk::Action::create("TagMenu", _("_Tags")) );
 	actiongroup_->add( Gtk::Action::create(
 		"CreateTag", Gtk::Stock::NEW, _("_Create Tag...")), Gtk::AccelKey ("<control>t"),
-  	sigc::mem_fun(*this, &TagWindow::onCreateTag));
+  	sigc::mem_fun(*this, &RefWindow::onCreateTag));
 	actiongroup_->add( Gtk::Action::create(
 		"DeleteTag", Gtk::Stock::DELETE, _("_Delete Tag")),
-  	sigc::mem_fun(*this, &TagWindow::onDeleteTag));
+  	sigc::mem_fun(*this, &RefWindow::onDeleteTag));
 	actiongroup_->add( Gtk::Action::create(
 		"RenameTag", Gtk::Stock::EDIT, _("_Rename Tag")),
-  	sigc::mem_fun(*this, &TagWindow::onRenameTag));
+  	sigc::mem_fun(*this, &RefWindow::onRenameTag));
 
 	actiongroup_->add ( Gtk::Action::create("DocMenu", _("_Documents")) );
 	actiongroup_->add( Gtk::Action::create(
 		"AddDocFile", Gtk::Stock::ADD, _("_Add File...")),
-  	sigc::mem_fun(*this, &TagWindow::onAddDocFile));
+  	sigc::mem_fun(*this, &RefWindow::onAddDocFile));
 	actiongroup_->add( Gtk::Action::create(
 		"AddDocFolder", Gtk::Stock::ADD, _("Add _Folder...")),
-  	sigc::mem_fun(*this, &TagWindow::onAddDocFolder));
+  	sigc::mem_fun(*this, &RefWindow::onAddDocFolder));
  	actiongroup_->add( Gtk::Action::create(
 		"AddDocUnnamed", Gtk::Stock::ADD, _("Add E_mpty Reference...")),
-  	sigc::mem_fun(*this, &TagWindow::onAddDocUnnamed));
+  	sigc::mem_fun(*this, &RefWindow::onAddDocUnnamed));
 	actiongroup_->add( Gtk::Action::create(
 		"AddDocDoi", Gtk::Stock::ADD, _("Add Refere_nce with DOI...")),
-  	sigc::mem_fun(*this, &TagWindow::onAddDocByDoi));
+  	sigc::mem_fun(*this, &RefWindow::onAddDocByDoi));
 	actiongroup_->add( Gtk::Action::create(
 		"RemoveDoc", Gtk::Stock::REMOVE, _("_Remove")),
 		Gtk::AccelKey ("<control>Delete"),
-  	sigc::mem_fun(*this, &TagWindow::onRemoveDoc));
+  	sigc::mem_fun(*this, &RefWindow::onRemoveDoc));
 	actiongroup_->add( Gtk::Action::create(
 		"WebLinkDoc", Gtk::Stock::CONNECT, _("_Web Link...")), Gtk::AccelKey ("<control><shift>a"),
-  	sigc::mem_fun(*this, &TagWindow::onWebLinkDoc));
+  	sigc::mem_fun(*this, &RefWindow::onWebLinkDoc));
 	actiongroup_->add( Gtk::Action::create(
 		"OpenDoc", Gtk::Stock::OPEN, _("_Open...")), Gtk::AccelKey ("<control>a"),
-  	sigc::mem_fun(*this, &TagWindow::onOpenDoc));
+  	sigc::mem_fun(*this, &RefWindow::onOpenDoc));
 	actiongroup_->add( Gtk::Action::create(
 		"DocProperties", Gtk::Stock::PROPERTIES), Gtk::AccelKey ("<control>e"),
-  	sigc::mem_fun(*this, &TagWindow::onDocProperties));
+  	sigc::mem_fun(*this, &RefWindow::onDocProperties));
 
 	actiongroup_->add( Gtk::Action::create(
 		"GetMetadataDoc", Gtk::Stock::CONNECT, _("_Get Metadata")),
-  	sigc::mem_fun(*this, &TagWindow::onGetMetadataDoc));
+  	sigc::mem_fun(*this, &RefWindow::onGetMetadataDoc));
 	actiongroup_->add( Gtk::Action::create(
 		"DeleteDoc", Gtk::Stock::DELETE, _("_Delete File from drive")),
 		Gtk::AccelKey ("<control><shift>Delete"),
-  	sigc::mem_fun(*this, &TagWindow::onDeleteDoc));
+  	sigc::mem_fun(*this, &RefWindow::onDeleteDoc));
 	actiongroup_->add( Gtk::Action::create(
 		"RenameDoc", Gtk::Stock::EDIT, _("R_ename File from Key")),
-  	sigc::mem_fun(*this, &TagWindow::onRenameDoc));
+  	sigc::mem_fun(*this, &RefWindow::onRenameDoc));
 
 	actiongroup_->add ( Gtk::Action::create("HelpMenu", _("_Help")) );
 	actiongroup_->add( Gtk::Action::create(
 		"Introduction", Gtk::Stock::HELP, _("Introduction")),
-  	sigc::mem_fun(*this, &TagWindow::onIntroduction));
+  	sigc::mem_fun(*this, &RefWindow::onIntroduction));
 	actiongroup_->add( Gtk::Action::create(
 		"About", Gtk::Stock::ABOUT),
-  	sigc::mem_fun(*this, &TagWindow::onAbout));
+  	sigc::mem_fun(*this, &RefWindow::onAbout));
   	
   // Just for the keyboard shortcut
 	actiongroup_->add( Gtk::Action::create(
 		"Find", Gtk::Stock::FIND),
 		Gtk::AccelKey ("<control>f"),
-  	sigc::mem_fun(*this, &TagWindow::onFind));
+  	sigc::mem_fun(*this, &RefWindow::onFind));
 
 	uimanager_ = Gtk::UIManager::create ();
 	uimanager_->insert_action_group (actiongroup_);
@@ -646,84 +472,7 @@ void TagWindow::constructMenu ()
 }
 
 
-void TagWindow::populateDocStore ()
-{
-	//std::cerr << "TagWindow::populateDocStore >>\n";
-
-	// This is our notification that something about the documentlist
-	// has changed, including its length, so update dependent sensitivities:
-	actiongroup_->get_action("ExportBibtex")
-		->set_sensitive (library_->doclist_->size() > 0);
-	// Save initial selection
-	Gtk::TreePath initialpath;
-	if (usinglistview_) {
-		Gtk::TreeSelection::ListHandle_Path paths =
-			docslistselection_->get_selected_rows ();
-		if (paths.size () > 0)
-			initialpath = (*paths.begin());
-	} else {
-		Gtk::IconView::ArrayHandle_TreePaths paths =
-			docsiconview_->get_selected_items ();
-		if (paths.size () > 0)
-			initialpath = (*paths.begin());
-	}
-
-	docstore_->clear ();
-
-	Glib::ustring const searchtext = searchentry_->get_text ();
-	bool const search = !searchtext.empty ();
-
-	// Populate from library_->doclist_
-	DocumentList::Container& docvec = library_->doclist_->getDocs();
-	DocumentList::Container::iterator docit = docvec.begin();
-	DocumentList::Container::iterator const docend = docvec.end();
-	for (; docit != docend; ++docit) {
-		bool filtered = true;
-		for (std::vector<int>::iterator tagit = filtertags_.begin();
-		     tagit != filtertags_.end(); ++tagit) {
-			if (*tagit == ALL_TAGS_UID
-			    || (*tagit == NO_TAGS_UID && (*docit).getTags().empty())
-			    || (*docit).hasTag(*tagit)) {
-				filtered = false;
-				break;
-			}
-		}
-
-		if (search && !filtered) {
-			if (!(*docit).matchesSearch (searchtext))
-				filtered = true;
-		}
-
-		if (filtered)
-			continue;
-
-		Gtk::TreeModel::iterator item = docstore_->append();
-		(*item)[dockeycol_] = (*docit).getKey();
-		// PROGRAM CRASHING THIS HOLIDAY SEASON?
-		// THIS LINE DID IT!
-		// WHEE!  LOOK AT THIS LINE OF CODE!
-		(*item)[docpointercol_] = &(*docit);
-		(*item)[docthumbnailcol_] = (*docit).getThumbnail();
-		(*item)[doctitlecol_] = (*docit).getBibData().getTitle ();
-		(*item)[docauthorscol_] = (*docit).getBibData().getAuthors ();
-		(*item)[docyearcol_] = (*docit).getBibData().getYear ();
-	}
-
-	// Restore initial selection
-	if (usinglistview_) {
-		docslistselection_->select (initialpath);
-	} else {
-		docsiconview_->select_path (initialpath);
-	}
-
-	// If we set the selection in a valid way
-	// this probably already got called, although not for
-	// opening library etc.
-	updateStatusBar ();
-}
-
-
-void TagWindow::populateTagList ()
+void RefWindow::populateTagList ()
 {
 	Gtk::TreeSelection::ListHandle_Path paths =
 			tagselection_->get_selected_rows ();
@@ -797,7 +546,7 @@ void TagWindow::populateTagList ()
 			Gtk::manage (new Gtk::CheckButton ((*it).name_));
 		check->signal_toggled().connect(
 			sigc::bind(
-				sigc::mem_fun (*this, &TagWindow::taggerCheckToggled),
+				sigc::mem_fun (*this, &RefWindow::taggerCheckToggled),
 				check,
 				(*it).uid_));
 		taggerbox_->pack_start (*check, false, false, 1);
@@ -821,14 +570,14 @@ void TagWindow::populateTagList ()
 }
 
 
-void TagWindow::taggerCheckToggled (Gtk::ToggleButton *check, int taguid)
+void RefWindow::taggerCheckToggled (Gtk::ToggleButton *check, int taguid)
 {
 	if (ignoretaggerchecktoggled_)
 		return;
 
 	setDirty (true);
 
-	std::vector<Document*> selecteddocs = getSelectedDocs ();
+	std::vector<Document*> selecteddocs = docview_->getSelectedDocs ();
 
 	bool active = check->get_active ();
 	check->set_inconsistent (false);
@@ -867,17 +616,15 @@ void TagWindow::taggerCheckToggled (Gtk::ToggleButton *check, int taguid)
 	    // Or if we've added a tag to something while viewing "untagged"
 	    || (tagsadded && taglessselected)
 	    ) {
-		populateDocStore ();
+		docview_->populateDocStore ();
 	}
 	
 	// All tag changes influence the fonts in the tag list
 	populateTagList ();
-
-
 }
 
 
-void TagWindow::tagNameEdited (
+void RefWindow::tagNameEdited (
 	Glib::ustring const &text1,
 	Glib::ustring const &text2)
 {
@@ -886,10 +633,10 @@ void TagWindow::tagNameEdited (
 		tagselection_->get_selected_rows ();
 
 	if (paths.empty ()) {
-		std::cerr << "Warning: TagWindow::tagNameEdited: no tag selected\n";
+		std::cerr << "Warning: RefWindow::tagNameEdited: no tag selected\n";
 		return;
 	} else if (paths.size () > 1) {
-		std::cerr << "Warning: TagWindow::tagNameEdited: too many tags selected\n";
+		std::cerr << "Warning: RefWindow::tagNameEdited: too many tags selected\n";
 		return;
 	}
 
@@ -910,23 +657,7 @@ void TagWindow::tagNameEdited (
 }
 
 
-void TagWindow::docActivated (const Gtk::TreeModel::Path& path)
-{
-	Gtk::ListStore::iterator it = docstore_->get_iter (path);
-	Document *doc = (*it)[docpointercol_];
-	// The methods we're calling should fail out safely and quietly
-	// if the number of docs selected != 1
-	if (!doc->getFileName ().empty ()) {
-		onOpenDoc ();
-	} else if (doc->canWebLink ()) {
-		onWebLinkDoc ();
-	} else {
-		onDocProperties ();
-	}
-}
-
-
-void TagWindow::tagSelectionChanged ()
+void RefWindow::tagSelectionChanged ()
 {
 	if (tagselectionignore_)
 		return;
@@ -964,65 +695,18 @@ void TagWindow::tagSelectionChanged ()
 	actiongroup_->get_action("RenameTag")->set_sensitive (
 		paths.size() == 1 && !specialselected);
 
-	populateDocStore ();
+	docview_->populateDocStore ();
 }
 
 
-void TagWindow::docSelectionChanged ()
+void RefWindow::updateStatusBar ()
 {
-	if (docselectionignore_)
-		return;
-
-	std::cerr << "TagWindow::docSelectionChanged >>\n";
-
-	int selectcount = getSelectedDocCount ();
-
-	bool const somethingselected = selectcount > 0;
-	bool const onlyoneselected = selectcount == 1;
-
-	actiongroup_->get_action("CopyCite")->set_sensitive (somethingselected);
-
-	actiongroup_->get_action("RemoveDoc")->set_sensitive (somethingselected);
-	actiongroup_->get_action("DeleteDoc")->set_sensitive (somethingselected);
-	actiongroup_->get_action("RenameDoc")->set_sensitive (somethingselected);
-	actiongroup_->get_action("DocProperties")->set_sensitive (onlyoneselected);
-	taggerbox_->set_sensitive (somethingselected);
-
-	Capabilities cap = getDocSelectionCapabilities ();
-	actiongroup_->get_action("WebLinkDoc")->set_sensitive (cap.weblink);
-	actiongroup_->get_action("OpenDoc")->set_sensitive (cap.open);
-	actiongroup_->get_action("GetMetadataDoc")->set_sensitive (cap.getmetadata);
-
-	ignoretaggerchecktoggled_ = true;
-	for (std::vector<Tag>::iterator tagit = library_->taglist_->getTags().begin();
-	     tagit != library_->taglist_->getTags().end(); ++tagit) {
-		Gtk::ToggleButton *check = taggerchecks_[(*tagit).uid_];
-		SubSet state = selectedDocsHaveTag ((*tagit).uid_);
-		if (state == ALL) {
-			check->set_active (true);
-			check->set_inconsistent (false);
-		} else if (state == SOME) {
-			check->set_active (false);
-			check->set_inconsistent (true);
-		} else {
-			check->set_active (false);
-			check->set_inconsistent (false);
-		}
-	}
-	ignoretaggerchecktoggled_ = false;
-
-	updateStatusBar ();
-}
-
-
-void TagWindow::updateStatusBar ()
-{
-	int selectcount = getSelectedDocCount ();
+	int selectcount = docview_->getSelectedDocCount ();
 
 	bool const somethingselected = selectcount > 0;
 
 	// Update the statusbar text
-	int visibledocs = docstore_->children().size();
+	int visibledocs = docview_->getVisibleDocCount ();
 	Glib::ustring statustext;
 	if (somethingselected) {
 		statustext = String::ucompose (
@@ -1037,108 +721,7 @@ void TagWindow::updateStatusBar ()
 }
 
 
-bool TagWindow::docClicked (GdkEventButton* event)
-{
-  if((event->type == GDK_BUTTON_PRESS) && (event->button == 3)) {
-  	if (usinglistview_) {
-		  Gtk::TreeModel::Path clickedpath;
-		  Gtk::TreeViewColumn *clickedcol;
-		  int cellx;
-		  int celly;
-	  	bool const gotpath = docslistview_->get_path_at_pos (
-	  		(int)event->x, (int)event->y,
-	  		clickedpath, clickedcol,
-	  		cellx, celly);
-			if (gotpath) {
-				if (!docslistselection_->is_selected (clickedpath)) {
-					docslistselection_->unselect_all ();
-					docslistselection_->select (clickedpath);
-				}
-			}
-  	} else {
-			Gtk::TreeModel::Path clickedpath =
-				docsiconview_->get_path_at_pos ((int)event->x, (int)event->y);
-
-			if (clickedpath.gobj() != NULL) {
-				if (!docsiconview_->path_is_selected (clickedpath)) {
-					docsiconview_->unselect_all ();
-					docsiconview_->select_path (clickedpath);
-				}
-			}
-		}
-
-		Gtk::Menu *popupmenu =
-			(Gtk::Menu*)uimanager_->get_widget("/DocPopup");
-		popupmenu->popup (event->button, event->time);
-
-		return true;
-  } else if ((event->type == GDK_BUTTON_PRESS) && (event->button == 2)) {
-  	// Epic middle click pasting
-  	onPasteBibtex (GDK_SELECTION_PRIMARY);
-
-  } else {
-  	return false;
-  }
-}
-
-
-TagWindow::SubSet TagWindow::selectedDocsHaveTag (int uid)
-{
-	bool alltrue = true;
-	bool allfalse = true;
-
-	std::vector<Document*> docs = getSelectedDocs ();
-
-	std::vector<Document*>::iterator it = docs.begin ();
-	std::vector<Document*>::iterator const end = docs.end ();
-	for (; it != end; it++) {
-		if ((*it)->hasTag(uid)) {
-			allfalse = false;
-		} else {
-			alltrue = false;
-		}
-	}
-
-	if (allfalse == true)
-		return NONE;
-	else if (alltrue == true)
-		return ALL;
-	else if (alltrue == false && allfalse == false)
-		return SOME;
-	else
-		return NONE;
-}
-
-
-TagWindow::Capabilities TagWindow::getDocSelectionCapabilities ()
-{
-	Capabilities result;
-
-	std::vector<Document*> docs = getSelectedDocs ();
-
-	std::vector<Document*>::iterator it = docs.begin ();
-	std::vector<Document*>::iterator const end = docs.end ();
-
-	bool const offline = _global_prefs->getWorkOffline();
-
-	for (; it != end; it++) {
-		// Allow web linking even when offline, since it might
-		// just be us that's offline, not the web browser
-		if ((*it)->canWebLink())
-			result.weblink = true;
-
-		if ((*it)->canGetMetadata() && !offline)
-			result.getmetadata = true;
-
-		if (!(*it)->getFileName().empty())
-			result.open = true;
-	}
-
-	return result;
-}
-
-
-void TagWindow::tagClicked (GdkEventButton* event)
+void RefWindow::tagClicked (GdkEventButton* event)
 {
   if((event->type == GDK_BUTTON_PRESS) && (event->button == 3)) {
 		Gtk::Menu *popupmenu =
@@ -1148,14 +731,14 @@ void TagWindow::tagClicked (GdkEventButton* event)
 }
 
 
-void TagWindow::onQuit ()
+void RefWindow::onQuit ()
 {
 	if (ensureSaved ())
 		Gnome::Main::quit ();
 }
 
 
-bool TagWindow::onDelete (GdkEventAny *ev)
+bool RefWindow::onDelete (GdkEventAny *ev)
 {
 	if (ensureSaved ())
 		return false;
@@ -1167,7 +750,7 @@ bool TagWindow::onDelete (GdkEventAny *ev)
 // Prompts the user to save if necessary, and returns whether
 // it is save for the caller to proceed (false if the user
 // says to cancel, or saving failed)
-bool TagWindow::ensureSaved ()
+bool RefWindow::ensureSaved ()
 {
 	if (getDirty ()) {
 		Gtk::MessageDialog dialog (
@@ -1209,7 +792,7 @@ bool TagWindow::ensureSaved ()
 }
 
 
-void TagWindow::onCreateTag  ()
+void RefWindow::onCreateTag  ()
 {
 	Glib::ustring newname = (_("Type a tag"));
 
@@ -1231,13 +814,13 @@ void TagWindow::onCreateTag  ()
 }
 
 
-void TagWindow::onDeleteTag ()
+void RefWindow::onDeleteTag ()
 {
 	Gtk::TreeSelection::ListHandle_Path paths =
 		tagselection_->get_selected_rows ();
 
 	if (paths.empty()) {
-		std::cerr << "Warning: TagWindow::onDeleteTag: nothing selected\n";
+		std::cerr << "Warning: RefWindow::onDeleteTag: nothing selected\n";
 		return;
 	}
 
@@ -1250,7 +833,7 @@ void TagWindow::onDeleteTag ()
 		Gtk::ListStore::iterator iter = tagstore_->get_iter (path);
 		std::cerr << (*iter)[taguidcol_] << std::endl;
 		if ((*iter)[taguidcol_] == ALL_TAGS_UID) {
-			std::cerr << "Warning: TagWindow::onDeleteTag:"
+			std::cerr << "Warning: RefWindow::onDeleteTag:"
 				" someone tried to delete 'All'\n";
 			continue;
 		}
@@ -1294,16 +877,16 @@ void TagWindow::onDeleteTag ()
 }
 
 
-void TagWindow::onRenameTag ()
+void RefWindow::onRenameTag ()
 {
 	Gtk::TreeSelection::ListHandle_Path paths =
 		tagselection_->get_selected_rows ();
 
 	if (paths.empty ()) {
-		std::cerr << "Warning: TagWindow::onRenameTag: no tag selected\n";
+		std::cerr << "Warning: RefWindow::onRenameTag: no tag selected\n";
 		return;
 	} else if (paths.size () > 1) {
-		std::cerr << "Warning: TagWindow::onRenameTag: too many tags selected\n";
+		std::cerr << "Warning: RefWindow::onRenameTag: too many tags selected\n";
 		return;
 	}
 
@@ -1313,7 +896,7 @@ void TagWindow::onRenameTag ()
 }
 
 
-void TagWindow::onExportBibtex ()
+void RefWindow::onExportBibtex ()
 {
 	Gtk::FileChooserDialog chooser (
 		_("Export BibTeX"),
@@ -1348,7 +931,7 @@ void TagWindow::onExportBibtex ()
 	combo.append_text (_("Selected Documents"));
 	combo.set_active (0);
 	selectionbox.pack_start (combo, true, true, 0);
-	combo.set_sensitive (getSelectedDocCount ());
+	combo.set_sensitive (docview_->getSelectedDocCount ());
 
 	// Any options here should be replicated in onManageBibtex
 	Gtk::CheckButton bracescheck (_("Protect capitalization (surround values with {})"));
@@ -1377,7 +960,7 @@ void TagWindow::onExportBibtex ()
 
 		std::vector<Document*> docs;
 		if (selectedonly) {
-			docs = getSelectedDocs ();
+			docs = docview_->getSelectedDocs ();
 		} else {
 			DocumentList::Container &docrefs = library_->doclist_->getDocs ();
 			DocumentList::Container::iterator it = docrefs.begin();
@@ -1392,7 +975,7 @@ void TagWindow::onExportBibtex ()
 }
 
 
-void TagWindow::manageBrowseDialog (Gtk::Entry *entry)
+void RefWindow::manageBrowseDialog (Gtk::Entry *entry)
 {
 	Glib::ustring filename = Glib::filename_from_utf8 (entry->get_text ());
 
@@ -1428,7 +1011,7 @@ void TagWindow::manageBrowseDialog (Gtk::Entry *entry)
 }
 
 
-void TagWindow::onManageBibtex ()
+void RefWindow::onManageBibtex ()
 {
 	Gtk::Dialog dialog (_("Manage BibTeX File"), true, false);
 
@@ -1479,7 +1062,7 @@ void TagWindow::onManageBibtex ()
     new Gtk::Image (Gtk::Stock::OPEN, Gtk::ICON_SIZE_BUTTON));
 	browsebutton.set_image (*openicon);
 	browsebutton.signal_clicked ().connect (
-		sigc::bind(sigc::mem_fun (*this, &TagWindow::manageBrowseDialog), &urientry));
+		sigc::bind(sigc::mem_fun (*this, &RefWindow::manageBrowseDialog), &urientry));
 
 	browsebutton.set_use_underline (true);
 	hbox2.pack_end (browsebutton, false, false, 0);
@@ -1527,7 +1110,7 @@ void TagWindow::onManageBibtex ()
 }
 
 
-void TagWindow::onNewLibrary ()
+void RefWindow::onNewLibrary ()
 {
 	if (ensureSaved ()) {
 		setDirty (false);
@@ -1535,13 +1118,13 @@ void TagWindow::onNewLibrary ()
 		setOpenedLib ("");
 		library_->clear ();
 
-		populateDocStore ();
+		docview_->populateDocStore ();
 		populateTagList ();
 	}
 }
 
 
-void TagWindow::onOpenLibrary ()
+void RefWindow::onOpenLibrary ()
 {
 	Gtk::FileChooserDialog chooser(
 		_("Open Library"),
@@ -1576,7 +1159,7 @@ void TagWindow::onOpenLibrary ()
 		std::cerr << "Calling library_->load on " << libfile << "\n";
 		if (library_->load (libfile)) {
 			setDirty (false);
-			populateDocStore ();
+			docview_->populateDocStore ();
 			populateTagList ();
 			setOpenedLib (libfile);
 		} else {
@@ -1587,7 +1170,7 @@ void TagWindow::onOpenLibrary ()
 }
 
 
-void TagWindow::onSaveLibrary ()
+void RefWindow::onSaveLibrary ()
 {
 	if (openedlib_.empty()) {
 		onSaveAsLibrary ();
@@ -1598,7 +1181,7 @@ void TagWindow::onSaveLibrary ()
 }
 
 
-void TagWindow::onSaveAsLibrary ()
+void RefWindow::onSaveAsLibrary ()
 {
 	Gtk::FileChooserDialog chooser (
 		_("Save Library As"),
@@ -1642,14 +1225,14 @@ void TagWindow::onSaveAsLibrary ()
 }
 
 
-void TagWindow::onAbout ()
+void RefWindow::onAbout ()
 {
 	Gtk::AboutDialog dialog;
 	std::vector<Glib::ustring> authors;
 	Glib::ustring me = "John Spray";
 	authors.push_back(me);
 	dialog.set_authors (authors);
-	dialog.set_name (PROGRAM_NAME);
+	dialog.set_name (DISPLAY_PROGRAM);
 	dialog.set_version (VERSION);
 	dialog.set_comments ("A document organiser and bibliography manager");
 	dialog.set_copyright ("Copyright © 2007 John Spray");
@@ -1664,7 +1247,7 @@ void TagWindow::onAbout ()
 }
 
 
-void TagWindow::onIntroduction ()
+void RefWindow::onIntroduction ()
 {
 	Glib::ustring filename = Utility::findDataFile ("introduction.html");
 
@@ -1680,7 +1263,7 @@ void TagWindow::onIntroduction ()
 }
 
 
-void TagWindow::addDocFiles (std::vector<Glib::ustring> const &filenames)
+void RefWindow::addDocFiles (std::vector<Glib::ustring> const &filenames)
 {
 	Gtk::Dialog dialog (_("Add Document Files"), true, false);
 
@@ -1698,7 +1281,6 @@ void TagWindow::addDocFiles (std::vector<Glib::ustring> const &filenames)
 	vbox->pack_start (label, true, true, 0);
 
 	Gtk::ProgressBar progress;
-
 	vbox->pack_start (progress, false, false, 0);
 
 	dialog.show_all ();
@@ -1734,7 +1316,7 @@ void TagWindow::addDocFiles (std::vector<Glib::ustring> const &filenames)
 
 			newdoc->setKey (library_->doclist_->uniqueKey (newdoc->generateKey ()));
 		} else {
-			std::cerr << "TagWindow::addDocFiles: Warning: didn't succeed adding '" << *it << "'.  Duplicate file?\n";
+			std::cerr << "RefWindow::addDocFiles: Warning: didn't succeed adding '" << *it << "'.  Duplicate file?\n";
 		}
 		++n;
 	}
@@ -1744,26 +1326,25 @@ void TagWindow::addDocFiles (std::vector<Glib::ustring> const &filenames)
 		// Should check if we actually added something in case a newDoc
 		// failed, eg if the doc was already in there
 		setDirty (true);
-		populateDocStore ();
+		docview_->populateDocStore ();
 	}
-
 }
 
 
-void TagWindow::onAddDocUnnamed ()
+void RefWindow::onAddDocUnnamed ()
 {
 	setDirty (true);
 	Document *newdoc = library_->doclist_->newDocUnnamed ();
 	newdoc->setKey (library_->doclist_->uniqueKey (newdoc->generateKey ()));
 	if (docpropertiesdialog_->show (newdoc)) {
-		populateDocStore ();
+		docview_->populateDocStore ();
 	} else {
 		library_->doclist_->removeDoc (newdoc);
 	}
 }
 
 
-void TagWindow::onAddDocByDoi ()
+void RefWindow::onAddDocByDoi ()
 {
 
 	Gtk::Dialog dialog (_("Add Document with DOI"), true, false);
@@ -1794,12 +1375,12 @@ void TagWindow::onAddDocByDoi ()
 		newdoc->getMetaData ();
 		newdoc->setKey (library_->doclist_->uniqueKey (newdoc->generateKey ()));
 
-		populateDocStore ();
+		docview_->populateDocStore ();
 	}
 }
 
 
-void TagWindow::onAddDocFile ()
+void RefWindow::onAddDocFile ()
 {
 	Gtk::FileChooserDialog chooser(
 		_("Add Document"),
@@ -1830,7 +1411,7 @@ void TagWindow::onAddDocFile ()
 }
 
 
-void TagWindow::onAddDocFolder ()
+void RefWindow::onAddDocFolder ()
 {
 	Gtk::FileChooserDialog chooser(
 		_("Add Folder"),
@@ -1856,82 +1437,10 @@ void TagWindow::onAddDocFolder ()
 }
 
 
-std::vector<Document*> TagWindow::getSelectedDocs ()
+
+void RefWindow::onRemoveDoc ()
 {
-	std::vector<Document*> docpointers;
-
-	if (usinglistview_) {
-		Gtk::TreeSelection::ListHandle_Path paths =
-			docslistselection_->get_selected_rows ();
-
-		Gtk::TreeSelection::ListHandle_Path::iterator it = paths.begin ();
-		Gtk::TreeSelection::ListHandle_Path::iterator const end = paths.end ();
-		for (; it != end; it++) {
-			Gtk::TreePath path = (*it);
-			Gtk::ListStore::iterator iter = docstore_->get_iter (path);
-			docpointers.push_back((*iter)[docpointercol_]);
-		}
-	} else {
-		Gtk::IconView::ArrayHandle_TreePaths paths =
-			docsiconview_->get_selected_items ();
-
-		Gtk::IconView::ArrayHandle_TreePaths::iterator it = paths.begin ();
-		Gtk::IconView::ArrayHandle_TreePaths::iterator const end = paths.end ();
-		for (; it != end; it++) {
-			Gtk::TreePath path = (*it);
-			Gtk::ListStore::iterator iter = docstore_->get_iter (path);
-			docpointers.push_back((*iter)[docpointercol_]);
-		}
-	}
-
-	return docpointers;
-}
-
-
-Document *TagWindow::getSelectedDoc ()
-{
-	if (usinglistview_) {
-		Gtk::TreeSelection::ListHandle_Path paths =
-			docslistselection_->get_selected_rows ();
-
-		if (paths.size() != 1) {
-			std::cerr << "Warning: TagWindow::getSelectedDoc: size != 1\n";
-			return false;
-		}
-
-		Gtk::TreePath path = (*paths.begin ());
-		Gtk::ListStore::iterator iter = docstore_->get_iter (path);
-		return (*iter)[docpointercol_];
-
-	} else {
-		Gtk::IconView::ArrayHandle_TreePaths paths =
-			docsiconview_->get_selected_items ();
-
-		if (paths.size() != 1) {
-			std::cerr << "Warning: TagWindow::getSelectedDoc: size != 1\n";
-			return false;
-		}
-
-		Gtk::TreePath path = (*paths.begin ());
-		Gtk::ListStore::iterator iter = docstore_->get_iter (path);
-		return (*iter)[docpointercol_];
-	}
-}
-
-
-int TagWindow::getSelectedDocCount ()
-{
-	if (usinglistview_) {
-		return docslistselection_->get_selected_rows().size ();
-	} else {
-		return docsiconview_->get_selected_items().size ();
-	}
-}
-
-
-void TagWindow::onRemoveDoc ()
-{
-	std::vector<Document*> docs = getSelectedDocs ();
+	std::vector<Document*> docs = docview_->getSelectedDocs ();
 
 	bool const multiple = docs.size() > 1;
 
@@ -1971,18 +1480,18 @@ void TagWindow::onRemoveDoc ()
 	std::vector<Document*>::iterator it = docs.begin ();
 	std::vector<Document*>::iterator const end = docs.end ();
 	for (; it != end; it++) {
-		std::cerr << "TagWindow::onRemoveDoc: removeDoc on '" << *it << "'\n";
+		std::cerr << "RefWindow::onRemoveDoc: removeDoc on '" << *it << "'\n";
 		library_->doclist_->removeDoc(*it);
 		doclistdirty = true;
 	}
 
 	if (doclistdirty) {
 		setDirty (true);
-		std::cerr << "TagWindow::onRemoveDoc: dirty, calling populateDocStore\n";
+		std::cerr << "RefWindow::onRemoveDoc: dirty, calling docview_->populateDocStore\n";
 		// We disable docSelectionChanged because otherwise it gets called N
 		// times for deleting N items
 		docselectionignore_ = true;
-		populateDocStore ();
+		docview_->populateDocStore ();
 		docselectionignore_ = false;
 		docSelectionChanged ();
 	} else {
@@ -1991,9 +1500,9 @@ void TagWindow::onRemoveDoc ()
 }
 
 
-void TagWindow::onWebLinkDoc ()
+void RefWindow::onWebLinkDoc ()
 {
-	std::vector <Document*> docs = getSelectedDocs ();
+	std::vector <Document*> docs = docview_->getSelectedDocs ();
 	std::vector <Document*>::iterator it = docs.begin ();
 	std::vector <Document*>::iterator const end = docs.end ();
 	for (; it != end; ++it) {
@@ -2006,16 +1515,16 @@ void TagWindow::onWebLinkDoc ()
 			Glib::ustring eprint = doc->getBibData().getExtras()["eprint"];
 			Gnome::Vfs::url_show ("http://arxiv.org/abs/" + eprint);
 		} else {
-			std::cerr << "Warning: TagWindow::onWebLinkDoc: nothing to link on\n";
+			std::cerr << "Warning: RefWindow::onWebLinkDoc: nothing to link on\n";
 		}
 	}
 }
 
 
-void TagWindow::onGetMetadataDoc ()
+void RefWindow::onGetMetadataDoc ()
 {
 	bool doclistdirty = false;
-	std::vector <Document*> docs = getSelectedDocs ();
+	std::vector <Document*> docs = docview_->getSelectedDocs ();
 	std::vector <Document*>::iterator it = docs.begin ();
 	std::vector <Document*>::iterator const end = docs.end ();
 	for (; it != end; ++it) {
@@ -2028,14 +1537,14 @@ void TagWindow::onGetMetadataDoc ()
 	}
 
 	if (doclistdirty)
-		populateDocStore ();
+		docview_->populateDocStore ();
 }
 
 
-void TagWindow::onRenameDoc ()
+void RefWindow::onRenameDoc ()
 {
 	bool doclistdirty = false;
-	std::vector <Document*> docs = getSelectedDocs ();
+	std::vector <Document*> docs = docview_->getSelectedDocs ();
 
 	Glib::ustring message;
 	if (docs.size () == 1) {
@@ -2069,14 +1578,14 @@ void TagWindow::onRenameDoc ()
 
 	if (doclistdirty) {
 		setDirty (true);
-		populateDocStore ();
+		docview_->populateDocStore ();
 	}
 }
 
 
-void TagWindow::onDeleteDoc ()
+void RefWindow::onDeleteDoc ()
 {
-	std::vector<Document*> docs = getSelectedDocs ();
+	std::vector<Document*> docs = docview_->getSelectedDocs ();
 	bool const multiple = docs.size() > 1;
 	bool doclistdirty = false;
 	Glib::ustring message;
@@ -2129,11 +1638,11 @@ void TagWindow::onDeleteDoc ()
 
 	if (doclistdirty) {
 		setDirty (true);
-		std::cerr << "TagWindow::onDeleteDoc: dirty, calling populateDocStore\n";
+		std::cerr << "RefWindow::onDeleteDoc: dirty, calling docview_->populateDocStore\n";
 		// We disable docSelectionChanged because otherwise it gets called N
 		// times for deleting N items
 		docselectionignore_ = true;
-		populateDocStore ();
+		docview_->populateDocStore ();
 		docselectionignore_ = false;
 		docSelectionChanged ();
 	} else {
@@ -2142,9 +1651,9 @@ void TagWindow::onDeleteDoc ()
 }
 
 
-void TagWindow::onOpenDoc ()
+void RefWindow::onOpenDoc ()
 {
-	std::vector<Document*> docs = getSelectedDocs ();
+	std::vector<Document*> docs = docview_->getSelectedDocs ();
 	std::vector<Document*>::iterator it = docs.begin ();
 	std::vector<Document*>::iterator const end = docs.end ();
 	for (; it != end ; ++it) {
@@ -2163,115 +1672,25 @@ void TagWindow::onOpenDoc ()
 }
 
 
-void TagWindow::onDocProperties ()
+void RefWindow::onDocProperties ()
 {
-	Document *doc = getSelectedDoc ();
+	Document *doc = docview_->getSelectedDoc ();
 	if (doc) {
 		if (docpropertiesdialog_->show (doc)) {
 			setDirty (true);
-			populateDocStore ();
+			docview_->populateDocStore ();
 		}
 	}
 }
 
 
-void TagWindow::onPreferences ()
+void RefWindow::onPreferences ()
 {
 	_global_prefs->showDialog ();
 }
 
 
-void TagWindow::onIconsDragData (
-	const Glib::RefPtr <Gdk::DragContext> &context,
-	int n1, int n2, const Gtk::SelectionData &sel, guint n3, guint n4)
-{
-	std::cerr << "onIconsDragData: got '" << sel.get_data_as_string () << "'\n";
-	std::cerr << "\tOf type '" << sel.get_data_type () << "'\n";
-
-	std::vector<Glib::ustring> files;
-
-	typedef std::vector <Glib::ustring> urilist;
-	urilist uris;
-
-	if (sel.get_data_type () == "text/uri-list") {
-		uris = sel.get_uris ();
-	} else if (sel.get_data_type () == "text/x-moz-url-data") {
-
-		gchar *utf8;
-
-		utf8 = g_utf16_to_utf8((gunichar2 *) sel.get_data(),
-				(glong) sel.get_length(),
-				NULL, NULL, NULL);
-
-		uris.push_back (utf8);
-		g_free(utf8);
-	}
-
-	urilist::iterator it = uris.begin ();
-	urilist::iterator const end = uris.end ();
-	for (; it != end; ++it) {
-		bool is_dir = false;
-		Glib::RefPtr<Gnome::Vfs::Uri> uri = Gnome::Vfs::Uri::create (*it);
-
-		//if (uri->is_local()) {
-		Glib::RefPtr<Gnome::Vfs::FileInfo> info;
-		try {
-			info = uri->get_file_info ();
-		} catch (const Gnome::Vfs::exception ex) {
-			Utility::exceptionDialog (&ex,
-				String::ucompose (
-					_("Getting info for file '%1'"),
-					uri->to_string ()));
-			return;
-		}
-		if (info->get_type() == Gnome::Vfs::FILE_TYPE_DIRECTORY)
-			is_dir = true;
-
-		if (is_dir) {
-			std::vector<Glib::ustring> morefiles = Utility::recurseFolder (*it);
-			std::vector<Glib::ustring>::iterator it2;
-			for (it2 = morefiles.begin(); it2 != morefiles.end(); ++it2) {
-				files.push_back (*it2);
-			}
-		} else {
-			files.push_back (*it);
-		}
-	}
-
-	addDocFiles (files);
-}
-
-
-void TagWindow::onUseListViewToggled ()
-{
-	_global_prefs->setUseListView (
-		Glib::RefPtr <Gtk::RadioAction>::cast_static(
-			actiongroup_->get_action ("UseListView"))->get_active ());
-}
-
-
-void TagWindow::onUseListViewPrefChanged ()
-{
-	usinglistview_ = _global_prefs->getUseListView ();
-	if (usinglistview_) {
-		Glib::RefPtr <Gtk::RadioAction>::cast_static(
-			actiongroup_->get_action ("UseListView"))->set_active (true);
-		docsiconscroll_->hide ();
-		docslistscroll_->show ();
-		docslistview_->grab_focus ();
-	} else {
-		Glib::RefPtr <Gtk::RadioAction>::cast_static(
-			actiongroup_->get_action ("UseIconView"))->set_active (true);
-		docslistscroll_->hide ();
-		docsiconscroll_->show ();
-		docsiconview_->grab_focus ();
-	}
-
-	docSelectionChanged ();
-}
-
-
-void TagWindow::onShowTagPaneToggled ()
+void RefWindow::onShowTagPaneToggled ()
 {
 	_global_prefs->setShowTagPane (
 		Glib::RefPtr <Gtk::ToggleAction>::cast_static(
@@ -2279,7 +1698,7 @@ void TagWindow::onShowTagPaneToggled ()
 }
 
 
-void TagWindow::onShowTagPanePrefChanged ()
+void RefWindow::onShowTagPanePrefChanged ()
 {
 	bool const showtagpane = _global_prefs->getShowTagPane ();
 	Glib::RefPtr <Gtk::ToggleAction>::cast_static(
@@ -2292,7 +1711,7 @@ void TagWindow::onShowTagPanePrefChanged ()
 }
 
 
-void TagWindow::onWorkOfflineToggled ()
+void RefWindow::onWorkOfflineToggled ()
 {
 	_global_prefs->setWorkOffline (
 		Glib::RefPtr <Gtk::ToggleAction>::cast_static(
@@ -2300,18 +1719,18 @@ void TagWindow::onWorkOfflineToggled ()
 }
 
 
-void TagWindow::onWorkOfflinePrefChanged ()
+void RefWindow::onWorkOfflinePrefChanged ()
 {
 	Glib::RefPtr <Gtk::ToggleAction>::cast_static(
 		actiongroup_->get_action ("WorkOffline"))->set_active (
 			_global_prefs->getWorkOffline ());
 
 	// To pick up sensitivity changes
-	populateDocStore ();
+	docview_->populateDocStore ();
 }
 
 
-void TagWindow::updateTitle ()
+void RefWindow::updateTitle ()
 {
 	Glib::ustring filename;
 	if (openedlib_.empty ()) {
@@ -2327,17 +1746,17 @@ void TagWindow::updateTitle ()
 		(getDirty () ? "*" : "")
 		+ filename
 		+ " - "
-		+ PROGRAM_NAME);
+		+ DISPLAY_PROGRAM);
 }
 
 
-void TagWindow::setOpenedLib (Glib::ustring const &openedlib)
+void RefWindow::setOpenedLib (Glib::ustring const &openedlib)
 {
 	openedlib_ = openedlib;
 	updateTitle();
 }
 
-void TagWindow::setDirty (bool const &dirty)
+void RefWindow::setDirty (bool const &dirty)
 {
 	dirty_ = dirty;
 	actiongroup_->get_action("SaveLibrary")
@@ -2346,7 +1765,7 @@ void TagWindow::setDirty (bool const &dirty)
 }
 
 
-void TagWindow::onImport ()
+void RefWindow::onImport ()
 {
 	Gtk::FileChooserDialog chooser(
 		_("Import References"),
@@ -2425,7 +1844,7 @@ void TagWindow::onImport ()
 
 		library_->doclist_->importFromFile (filename, format);
 
-		populateDocStore ();
+		docview_->populateDocStore ();
 		populateTagList ();
 	}
 }
@@ -2433,7 +1852,7 @@ void TagWindow::onImport ()
 
 // Selection should be GDK_SELECTION_CLIPBOARD for the windows style
 // clipboard and GDK_SELECTION_PRIMARY for middle-click style
-void TagWindow::onPasteBibtex (GdkAtom selection)
+void RefWindow::onPasteBibtex (GdkAtom selection)
 {
 	// Should have sensitivity changing for this
 	Glib::RefPtr<Gtk::Clipboard> clipboard = Gtk::Clipboard::get (selection);
@@ -2468,7 +1887,7 @@ If you don't want to deal with providing a separate callbac		"    <toolitem acti
 
 	if (imported) {
 		// Should push to the statusbar how many we got
-		populateDocStore ();
+		docview_->populateDocStore ();
 		populateTagList ();
 		statusbar_->push (String::ucompose
 			(_("Imported %1 BibTeX references"), imported), 0);
@@ -2486,34 +1905,11 @@ If you don't want to deal with providing a separate callbac		"    <toolitem acti
 }
 
 
-void TagWindow::onSearchChanged ()
-{
-	Gdk::Color yellowish ("#f7f7be");
-	Gdk::Color black ("#000000");
-	
-	bool hasclearbutton =
-		((Sexy::IconEntry*) searchentry_)->get_icon (Sexy::ICON_ENTRY_SECONDARY);
-	
-	if (!searchentry_->get_text ().empty()) {
-	/*if (entry->priv->is_a11y_theme)
-		return;*/
-		searchentry_->modify_base (Gtk::STATE_NORMAL, yellowish);
-		searchentry_->modify_text (Gtk::STATE_NORMAL, black);
-		if (!hasclearbutton)
-			((Sexy::IconEntry*) searchentry_)->add_clear_button ();
-	} else {
-		searchentry_->unset_base (Gtk::STATE_NORMAL);
-		searchentry_->unset_text (Gtk::STATE_NORMAL);
-		if (hasclearbutton)
-			((Sexy::IconEntry*) searchentry_)->set_icon (Sexy::ICON_ENTRY_SECONDARY, NULL);
-	}
-	populateDocStore ();
-}
 
 
-void TagWindow::onCopyCite ()
+void RefWindow::onCopyCite ()
 {
-	std::vector<Document*> docs = getSelectedDocs ();
+	std::vector<Document*> docs = docview_->getSelectedDocs ();
 	std::vector<Document*>::iterator it = docs.begin ();
 	std::vector<Document*>::iterator const end = docs.end ();
 
@@ -2535,58 +1931,13 @@ void TagWindow::onCopyCite ()
 }
 
 
-void TagWindow::setSensitive (bool const sensitive)
+void RefWindow::setSensitive (bool const sensitive)
 {
 	window_->set_sensitive (sensitive);
 }
 
 
-void TagWindow::onDocMouseMotion (GdkEventMotion* event)
-{
-	// Guh, it's giving me these in the iconview, so doesn't work when scrolled down
-	int x = (int)event->x;
-	int y = (int)event->y;
-
-	Gtk::TreeModel::Path path = docsiconview_->get_path_at_pos (x, y);
-	bool havepath = path.gobj() != NULL;
-
-	Document *doc = NULL;
-	if (havepath) {
-		Gtk::ListStore::iterator it = docstore_->get_iter (path);
-		doc = (*it)[docpointercol_];
-	}
-
-	if (doc != hoverdoc_) {
-		if (doc) {
-			BibData &bib = doc->getBibData ();
-			Glib::ustring tiptext = String::ucompose (
-				// Translators: this is the format for the document tooltips
-				_("<b>%1</b>\n%2\n<i>%3</i>"),
-				Glib::Markup::escape_text (doc->getKey()),
-				Glib::Markup::escape_text (bib.getTitle()),
-				Glib::Markup::escape_text (bib.getAuthors()));
-
-			int xoffset = (int) docsiconscroll_->get_hadjustment ()->get_value ();
-			int yoffset = (int) docsiconscroll_->get_vadjustment ()->get_value ();
-
-			ev_tooltip_set_position (EV_TOOLTIP (doctooltip_), x - xoffset, y - yoffset);
-			ev_tooltip_set_text (EV_TOOLTIP (doctooltip_), tiptext.c_str());
-			ev_tooltip_activate (EV_TOOLTIP (doctooltip_));
-		} else {
-			ev_tooltip_deactivate (EV_TOOLTIP (doctooltip_));
-		}
-		hoverdoc_ = doc;
-	}
-}
-
-
-void TagWindow::onDocMouseLeave (GdkEventCrossing *event)
-{
-	ev_tooltip_deactivate (EV_TOOLTIP (doctooltip_));
-}
-
-
-int TagWindow::sortTags (
+int RefWindow::sortTags (
 	const Gtk::TreeModel::iterator& a,
 	const Gtk::TreeModel::iterator& b)
 {
@@ -2622,7 +1973,7 @@ int TagWindow::sortTags (
 }
 
 
-void TagWindow::onResize (GdkEventConfigure *event)
+void RefWindow::onResize (GdkEventConfigure *event)
 {
 	_global_prefs->setWindowSize (
 		std::pair<int,int> (
@@ -2631,8 +1982,75 @@ void TagWindow::onResize (GdkEventConfigure *event)
 }
 
 
-void TagWindow::onFind ()
+void RefWindow::onFind ()
 {
-	searchentry_->grab_focus ();
+	docview_->getSearchEntry().grab_focus ();
+}
+
+
+void RefWindow::docSelectionChanged ()
+{
+	if (docselectionignore_)
+		return;
+
+	int selectcount = docview_->getSelectedDocCount ();
+
+	bool const somethingselected = selectcount > 0;
+	bool const onlyoneselected = selectcount == 1;
+
+	actiongroup_->get_action("CopyCite")->set_sensitive (somethingselected);
+
+	actiongroup_->get_action("RemoveDoc")->set_sensitive (somethingselected);
+	actiongroup_->get_action("DeleteDoc")->set_sensitive (somethingselected);
+	actiongroup_->get_action("RenameDoc")->set_sensitive (somethingselected);
+	actiongroup_->get_action("DocProperties")->set_sensitive (onlyoneselected);
+	taggerbox_->set_sensitive (somethingselected);
+
+	DocumentView::Capabilities cap
+		= docview_->getDocSelectionCapabilities ();
+	actiongroup_->get_action("WebLinkDoc")->set_sensitive (cap.weblink);
+	actiongroup_->get_action("OpenDoc")->set_sensitive (cap.open);
+	actiongroup_->get_action("GetMetadataDoc")->set_sensitive (cap.getmetadata);
+
+	ignoretaggerchecktoggled_ = true;
+	for (std::vector<Tag>::iterator tagit = library_->taglist_->getTags().begin();
+	     tagit != library_->taglist_->getTags().end(); ++tagit) {
+		Gtk::ToggleButton *check = taggerchecks_[(*tagit).uid_];
+		DocumentView::SubSet state = docview_->selectedDocsHaveTag ((*tagit).uid_);
+		if (state == DocumentView::ALL) {
+			check->set_active (true);
+			check->set_inconsistent (false);
+		} else if (state == DocumentView::SOME) {
+			check->set_active (false);
+			check->set_inconsistent (true);
+		} else {
+			check->set_active (false);
+			check->set_inconsistent (false);
+		}
+	}
+	ignoretaggerchecktoggled_ = false;
+
+	updateStatusBar ();
+}
+
+void RefWindow::onUseListViewToggled ()
+{
+	_global_prefs->setUseListView (
+		Glib::RefPtr <Gtk::RadioAction>::cast_static(
+			actiongroup_->get_action ("UseListView"))->get_active ());
+}
+
+
+void RefWindow::onUseListViewPrefChanged ()
+{
+	docview_->setUseListView(_global_prefs->getUseListView ());
+
+	if (_global_prefs->getUseListView ()) {
+		Glib::RefPtr <Gtk::RadioAction>::cast_static(
+			actiongroup_->get_action ("UseListView"))->set_active (true);
+	} else {
+		Glib::RefPtr <Gtk::RadioAction>::cast_static(
+			actiongroup_->get_action ("UseIconView"))->set_active (true);
+	}
 }
 
