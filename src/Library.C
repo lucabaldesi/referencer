@@ -126,7 +126,7 @@ bool Library::load (Glib::ustring const &libfilename)
 		libfile.open (libfilename, Gnome::Vfs::OPEN_READ);
 	} catch (const Gnome::Vfs::exception ex) {
 		Utility::exceptionDialog (&ex, "opening library '"
-			+ Utility::uriToDisplayFileName (libfilename) + "'");
+			+ Gnome::Vfs::Uri::format_for_display (libfilename) + "'");
 		return false;
 	}
 
@@ -143,7 +143,7 @@ bool Library::load (Glib::ustring const &libfilename)
 		libfile.read (buffer, fileinfo->get_size());
 	} catch (const Gnome::Vfs::exception ex) {
 		Utility::exceptionDialog (&ex, "reading library '"
-			+ Utility::uriToDisplayFileName (libfilename) + "'");
+			+ Gnome::Vfs::Uri::format_for_display (libfilename) + "'");
 		free (buffer);
 		return false;
 	}
@@ -217,8 +217,8 @@ bool Library::load (Glib::ustring const &libfilename)
 							"to the new one?"
 							),
 							shortname,
-							Utility::uriToDisplayFileName (absfilename),
-							Utility::uriToDisplayFileName (relfilename)
+							Gnome::Vfs::Uri::format_for_display (absfilename),
+							Gnome::Vfs::Uri::format_for_display (relfilename)
 						)
 					);
 

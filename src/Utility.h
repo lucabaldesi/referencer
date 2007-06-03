@@ -30,9 +30,6 @@ bool hasExtension (
 	Glib::ustring const &filename,
 	Glib::ustring const &ex);
 
-	Glib::ustring uriToDisplayFileName (
-		Glib::ustring const &uri);
-
 	bool uriIsFast (
 		Glib::RefPtr<Gnome::Vfs::Uri> uri);
 
