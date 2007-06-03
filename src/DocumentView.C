@@ -20,6 +20,7 @@
 #include "Library.h"
 #include "Preferences.h"
 #include "RefWindow.h"
+#include "Transfer.h"
 #include "ucompose.hpp"
 #include "Utility.h"
 
@@ -75,12 +76,12 @@ DocumentView::DocumentView (
 	icons->set_columns (-1);
 
 	std::vector<Gtk::TargetEntry> dragtypes;
-	Gtk::TargetEntry urilist;
-	urilist.set_info (0);
-	urilist.set_target ("text/uri-list");
-	dragtypes.push_back (urilist);
-	urilist.set_target ("text/x-moz-url-data");
-	dragtypes.push_back (urilist);
+	Gtk::TargetEntry target;
+	target.set_info (0);
+	target.set_target ("text/uri-list");
+	dragtypes.push_back (target);
+	target.set_target ("text/x-moz-url-data");
+	dragtypes.push_back (target);
 
 	icons->drag_dest_set (
 		dragtypes,
@@ -262,15 +263,7 @@ void DocumentView::onIconsDragData (
 	if (sel.get_data_type () == "text/uri-list") {
 		uris = sel.get_uris ();
 	} else if (sel.get_data_type () == "text/x-moz-url-data") {
-
-		gchar *utf8;
-
-		utf8 = g_utf16_to_utf8((gunichar2 *) sel.get_data(),
-				(glong) sel.get_length(),
-				NULL, NULL, NULL);
-
-		uris.push_back (utf8);
-		g_free(utf8);
+		uris.push_back (Utility::mozUrlSelectionToUTF8(sel));
 	}
 
 	urilist::iterator it = uris.begin ();
@@ -279,28 +272,55 @@ void DocumentView::onIconsDragData (
 		bool is_dir = false;
 		Glib::RefPtr<Gnome::Vfs::Uri> uri = Gnome::Vfs::Uri::create (*it);
 
-		//if (uri->is_local()) {
-		Glib::RefPtr<Gnome::Vfs::FileInfo> info;
-		try {
-			info = uri->get_file_info ();
-		} catch (const Gnome::Vfs::exception ex) {
-			Utility::exceptionDialog (&ex,
-				String::ucompose (
-					_("Getting info for file '%1'"),
-					uri->to_string ()));
-			return;
-		}
-		if (info->get_type() == Gnome::Vfs::FILE_TYPE_DIRECTORY)
-			is_dir = true;
+		if (!Utility::uriIsFast (uri)) {
+			// It's a remote file, download it
+			Glib::RefPtr<Gnome::Vfs::Uri> liburi =
+				Gnome::Vfs::Uri::create (win_.getOpenedLib());
+			Glib::ustring const destinationdir =
+				liburi->get_scheme ()
+				+ "://"
+				+	Glib::build_filename (
+					liburi->extract_dirname (),
+					_("Downloaded documents"));
 
-		if (is_dir) {
-			std::vector<Glib::ustring> morefiles = Utility::recurseFolder (*it);
-			std::vector<Glib::ustring>::iterator it2;
-			for (it2 = morefiles.begin(); it2 != morefiles.end(); ++it2) {
-				files.push_back (*it2);
+			if (!Gnome::Vfs::Uri::create (destinationdir)->uri_exists ()) {
+				Gnome::Vfs::Handle::make_directory (destinationdir, 0757);
 			}
+
+			std::cerr << "'" << destinationdir << "\n";
+			std::cerr << "'" <<  uri->to_string () << "\n";
+			std::cerr << "'" <<  uri->extract_short_path_name () << "\n";
+
+			Glib::ustring const destination = Glib::build_filename (
+				destinationdir,
+				uri->extract_short_path_name ());
+
+			std::cerr << "'" << destination << "\n";
+			Transfer::downloadRemoteFile (*it, destination);
+			files.push_back (destination);
 		} else {
-			files.push_back (*it);
+			// It's a local file, see if it's a directory
+			Glib::RefPtr<Gnome::Vfs::FileInfo> info;
+			try {
+				info = uri->get_file_info ();
+			} catch (const Gnome::Vfs::exception ex) {
+				Utility::exceptionDialog (&ex,
+					String::ucompose (
+						_("Getting info for file '%1'"),
+						uri->to_string ()));
+				return;
+			}
+			is_dir = info->get_type() == Gnome::Vfs::FILE_TYPE_DIRECTORY;
+
+			if (is_dir) {
+				std::vector<Glib::ustring> morefiles = Utility::recurseFolder (*it);
+				std::vector<Glib::ustring>::iterator it2;
+				for (it2 = morefiles.begin(); it2 != morefiles.end(); ++it2) {
+					files.push_back (*it2);
+				}
+			} else {
+				files.push_back (*it);
+			}
 		}
 	}
 
