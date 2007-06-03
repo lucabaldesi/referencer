@@ -415,9 +415,6 @@ void Document::readPDF ()
 		// We might have picked this up on the first page
 		if (bib_.getYear ().empty())
 			bib_.guessYear (textdump);
-	} else {
-		std::cerr << "Document::ReadPDF: Could not extract text from '"
-			<< filename_ << "'\n";
 	}
 }
 
