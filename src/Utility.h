@@ -96,6 +96,9 @@ bool hasExtension (
 		Glib::RefPtr<Gdk::Pixbuf> source,
 		Glib::RefPtr<Gdk::Pixbuf> frame,
 		int left, int top, int right, int bottom);
+		
+	Glib::ustring mozUrlSelectionToUTF8 (
+		Gtk::SelectionData const &sel);
 }
 
 #endif

@@ -21,6 +21,10 @@
  * The art_rgb_run_alpha function in Document.C is copied from libart, Copyright © Raph Levien 1998
 */
 
+/* 
+ * mozUrlSelectionToUTF8 is derived from gnome-terminal
+ * Copyright © Havoc Pennington 2001
+
 #include <gtkmm.h>
 // The gtkmm in Ubuntu 6.04 doesn't seem to get this in <gtkmm.h>
 #include <gtkmm/icontheme.h>
@@ -1952,6 +1956,58 @@ Glib::RefPtr<Gdk::Pixbuf> eelEmbedImageInFrame (
 		return Glib::wrap (eel_embed_image_in_frame (
 			source->gobj(), frame->gobj(),
 			left, top, right, bottom), false);
+}
+
+
+/**
+ * The body of this function comes from termina-screen.c in
+ * gnome-terminal-2.18.0, Copyright 2001 Havoc Pennington
+ */
+Glib::ustring mozUrlSelectionToUTF8 (
+	Gtk::SelectionData const &sel)
+{
+        GString *str;
+        int i;
+        const guint16 *char_data;
+        int char_len;
+        
+        /* MOZ_URL is in UCS-2 but in format 8. BROKEN!
+         *
+         * The data contains the URL, a \n, then the
+         * title of the web page.
+         */
+        if (sel.get_format() != 8 ||
+            sel.get_length() == 0 ||
+            (sel.get_length() % 2) != 0)
+          {
+            g_printerr (_("Mozilla url dropped on terminal had wrong format (%d) or length (%d)\n"),
+                        sel.get_format(),
+                        sel.get_length());
+            return Glib::ustring();
+          }
+
+        str = g_string_new (NULL);
+        
+        char_len = sel.get_length() / 2;
+        char_data = (const guint16*) sel.get_data();
+        i = 0;
+        while (i < char_len)
+          {
+            if (char_data[i] == '\n')
+              break;
+            
+            g_string_append_unichar (str, (gunichar) char_data[i]);
+            
+            ++i;
+          }
+        
+        /* FIXME just brazenly ignoring encoding issues, 
+         * returning some UTF-8
+         */
+         
+        return Glib::ustring(str->str, str->len);
+     
+        g_string_free (str, TRUE);
 }
 
 
