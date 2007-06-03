@@ -18,6 +18,10 @@
 
 namespace Transfer {
 
+void downloadRemoteFile (
+	Glib::ustring const &source,
+	Glib::ustring const &dest);
+
 Glib::ustring &readRemoteFile (
 	Glib::ustring const &title,
 	Glib::ustring const &messagetext,

@@ -26,13 +26,96 @@ namespace Transfer {
 static bool transfercomplete;
 static bool transferfail;
 static Glib::ustring transferresults;
+void fetcherThread (Glib::ustring const &filename);
 
 void onTransferCancel ()
+	{transferfail = true;}
+
+
+
+void promptWorkOffline ()
 {
-	transferfail = true;
+	Glib::ustring const messagetext2 = String::ucompose (
+		"<b><big>%1</big></b>\n\n%2",
+		_("Work offline?"),
+		_("There was a problem while retrieving metadata, would you like \n"
+		"to work offline?  If you choose to work offline, no further network "
+		"operations will be attempted until you choose to work online again "
+		"in the Preferences dialog."));
+	Gtk::MessageDialog faildialog (
+		messagetext2,
+		true,
+		Gtk::MESSAGE_WARNING,
+		Gtk::BUTTONS_NONE);
+
+	Gtk::Button *online = faildialog.add_button
+		(_("_Stay Online"), Gtk::RESPONSE_NO);
+	Gtk::Button *offline = faildialog.add_button
+		(_("_Go Offline"), Gtk::RESPONSE_YES);
+	faildialog.set_default_response (Gtk::RESPONSE_YES);
+
+	Gtk::Image *onlineicon = Gtk::manage (
+		new Gtk::Image (Gtk::Stock::CONNECT, Gtk::ICON_SIZE_BUTTON));
+	online->set_image (*onlineicon);
+	Gtk::Image *offlineicon = Gtk::manage (
+		new Gtk::Image (Gtk::Stock::DISCONNECT, Gtk::ICON_SIZE_BUTTON));
+	offline->set_image (*offlineicon);
+
+	if (faildialog.run () == Gtk::RESPONSE_YES) {
+		_global_prefs->setWorkOffline (true);
+	};
 }
 
-void fetcherThread (Glib::ustring const &filename);
+
+bool on_transfer_progress(const Gnome::Vfs::Transfer::ProgressInfo& info)
+{
+	//std::cerr << "progress\n";
+	return true;
+}
+
+void downloadRemoteFile (
+	Glib::ustring const &source,
+	Glib::ustring const &dest)
+{
+	Glib::RefPtr<Gnome::Vfs::Uri> srcuri = Gnome::Vfs::Uri::create (source);
+	Glib::RefPtr<Gnome::Vfs::Uri> desturi = Gnome::Vfs::Uri::create (dest);
+	
+	/*std::vector<Glib::RefPtr<Gnome::Vfs::Uri> > srclist;
+	srclist.push_back(srcuri);
+	std::vector<Glib::RefPtr<Gnome::Vfs::Uri> > destlist;
+	destlist.push_back(desturi);
+	
+	Gnome::Vfs::Async::Handle xferhandle;
+	
+	// Threading warning: this can pop up dialogs
+	xferhandle.transfer (
+		srclist,
+		destlist,
+		Gnome::Vfs::XFER_DEFAULT,
+		Gnome::Vfs::XFER_MODE_QUERY,
+		Gnome::Vfs::OVERWRITE_MODE_QUERY,
+		0,
+		
+	);*/
+	
+	/* This should
+	    - update the progress UI
+	    - have a timeout
+	*/
+	try {
+		Gnome::Vfs::Transfer::transfer (
+			srcuri,
+			desturi,
+			Gnome::Vfs::XFER_DEFAULT,
+			Gnome::Vfs::XFER_ERROR_MODE_QUERY,
+			Gnome::Vfs::XFER_OVERWRITE_MODE_QUERY,
+			sigc::ptr_fun (&on_transfer_progress)
+			);
+	} catch (const Gnome::Vfs::exception ex) {
+		Utility::exceptionDialog (&ex, "");
+	}
+}
+
 
 Glib::ustring &readRemoteFile (
 	Glib::ustring const &title,
@@ -83,33 +166,7 @@ Glib::ustring &readRemoteFile (
 	fetcher->join ();
 
 	if (transferfail) {
-		Glib::ustring const messagetext2 = "<b><big>Work offline?</big></b>\n\n"
-			"There was a problem while retrieving metadata, would you like \n"
-			"to work offline?  If you choose to work offline, no further network "
-			"operations will be attempted until you choose to work online again "
-			"in the Preferences dialog.";
-		Gtk::MessageDialog faildialog (
-			messagetext2,
-			true,
-			Gtk::MESSAGE_WARNING,
-			Gtk::BUTTONS_NONE);
-
-		Gtk::Button *online = faildialog.add_button
-			("_Stay Online", Gtk::RESPONSE_NO);
-		Gtk::Button *offline = faildialog.add_button
-			("_Go Offline", Gtk::RESPONSE_YES);
-		faildialog.set_default_response (Gtk::RESPONSE_YES);
-
-		Gtk::Image *onlineicon = Gtk::manage (
-			new Gtk::Image (Gtk::Stock::CONNECT, Gtk::ICON_SIZE_BUTTON));
-		online->set_image (*onlineicon);
-		Gtk::Image *offlineicon = Gtk::manage (
-			new Gtk::Image (Gtk::Stock::DISCONNECT, Gtk::ICON_SIZE_BUTTON));
-		offline->set_image (*offlineicon);
-
-		if (faildialog.run () == Gtk::RESPONSE_YES) {
-			_global_prefs->setWorkOffline (true);
-		};
+		promptWorkOffline ();
 		throw Exception ("Transfer failed\n");
 	}
 
