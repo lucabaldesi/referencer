@@ -41,7 +41,6 @@ class Library {
 		bool const usebraces,
 		bool const utf8);
 
-
 	// The naming is BibtexFoo everywhere else, but in Library
 	// we use the manage_ prefix to be consistent with the file format
 	// which uses manage_ to be future-proof with more general manage
