@@ -20,6 +20,7 @@
 #include "RefWindow.h"
 #include "Utility.h"
 
+
 int main (int argc, char **argv)
 {
 	bindtextdomain (GETTEXT_PACKAGE, GNOMELOCALEDIR);
