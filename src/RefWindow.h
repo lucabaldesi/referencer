@@ -33,20 +33,24 @@ class TagList;
 
 #define DISPLAY_PROGRAM "Referencer"
 
+/**
+ * This is a bit of a mess in terms of what's public.
+ * The public members are generally used by things like DocumentView
+ */
+
 class RefWindow {
-	private:
-		Gtk::Statusbar *statusbar_;
-		Gtk::ProgressBar *progressbar_;
+
 	public:
-		//Gtk::Window * getWindow () {return window_;}
+		RefWindow ();
+		~RefWindow ();
+		void run ();
+	
 		void setStatusText (Glib::ustring const &text) {statusbar_->push (text, 0);};
 		Gtk::ProgressBar *getProgressBar ()
 			{return progressbar_;}
 		void setSensitive (bool const sensitive);
 		
-		
 		void addDocFiles (std::vector<Glib::ustring> const &filenames);
-
 
 		/* Other main window UI */
 		// DocumentView needs this for its tooltip
@@ -65,6 +69,14 @@ class RefWindow {
 
 		Library *library_;
 
+		/* The status bar */
+		Gtk::Statusbar *statusbar_;
+		Gtk::ProgressBar *progressbar_;
+
+		/* The Documents View */
+		DocumentView *docview_;
+
+		/* The Tags View */
 		Glib::RefPtr<Gtk::ListStore> tagstore_;
 		Gtk::TreeModelColumn<int> taguidcol_;
 		Gtk::TreeModelColumn<Glib::ustring> tagnamecol_;
@@ -72,11 +84,6 @@ class RefWindow {
 		int sortTags (
 			const Gtk::TreeModel::iterator& a,
 			const Gtk::TreeModel::iterator& b);
-
-		/* The Documents View */
-		DocumentView *docview_;
-
-		/* The Tags View */
 		Gtk::Widget *tagpane_;
 		Gtk::VBox *taggerbox_;
 		Glib::RefPtr<Gtk::TreeSelection> tagselection_;
@@ -160,12 +167,10 @@ class RefWindow {
 		/* Remember which file is open */
 		Glib::ustring openedlib_;
 		void setOpenedLib (Glib::ustring const &openedlib);
-
-
-	public:
-		RefWindow ();
-		~RefWindow ();
-		void run ();
+		public:
+		Glib::ustring const &getOpenedLib ()
+			{return openedlib_;}
+		private:
 };
 
 #endif
