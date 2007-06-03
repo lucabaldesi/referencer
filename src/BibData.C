@@ -387,7 +387,7 @@ void BibData::getCrossRef ()
 		+ ends.second;
 
 	try {
-		Glib::ustring &rawtext = Transfer::getRemoteFile (
+		Glib::ustring &rawtext = Transfer::readRemoteFile (
 			_("Downloading Metadata"), messagetext, bibfilename);
 		parseCrossRefXML (rawtext);
 	} catch (Transfer::Exception ex) {
@@ -424,7 +424,7 @@ void BibData::getArxiv ()
 
 	Glib::ustring *rawtext;
 	try {
-		rawtext = &Transfer::getRemoteFile (
+		rawtext = &Transfer::readRemoteFile (
 			_("Downloading Metadata"), messagetext, filename);
 		std::cerr << *rawtext << "\n\n\n";
 	} catch (Transfer::Exception ex) {

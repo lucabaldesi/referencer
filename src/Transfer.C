@@ -34,7 +34,7 @@ void onTransferCancel ()
 
 void fetcherThread (Glib::ustring const &filename);
 
-Glib::ustring &getRemoteFile (
+Glib::ustring &readRemoteFile (
 	Glib::ustring const &title,
 	Glib::ustring const &messagetext,
 	Glib::ustring const &filename)
