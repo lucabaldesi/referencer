@@ -24,6 +24,7 @@
 /* 
  * mozUrlSelectionToUTF8 is derived from gnome-terminal
  * Copyright © Havoc Pennington 2001
+*/
 
 #include <gtkmm.h>
 // The gtkmm in Ubuntu 6.04 doesn't seem to get this in <gtkmm.h>
@@ -183,7 +184,7 @@ void exceptionDialog (
 	//gdk_threads_leave ();
 
 	/*
-		run() contains this:
+	 * run() contains this:
 
 	  GDK_THREADS_LEAVE ();
   g_main_loop_run (ri.loop);
