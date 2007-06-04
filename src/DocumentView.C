@@ -276,20 +276,27 @@ void DocumentView::onIconsDragData (
 			// It's a remote file, download it
 			Glib::RefPtr<Gnome::Vfs::Uri> liburi =
 				Gnome::Vfs::Uri::create (win_.getOpenedLib());
-			Glib::ustring const destinationdir =
-				liburi->get_scheme ()
-				+ "://"
-				+	Glib::build_filename (
-					liburi->extract_dirname (),
-					_("Downloaded Documents"));
+			
+			/*
+			 * THIS IS ALL BOLLOCKS
+			 * Really we should just show the user a save dialog and let him choose
+			 */
 
-			if (!Gnome::Vfs::Uri::create (destinationdir)->uri_exists ()) {
-				Gnome::Vfs::Handle::make_directory (destinationdir, 0757);
+			Glib::ustring destinationdir;			
+			if (liburi) {
+				destinationdir =
+					liburi->get_scheme ()
+					+ "://"
+					+	Glib::build_filename (
+						liburi->extract_dirname (),
+						_("Downloaded Documents"));
+
+				if (!Gnome::Vfs::Uri::create (destinationdir)->uri_exists ()) {
+					Gnome::Vfs::Handle::make_directory (destinationdir, 0757);
+				}
 			}
 
-			std::cerr << "'" << destinationdir << "\n";
-			std::cerr << "'" <<  uri->to_string () << "\n";
-			std::cerr << "'" <<  uri->extract_short_path_name () << "\n";
+			
 
 			Glib::ustring const destination = Glib::build_filename (
 				destinationdir,
