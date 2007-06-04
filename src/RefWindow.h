@@ -26,6 +26,7 @@ class DocumentList;
 class DocumentProperties;
 class DocumentView;
 class Library;
+class Progress;
 class TagList;
 
 #define ALL_TAGS_UID -1
@@ -48,9 +49,14 @@ class RefWindow {
 		void setStatusText (Glib::ustring const &text) {statusbar_->push (text, 0);};
 		Gtk::ProgressBar *getProgressBar ()
 			{return progressbar_;}
+		Gtk::Statusbar *getStatusBar ()
+			{return statusbar_;}
 		void setSensitive (bool const sensitive);
 		
 		void addDocFiles (std::vector<Glib::ustring> const &filenames);
+
+		Progress *getProgress ()
+			{return progress_;}
 
 		/* Other main window UI */
 		// DocumentView needs this for its tooltip
@@ -68,6 +74,8 @@ class RefWindow {
 		void constructMenu ();
 
 		Library *library_;
+
+		Progress *progress_;
 
 		/* The status bar */
 		Gtk::Statusbar *statusbar_;

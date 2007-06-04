@@ -116,11 +116,9 @@ bool Library::load (Glib::ustring const &libfilename)
 
 	Progress progress (tagwindow_);
 
-	progress.setLabel (String::ucompose (_("Opening %1"), liburi->extract_short_name ()));
-
-	// If we get an exception and return, progress::~Progress should
-	// take care of calling finish() for us.
-	progress.start ();
+	progress.start (String::ucompose (
+		_("Opening %1"),
+		liburi->extract_short_name ()));
 
 	try {
 		libfile.open (libfilename, Gnome::Vfs::OPEN_READ);

@@ -281,7 +281,7 @@ void DocumentView::onIconsDragData (
 				+ "://"
 				+	Glib::build_filename (
 					liburi->extract_dirname (),
-					_("Downloaded documents"));
+					_("Downloaded Documents"));
 
 			if (!Gnome::Vfs::Uri::create (destinationdir)->uri_exists ()) {
 				Gnome::Vfs::Handle::make_directory (destinationdir, 0757);
@@ -296,7 +296,10 @@ void DocumentView::onIconsDragData (
 				uri->extract_short_path_name ());
 
 			std::cerr << "'" << destination << "\n";
-			Transfer::downloadRemoteFile (*it, destination);
+			Transfer::downloadRemoteFile (
+				*it,
+				destination,
+				*(win_.getProgress()));
 			files.push_back (destination);
 		} else {
 			// It's a local file, see if it's a directory

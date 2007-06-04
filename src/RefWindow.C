@@ -26,6 +26,7 @@
 #include "Library.h"
 #include "LibraryParser.h"
 #include "Preferences.h"
+#include "Progress.h"
 #include "TagList.h"
 
 #include "config.h"
@@ -44,6 +45,8 @@ RefWindow::RefWindow ()
 	docpropertiesdialog_ = new DocumentProperties ();
 
 	constructUI ();
+
+	progress_ = new Progress (*this);
 
 	Glib::ustring const libfile = _global_prefs->getLibraryFilename ();
 
@@ -64,10 +67,9 @@ RefWindow::~RefWindow ()
 {
 	_global_prefs->setLibraryFilename (openedlib_);
 
-	delete library_;
+	delete progress_;
 	delete docpropertiesdialog_;
-
-	delete _global_prefs;
+	delete library_;	
 }
 
 

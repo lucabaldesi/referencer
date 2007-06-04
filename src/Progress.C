@@ -9,18 +9,20 @@
  */
 
 
+
+#include <iostream>
+
+#include <libgnomemm/main.h>
+
 #include "RefWindow.h"
 
 #include "Progress.h"
 
-#include <libgnomemm/main.h>
 
-#include <iostream>
-
-Progress::Progress (RefWindow &tagwindow)
-	: tagwindow_ (tagwindow)
+Progress::Progress (RefWindow &refwindow)
+	: win_ (refwindow)
 {
-	progress_ = tagwindow_.getProgressBar ();
+	finished_ = true;
 }
 
 
@@ -31,69 +33,43 @@ Progress::~Progress ()
 }
 
 
-void Progress::setLabel (Glib::ustring const &markup)
-{
-	tagwindow_.setStatusText (markup);
-}
-
-
-void Progress::start ()
+void Progress::start (Glib::ustring const &text)
 {
 	// Flag that the loop thread waits for
 	finished_ = false;
-
-	tagwindow_.setSensitive (false);
-
-	// Spawn the loop thread
-	loopthread_ = Glib::Thread::create (
-		sigc::mem_fun (this, &Progress::loop), true);
+	win_.setSensitive (false);
+	win_.getProgressBar()->set_fraction (0.0);
+	msgid_ = win_.getStatusBar()->push (text);
 }
 
 
 void Progress::finish ()
 {
 	finished_ = true;
-	tagwindow_.getProgressBar()->set_fraction (1.0);
-	tagwindow_.setSensitive (true);
-	loopthread_->join ();
+	win_.getProgressBar()->set_fraction (1.0);
+	win_.setSensitive (true);
+	win_.getStatusBar()->remove_message (msgid_);
 }
 
 
 void Progress::update (double status)
 {
-	progress_->set_fraction (status);
+	win_.getProgressBar()->set_fraction (status);
 	flushEvents ();
 }
 
 
 void Progress::update ()
 {
-	progress_->pulse ();
+	win_.getProgressBar()->pulse ();
 	flushEvents ();
 }
 
 
-void Progress::loop ()
-{
-	while (!finished_) {
-		//flushEvents ();
-		Glib::usleep (100000);
-	}
-}
-
-/*
- * A DEFUNCT note on threading:
- * If the caller is inside a gtk_threads_enter block, for
- * example if the main loop is thus surrounded, then this
- * is liable to freeze.
-*/
-
 void Progress::flushEvents ()
 {
-	//gdk_threads_enter ();
 	while (Gnome::Main::events_pending())
 		Gnome::Main::iteration ();
-	//gdk_threads_leave ();
 }
 
 

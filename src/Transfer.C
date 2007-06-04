@@ -18,6 +18,7 @@
 #include "ucompose.hpp"
 
 #include "Preferences.h"
+#include "Progress.h"
 
 #include "Transfer.h"
 
@@ -67,53 +68,48 @@ void promptWorkOffline ()
 }
 
 
-bool on_transfer_progress(const Gnome::Vfs::Transfer::ProgressInfo& info)
+bool on_transfer_progress(
+	const Gnome::Vfs::Transfer::ProgressInfo& info,
+	Progress &progress)
 {
-	//std::cerr << "progress\n";
+	if (info.get_phase() == Gnome::Vfs::XFER_PHASE_COPYING) {
+		progress.update (
+			(double)info.get_bytes_copied()
+			/ (double)info.get_file_size());
+	} else {
+		progress.update ();
+	}
+	
 	return true;
 }
 
 void downloadRemoteFile (
 	Glib::ustring const &source,
-	Glib::ustring const &dest)
+	Glib::ustring const &dest,
+	Progress &progress)
 {
 	Glib::RefPtr<Gnome::Vfs::Uri> srcuri = Gnome::Vfs::Uri::create (source);
 	Glib::RefPtr<Gnome::Vfs::Uri> desturi = Gnome::Vfs::Uri::create (dest);
-	
-	/*std::vector<Glib::RefPtr<Gnome::Vfs::Uri> > srclist;
-	srclist.push_back(srcuri);
-	std::vector<Glib::RefPtr<Gnome::Vfs::Uri> > destlist;
-	destlist.push_back(desturi);
-	
-	Gnome::Vfs::Async::Handle xferhandle;
-	
-	// Threading warning: this can pop up dialogs
-	xferhandle.transfer (
-		srclist,
-		destlist,
-		Gnome::Vfs::XFER_DEFAULT,
-		Gnome::Vfs::XFER_MODE_QUERY,
-		Gnome::Vfs::OVERWRITE_MODE_QUERY,
-		0,
-		
-	);*/
-	
-	/* This should
-	    - update the progress UI
-	    - have a timeout
-	*/
+
+	progress.start (String::ucompose(
+		_("Downloading %1"),
+		srcuri->extract_short_name()));
 	try {
 		Gnome::Vfs::Transfer::transfer (
 			srcuri,
 			desturi,
 			Gnome::Vfs::XFER_DEFAULT,
-			Gnome::Vfs::XFER_ERROR_MODE_QUERY,
-			Gnome::Vfs::XFER_OVERWRITE_MODE_QUERY,
-			sigc::ptr_fun (&on_transfer_progress)
+			Gnome::Vfs::XFER_ERROR_MODE_ABORT,
+			Gnome::Vfs::XFER_OVERWRITE_MODE_SKIP,
+			sigc::bind (
+				sigc::ptr_fun (&on_transfer_progress),
+				sigc::ref(progress))
 			);
 	} catch (const Gnome::Vfs::exception ex) {
-		Utility::exceptionDialog (&ex, "");
+		progress.finish ();
+		throw ex;
 	}
+	progress.finish ();
 }
 
 

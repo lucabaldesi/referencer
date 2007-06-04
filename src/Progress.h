@@ -9,7 +9,6 @@
  */
 
 
-
 #ifndef PROGRESS_H
 #define PROGRESS_H
 
@@ -22,40 +21,18 @@ class Progress {
 	Progress (RefWindow &tagwindow);
 	~Progress ();
 
-	void setLabel (Glib::ustring const &text);
-	void start ();
+	void start (Glib::ustring const &text);
 	void update (double status);
 	void update ();
 	void finish ();
 
 	private:
-	void loop ();
 	void flushEvents ();
 
-	Gtk::ProgressBar *progress_;
 	bool finished_;
-	Glib::Thread *loopthread_;
-	RefWindow &tagwindow_;
+	RefWindow &win_;
+	int msgid_;
 };
 
 #endif
 
-/*
-
-{
-
-	Progress prog (window_);
-
-	Progress.setLabel ("Working, please show some patience");
-	Progress.start ();
-
-	for (int i = 0; i < 100; ++i) {
-		Progress.update ((double)i / 100.0);
-		fuck_about_a_bit (i);
-	}
-
-	Progress.finish ();
-
-}
-
-*/

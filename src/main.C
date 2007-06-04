@@ -52,5 +52,7 @@ int main (int argc, char **argv)
 		Utility::exceptionDialog (&ex, _("Terminating due to unhandled exception"));
 	}
 
+	delete _global_prefs;
+
 	return 0;
 }

@@ -13,14 +13,18 @@
 #ifndef TRANSFER_H
 #define TRANSFER_H
 
+#include <gtkmm/progressbar.h>
 #include <glibmm/ustring.h>
 #include <glibmm/exception.h>
+
+class Progress;
 
 namespace Transfer {
 
 void downloadRemoteFile (
 	Glib::ustring const &source,
-	Glib::ustring const &dest);
+	Glib::ustring const &dest,
+	Progress &progress);
 
 Glib::ustring &readRemoteFile (
 	Glib::ustring const &title,
