@@ -308,6 +308,7 @@ void Document::writeBibtex (
 	writeBibKey (out, "number",  bib_.getIssue(), usebraces, utf8);
 	writeBibKey (out, "pages",   bib_.getPages(), usebraces, utf8);
 	writeBibKey (out, "year",    bib_.getYear(), usebraces, utf8);
+	writeBibKey (out, "doi",    bib_.getDoi(), usebraces, utf8);
 	
 	if (tagUids_.size () > 0) {
 		out << "\tkeywords = \"";

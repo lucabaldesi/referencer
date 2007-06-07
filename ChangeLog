@@ -1,4 +1,5 @@
 1.0.5:
+	- Include doi field in bibtex export
 	- Fix generating thumbnails for non-pdf files
 
 1.0.4:
