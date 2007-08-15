@@ -1,7 +1,7 @@
 dnl Process this file with autoconf to produce a configure script.
 AC_PREREQ(2.13)
 
-AC_INIT(src/TagWindow.C)
+AC_INIT(src/RefWindow.C)
 
 AM_CONFIG_HEADER(config.h)
 
