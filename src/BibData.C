@@ -103,7 +103,11 @@ void BibData::addExtra (Glib::ustring const &key, Glib::ustring const &value)
 {
 	// Should add something to our map of extra keys
 //	std::cerr << "addExtra: '" << key << ":" << value << "'\n";
-	extras_[key] = value;
+	if ( key == "Keywords" && !extras_[key].empty() ) {
+		extras_[key] = extras_[key] + "; " + value;
+	} else {
+		extras_[key] = value;
+	}
 }
 
 
