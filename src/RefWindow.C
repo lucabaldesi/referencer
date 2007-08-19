@@ -1516,6 +1516,8 @@ void RefWindow::onWebLinkDoc ()
 		} else if (!doc->getBibData().getExtras()["eprint"].empty()) {
 			Glib::ustring eprint = doc->getBibData().getExtras()["eprint"];
 			Gnome::Vfs::url_show ("http://arxiv.org/abs/" + eprint);
+		} else if (!doc->getBibData().getExtras()["Url"].empty()) {
+			Gnome::Vfs::url_show (doc->getBibData().getExtras()["Url"]);
 		} else {
 			std::cerr << "Warning: RefWindow::onWebLinkDoc: nothing to link on\n";
 		}

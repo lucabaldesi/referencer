@@ -1,4 +1,8 @@
 1.0.5:
+	- Make the extras store case insensitive on the key: multiple
+	  fields differing only in case are no longer allowed (Alexey Balmashnov)
+	- Use the 'url' extra field for web linking (Alexey Balmashnov)
+	- Handle multiple keyword fields in import (Alexey Balmashnov)
 	- Include doi field in bibtex export
 	- Fix generating thumbnails for non-pdf files
 

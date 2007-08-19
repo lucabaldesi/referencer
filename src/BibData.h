@@ -15,8 +15,15 @@
 
 #include <map>
 #include <vector>
+#include <functional>
 
 #include <gtkmm.h>
+
+struct casefoldCompare : public std::binary_function<Glib::ustring, Glib::ustring, bool> {
+	bool operator () ( const Glib::ustring &lhs, const Glib::ustring &rhs ) const {
+		return lhs.casefold() < rhs.casefold();
+	}
+};
 
 class BibData {
 	private:
@@ -47,7 +54,7 @@ class BibData {
 	void getCrossRef ();
 	void getArxiv ();
 
-	typedef std::map <Glib::ustring, Glib::ustring> ExtrasMap;
+	typedef std::map <Glib::ustring, Glib::ustring, casefoldCompare> ExtrasMap;
 	ExtrasMap extras_;
 	void addExtra (Glib::ustring const &key, Glib::ustring const &value);
 	void clearExtras ();

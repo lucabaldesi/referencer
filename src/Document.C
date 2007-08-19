@@ -425,6 +425,7 @@ bool Document::canWebLink ()
 	if (
 		   !bib_.getDoi ().empty ()
 		|| !bib_.getExtras ()["eprint"].empty()
+		|| !bib_.getExtras ()["Url"].empty()
 	   )
 	{
 		return true;
