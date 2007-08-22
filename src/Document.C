@@ -16,7 +16,6 @@
 
 #include <glibmm/markup.h>
 #include <libgnomevfsmm.h>
-#include <libgnomeuimm.h>
 #include <glibmm/i18n.h>
 #include "ucompose.hpp"
 
@@ -31,6 +30,7 @@
 
 Glib::RefPtr<Gdk::Pixbuf> Document::defaultthumb_;
 Glib::RefPtr<Gdk::Pixbuf> Document::thumbframe_;
+Glib::RefPtr<Gnome::UI::ThumbnailFactory> Document::thumbfac_;
 
 Document::Document (Glib::ustring const &filename)
 {
@@ -125,28 +125,28 @@ void Document::setupThumbnail ()
 		Glib::RefPtr<Gnome::Vfs::FileInfo> fileinfo = uri->get_file_info ();
 		time_t mtime = fileinfo->get_modification_time ();
 
-		Glib::RefPtr<Gnome::UI::ThumbnailFactory> thumbfac =
-			Gnome::UI::ThumbnailFactory::create (Gnome::UI::THUMBNAIL_SIZE_NORMAL);
+		if (!thumbfac_)
+			thumbfac_ =	Gnome::UI::ThumbnailFactory::create (Gnome::UI::THUMBNAIL_SIZE_NORMAL);
 
 		Glib::ustring thumbfile;
-		thumbfile = thumbfac->lookup (filename_, mtime);
+		thumbfile = thumbfac_->lookup (filename_, mtime);
 
 		// Should we be using Gnome::UI::icon_lookup_sync?
 		if (thumbfile.empty()) {
 			std::cerr << "Couldn't find thumbnail:'" << filename_ << "'\n";
-			if (thumbfac->has_valid_failed_thumbnail (filename_, mtime)) {
+			if (thumbfac_->has_valid_failed_thumbnail (filename_, mtime)) {
 				std::cerr << "Has valid failed thumbnail: '" << filename_ << "'\n";
 			} else {
 				std::cerr << "Generate thumbnail: '" << filename_ << "'\n";
 				Glib::ustring mimetype = 
 					(uri->get_file_info (Gnome::Vfs::FILE_INFO_GET_MIME_TYPE))->get_mime_type ();
 
-				thumbnail_ = thumbfac->generate_thumbnail (filename_, mimetype);
+				thumbnail_ = thumbfac_->generate_thumbnail (filename_, mimetype);
 				if (thumbnail_) {
-					thumbfac->save_thumbnail (thumbnail_, filename_, mtime);
+					thumbfac_->save_thumbnail (thumbnail_, filename_, mtime);
 				} else {
 					std::cerr << "Failed to generate thumbnail: '" << filename_ << "'\n";
-					thumbfac->create_failed_thumbnail (filename_, mtime);
+					thumbfac_->create_failed_thumbnail (filename_, mtime);
 				}
 			}
 

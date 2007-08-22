@@ -15,6 +15,8 @@
 
 #include "BibData.h"
 
+#include <libgnomeuimm.h>
+
 class Library;
 
 class Document {
@@ -72,6 +74,7 @@ class Document {
 
 	static Glib::RefPtr<Gdk::Pixbuf> defaultthumb_;
 	static Glib::RefPtr<Gdk::Pixbuf> thumbframe_;
+	static Glib::RefPtr<Gnome::UI::ThumbnailFactory> thumbfac_;
 
 	Glib::ustring generateKey ();
 };
