@@ -1316,7 +1316,24 @@ void RefWindow::addDocFiles (std::vector<Glib::ustring> const &filenames)
 			// If we got a DOI or eprint field this will work
 			newdoc->getMetaData ();
 
-			newdoc->setKey (library_->doclist_->uniqueKey (newdoc->generateKey ()));
+			// Generate a Zoidberg99 type key
+			newdoc->setKey (
+				library_->doclist_->uniqueKey (
+					newdoc->generateKey ()));
+			
+			// If we did not succeed in getting a title, use the filename
+			if (newdoc->getBibData().getTitle().empty()) {
+				Glib::ustring filename = Gnome::Vfs::unescape_string_for_display (
+					Glib::path_get_basename (newdoc->getFileName()));
+
+				Glib::ustring::size_type periodpos = filename.find_last_of (".");
+				if (periodpos != std::string::npos) {
+					filename = filename.substr (0, periodpos);
+				}
+				
+				newdoc->getBibData().setTitle (filename);
+			}
+				
 		} else {
 			std::cerr << "RefWindow::addDocFiles: Warning: didn't succeed adding '" << *it << "'.  Duplicate file?\n";
 		}

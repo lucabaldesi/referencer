@@ -1,4 +1,5 @@
 1.0.5:
+	- Use filename as title when adding files without metadata
 	- Make the extras store case insensitive on the key: multiple
 	  fields differing only in case are no longer allowed (Alexey Balmashnov)
 	- Use the 'url' extra field for web linking (Alexey Balmashnov)

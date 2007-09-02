@@ -131,6 +131,13 @@ void Document::setupThumbnail ()
 		Glib::ustring thumbfile;
 		thumbfile = thumbfac_->lookup (filename_, mtime);
 
+		/*
+		 * Upsettingly, this leads to two full opens-read-close operations 
+		 * on the thumbnail.  ThumbnailFactory does one, presumably to 
+		 * read the PNG metadata, then we do it again to get the 
+		 * image itself.
+		 */
+
 		// Should we be using Gnome::UI::icon_lookup_sync?
 		if (thumbfile.empty()) {
 			std::cerr << "Couldn't find thumbnail:'" << filename_ << "'\n";
