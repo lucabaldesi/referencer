@@ -44,6 +44,13 @@ AC_CHECK_HEADERS(boost/regex.hpp)
 AC_SUBST(DEPS_CFLAGS)
 AC_SUBST(DEPS_LIBS)
 
+dnl Special case for poppler-glib < 0.6
+case $($PKG_CONFIG --modversion poppler-glib) in
+	0.5.*)
+		AC_DEFINE(OLD_POPPLER,"1","Using poppler < 0.6");;
+esac
+
+
 dnl I18n
 GETTEXT_PACKAGE=$PACKAGE
 AC_DEFINE_UNQUOTED(GETTEXT_PACKAGE,"$GETTEXT_PACKAGE",GETTEXT_PACKAGE)

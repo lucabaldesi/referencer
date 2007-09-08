@@ -18,8 +18,9 @@
 #include <libgnomevfsmm.h>
 #include <glibmm/i18n.h>
 #include "ucompose.hpp"
-
 #include <poppler.h>
+
+#include "config.h"
 
 #include "Utility.h"
 #include "Library.h"
@@ -27,6 +28,7 @@
 
 
 #include "Document.h"
+
 
 Glib::RefPtr<Gdk::Pixbuf> Document::defaultthumb_;
 Glib::RefPtr<Gdk::Pixbuf> Document::thumbframe_;
@@ -393,7 +395,13 @@ void Document::readPDF ()
 		rect->y2 = height;
 
 		// FIXME: add something before/after appending text to signal pagebreak?
-		textdump += poppler_page_get_text (page, rect);
+		#ifdef OLD_POPPLER
+			#warning Using poppler <= 0.5
+			textdump += poppler_page_get_text (page, rect);
+		#else
+			#warning Using poppler >= 0.6
+			textdump += poppler_page_get_text (page, POPPLER_SELECTION_GLYPH, rect);
+		#endif
 
 		poppler_rectangle_free (rect);
 		g_object_unref (page);
