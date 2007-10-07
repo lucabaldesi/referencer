@@ -100,7 +100,7 @@ DocumentView::DocumentView (
 
 	Gtk::ScrolledWindow *iconsscroll = Gtk::manage(new Gtk::ScrolledWindow());
 	iconsscroll->add(*icons);
-	iconsscroll->set_policy (Gtk::POLICY_NEVER, Gtk::POLICY_AUTOMATIC);
+	iconsscroll->set_policy (Gtk::POLICY_AUTOMATIC, Gtk::POLICY_AUTOMATIC);
 	vbox->pack_start(*iconsscroll, true, true, 0);
 
 	docsiconscroll_ = iconsscroll;
