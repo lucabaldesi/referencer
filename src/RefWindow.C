@@ -118,8 +118,17 @@ void RefWindow::constructUI ()
 	vbox->pack_start (*hpaned, true, true, 0);
 
 	/* The statusbar */
+	Gtk::HBox *statusbox = Gtk::manage (new Gtk::HBox());
+	vbox->pack_start (*statusbox, false, false, 0);	
+
 	statusbar_ = Gtk::manage (new Gtk::Statusbar ());
-	vbox->pack_start (*statusbar_, false, false, 0);
+
+	offlineicon_ = Gtk::manage (new Gtk::Image (
+		Gtk::Stock::CONNECT,
+		Gtk::IconSize(Gtk::ICON_SIZE_MENU)));
+
+	statusbox->pack_start (*offlineicon_, false, false, 6);
+	statusbox->pack_start (*statusbar_, true, true, 0);
 
 	progressbar_ = Gtk::manage (new Gtk::ProgressBar ());
 	statusbar_->pack_start (*progressbar_, false, false, 0);
@@ -1732,12 +1741,29 @@ void RefWindow::onShowTagPanePrefChanged ()
 }
 
 
+void RefWindow::updateOfflineIcon ()
+{
+	bool const offline = _global_prefs->getWorkOffline ();
+	
+	Gtk::StockID icon = offline ?
+		Gtk::Stock::DISCONNECT :
+		Gtk::Stock::CONNECT;
+
+	offlineicon_->set (icon, Gtk::IconSize(Gtk::ICON_SIZE_MENU));
+}
+
+
 void RefWindow::onWorkOfflineToggled ()
 {
 	_global_prefs->setWorkOffline (
 		Glib::RefPtr <Gtk::ToggleAction>::cast_static(
-			actiongroup_->get_action ("WorkOffline"))->get_active ());
+		actiongroup_->get_action ("WorkOffline"))->get_active ());
+	
+	updateOfflineIcon ();
 }
+
+
+
 
 
 void RefWindow::onWorkOfflinePrefChanged ()
@@ -1748,6 +1774,8 @@ void RefWindow::onWorkOfflinePrefChanged ()
 
 	// To pick up sensitivity changes
 	docview_->populateDocStore ();
+	
+	updateOfflineIcon ();
 }
 
 

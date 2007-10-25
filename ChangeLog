@@ -1,4 +1,5 @@
 1.0.5:
+	- Add online/offline indicator in statusbar
 	- Change sizing options of icon view to work around Gnome 2.20
 	- Use filename as title when adding files without metadata
 	- Make the extras store case insensitive on the key: multiple

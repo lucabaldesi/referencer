@@ -80,6 +80,7 @@ class RefWindow {
 		/* The status bar */
 		Gtk::Statusbar *statusbar_;
 		Gtk::ProgressBar *progressbar_;
+		Gtk::Image *offlineicon_;
 
 		/* The Documents View */
 		DocumentView *docview_;
@@ -110,6 +111,7 @@ class RefWindow {
 		void docSelectionChanged ();
 
 		void onWorkOfflineToggled ();
+		void updateOfflineIcon ();
 		void onQuit ();
 		void onUseListViewToggled ();
 		void onShowTagPaneToggled ();
