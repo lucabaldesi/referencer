@@ -123,9 +123,8 @@ void RefWindow::constructUI ()
 
 	statusbar_ = Gtk::manage (new Gtk::Statusbar ());
 
-	offlineicon_ = Gtk::manage (new Gtk::Image (
-		Gtk::Stock::CONNECT,
-		Gtk::IconSize(Gtk::ICON_SIZE_MENU)));
+	offlineicon_ = Gtk::manage (new Gtk::Image ());
+	updateOfflineIcon ();
 
 	statusbox->pack_start (*offlineicon_, false, false, 6);
 	statusbox->pack_start (*statusbar_, true, true, 0);
@@ -1750,6 +1749,12 @@ void RefWindow::updateOfflineIcon ()
 		Gtk::Stock::CONNECT;
 
 	offlineicon_->set (icon, Gtk::IconSize(Gtk::ICON_SIZE_MENU));
+	
+	#if GTK_VERSION_GE(2,12)
+	offlineicon_->set_tooltip_text ( offline ? 
+		_("Working offline") :
+		_("Working online"));
+	#endif
 }
 
 
