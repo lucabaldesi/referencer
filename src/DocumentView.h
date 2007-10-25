@@ -73,6 +73,9 @@ class DocumentView : public Gtk::VBox
 	Gtk::TreeModelColumn<Glib::ustring> docauthorscol_;
 	Gtk::TreeModelColumn<Glib::ustring> docyearcol_;
 	Gtk::TreeModelColumn<Glib::RefPtr<Gdk::Pixbuf> > docthumbnailcol_;
+	#if GTK_VERSION_GE(2,12)
+	Gtk::TreeModelColumn<Glib::ustring> doctooltipcol_;
+	#endif
 	Glib::RefPtr<Gtk::TreeSelection> docslistselection_;
 
 	Gtk::IconView *docsiconview_;
@@ -82,10 +85,12 @@ class DocumentView : public Gtk::VBox
 	void docListActivated (const Gtk::TreePath& path, Gtk::TreeViewColumn*) {
 		docActivated (path);
 	}
+	#if GTK_VERSION_LT(2,12)
 	GtkWidget *doctooltip_;
 	Document *hoverdoc_;
 	void onDocMouseMotion (GdkEventMotion* event);
 	void onDocMouseLeave (GdkEventCrossing *event);
+	#endif
 	Gtk::Menu doccontextmenu_;
 	Gtk::ScrolledWindow *docsiconscroll_;
 	Gtk::ScrolledWindow *docslistscroll_;

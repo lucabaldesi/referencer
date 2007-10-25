@@ -15,7 +15,6 @@
 
 #include "Document.h"
 #include "DocumentList.h"
-#include "ev-tooltip.h"
 #include "icon-entry.h"
 #include "Library.h"
 #include "Preferences.h"
@@ -26,10 +25,16 @@
 
 #include "DocumentView.h"
 
+#if GTK_VERSION_LT(2,12)
+#include "ev-tooltip.h"
+#endif
+
 
 DocumentView::~DocumentView ()
 {
+#if GTK_VERSION_LT(2,12)
 	gtk_widget_destroy (doctooltip_);
+#endif
 }
 
 
@@ -40,7 +45,9 @@ DocumentView::DocumentView (
 	
  : win_ (refwin), lib_(lib)
 {
+#if GTK_VERSION_LT(2,12)
 	hoverdoc_ = NULL;
+#endif
 
 	// The iconview side
 	Gtk::VBox *vbox = Gtk::manage(new Gtk::VBox);
@@ -50,19 +57,26 @@ DocumentView::DocumentView (
 	pack_start (*iconsframe, true, true, 0);
 
 	// Create the store for the document icons
-	Gtk::TreeModel::ColumnRecord iconcols;
-	iconcols.add(docpointercol_);
-	iconcols.add(dockeycol_);
-	iconcols.add(doctitlecol_);
-	iconcols.add(docauthorscol_);
-	iconcols.add(docyearcol_);
-	iconcols.add(docthumbnailcol_);
-	docstore_ = Gtk::ListStore::create(iconcols);
+	Gtk::TreeModel::ColumnRecord doccols;
+	doccols.add(docpointercol_);
+	doccols.add(dockeycol_);
+	doccols.add(doctitlecol_);
+	doccols.add(docauthorscol_);
+	doccols.add(docyearcol_);
+	doccols.add(docthumbnailcol_);
+#if GTK_VERSION_GE(2,12)
+	doccols.add(doctooltipcol_);
+#endif
+	docstore_ = Gtk::ListStore::create(doccols);
 
 	// Create the IconView for the document icons
 	Gtk::IconView *icons = Gtk::manage(new Gtk::IconView(docstore_));
-	icons->set_text_column(dockeycol_);
-	icons->set_pixbuf_column(docthumbnailcol_);
+	icons->set_text_column (dockeycol_);
+	icons->set_pixbuf_column (docthumbnailcol_);
+#if GTK_VERSION_GE(2,12)
+	// Nasty, gtkmm doesn't have a binding for passing the column object
+	icons->set_tooltip_column (6);
+#endif
 	icons->signal_item_activated().connect (
 		sigc::mem_fun (*this, &DocumentView::docActivated));
 
@@ -90,11 +104,14 @@ DocumentView::DocumentView (
 
 	icons->signal_drag_data_received ().connect (
 		sigc::mem_fun (*this, &DocumentView::onIconsDragData));
+	
+	#if GTK_VERSION_LT(2,12)
 	icons->set_events (Gdk::POINTER_MOTION_MASK | Gdk::LEAVE_NOTIFY_MASK);
 	icons->signal_motion_notify_event ().connect_notify (
 		sigc::mem_fun (*this, &DocumentView::onDocMouseMotion));
 	icons->signal_leave_notify_event ().connect_notify (
 		sigc::mem_fun (*this, &DocumentView::onDocMouseLeave));
+	#endif
 
 	docsiconview_ = icons;
 
@@ -105,7 +122,9 @@ DocumentView::DocumentView (
 
 	docsiconscroll_ = iconsscroll;
 
+	#if GTK_VERSION_LT(2,12)
 	doctooltip_ = ev_tooltip_new (GTK_WIDGET(win_.window_->gobj()));
+	#endif
 
 	// The TreeView for the document list
 	Gtk::TreeView *table = Gtk::manage (new Gtk::TreeView(docstore_));
@@ -202,7 +221,7 @@ void DocumentView::setUseListView (bool const &list)
 	}
 }
 
-
+#if GTK_VERSION_LT(2,12)
 void DocumentView::onDocMouseMotion (GdkEventMotion* event)
 {
 	// Guh, it's giving me these in the iconview, so doesn't work when scrolled down
@@ -246,6 +265,7 @@ void DocumentView::onDocMouseLeave (GdkEventCrossing *event)
 {
 	ev_tooltip_deactivate (EV_TOOLTIP (doctooltip_));
 }
+#endif
 
 
 void DocumentView::onIconsDragData (
@@ -601,6 +621,14 @@ void DocumentView::populateDocStore ()
 		(*item)[doctitlecol_] = (*docit).getBibData().getTitle ();
 		(*item)[docauthorscol_] = (*docit).getBibData().getAuthors ();
 		(*item)[docyearcol_] = (*docit).getBibData().getYear ();
+		#if GTK_VERSION_GE(2,12)
+		(*item)[doctooltipcol_] = String::ucompose (
+			// Translators: this is the format for the document tooltips
+			_("<b>%1</b>\n%2\n<i>%3</i>"),
+			Glib::Markup::escape_text ((*docit).getKey()),
+			Glib::Markup::escape_text ((*docit).getBibData().getTitle()),
+			Glib::Markup::escape_text ((*docit).getBibData().getAuthors()));
+		#endif
 	}
 
 	// Restore initial selection
