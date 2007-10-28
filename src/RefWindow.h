@@ -164,9 +164,7 @@ class RefWindow {
 
 		/* Update UI text */
 		void updateTitle ();
-		public:
 		void updateStatusBar ();
-		private:
 
 		/* Handle dirtyness */
 		bool ensureSaved ();

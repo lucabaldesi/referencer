@@ -37,6 +37,9 @@ RefWindow::RefWindow ()
 {
 	tagselectionignore_ = false;
 	ignoretaggerchecktoggled_ = false;
+	/*
+	 * FIXME this variable is redundant, n'est pas?
+	 */
 	docselectionignore_ = false;
 	dirty_ = false;
 
@@ -52,14 +55,13 @@ RefWindow::RefWindow ()
 
 	if (!libfile.empty() && library_->load (libfile)) {
 		setOpenedLib (libfile);
+		docview_->populateDocStore ();
 	} else {
 		onNewLibrary ();
 	}
 
-	setDirty (false);
-
-	docview_->populateDocStore ();
 	populateTagList ();
+	updateStatusBar ();
 }
 
 
@@ -626,7 +628,8 @@ void RefWindow::taggerCheckToggled (Gtk::ToggleButton *check, int taguid)
 	    // Or if we've added a tag to something while viewing "untagged"
 	    || (tagsadded && taglessselected)
 	    ) {
-		docview_->populateDocStore ();
+		docview_->updateVisible ();
+		updateStatusBar ();
 	}
 	
 	// All tag changes influence the fonts in the tag list
@@ -705,7 +708,8 @@ void RefWindow::tagSelectionChanged ()
 	actiongroup_->get_action("RenameTag")->set_sensitive (
 		paths.size() == 1 && !specialselected);
 
-	docview_->populateDocStore ();
+	docview_->updateVisible ();
+	updateStatusBar ();
 }
 
 
@@ -1129,6 +1133,7 @@ void RefWindow::onNewLibrary ()
 		library_->clear ();
 
 		docview_->populateDocStore ();
+		updateStatusBar ();
 		populateTagList ();
 	}
 }
@@ -1170,6 +1175,7 @@ void RefWindow::onOpenLibrary ()
 		if (library_->load (libfile)) {
 			setDirty (false);
 			docview_->populateDocStore ();
+			updateStatusBar ();
 			populateTagList ();
 			setOpenedLib (libfile);
 		} else {
@@ -1341,6 +1347,8 @@ void RefWindow::addDocFiles (std::vector<Glib::ustring> const &filenames)
 				
 				newdoc->getBibData().setTitle (filename);
 			}
+			
+			docview_->addDoc (newdoc);
 				
 		} else {
 			std::cerr << "RefWindow::addDocFiles: Warning: didn't succeed adding '" << *it << "'.  Duplicate file?\n";
@@ -1353,7 +1361,7 @@ void RefWindow::addDocFiles (std::vector<Glib::ustring> const &filenames)
 		// Should check if we actually added something in case a newDoc
 		// failed, eg if the doc was already in there
 		setDirty (true);
-		docview_->populateDocStore ();
+		updateStatusBar ();
 	}
 }
 
@@ -1364,7 +1372,8 @@ void RefWindow::onAddDocUnnamed ()
 	Document *newdoc = library_->doclist_->newDocUnnamed ();
 	newdoc->setKey (library_->doclist_->uniqueKey (newdoc->generateKey ()));
 	if (docpropertiesdialog_->show (newdoc)) {
-		docview_->populateDocStore ();
+		docview_->addDoc (newdoc);
+		updateStatusBar ();
 	} else {
 		library_->doclist_->removeDoc (newdoc);
 	}
@@ -1402,7 +1411,8 @@ void RefWindow::onAddDocByDoi ()
 		newdoc->getMetaData ();
 		newdoc->setKey (library_->doclist_->uniqueKey (newdoc->generateKey ()));
 
-		docview_->populateDocStore ();
+		docview_->addDoc (newdoc);
+		updateStatusBar ();
 	}
 }
 
@@ -1468,10 +1478,10 @@ void RefWindow::onAddDocFolder ()
 void RefWindow::onRemoveDoc ()
 {
 	std::vector<Document*> docs = docview_->getSelectedDocs ();
+	if (docs.size() == 0)
+		return;
 
 	bool const multiple = docs.size() > 1;
-
-	bool doclistdirty = false;
 
 	Glib::ustring message;
 	Glib::ustring secondary;
@@ -1508,22 +1518,11 @@ void RefWindow::onRemoveDoc ()
 	std::vector<Document*>::iterator const end = docs.end ();
 	for (; it != end; it++) {
 		std::cerr << "RefWindow::onRemoveDoc: removeDoc on '" << *it << "'\n";
+		docview_->removeDoc (*it);
 		library_->doclist_->removeDoc(*it);
-		doclistdirty = true;
 	}
 
-	if (doclistdirty) {
-		setDirty (true);
-		std::cerr << "RefWindow::onRemoveDoc: dirty, calling docview_->populateDocStore\n";
-		// We disable docSelectionChanged because otherwise it gets called N
-		// times for deleting N items
-		docselectionignore_ = true;
-		docview_->populateDocStore ();
-		docselectionignore_ = false;
-		docSelectionChanged ();
-	} else {
-		docselectionignore_ = false;
-	}
+	setDirty (true);
 }
 
 
@@ -1572,8 +1571,9 @@ void RefWindow::onGetMetadataDoc ()
 
 void RefWindow::onRenameDoc ()
 {
-	bool doclistdirty = false;
 	std::vector <Document*> docs = docview_->getSelectedDocs ();
+	if (docs.size () == 0)
+		return;
 
 	Glib::ustring message;
 	if (docs.size () == 1) {
@@ -1602,21 +1602,21 @@ void RefWindow::onRenameDoc ()
 	for (; it != end; ++it) {
 		Document* doc = *it;
 		doc->renameFromKey ();
-		doclistdirty = true;
+		docview_->updateDoc (doc);
 	}
 
-	if (doclistdirty) {
-		setDirty (true);
-		docview_->populateDocStore ();
-	}
+	updateStatusBar ();
+	setDirty (true);
 }
 
 
 void RefWindow::onDeleteDoc ()
 {
 	std::vector<Document*> docs = docview_->getSelectedDocs ();
+	if (docs.size() == 0)
+		return;
+
 	bool const multiple = docs.size() > 1;
-	bool doclistdirty = false;
 	Glib::ustring message;
 	Glib::ustring secondary;
 
@@ -1656,8 +1656,8 @@ void RefWindow::onDeleteDoc ()
 	for (; it != end; it++) {
 		try {
 			Utility::deleteFile ((*it)->getFileName ());
+			docview_->removeDoc (*it);
 			library_->doclist_->removeDoc(*it);
-			doclistdirty = true;
 		} catch (Glib::Exception &ex) {
 			Utility::exceptionDialog (&ex,
 				String::ucompose (_("Deleting '%1'"), (*it)->getFileName ()));
@@ -1665,18 +1665,8 @@ void RefWindow::onDeleteDoc ()
 
 	}
 
-	if (doclistdirty) {
-		setDirty (true);
-		std::cerr << "RefWindow::onDeleteDoc: dirty, calling docview_->populateDocStore\n";
-		// We disable docSelectionChanged because otherwise it gets called N
-		// times for deleting N items
-		docselectionignore_ = true;
-		docview_->populateDocStore ();
-		docselectionignore_ = false;
-		docSelectionChanged ();
-	} else {
-		docselectionignore_ = false;
-	}
+	updateStatusBar ();
+	setDirty (true);
 }
 
 
@@ -1707,7 +1697,8 @@ void RefWindow::onDocProperties ()
 	if (doc) {
 		if (docpropertiesdialog_->show (doc)) {
 			setDirty (true);
-			docview_->populateDocStore ();
+			docview_->updateDoc (doc);
+			updateStatusBar ();
 		}
 	}
 }
@@ -1777,8 +1768,8 @@ void RefWindow::onWorkOfflinePrefChanged ()
 		actiongroup_->get_action ("WorkOffline"))->set_active (
 			_global_prefs->getWorkOffline ());
 
-	// To pick up sensitivity changes
-	docview_->populateDocStore ();
+	// To pick up sensitivity changes in lookup metadata etc
+	docSelectionChanged ();
 	
 	updateOfflineIcon ();
 }
@@ -1898,7 +1889,13 @@ void RefWindow::onImport ()
 
 		library_->doclist_->importFromFile (filename, format);
 
+		/*
+		 * Should iterate over added docs with addDoc
+		 * but this performance hit is acceptable since importing
+		 * is a super-rare operation
+		 */
 		docview_->populateDocStore ();
+		updateStatusBar ();
 		populateTagList ();
 	}
 }
@@ -1940,8 +1937,13 @@ If you don't want to deal with providing a separate callbac		"    <toolitem acti
 	std::cerr << "Imported " << imported << " references\n";
 
 	if (imported) {
-		// Should push to the statusbar how many we got
+		/*
+		 * FIXME  should get the Document* from the import
+		 * call and iterate over them with addDoc to be 
+		 * more efficient and not risk losing selection
+		 */
 		docview_->populateDocStore ();
+		updateStatusBar ();
 		populateTagList ();
 		statusbar_->push (String::ucompose
 			(_("Imported %1 BibTeX references"), imported), 0);
@@ -2024,6 +2026,9 @@ int RefWindow::sortTags (
 	} else {
 		return a_name.compare (b_name);
 	}
+	
+	// Shut up the compiler.
+	return 0;
 }
 
 
@@ -2106,5 +2111,7 @@ void RefWindow::onUseListViewPrefChanged ()
 		Glib::RefPtr <Gtk::RadioAction>::cast_static(
 			actiongroup_->get_action ("UseIconView"))->set_active (true);
 	}
+	
+	updateStatusBar ();
 }
 

@@ -29,6 +29,10 @@
 #include "ev-tooltip.h"
 #endif
 
+#ifdef USE_TRACKER
+#include "tracker.h"
+#endif
+
 
 DocumentView::~DocumentView ()
 {
@@ -67,10 +71,15 @@ DocumentView::DocumentView (
 #if GTK_VERSION_GE(2,12)
 	doccols.add(doctooltipcol_);
 #endif
-	docstore_ = Gtk::ListStore::create(doccols);
+	doccols.add(docvisiblecol_);
 
+	docstore_ = Gtk::ListStore::create(doccols);
+	docstorefilter_ = Gtk::TreeModelFilter::create (docstore_);
+	docstorefilter_->set_visible_column (docvisiblecol_);
+	docstoresort_ = Gtk::TreeModelSort::create (docstorefilter_);
+	
 	// Create the IconView for the document icons
-	Gtk::IconView *icons = Gtk::manage(new Gtk::IconView(docstore_));
+	Gtk::IconView *icons = Gtk::manage(new Gtk::IconView(docstoresort_));
 	icons->set_text_column (dockeycol_);
 	icons->set_pixbuf_column (docthumbnailcol_);
 #if GTK_VERSION_GE(2,12)
@@ -127,7 +136,7 @@ DocumentView::DocumentView (
 	#endif
 
 	// The TreeView for the document list
-	Gtk::TreeView *table = Gtk::manage (new Gtk::TreeView(docstore_));
+	Gtk::TreeView *table = Gtk::manage (new Gtk::TreeView(docstoresort_));
 	table->set_enable_search (true);
 	table->set_search_column (1);
 	table->set_rules_hint (true);
@@ -189,8 +198,7 @@ DocumentView::DocumentView (
 	
 	setUseListView (uselistview);
 	
-	
-	
+
 	Sexy::IconEntry *searchentry = Gtk::manage (new Sexy::IconEntry ());
 	Gtk::Image *searchicon = Gtk::manage (
 		new Gtk::Image (Gtk::Stock::FIND, Gtk::ICON_SIZE_BUTTON));
@@ -233,7 +241,7 @@ void DocumentView::onDocMouseMotion (GdkEventMotion* event)
 
 	Document *doc = NULL;
 	if (havepath) {
-		Gtk::ListStore::iterator it = docstore_->get_iter (path);
+		Gtk::ListStore::iterator it = docstoresort_->get_iter (path);
 		doc = (*it)[docpointercol_];
 	}
 
@@ -370,7 +378,7 @@ std::vector<Document*> DocumentView::getSelectedDocs ()
 		Gtk::TreeSelection::ListHandle_Path::iterator const end = paths.end ();
 		for (; it != end; it++) {
 			Gtk::TreePath path = (*it);
-			Gtk::ListStore::iterator iter = docstore_->get_iter (path);
+			Gtk::ListStore::iterator iter = docstoresort_->get_iter (path);
 			docpointers.push_back((*iter)[docpointercol_]);
 		}
 	} else {
@@ -381,7 +389,7 @@ std::vector<Document*> DocumentView::getSelectedDocs ()
 		Gtk::IconView::ArrayHandle_TreePaths::iterator const end = paths.end ();
 		for (; it != end; it++) {
 			Gtk::TreePath path = (*it);
-			Gtk::ListStore::iterator iter = docstore_->get_iter (path);
+			Gtk::ListStore::iterator iter = docstoresort_->get_iter (path);
 			docpointers.push_back((*iter)[docpointercol_]);
 		}
 	}
@@ -398,11 +406,11 @@ Document *DocumentView::getSelectedDoc ()
 
 		if (paths.size() != 1) {
 			std::cerr << "Warning: DocumentView::getSelectedDoc: size != 1\n";
-			return false;
+			return NULL;
 		}
 
 		Gtk::TreePath path = (*paths.begin ());
-		Gtk::ListStore::iterator iter = docstore_->get_iter (path);
+		Gtk::ListStore::iterator iter = docstoresort_->get_iter (path);
 		return (*iter)[docpointercol_];
 
 	} else {
@@ -411,11 +419,11 @@ Document *DocumentView::getSelectedDoc ()
 
 		if (paths.size() != 1) {
 			std::cerr << "Warning: DocumentView::getSelectedDoc: size != 1\n";
-			return false;
+			return NULL;
 		}
 
 		Gtk::TreePath path = (*paths.begin ());
-		Gtk::ListStore::iterator iter = docstore_->get_iter (path);
+		Gtk::ListStore::iterator iter = docstoresort_->get_iter (path);
 		return (*iter)[docpointercol_];
 	}
 }
@@ -433,7 +441,7 @@ int DocumentView::getSelectedDocCount ()
 
 int DocumentView::getVisibleDocCount ()
 {
-	return docstore_->children().size();
+	return docstoresort_->children().size();
 }
 
 
@@ -473,9 +481,9 @@ bool DocumentView::docClicked (GdkEventButton* event)
 
 		return true;
   } else if ((event->type == GDK_BUTTON_PRESS) && (event->button == 2)) {
-  	// Epic middle click pasting
+  	// Middle click pasting
   	win_.onPasteBibtex (GDK_SELECTION_PRIMARY);
-
+	return true;
   } else {
   	return false;
   }
@@ -538,15 +546,21 @@ DocumentView::Capabilities DocumentView::getDocSelectionCapabilities ()
 }
 
 
+/*
+ * Selection changed, not our problem, let the parent deal.
+ */
 void DocumentView::docSelectionChanged ()
 {
 	selectionchangedsignal_.emit ();
 }
 
 
+/*
+ * User double clicked on a document
+ */
 void DocumentView::docActivated (const Gtk::TreeModel::Path& path)
 {
-	Gtk::ListStore::iterator it = docstore_->get_iter (path);
+	Gtk::ListStore::iterator it = docstoresort_->get_iter (path);
 	Document *doc = (*it)[docpointercol_];
 	// The methods we're calling should fail out safely and quietly
 	// if the number of docs selected != 1
@@ -557,6 +571,137 @@ void DocumentView::docActivated (const Gtk::TreeModel::Path& path)
 	} else {
 		win_.onDocProperties ();
 	}
+}
+
+
+/*
+ * Populate a row in docstore_ from a Document
+ */
+void DocumentView::loadRow (
+	Gtk::TreeModel::iterator item,
+	Document * const doc)
+{
+	(*item)[dockeycol_] = doc->getKey();
+	// PROGRAM CRASHING THIS HOLIDAY SEASON?
+	// THIS LINE DID IT!
+	// WHEE!  LOOK AT THIS LINE OF CODE!
+	(*item)[docpointercol_] = doc;
+	(*item)[docthumbnailcol_] = doc->getThumbnail();
+	(*item)[doctitlecol_] = doc->getBibData().getTitle ();
+	(*item)[docauthorscol_] = doc->getBibData().getAuthors ();
+	(*item)[docyearcol_] = doc->getBibData().getYear ();
+	#if GTK_VERSION_GE(2,12)
+	(*item)[doctooltipcol_] = String::ucompose (
+		// Translators: this is the format for the document tooltips
+		_("<b>%1</b>\n%2\n<i>%3</i>"),
+		Glib::Markup::escape_text (doc->getKey()),
+		Glib::Markup::escape_text (doc->getBibData().getTitle()),
+		Glib::Markup::escape_text (doc->getBibData().getAuthors()));
+	#endif
+	(*item)[docvisiblecol_] = isVisible (doc);
+}
+
+/*
+ * Return whether a document matches searches and tag filters
+ */
+
+bool DocumentView::isVisible (Document * const doc)
+{
+	Glib::ustring const searchtext = searchentry_->get_text ();
+	bool const search = !searchtext.empty ();
+
+	bool visible = false;
+	for (std::vector<int>::iterator tagit = win_.filtertags_.begin();
+	     tagit != win_.filtertags_.end(); ++tagit) {
+		if (*tagit == ALL_TAGS_UID
+		    || (*tagit == NO_TAGS_UID && doc->getTags().empty())
+		    || doc->hasTag(*tagit)) {
+			visible = true;
+			break;
+		}
+	}
+
+	if (search && visible) {
+		if (!doc->matchesSearch (searchtext))
+			visible = false;
+	}
+	
+	/*
+	 * TODO iterate over taggerUris 
+	 */
+	 
+	return visible;
+}
+
+/*
+ * Update the visibility of all rows
+ *
+ * This needs to be called:
+ *  - when global conditions for visibility
+ *     change: when the tag filter is changed, when search text is 
+ *     changed, or when tracker returns some matches
+ *
+ *  Things like adding and updating docs don't need to call this as well
+ *
+ */
+void DocumentView::updateVisible ()
+{
+	Gtk::TreeModel::iterator item = docstore_->children().begin();
+	Gtk::TreeModel::iterator const end = docstore_->children().end();
+	for (; item != end; ++item) {
+		Document * const doc = (*item)[docpointercol_];
+		(*item)[docvisiblecol_] = isVisible (doc);
+	}
+}
+
+
+/*
+ * Optimisation: O(N)
+ *
+ *  - Refresh document's row in docstore_ from Document.
+ *  - Update visibility of document's row
+ */
+void DocumentView::updateDoc (Document * const doc)
+{
+	Gtk::TreeModel::iterator item = docstore_->children().begin();
+	Gtk::TreeModel::iterator const end = docstore_->children().end();
+	for (; item != end; ++item) {
+		if ((*item)[docpointercol_] == doc) {
+			loadRow (item, doc);
+			return;
+		}
+	}
+	
+	std::cerr << "DocumentView::updateDoc: Warning: doc not found\n";
+}
+
+
+/*
+ * Remove the row with docpointercol_ == doc from docstore_
+ *
+ * Optimisation: O(N)
+ */
+void DocumentView::removeDoc (Document * const doc)
+{
+	Gtk::TreeModel::iterator it = docstore_->children().begin();
+	Gtk::TreeModel::iterator const end = docstore_->children().end();
+	for (; it != end; ++it) {
+		if ((*it)[docpointercol_] == doc) {
+			docstore_->erase (it);
+			return;
+		}
+	}
+	
+	std::cerr << "DocumentView::removeDoc: Warning: doc not found\n";
+}
+
+/*
+ * Append a row to docstore_ and load data from Document
+ */
+void DocumentView::addDoc (Document * const doc)
+{
+	Gtk::TreeModel::iterator item = docstore_->append();
+	loadRow (item, doc);
 }
 
 
@@ -584,51 +729,12 @@ void DocumentView::populateDocStore ()
 
 	docstore_->clear ();
 
-	Glib::ustring const searchtext = searchentry_->get_text ();
-	bool const search = !searchtext.empty ();
-
 	// Populate from library_->doclist_
 	DocumentList::Container& docvec = lib_.doclist_->getDocs();
 	DocumentList::Container::iterator docit = docvec.begin();
 	DocumentList::Container::iterator const docend = docvec.end();
 	for (; docit != docend; ++docit) {
-		bool filtered = true;
-		for (std::vector<int>::iterator tagit = win_.filtertags_.begin();
-		     tagit != win_.filtertags_.end(); ++tagit) {
-			if (*tagit == ALL_TAGS_UID
-			    || (*tagit == NO_TAGS_UID && (*docit).getTags().empty())
-			    || (*docit).hasTag(*tagit)) {
-				filtered = false;
-				break;
-			}
-		}
-
-		if (search && !filtered) {
-			if (!(*docit).matchesSearch (searchtext))
-				filtered = true;
-		}
-
-		if (filtered)
-			continue;
-
-		Gtk::TreeModel::iterator item = docstore_->append();
-		(*item)[dockeycol_] = (*docit).getKey();
-		// PROGRAM CRASHING THIS HOLIDAY SEASON?
-		// THIS LINE DID IT!
-		// WHEE!  LOOK AT THIS LINE OF CODE!
-		(*item)[docpointercol_] = &(*docit);
-		(*item)[docthumbnailcol_] = (*docit).getThumbnail();
-		(*item)[doctitlecol_] = (*docit).getBibData().getTitle ();
-		(*item)[docauthorscol_] = (*docit).getBibData().getAuthors ();
-		(*item)[docyearcol_] = (*docit).getBibData().getYear ();
-		#if GTK_VERSION_GE(2,12)
-		(*item)[doctooltipcol_] = String::ucompose (
-			// Translators: this is the format for the document tooltips
-			_("<b>%1</b>\n%2\n<i>%3</i>"),
-			Glib::Markup::escape_text ((*docit).getKey()),
-			Glib::Markup::escape_text ((*docit).getBibData().getTitle()),
-			Glib::Markup::escape_text ((*docit).getBibData().getAuthors()));
-		#endif
+		addDoc (&(*docit));
 	}
 
 	// Restore initial selection
@@ -637,11 +743,44 @@ void DocumentView::populateDocStore ()
 	} else {
 		docsiconview_->select_path (initialpath);
 	}
+}
 
-	// If we set the selection in a valid way
-	// this probably already got called, although not for
-	// opening library etc.
-	win_.updateStatusBar ();
+
+void
+end_search (GPtrArray * out_array,
+        GError * error,
+        gpointer user_data)
+{
+	DocumentView *docview = (DocumentView*) user_data;
+	
+	printf (">>end_search\n");
+	
+	docview->trackerUris_.clear ();
+	
+	
+	
+	if (error) {
+		printf ("Tracker error\n");
+		g_error_free (error);
+		// TODO Call the update visibility function
+		return;
+	}
+	
+	if (out_array) {
+		printf ("%d results\n", out_array->len);
+		for (unsigned int i = 0; i < out_array->len; ++i) {
+			char **meta = (char**) g_ptr_array_index (out_array, i);
+			printf ("0x%x : %s\n", meta[0], meta[0]);
+			docview->trackerUris_.push_back (meta[0]);
+		}
+		g_ptr_array_free (out_array, TRUE);
+	}
+	
+	/*
+	 * We're probably calling this twice: we already called it in 
+	 * onSearchChanged
+	 */
+	docview->updateVisible ();
 }
 
 
@@ -666,5 +805,32 @@ void DocumentView::onSearchChanged ()
 		if (hasclearbutton)
 			((Sexy::IconEntry*) searchentry_)->set_icon (Sexy::ICON_ENTRY_SECONDARY, NULL);
 	}
-	populateDocStore ();
+	
+	updateVisible ();
+	
+	
+	/*
+	 * Get some tracker results and spit them to the console
+	 */
+#ifdef USE_TRACKER
+	TrackerClient *client = tracker_connect (0);
+	if (!client) {
+		printf ("Error in tracker_connect\n");
+		return;
+	}
+	
+	Glib::ustring searchtext = searchentry_->get_text();
+	
+	if (! searchtext.empty()) {
+		tracker_search_text_detailed_async (client,
+	                -1,
+	                SERVICE_FILES,
+	                searchtext.c_str(),
+	                0, 10,
+	                (TrackerGPtrArrayReply)end_search,
+	                this);
+        }
+#endif
+
+	
 }

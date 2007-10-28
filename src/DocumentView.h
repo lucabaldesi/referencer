@@ -22,6 +22,14 @@ class DocumentView : public Gtk::VBox
 	~DocumentView ();
 	
 	void populateDocStore ();
+	
+	void updateAllDocs ();
+	void updateDoc (Document * const doc);
+	void removeDoc (Document * const doc);
+	void addDoc (Document * const doc);
+	void updateVisible ();
+
+
 	Document *getSelectedDoc ();
 	std::vector<Document*> getSelectedDocs ();
 	int getSelectedDocCount ();
@@ -63,10 +71,20 @@ class DocumentView : public Gtk::VBox
 	/* The search box */
 	Gtk::Entry *searchentry_;
 	void onSearchChanged ();
+	friend void end_search (GPtrArray * out_array, GError * error, gpointer user_data);
+	std::list<Glib::ustring> trackerUris_;
 
+	/* Signal that we fire whenever selection changes in one of our views */
 	sigc::signal<void> selectionchangedsignal_;
 
+	/* This is the actual store */
 	Glib::RefPtr<Gtk::ListStore> docstore_;
+	/* It's a ListStore-TreeModelFilter-TreeModelSort sandwich! */
+	Glib::RefPtr<Gtk::TreeModelFilter> docstorefilter_;
+	/* Things converting treeview paths into iters need to use this */
+	Glib::RefPtr<Gtk::TreeModelSort> docstoresort_;
+
+	/* The columns, a columnrecord is made in the constructor */
 	Gtk::TreeModelColumn<Document*> docpointercol_;
 	Gtk::TreeModelColumn<Glib::ustring> dockeycol_;
 	Gtk::TreeModelColumn<Glib::ustring> doctitlecol_;
@@ -76,15 +94,23 @@ class DocumentView : public Gtk::VBox
 	#if GTK_VERSION_GE(2,12)
 	Gtk::TreeModelColumn<Glib::ustring> doctooltipcol_;
 	#endif
+	Gtk::TreeModelColumn<bool> docvisiblecol_;
+
+	/* Two oh-so-innocuous objects */
+	Gtk::IconView *docsiconview_;
+	Gtk::TreeView *docslistview_;
+	
+	/* This is only for the list view, iconview has inbuilt selection */
 	Glib::RefPtr<Gtk::TreeSelection> docslistselection_;
 
-	Gtk::IconView *docsiconview_;
+	/* Double click on IconView */
 	void docActivated (const Gtk::TreePath& path);
-	Gtk::TreeView *docslistview_;
-	// treeviews want a different prototype for the signal
+	/* Treeviews want a different prototype for the signal */
 	void docListActivated (const Gtk::TreePath& path, Gtk::TreeViewColumn*) {
 		docActivated (path);
 	}
+	
+	/* ev-tooltip stuff from the bad old days */
 	#if GTK_VERSION_LT(2,12)
 	GtkWidget *doctooltip_;
 	Document *hoverdoc_;
@@ -95,6 +121,11 @@ class DocumentView : public Gtk::VBox
 	Gtk::ScrolledWindow *docsiconscroll_;
 	Gtk::ScrolledWindow *docslistscroll_;
 	void docSelectionChanged ();
+
+	bool isVisible (Document * const doc);
+	void loadRow (
+		Gtk::TreeModel::iterator item,
+		Document * const doc);
 
 	bool docClicked (GdkEventButton* event);
 	void onIconsDragData (
