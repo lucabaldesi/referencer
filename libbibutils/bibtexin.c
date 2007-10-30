@@ -538,11 +538,18 @@ bibtexin_convertf( fields *bibin, fields *info, int reftype, int verbose,
 		t = &( bibin->tag[i] );
 		n = process_findoldtag( t->data, reftype, all, nall );
 		if ( n==-1 ) {
-			if ( verbose && strcmp(t->data,"TYPE") ) {
-				fprintf( stderr, "Cannot find tag '%s'\n", 
-					t->data );
-			}
-			continue;
+			/*
+			 * Referencer hack: pass unknown stuff (eg eprint)
+			 * right through like last night's curry.
+			 */
+			#if 0
+				if (verbose && strcmp(t->data,"TYPE") ) {
+					fprintf( stderr, "Cannot find tag '%s'\n", 
+						t->data );
+				}
+				continue;
+			#endif
+			fields_add(info, t->data, d->data, LEVEL_MAIN );
 		}
 		process = ((all[reftype]).tags[n]).processingtype;
 		if ( process == ALWAYS ) continue; /* add these later */

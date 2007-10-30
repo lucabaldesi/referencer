@@ -1,4 +1,5 @@
 1.0.5:
+	- Fix losing bibtex fields in import (Bug 158581)
 	- Fix missing some fields in getArxiv (Bug 158815)
 	- Use gtkmm 2.12 IconView tooltip support if available
 	- Add online/offline indicator in statusbar
