@@ -610,13 +610,14 @@ bool DocumentView::isVisible (Document * const doc)
 	Glib::ustring const searchtext = searchentry_->get_text ();
 	bool const search = !searchtext.empty ();
 
-	bool visible = false;
+	bool visible = true;
 	for (std::vector<int>::iterator tagit = win_.filtertags_.begin();
 	     tagit != win_.filtertags_.end(); ++tagit) {
-		if (*tagit == ALL_TAGS_UID
+		if (!(*tagit == ALL_TAGS_UID
 		    || (*tagit == NO_TAGS_UID && doc->getTags().empty())
-		    || doc->hasTag(*tagit)) {
-			visible = true;
+		    || doc->hasTag(*tagit))) {
+		    	// A tag is selected that we do not match
+			visible = false;
 			break;
 		}
 	}

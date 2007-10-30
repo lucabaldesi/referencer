@@ -698,7 +698,6 @@ void RefWindow::tagSelectionChanged ()
 			if ((*iter)[taguidcol_] == ALL_TAGS_UID
 			    || (*iter)[taguidcol_] == NO_TAGS_UID) {
 				specialselected = true;
-				break;
 			}
 		}
 	}
