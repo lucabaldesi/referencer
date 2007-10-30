@@ -72,7 +72,7 @@ BibData::BibData ()
 /*
  * Dump all fields to standard out
  */
-void BibData::print ()
+void BibData::print () const
 {
 	std::cout << "DOI: " << doi_ << std::endl;
 	std::cout << "Title: " << title_ << std::endl;
@@ -82,6 +82,12 @@ void BibData::print ()
 	std::cout << "Number: " << issue_ << std::endl;
 	std::cout << "Pages: " << pages_ << std::endl;
 	std::cout << "Year: " << year_ << std::endl;
+	
+	ExtrasMap::const_iterator it = extras_.begin ();
+	ExtrasMap::const_iterator const end = extras_.end ();
+	for (; it != end; ++it) {
+		std::cout << it->first << ": " << it->second << std::endl;
+	}
 }
 
 
@@ -101,8 +107,6 @@ void BibData::clear ()
 
 void BibData::addExtra (Glib::ustring const &key, Glib::ustring const &value)
 {
-	// Should add something to our map of extra keys
-//	std::cerr << "addExtra: '" << key << ":" << value << "'\n";
 	if ( key == "Keywords" && !extras_[key].empty() ) {
 		extras_[key] = extras_[key] + "; " + value;
 	} else {
@@ -430,7 +434,8 @@ void BibData::getArxiv ()
 	try {
 		rawtext = &Transfer::readRemoteFile (
 			_("Downloading Metadata"), messagetext, filename);
-		std::cerr << *rawtext << "\n\n\n";
+
+		std::cerr << "Raw citebase:\n" << *rawtext << "\n----\n\n";
 	} catch (Transfer::Exception ex) {
 		Utility::exceptionDialog (&ex, _("Downloading metadata"));
 		return;
@@ -443,15 +448,10 @@ void BibData::getArxiv ()
 
 	try {
 		BibUtils::biblFromString (b, *rawtext, BibUtils::FORMAT_BIBTEX, p);
+
 		Document newdoc = BibUtils::parseBibUtils (b.ref[0]);
-		newdoc.getBibData().print ();
-
-		title_ = newdoc.getBibData().getTitle ();
-		authors_ = newdoc.getBibData().getAuthors ();
-		year_ = newdoc.getBibData().getYear ();
-		if (extras_["Url"].empty())
-			addExtra ("Url", newdoc.getBibData().getExtras ()["Url"]);
-
+		mergeIn (newdoc.getBibData());	
+		
 		BibUtils::bibl_free( &b );
 	} catch (Glib::Error ex) {
 		BibUtils::bibl_free( &b );
@@ -459,4 +459,40 @@ void BibData::getArxiv ()
 		return;
 	}
 }
+
+/*
+ * Take values from the source BibData for fields of ours
+ * which are currently empty.
+ */
+void BibData::mergeIn (BibData const &source)
+{
+	if (type_.empty ())
+		type_ = source.getType ();
+	if (doi_.empty ())
+		doi_ = source.getDoi ();
+	if (volume_.empty ())
+		volume_ = source.getVolume ();
+	if (issue_.empty ())
+		issue_ = source.getIssue ();
+	if (pages_.empty ())
+		pages_ = source.getPages ();
+	if (authors_.empty ())
+		authors_ = source.getAuthors ();
+	if (journal_.empty ())
+		journal_ = source.getJournal ();
+	if (title_.empty ())
+		title_ = source.getTitle ();
+	if (year_.empty ())
+		year_ = source.getYear ();
+		
+	ExtrasMap sourceextras = source.getExtras();
+	ExtrasMap::iterator it = sourceextras.begin ();
+	ExtrasMap::iterator const end = sourceextras.end ();
+	for (; it != end; ++it) {
+		if (extras_[it->first].empty()) {
+			addExtra (it->first, it->second);
+		}
+	}
+}
+
 
