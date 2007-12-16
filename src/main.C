@@ -14,6 +14,8 @@
 #include <libgnomevfsmm.h>
 #include <glibmm/i18n.h>
 
+#include <Python.h>
+
 #include "config.h"
 
 #include "Preferences.h"
@@ -31,6 +33,12 @@ int main (int argc, char **argv)
 		Gnome::UI::module_info_get(), argc, argv);
 
 	Gnome::Vfs::init ();
+
+	std::string pythonpath = "./plugins:"PLUGINDIR;
+	if (getenv("PYTHONPATH"))
+		pythonpath += getenv("PYTHONPATH");
+	setenv ("PYTHONPATH", pythonpath.c_str(), 1);
+	Py_Initialize ();
 
 	_global_prefs = new Preferences();
 
@@ -53,6 +61,8 @@ int main (int argc, char **argv)
 	}
 
 	delete _global_prefs;
+
+	Py_Finalize ();
 
 	return 0;
 }

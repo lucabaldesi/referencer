@@ -372,12 +372,14 @@ void BibData::guessArxiv (Glib::ustring const &raw_)
 	}
 }
 
+#include <Python.h>
 
 void BibData::getCrossRef ()
 {
 	if (doi_.empty() || _global_prefs->getWorkOffline())
 		return;
 
+#if 0
 	Glib::ustring messagetext =
 	String::ucompose (
 		"<b><big>%1</big></b>\n\n%2\n",
@@ -401,6 +403,84 @@ void BibData::getCrossRef ()
 	} catch (Transfer::Exception ex) {
 		Utility::exceptionDialog (&ex, _("Downloading metadata"));
 	}
+#else
+
+	static int init = 0;
+	PyObject *pMod;
+	PyObject *pGetFunc;
+
+	if (!init) {
+		PyObject *pName = PyString_FromString("pubmed");
+		if (!pName) {
+			std::cerr << "Couldn't construct module name\n";
+		}
+		PyObject *pMod = PyImport_Import(pName);
+		Py_DECREF(pName);
+
+		if (pMod)
+			std::cerr << "Imported module\n";
+		else
+			std::cerr << "Couldn't import module\n";
+
+		pGetFunc = PyObject_GetAttrString (pMod, "metadata_from_doi");
+
+		init = 1;
+
+	}
+
+	std::cerr << "doi: " << doi_.c_str() << "\n";
+	PyObject *pDoi = PyString_FromString (doi_.c_str());
+
+	PyObject *pArgs = PyTuple_New(1);
+	PyTuple_SetItem (pArgs, 0, pDoi);
+
+	PyObject *pMetaData = PyObject_CallObject(pGetFunc, pArgs);
+	Py_DECREF(pArgs);
+	if (pMetaData != NULL) {
+		int const N = PyList_Size (pMetaData);
+		for (int i = 0; i < N; ++i) {
+			PyObject *pItem = PyList_GetItem (pMetaData, i);
+			std::string const key = PyString_AsString(PyList_GetItem (pItem, 0));
+			std::string const value = PyString_AsString(PyList_GetItem (pItem, 1));
+			std::cerr << "pMetaData[" << i << "]:  " << key << ":" << value << "\n";
+
+			if (key == "title") {
+				setTitle (value);
+			} else if (key == "authors") {
+				setAuthors (value);
+			} else if (key == "journal") {
+				setJournal (value);
+			} else if (key == "issue") {
+				setIssue (value);
+			} else if (key == "year") {
+				setYear (value);
+			} else if (key == "pages") {
+				setPages (value);
+			}
+		}
+		Py_DECREF(pMetaData);
+	} else {
+		PyObject *pErr = PyErr_Occurred ();
+		if (pErr) {
+			PyObject *ptype;
+			PyObject *pvalue;
+			PyObject *ptraceback;
+
+			PyErr_Fetch(&ptype, &pvalue, &ptraceback);
+
+			std::string exceptionText;
+			PyObject *pStr;
+			pStr = PyObject_Str (ptype);
+			exceptionText += PyString_AsString (pStr);
+			exceptionText += ", ";
+			pStr = PyObject_Str (pvalue);
+			exceptionText += PyString_AsString (pStr);
+
+			Transfer::Exception ex(exceptionText);
+			Utility::exceptionDialog (&ex, _("Downloading metadata"));
+		}
+	}
+#endif
 }
 
 
