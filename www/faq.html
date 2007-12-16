@@ -46,6 +46,8 @@ urchinTracker();
 	<p>Referencer assumes that BibTeX files are in ISO-8859-1 (latin1) encoding.  Other encodings, such as UTF-8 may cause problems.  The reason for this is that vanilla LaTeX doesn't support UTF-8, and Referencer assumes your BibTeX file is compatible with an unmodified LaTeX.  A quick workaround (since version 1.0.4) is to open your BibTeX file in a text editor such as gedit, and copy and paste it into Referencer -- this should work if your text editor understands the encoding of your BibTeX file and works properly with the clipboard.</p>
 	<h3>Why isn't Referencer extracting ArXiV IDs from some of my PDFs?</h3>
 	<p>Sometimes the PDFs from arxiv.org aren't formed in such a way that the ID code is readable as plain text.  This may be related to whether the paper was produced using LaTeX or Word.</p>
+	<h3>Why can't I use an auto-configuration URL in my proxy settings?</h3>
+	<p>Proxy auto-configuration scripts require a javascript interpreter, which is a tall order for applications other than browsers.  In most cases, it is possible to work around this limitation by extracting the static proxy information from the script by downloading it and opening it in a text edtior.</p>
 	<h3>I have a question which isn't answered here</h3>
 	<p>Please send a message to the <a href="contact.html">mailing list</a></p>
 
