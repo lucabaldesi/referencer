@@ -56,6 +56,9 @@ class DocumentProperties {
 	void onDeleteExtraField ();
 	void onEditExtraField ();
 	void onExtraFieldsSelectionChanged ();
+	void onExtraFieldEdited (const Glib::ustring& path, const Glib::ustring& text);
+	void onDoiEntryChanged ();
+	void updateCrossrefSensitivity();
 
 	public:
 		bool show (Document *doc);

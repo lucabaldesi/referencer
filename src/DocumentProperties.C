@@ -45,6 +45,9 @@ DocumentProperties::DocumentProperties ()
 	}
 	typecombo_->set_active_text (BibData::getDefaultDocType ());
 
+	doientry_->signal_changed ().connect (
+		sigc::mem_fun (*this, &DocumentProperties::onDoiEntryChanged));
+	
 	crossrefbutton_ = (Gtk::Button *) xml_->get_widget ("CrossRefLookup");
 	crossrefbutton_->signal_clicked().connect(
 		sigc::mem_fun (*this, &DocumentProperties::onCrossRefLookup));
@@ -77,6 +80,14 @@ DocumentProperties::DocumentProperties ()
 	extrafieldsview_->set_model (extrafieldsstore_);
 	extrafieldsview_->append_column ("Name", extrakeycol_);
 	extrafieldsview_->append_column_editable ("Value", extravalcol_);
+
+	// looks like watch for a cell-renderer is the only way 
+	// to get information that the cell(s) changed 
+	Gtk::CellRendererText* extrafieldsrenderer = 
+		dynamic_cast<Gtk::CellRendererText*> (
+		extrafieldsview_->get_column(1)->get_first_cell_renderer() );
+	extrafieldsrenderer->signal_edited ().connect (
+		sigc::mem_fun (*this, &DocumentProperties::onExtraFieldEdited));
 }
 
 
@@ -128,8 +139,6 @@ void DocumentProperties::update ()
 	pagesentry_->set_text (bib.getPages());
 	yearentry_->set_text (bib.getYear());
 
-	crossrefbutton_->set_sensitive (!_global_prefs->getWorkOffline ());
-
 	extrafieldsstore_->clear ();
 	BibData::ExtrasMap extras = bib.getExtras ();
 	BibData::ExtrasMap::iterator it = extras.begin ();
@@ -139,8 +148,9 @@ void DocumentProperties::update ()
 		(*row)[extrakeycol_] = (*it).first;
 		(*row)[extravalcol_] = (*it).second;
 	}
-}
 
+	updateCrossrefSensitivity ();
+}
 
 void DocumentProperties::save ()
 {
@@ -219,6 +229,7 @@ void DocumentProperties::onDeleteExtraField ()
 {
 	// Oh dear, this may crash if this button was sensitive at the wrong time
 	extrafieldsstore_->erase (extrafieldssel_->get_selected ());
+	updateCrossrefSensitivity();
 }
 
 
@@ -237,6 +248,8 @@ void DocumentProperties::onEditExtraField ()
 
 	Gtk::TreePath path = (*paths.begin ());
 	extrafieldsview_->set_cursor (path, *extrafieldsview_->get_column (1), true);
+
+	updateCrossrefSensitivity();
 }
 
 
@@ -245,4 +258,35 @@ void DocumentProperties::onExtraFieldsSelectionChanged ()
 	bool const enable = extrafieldssel_->count_selected_rows () > 0;
 	deleteextrafieldbutton_->set_sensitive (enable);
 	editextrafieldbutton_->set_sensitive (enable);
+}
+
+void DocumentProperties::onDoiEntryChanged ()
+{
+	updateCrossrefSensitivity();
+}
+
+void DocumentProperties::updateCrossrefSensitivity()
+{
+	bool iseprintavail = false; 
+
+	//check for "eprint" field in extras
+	Gtk::ListStore::iterator it = extrafieldsstore_->children().begin ();
+	Gtk::ListStore::iterator const end = extrafieldsstore_->children().end ();
+	for(; it != end; ++it ) {
+		if( ((*it)[extrakeycol_] == "eprint") && ( (*it)[extravalcol_]!="" ) ) {
+			iseprintavail = true;
+			continue;
+		}
+	}
+	bool isdoiavail = !doientry_->get_text().empty();
+
+	crossrefbutton_->set_sensitive (
+		!_global_prefs->getWorkOffline () && 
+		( iseprintavail || isdoiavail )
+	);
+}
+
+void DocumentProperties::onExtraFieldEdited (const Glib::ustring& path, const Glib::ustring& text)
+{
+	updateCrossrefSensitivity ();
 }
