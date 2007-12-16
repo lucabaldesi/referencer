@@ -1,5 +1,5 @@
 ## Process this file with automake to produce Makefile.in
-SUBDIRS = po data libbibutils src
+SUBDIRS = po data libbibutils src plugins
 
 EXTRA_DIST =	\
 	intltool-extract.in	\

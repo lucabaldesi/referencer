@@ -19,4 +19,4 @@ which gnome-autogen.sh || {
     exit 1
 }
 
-REQUIRED_AUTOMAKE_VERSION=1.8 USE_GNOME2_MACROS=1 . gnome-autogen.sh
+REQUIRED_AUTOMAKE_VERSION=1.8 USE_GNOME2_MACROS=1 ACLOCAL_FLAGS="$ACLOCAL_FLAGS -I m4" REQUIRED_MACROS=python.m4. gnome-autogen.sh

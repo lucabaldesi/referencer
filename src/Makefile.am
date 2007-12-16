@@ -1,7 +1,26 @@
+ACLOCAL_AMFLAGS = -I m4
+
 bin_PROGRAMS = referencer
 
 INCLUDES = -DDATADIR=\""$(pkgdatadir)"\" \
-	 -DGNOMELOCALEDIR=\"$(datadir)/locale\"
+	 -DGNOMELOCALEDIR=\"$(datadir)/locale\" \
+	 -DPLUGINDIR=\""$(pkglibdir)"\"
+
+LDADD = \
+	$(DEPS_LIBS) \
+	$(top_builddir)/libbibutils/libbibutils.a
+
+if ENABLE_PYTHON
+INCLUDES += \
+        $(NO_STRICT_ALIASING_CFLAGS)    \
+        $(PYGTK_CFLAGS)                 \
+        $(PYTHON_CFLAGS)                \
+        $(AM_CFLAGS)
+
+LDADD += $(PYTHON_LIBS)
+endif
+
+
 
 referencer_SOURCES =	\
 	BibData.C	\
@@ -44,6 +63,3 @@ referencer_SOURCES =	\
 
 AM_CXXFLAGS = @CXXFLAGS@ $(DEPS_CFLAGS) -I$(top_srcdir)
 AM_CFLAGS = @CXXFLAGS@ $(DEPS_CFLAGS) -I$(top_srcdir)
-LDADD = \
-	$(DEPS_LIBS) \
-	$(top_builddir)/libbibutils/libbibutils.a
