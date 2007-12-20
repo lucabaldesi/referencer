@@ -15,6 +15,7 @@
 #include <glibmm/i18n.h>
 
 #include <Python.h>
+#include <PluginManager.h>
 
 #include "config.h"
 
@@ -35,10 +36,17 @@ int main (int argc, char **argv)
 	Gnome::Vfs::init ();
 
 	std::string pythonpath = "./plugins:"PLUGINDIR;
-	if (getenv("PYTHONPATH"))
+	if (getenv("PYTHONPATH")) {
+		pythonpath += ":";
 		pythonpath += getenv("PYTHONPATH");
+	}
+	std::cerr << "main: setting PYTHONPATH to '" << pythonpath << "'\n";
 	setenv ("PYTHONPATH", pythonpath.c_str(), 1);
 	Py_Initialize ();
+
+	_global_plugins = new PluginManager ();
+	_global_plugins->scan("./plugins");
+	_global_plugins->scan(PLUGINDIR);
 
 	_global_prefs = new Preferences();
 
@@ -61,7 +69,7 @@ int main (int argc, char **argv)
 	}
 
 	delete _global_prefs;
-
+	delete _global_plugins;
 	Py_Finalize ();
 
 	return 0;

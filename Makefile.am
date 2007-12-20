@@ -1,3 +1,6 @@
+
+ACLOCAL_AMFLAGS = -I m4
+
 ## Process this file with automake to produce Makefile.in
 SUBDIRS = po data libbibutils src plugins
 

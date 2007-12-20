@@ -4,6 +4,8 @@
 #   (c) Simon Greenhill, 2007
 #   http://simon.net.nz/
 
+#   Modified for integration with referencer by John Spray, 2007
+
 import urllib
 from xml.dom import minidom
 
@@ -50,6 +52,8 @@ def text_output(xml):
 	"""Makes a simple text output from the XML returned from efetch"""
 	 
 	xmldoc = minidom.parseString(xml)
+
+	pmid = xmldoc.getElementsByTagName('PMID')[0].childNodes[0].data
 	 
 	title = xmldoc.getElementsByTagName('ArticleTitle')[0]
 	title = title.childNodes[0].data
@@ -72,11 +76,15 @@ def text_output(xml):
 	volume = journalinfo.getElementsByTagName('Volume')[0].childNodes[0].data
 	issue = journalinfo.getElementsByTagName('Issue')[0].childNodes[0].data
 	year = journalinfo.getElementsByTagName('Year')[0].childNodes[0].data
+
 	 
 	# this is a bit odd?
 	pages = xmldoc.getElementsByTagName('MedlinePgn')[0].childNodes[0].data
 	 
 	output = []
+	print "pmid = ", pmid
+	if (len(pmid) > 0):
+		output.append (["pmid", pmid])
 	output.append (["title", title])
 	output.append (["journal", journal])
 	output.append (["volume", volume])
@@ -94,4 +102,5 @@ def text_output(xml):
 
 def metadata_from_doi (doi):
 	xml = get_citation_from_doi (doi)
+#	print xml
 	return text_output(xml)

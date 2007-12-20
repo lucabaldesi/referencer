@@ -51,8 +51,8 @@ class BibData {
 
 	void writeXML (std::ostringstream &out);
 	void parseCrossRefXML (Glib::ustring const &xml);
-	void getCrossRef ();
-	void getArxiv ();
+	void resolveDoi ();
+	void resolveArxiv ();
 	
 	void mergeIn (BibData const &source);
 

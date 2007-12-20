@@ -29,6 +29,7 @@
 #include "ev-tooltip.h"
 #endif
 
+#undef USE_TRACKER
 #ifdef USE_TRACKER
 #include "tracker.h"
 #endif

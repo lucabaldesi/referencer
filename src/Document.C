@@ -452,8 +452,7 @@ bool Document::canWebLink ()
 
 bool Document::canGetMetadata ()
 {
-	if (
-		   !bib_.getDoi ().empty ()
+	if (!bib_.getDoi ().empty ()
 		|| !bib_.getExtras ()["eprint"].empty()
 	   )
 	{
@@ -482,9 +481,9 @@ bool Document::matchesSearch (Glib::ustring const &search)
 void Document::getMetaData ()
 {
 	if (!bib_.getDoi().empty ())
-		bib_.getCrossRef ();
+		bib_.resolveDoi ();
 	else if (!bib_.getExtras()["eprint"].empty())
-		bib_.getArxiv ();
+		bib_.resolveArxiv ();
 }
 
 

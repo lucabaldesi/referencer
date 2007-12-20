@@ -44,6 +44,8 @@ referencer_SOURCES =	\
 	Library.h \
 	LibraryParser.h \
 	main.C \
+	PluginManager.C \
+	PluginManager.h \
 	Preferences.C	\
 	Preferences.h	\
 	Progress.C	\
