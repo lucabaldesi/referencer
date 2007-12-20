@@ -1560,11 +1560,10 @@ void RefWindow::onGetMetadataDoc ()
 			setDirty (true);
 			doclistdirty = true;
 			doc->getMetaData ();
+			docview_->updateDoc(doc);
 		}
 	}
 
-	if (doclistdirty)
-		docview_->populateDocStore ();
 }
 
 

@@ -33,6 +33,7 @@ void PluginManager::scan (std::string const &pluginDir)
 
 	struct dirent *ent;
 	while ((ent = readdir(dir))) {
+		/* People with non-ascii filesystem are pretty screwed, eh? */
 		std::string const name = ent->d_name;
 		/* Scripts are at least x.py long */
 		if (name.length() < 4)
@@ -160,8 +161,15 @@ bool Plugin::resolveDoi (BibData &bib)
 
 		for (int i = 0; i < N; ++i) {
 			PyObject *pItem = PyList_GetItem (pMetaData, i);
-			std::string const key = PyString_AsString(PyList_GetItem (pItem, 0));
-			std::string const value = PyString_AsString(PyList_GetItem (pItem, 1));
+			const char *cKey = PyString_AsString(PyList_GetItem (pItem, 0));
+			const char *cValue = PyString_AsString(PyList_GetItem (pItem, 1));
+
+			Glib::ustring key;
+			Glib::ustring value;
+			if (cKey)
+				key = Glib::ustring (cKey);
+			if (cValue)
+				value = Glib::ustring (cValue);
 
 			if (key == "title") {
 				bib.setTitle (value);
@@ -183,6 +191,7 @@ bool Plugin::resolveDoi (BibData &bib)
 		}
 		Py_DECREF(pMetaData);
 	} else {
+		std::cerr << "NULL return from PyObject_CallObject\n";
 		PyObject *pErr = PyErr_Occurred ();
 		if (pErr) {
 			PyObject *ptype;

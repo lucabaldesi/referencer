@@ -53,33 +53,36 @@ def text_output(xml):
 	 
 	xmldoc = minidom.parseString(xml)
 
-	pmid = xmldoc.getElementsByTagName('PMID')[0].childNodes[0].data
+	# Encoding: every PyUnicode that minidom gives us gets
+	# cast into a PyString, this is what PyString_AsString on the C++
+	# side will expect
+
+	pmid = xmldoc.getElementsByTagName('PMID')[0].childNodes[0].data.encode("utf-8")
 	 
 	title = xmldoc.getElementsByTagName('ArticleTitle')[0]
-	title = title.childNodes[0].data
+	title = title.childNodes[0].data.encode("utf-8")
 	 
 	abstract = xmldoc.getElementsByTagName('AbstractText')[0]
-	abstract = abstract.childNodes[0].data
+	abstract = abstract.childNodes[0].data.encode("utf-8")
 	 
 	authors = xmldoc.getElementsByTagName('AuthorList')[0]
 	authors = authors.getElementsByTagName('Author')
 	authorlist = []
 	for author in authors:
-		LastName = author.getElementsByTagName('LastName')[0].childNodes[0].data
-		Initials = author.getElementsByTagName('Initials')[0].childNodes[0].data
+		LastName = author.getElementsByTagName('LastName')[0].childNodes[0].data.encode("utf-8")
+		Initials = author.getElementsByTagName('Initials')[0].childNodes[0].data.encode("utf-8")
 		author = '%s, %s' % (LastName, Initials)
 		authorlist.append(author)
 	 
 	journalinfo = xmldoc.getElementsByTagName('Journal')[0]
-	journal = journalinfo.getElementsByTagName('Title')[0].childNodes[0].data
+	journal = journalinfo.getElementsByTagName('Title')[0].childNodes[0].data.encode("utf-8")
 	journalinfo = journalinfo.getElementsByTagName('JournalIssue')[0]
-	volume = journalinfo.getElementsByTagName('Volume')[0].childNodes[0].data
-	issue = journalinfo.getElementsByTagName('Issue')[0].childNodes[0].data
-	year = journalinfo.getElementsByTagName('Year')[0].childNodes[0].data
-
+	volume = journalinfo.getElementsByTagName('Volume')[0].childNodes[0].data.encode("utf-8")
+	issue = journalinfo.getElementsByTagName('Issue')[0].childNodes[0].data.encode("utf-8")
+	year = journalinfo.getElementsByTagName('Year')[0].childNodes[0].data.encode("utf-8")
 	 
 	# this is a bit odd?
-	pages = xmldoc.getElementsByTagName('MedlinePgn')[0].childNodes[0].data
+	pages = xmldoc.getElementsByTagName('MedlinePgn')[0].childNodes[0].data.encode("utf-8")
 	 
 	output = []
 	print "pmid = ", pmid
@@ -102,5 +105,4 @@ def text_output(xml):
 
 def metadata_from_doi (doi):
 	xml = get_citation_from_doi (doi)
-#	print xml
 	return text_output(xml)
