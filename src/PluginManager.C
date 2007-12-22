@@ -101,10 +101,14 @@ std::list<Plugin*> PluginManager::getEnabledPlugins ()
 			retval.push_back (&(*it));
 	}
 	
-	if (crossref_.isEnabled ())
-		retval.push_back (&crossref_);
 	if (arxiv_.isEnabled ())
 		retval.push_back (&arxiv_);
+
+
+	// Try to keep crossref as a last resort due
+	// to the "last-name only issue"
+	if (crossref_.isEnabled ())
+		retval.push_back (&crossref_);
 
 	return retval;
 }
