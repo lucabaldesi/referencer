@@ -46,13 +46,10 @@ class BibData {
 	static std::vector<Glib::ustring> &getDocTypes ();
 	static Glib::ustring &getDefaultDocType ();
 
+	void writeXML (std::ostringstream &out);
 	void print () const;
 	void clear ();
 
-	void writeXML (std::ostringstream &out);
-	void resolveDoi ();
-	void resolveArxiv ();
-	
 	void mergeIn (BibData const &source);
 
 	typedef std::map <Glib::ustring, Glib::ustring, casefoldCompare> ExtrasMap;

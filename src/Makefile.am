@@ -23,6 +23,8 @@ endif
 
 
 referencer_SOURCES =	\
+	ArxivPlugin.C   \
+	ArxivPlugin.h   \
 	BibData.C	\
 	BibData.h	\
 	BibUtils.C	\

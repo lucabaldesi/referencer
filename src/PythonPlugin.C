@@ -59,6 +59,10 @@ void PythonPlugin::load (std::string const &moduleName)
 		return;
 	}
 
+
+	/* FIXME assume all python plugins are DOI only */
+	cap_.add(PluginCapability::DOI);
+
 	std::cerr << "Plugin::load: successfully loaded '" << moduleName << "'\n";
 
 	loaded_ = true;

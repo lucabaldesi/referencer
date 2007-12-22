@@ -10,6 +10,7 @@
 #include "Plugin.h"
 #include "PythonPlugin.h"
 #include "CrossRefPlugin.h"
+#include "ArxivPlugin.h"
 
 class BibData;
 
@@ -24,6 +25,7 @@ class PluginManager
 	private:
 		std::list<PythonPlugin> pythonPlugins_;
 		CrossRefPlugin crossref_;
+		ArxivPlugin arxiv_;
 };
 
 extern PluginManager *_global_plugins;

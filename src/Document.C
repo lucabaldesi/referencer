@@ -24,6 +24,8 @@
 
 #include "Utility.h"
 #include "Library.h"
+#include "PluginManager.h"
+#include "Preferences.h"
 #include "TagList.h"
 
 
@@ -480,10 +482,42 @@ bool Document::matchesSearch (Glib::ustring const &search)
 
 void Document::getMetaData ()
 {
+	if (_global_prefs->getWorkOffline())
+		return;
+
+	PluginCapability potentials;
+
 	if (!bib_.getDoi().empty ())
-		bib_.resolveDoi ();
-	else if (!bib_.getExtras()["eprint"].empty())
-		bib_.resolveArxiv ();
+		potentials.add(PluginCapability::DOI);
+
+	if (!bib_.getExtras()["eprint"].empty())
+		potentials.add(PluginCapability::ARXIV);
+
+	if (potentials.empty())
+		return;
+
+	PluginManager *pluginManager = _global_plugins;
+
+	std::list<Plugin*> plugins = pluginManager->getEnabledPlugins();
+	std::list<Plugin*>::iterator it = plugins.begin ();
+	std::list<Plugin*>::iterator end = plugins.end ();
+
+	for (; it != end; ++it) {
+		if (!(*it)->cap_.hasAny(potentials)) {
+			std::cerr << "BibData::resolveDoi: module '"
+				<< (*it)->getShortName() << "' has no "
+				"suitable capabilities\n";
+			continue;
+		}
+
+		bool success = (*it)->resolve(bib_);
+
+		if (success) {
+			std::cerr << "BibData::resolveDoi: paydirt with module '"
+				<< (*it)->getShortName() << "'\n";
+			break;
+		}
+	}
 }
 
 

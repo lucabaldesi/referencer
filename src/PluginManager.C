@@ -84,6 +84,7 @@ std::list<Plugin*> PluginManager::getPlugins ()
 	}
 
 	retval.push_back (&crossref_);
+	retval.push_back (&arxiv_);
 
 	return retval;
 }
@@ -102,6 +103,8 @@ std::list<Plugin*> PluginManager::getEnabledPlugins ()
 	
 	if (crossref_.isEnabled ())
 		retval.push_back (&crossref_);
+	if (arxiv_.isEnabled ())
+		retval.push_back (&arxiv_);
 
 	return retval;
 }

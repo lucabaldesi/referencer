@@ -10,7 +10,10 @@ class BibData;
 class CrossRefPlugin : public Plugin
 {
 	public:
-		CrossRefPlugin () {loaded_ = true;};
+		CrossRefPlugin () {
+			loaded_ = true;
+			cap_.add(PluginCapability::DOI);
+		}
 		~CrossRefPlugin () {};
 		virtual bool resolve (BibData &bib);
 		virtual Glib::ustring const getShortName ();
