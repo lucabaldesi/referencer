@@ -18,11 +18,12 @@
 
 #include "Transfer.h"
 #include "Preferences.h"
-#include "CrossRefParser.h"
 
 #include "PluginManager.h"
 
 #include "BibData.h"
+
+#include "BibUtils.h"
 
 
 std::vector<Glib::ustring> BibData::document_types;
@@ -140,20 +141,6 @@ void BibData::writeXML (std::ostringstream &out)
 		    << escape_text((*it).first) << "\">"
 		    << escape_text((*it).second) << "</bib_extra>\n";
 	}
-}
-
-
-void BibData::parseCrossRefXML (Glib::ustring const &xml)
-{
-	CrossRefParser parser (*this);
-	Glib::Markup::ParseContext context (parser);
-	try {
-		context.parse (xml);
-	} catch (Glib::MarkupError const ex) {
-		std::cerr << "Markuperror while parsing:\n'''\n" << xml << "\n'''\n";
-		Utility::exceptionDialog (&ex, _("Parsing CrossRef XML.  The DOI could be invalid, or not known to crossref.org"));
-	}
-	context.end_parse ();
 }
 
 

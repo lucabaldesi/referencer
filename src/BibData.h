@@ -50,7 +50,6 @@ class BibData {
 	void clear ();
 
 	void writeXML (std::ostringstream &out);
-	void parseCrossRefXML (Glib::ustring const &xml);
 	void resolveDoi ();
 	void resolveArxiv ();
 	

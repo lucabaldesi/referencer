@@ -27,7 +27,8 @@ referencer_SOURCES =	\
 	BibData.h	\
 	BibUtils.C	\
 	BibUtils.h	\
-	CrossRefParser.h	\
+	CrossRefPlugin.C	\
+	CrossRefPlugin.h	\
 	Document.C	\
 	Document.h	\
 	DocumentList.C	\
@@ -44,12 +45,15 @@ referencer_SOURCES =	\
 	Library.h \
 	LibraryParser.h \
 	main.C \
+	Plugin.h \
 	PluginManager.C \
 	PluginManager.h \
 	Preferences.C	\
 	Preferences.h	\
 	Progress.C	\
 	Progress.h	\
+	PythonPlugin.C \
+	PythonPlugin.h \
 	sexy-enum-types.h \
 	sexy-icon-entry.c \
 	sexy-icon-entry.h \

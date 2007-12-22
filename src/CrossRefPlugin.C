@@ -9,13 +9,19 @@
  */
 
 
-
-#ifndef CROSSREFPARSER_H
-#define CROSSREFPARSER_H
+#include <iostream>
 
 #include <gtkmm.h>
-#include "DocumentList.h"
-#include "TagList.h"
+#include <glibmm/i18n.h>
+
+#include "ucompose.hpp"
+
+#include "BibData.h"
+#include "Preferences.h"
+#include "Transfer.h"
+#include "Utility.h"
+
+#include "CrossRefPlugin.h"
 
 class CrossRefParser : public Glib::Markup::Parser {
 	BibData &bib_;
@@ -104,4 +110,53 @@ class CrossRefParser : public Glib::Markup::Parser {
 	}
 };
 
-#endif
+
+bool CrossRefPlugin::resolve (BibData &bib)
+{
+	Glib::ustring messagetext =
+		String::ucompose (
+			"<b><big>%1</big></b>\n\n%2\n",
+			_("Downloading metadata"),
+		String::ucompose (
+			_("Contacting crossref.org to retrieve metadata for '%1'"),
+			bib.getDoi())
+	);
+
+	Utility::StringPair ends = _global_prefs->getMetadataLookup ();
+
+	Glib::ustring const bibfilename =
+		ends.first
+		+ bib.getDoi()
+		+ ends.second;
+
+	try {
+		Glib::ustring &xml = Transfer::readRemoteFile (
+			_("Downloading Metadata"), messagetext, bibfilename);
+
+		CrossRefParser parser (bib);
+		Glib::Markup::ParseContext context (parser);
+		try {
+			context.parse (xml);
+		} catch (Glib::MarkupError const ex) {
+			std::cerr << "Markuperror while parsing:\n'''\n" << xml << "\n'''\n";
+			Utility::exceptionDialog (&ex, _("Parsing CrossRef XML.  The DOI could be invalid, or not known to crossref.org"));
+		}
+		context.end_parse ();
+	} catch (Transfer::Exception ex) {
+		Utility::exceptionDialog (&ex, _("Downloading metadata"));
+	}
+}
+
+
+Glib::ustring const CrossRefPlugin::getShortName ()
+{
+	return Glib::ustring ("crossref");
+}
+
+
+Glib::ustring const CrossRefPlugin::getLongName ()
+{
+	return Glib::ustring (_("Crossref.org OpenURL DOI resolver"));
+}
+
+
