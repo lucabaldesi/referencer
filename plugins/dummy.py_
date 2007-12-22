@@ -1,0 +1,13 @@
+#!/usr/bin/env python
+ 
+#   Dummy referencer plugin
+
+import urllib
+from xml.dom import minidom
+
+referencer_plugin_info = []
+referencer_plugin_info.append (["longname", "Dummy dumbo dumb"])
+
+def metadata_from_doi (doi):
+	metadata = []
+	return metadata
