@@ -1382,7 +1382,7 @@ void RefWindow::onAddDocUnnamed ()
 void RefWindow::onAddDocByDoi ()
 {
 
-	Gtk::Dialog dialog (_("Add Document with DOI"), true, false);
+	Gtk::Dialog dialog (_("Add Reference with DOI"), true, false);
 
 	Gtk::VBox *vbox = dialog.get_vbox ();
 
