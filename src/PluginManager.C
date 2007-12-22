@@ -46,10 +46,10 @@ void PluginManager::scan (std::string const &pluginDir)
 
 			// Check we haven't already loaded this module
 			bool dupe = false;
-			std::vector<Plugin>::iterator it = plugins_.begin();
-			std::vector<Plugin>::iterator end = plugins_.end();
+			std::list<Plugin>::iterator it = plugins_.begin();
+			std::list<Plugin>::iterator end = plugins_.end();
 			for (; it != end; ++it) {
-				if (it->shortName() == moduleName) {
+				if (it->getShortName() == moduleName) {
 					dupe = true;
 				}
 			}
@@ -58,9 +58,9 @@ void PluginManager::scan (std::string const &pluginDir)
 
 
 			Plugin newPlugin;
-			plugins_.push_back (newPlugin);
+			plugins_.push_front (newPlugin);
 
-			std::vector<Plugin>::iterator newbie = plugins_.end() - 1;
+			std::list<Plugin>::iterator newbie = plugins_.begin();
 			(*newbie).load(moduleName);
 		}
 	}
@@ -68,11 +68,11 @@ void PluginManager::scan (std::string const &pluginDir)
 }
 
 
-std::vector<Plugin*> PluginManager::getPlugins ()
+std::list<Plugin*> PluginManager::getPlugins ()
 {
-	std::vector<Plugin*> retval;
-	std::vector<Plugin>::iterator it = plugins_.begin();
-	std::vector<Plugin>::iterator end = plugins_.end();
+	std::list<Plugin*> retval;
+	std::list<Plugin>::iterator it = plugins_.begin();
+	std::list<Plugin>::iterator end = plugins_.end();
 
 	for (; it != end; ++it) {
 		retval.push_back (&(*it));
@@ -82,11 +82,11 @@ std::vector<Plugin*> PluginManager::getPlugins ()
 }
 
 
-std::vector<Plugin*> PluginManager::getEnabledPlugins ()
+std::list<Plugin*> PluginManager::getEnabledPlugins ()
 {
-	std::vector<Plugin*> retval;
-	std::vector<Plugin>::iterator it = plugins_.begin();
-	std::vector<Plugin>::iterator end = plugins_.end();
+	std::list<Plugin*> retval;
+	std::list<Plugin>::iterator it = plugins_.begin();
+	std::list<Plugin>::iterator end = plugins_.end();
 
 	for (; it != end; ++it) {
 		if (it->isEnabled())
@@ -101,8 +101,7 @@ Plugin::Plugin()
 {
 	pGetFunc_ = NULL;
 	pMod_ = NULL;
-	// XXX until we have UI just enable everything
-	enabled_ = true;
+	enabled_ = false;
 	loaded_ = false;
 }
 
@@ -110,8 +109,17 @@ Plugin::~Plugin()
 {
 	if (loaded_) {
 		Py_DECREF (pGetFunc_);
+		Py_DECREF (pPluginInfo_);
 		Py_DECREF (pMod_);
 	}
+}
+
+void Plugin::setEnabled (bool const enable)
+{
+	if (loaded_)
+		enabled_ = enable;
+	else
+		enabled_ = false;
 }
 
 void Plugin::load (std::string const &moduleName)
@@ -131,7 +139,14 @@ void Plugin::load (std::string const &moduleName)
 
 	pGetFunc_ = PyObject_GetAttrString (pMod_, "metadata_from_doi");
 	if (!pGetFunc_) {
-		std::cerr << "Plugin::load: Couldn't find function\n";
+		std::cerr << "Plugin::load: Couldn't find doi resolver\n";
+		Py_DECREF (pMod_);
+		return;
+	}
+
+	pPluginInfo_ = PyObject_GetAttrString (pMod_, "referencer_plugin_info");
+	if (!pPluginInfo_) {
+		std::cerr << "Plugin::load: Couldn't find plugin info\n";
 		Py_DECREF (pMod_);
 		return;
 	}
@@ -140,6 +155,10 @@ void Plugin::load (std::string const &moduleName)
 
 	loaded_ = true;
 	moduleName_ = moduleName;
+}
+
+Glib::ustring const getLongName ()
+{
 }
 
 bool Plugin::resolveDoi (BibData &bib)
@@ -215,4 +234,34 @@ bool Plugin::resolveDoi (BibData &bib)
 	}
 
 	return success;
+}
+
+
+Glib::ustring const Plugin::getLongName ()
+{
+	return getPluginInfoField ("longname");
+}
+
+
+Glib::ustring const Plugin::getPluginInfoField (Glib::ustring const &targetKey)
+{
+	int const N = PyList_Size (pPluginInfo_);
+
+	for (int i = 0; i < N; ++i) {
+		PyObject *pItem = PyList_GetItem (pPluginInfo_, i);
+		const char *cKey = PyString_AsString(PyList_GetItem (pItem, 0));
+		const char *cValue = PyString_AsString(PyList_GetItem (pItem, 1));
+
+		Glib::ustring key;
+		Glib::ustring value;
+		if (cKey)
+			key = Glib::ustring (cKey);
+		if (cValue)
+			value = Glib::ustring (cValue);
+
+		if (key == targetKey)
+			return value;
+	}
+
+	return Glib::ustring ();
 }

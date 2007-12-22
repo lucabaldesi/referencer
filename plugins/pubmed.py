@@ -9,6 +9,9 @@
 import urllib
 from xml.dom import minidom
 
+referencer_plugin_info = []
+referencer_plugin_info.append (["longname", "PubMed/Medline DOI resolver"])
+
 def get_citation_from_doi(query, email='YOUR EMAIL GOES HERE', tool='SimonsPythonQuery', database='pubmed'):
 	params = {
 		'db':database,

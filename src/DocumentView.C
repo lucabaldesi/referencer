@@ -233,7 +233,6 @@ void DocumentView::setUseListView (bool const &list)
 #if GTK_VERSION_LT(2,12)
 void DocumentView::onDocMouseMotion (GdkEventMotion* event)
 {
-	// Guh, it's giving me these in the iconview, so doesn't work when scrolled down
 	int x = (int)event->x;
 	int y = (int)event->y;
 

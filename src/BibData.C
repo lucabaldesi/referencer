@@ -378,16 +378,16 @@ void BibData::resolveDoi ()
 
 	PluginManager *pluginManager = _global_plugins;
 
-	std::vector<Plugin*> plugins = pluginManager->getEnabledPlugins();
-	std::vector<Plugin*>::iterator it = plugins.begin ();
-	std::vector<Plugin*>::iterator end = plugins.end ();
+	std::list<Plugin*> plugins = pluginManager->getEnabledPlugins();
+	std::list<Plugin*>::iterator it = plugins.begin ();
+	std::list<Plugin*>::iterator end = plugins.end ();
 
 	for (; it != end; ++it) {
 		bool success = (*it)->resolveDoi (*this);
 
 		if (success) {
 			std::cerr << "BibData::resolveDoi: paydirt with module '"
-				<< (*it)->shortName() << "'\n";
+				<< (*it)->getShortName() << "'\n";
 			break;
 		}
 	}

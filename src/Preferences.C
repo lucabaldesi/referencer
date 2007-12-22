@@ -12,7 +12,7 @@
 
 #include <iostream>
 
-#include "Utility.h"
+#include <glibmm/i18n.h>
 
 #include "Preferences.h"
 
@@ -126,7 +126,113 @@ Preferences::Preferences ()
 	useauthcheck_->signal_toggled().connect (
 		sigc::mem_fun (*this, &Preferences::onProxyChanged));
 
+	
+	
+	/*
+	 * Plugins
+	 */
+	disabledPlugins_ = confclient_->get_entry (CONF_PATH "/disabledplugins");
+	Gnome::Conf::SListHandle_ValueString disable =
+		confclient_->get_string_list (disabledPlugins_.get_key ());
+
+	
+	// Iterate over all plugins
+	std::list<Plugin*> plugins = _global_plugins->getPlugins();
+	std::list<Plugin*>::iterator pit = plugins.begin();
+	std::list<Plugin*>::iterator const pend = plugins.end();
+	for (; pit != pend; pit++) {
+		// All enabled unless disabled
+		(*pit)->setEnabled(true);
+
+		Gnome::Conf::SListHandle_ValueString::iterator dit = disable.begin();
+		Gnome::Conf::SListHandle_ValueString::iterator const dend = disable.end();
+		for (; dit != dend; ++dit) {
+			if ((*pit)->getShortName() == (*dit)) {
+				(*pit)->setEnabled(false);
+				std::cerr << "disabling plugin " << (*pit)->getShortName() << "\n";
+			}
+		}
+	}
+
+	Gtk::TreeModel::ColumnRecord pluginCols;
+	pluginCols.add (colPriority_);
+	pluginCols.add (colPlugin_);
+	pluginCols.add (colEnabled_);
+	pluginCols.add (colShortName_);
+	pluginCols.add (colLongName_);
+	pluginStore_ = Gtk::ListStore::create (pluginCols);
+
+	// Re-use plugins list from enable/disable stage above
+	std::list<Plugin*>::iterator it = plugins.begin();
+	std::list<Plugin*>::iterator const end = plugins.end();
+	for (int count = 0; it != end; ++it, ++count) {
+		Gtk::TreeModel::iterator item = pluginStore_->append();
+		(*item)[colPriority_] = count;
+		(*item)[colShortName_] = (*it)->getShortName ();
+		(*item)[colLongName_] = (*it)->getLongName ();
+		(*item)[colEnabled_] = (*it)->isEnabled ();
+		(*item)[colPlugin_] = (*it);
+	}
+
+	xml_->get_widget ("Plugins", pluginView_);
+
+	Gtk::CellRendererToggle *toggle = Gtk::manage (new Gtk::CellRendererToggle);
+	toggle->property_activatable() = true;
+	toggle->signal_toggled().connect (sigc::mem_fun (*this, &Preferences::onPluginToggled));
+	Gtk::TreeViewColumn *enabled = Gtk::manage (new Gtk::TreeViewColumn (_("Enabled"), *toggle));
+	enabled->add_attribute (toggle->property_active(), colEnabled_);
+	pluginView_->append_column (*enabled);
+
+	Gtk::TreeViewColumn *shortName = Gtk::manage (new Gtk::TreeViewColumn (_("Module"), colShortName_));
+	pluginView_->append_column (*shortName);
+	Gtk::TreeViewColumn *longName = Gtk::manage (new Gtk::TreeViewColumn (_("Description"), colLongName_));
+	pluginView_->append_column (*longName);
+
+	pluginView_->set_model (pluginStore_);
+
+
+	/*
+	 * End of Plugins
+	 */
+
+
 	ignorechanges_ = false;
+}
+
+
+void Preferences::onPluginToggled (Glib::ustring const &str)
+{
+	Gtk::TreePath path(str);
+
+	Gtk::TreeModel::iterator it = pluginStore_->get_iter (path);
+	bool enable = !(*it)[colEnabled_];
+	Plugin *plugin = (*it)[colPlugin_];
+	plugin->setEnabled (enable);
+	(*it)[colEnabled_] = plugin->isEnabled ();
+
+	std::vector<Glib::ustring> disable =
+		confclient_->get_string_list (disabledPlugins_.get_key ());
+	std::vector<Glib::ustring>::iterator dit = disable.begin();
+	std::vector<Glib::ustring>::iterator const dend = disable.end();
+	if (plugin->isEnabled() == true) {
+		// Remove from gconf list of disabled plugins
+		for (; dit != dend; ++dit) {
+			if (*dit == plugin->getShortName()) {
+				disable.erase(dit);
+				break;
+			}
+		}
+	} else {
+		// Add to gconf list of disabled plugins
+		bool found = false;
+		for (; dit != dend; ++dit)
+			if (*dit == plugin->getShortName())
+				found = true;
+		if (!found)
+			disable.push_back(plugin->getShortName());
+
+	}
+	confclient_->set_string_list (disabledPlugins_.get_key(), disable);
 }
 
 

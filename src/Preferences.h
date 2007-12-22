@@ -20,10 +20,32 @@
 #include <gconfmm.h>
 
 #include "Utility.h"
+#include "PluginManager.h"
 
 class Preferences {
 private:
 	Glib::RefPtr<Gnome::Glade::Xml> xml_;
+
+	/*
+	 * Plugins
+	 */
+	Gtk::TreeView *pluginView_;
+	Gtk::Button *moveUpButton_;
+	Gtk::Button *moveDownButton_;
+	Glib::RefPtr<Gtk::ListStore> pluginStore_;
+
+	Gtk::TreeModelColumn<unsigned int> colPriority_;
+	Gtk::TreeModelColumn<Plugin*> colPlugin_;
+	Gtk::TreeModelColumn<Glib::ustring> colShortName_;
+	Gtk::TreeModelColumn<Glib::ustring> colLongName_;
+	Gtk::TreeModelColumn<bool> colEnabled_;
+
+	void onPluginToggled (Glib::ustring const &str);
+
+	Gnome::Conf::Entry disabledPlugins_;
+	/*
+	 * End of Plugins
+	 */
 
 	Gtk::Dialog *dialog_;
 	Gtk::Entry *doilaunchentry_;
