@@ -1,8 +1,7 @@
 
-Release schedule
-================
 
-Goals for 1.0.5:
+There is no release schedule.
+
 	ListView users are people too:
 		- Sort out the column sizing
 		- Make the fields editable without opening document properties
@@ -20,7 +19,6 @@ Goals for 1.0.5:
 		Offer to move files not in subdir of reflib location
 
 
-Goals for 1.1:
 	Browse/search:
 		Z39.50
 		PubMed (inc. "Add by Medline ID")

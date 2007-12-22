@@ -134,4 +134,5 @@ class DocumentView : public Gtk::VBox
 
 	bool uselistview_;
 
+	void onSortColumnChanged ();
 };

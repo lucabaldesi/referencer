@@ -59,6 +59,7 @@ Preferences::Preferences ()
 		setUseListView (false);
 		setWorkOffline (false);
 		setWindowSize (std::pair<int,int>(700,500));
+		setListSort (-1, 0);
 		firsttime_ = true;
 	} else {
 		firsttime_ = false;
@@ -183,8 +184,40 @@ Preferences::Preferences ()
 	 * End of Plugins
 	 */
 
+	/*
+	 * List view options
+	 */
+	listSortColumn_ = confclient_->get_entry (CONF_PATH "/listsortcolumn");
+	listSortOrder_ = confclient_->get_entry (CONF_PATH "/listsortorder");
 
 	ignorechanges_ = false;
+}
+
+
+std::pair<int, int> Preferences::getListSort ()
+{
+	std::pair<int, int> retval;
+	retval.first = confclient_->get_int (listSortColumn_.get_key());
+	retval.second = confclient_->get_int (listSortOrder_.get_key());
+
+	/*
+	 * XXX bit cracky, 0 is an invalid value because it
+	 * refers to the pointer col that gtk doesn't know how
+	 * to sort.  -1 means "sort on no columns".  This shouldn't
+	 * happen if we have a proper gconf schema
+	 */
+	if (retval.first == 0) {
+		retval.first = -1;
+	} 
+
+	return retval;
+}
+
+
+void Preferences::setListSort (int const column, int const order)
+{
+	confclient_->set (listSortColumn_.get_key(), column);
+	confclient_->set (listSortOrder_.get_key(), order);
 }
 
 

@@ -9,7 +9,8 @@ class PluginCapability
 		typedef enum {
 			NONE = 0,
 			DOI = 1 << 0,
-			ARXIV = 1 << 1
+			ARXIV = 1 << 1,
+			MEDLINE = 1 << 2
 		} Identifier;
 
 		void add (Identifier const id) {

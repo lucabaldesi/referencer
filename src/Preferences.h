@@ -50,17 +50,37 @@ private:
 	/*
 	 * Conf for crossref plugin
 	 */
+private:
 	Gnome::Conf::Entry crossRefUsername_;
 	Gnome::Conf::Entry crossRefPassword_;
 	Gtk::Entry *crossRefUsernameEntry_;
 	Gtk::Entry *crossRefPasswordEntry_;
 	void onCrossRefChanged ();
-
+public:
+	Glib::ustring getCrossRefUsername ();
+	Glib::ustring getCrossRefPassword ();
 
 	/*
 	 * End of conf for crossref plugin
 	 */
 
+	/*
+	 * List view options
+	 */
+private:
+	Gnome::Conf::Entry listSortColumn_;
+	Gnome::Conf::Entry listSortOrder_;
+public:
+	std::pair<int, int> getListSort ();
+	void setListSort (int const column, int const order);
+	/*
+	 * End of list view options
+	 */
+
+	/*
+	 * Uncategorised
+	 */
+private:
 	Gtk::Dialog *dialog_;
 
 	Gtk::Entry *proxyhostentry_;
@@ -127,9 +147,6 @@ public:
 	sigc::signal<void>& getShowTagPaneSignal ();
 
 	typedef std::pair<Glib::ustring, Glib::ustring> StringPair;
-
-	Glib::ustring getCrossRefUsername ();
-	Glib::ustring getCrossRefPassword ();
 
 	std::pair<int, int> getWindowSize ();
 	void setWindowSize (std::pair<int, int> size);

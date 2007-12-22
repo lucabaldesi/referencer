@@ -26,6 +26,7 @@ class Document {
 	Glib::ustring key_;
 	std::vector<int> tagUids_;
 	Glib::RefPtr<Gdk::Pixbuf> thumbnail_;
+	static const Glib::ustring defaultKey_;
 
 	void setupThumbnail ();
 

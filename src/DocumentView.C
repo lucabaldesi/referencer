@@ -78,6 +78,11 @@ DocumentView::DocumentView (
 	docstorefilter_ = Gtk::TreeModelFilter::create (docstore_);
 	docstorefilter_->set_visible_column (docvisiblecol_);
 	docstoresort_ = Gtk::TreeModelSort::create (docstorefilter_);
+	docstoresort_->signal_sort_column_changed ().connect(
+		sigc::mem_fun (*this, &DocumentView::onSortColumnChanged));
+
+	std::pair<int, int> sortinfo = _global_prefs->getListSort ();
+	docstoresort_->set_sort_column (sortinfo.first, (Gtk::SortType)sortinfo.second);
 	
 	// Create the IconView for the document icons
 	Gtk::IconView *icons = Gtk::manage(new Gtk::IconView(docstoresort_));
@@ -835,3 +840,14 @@ void DocumentView::onSearchChanged ()
 
 	
 }
+
+
+void DocumentView::onSortColumnChanged ()
+{
+	Gtk::SortType order;
+	int column;
+	docstoresort_->get_sort_column_id (column, order);
+	_global_prefs->setListSort (column, order);
+}
+
+

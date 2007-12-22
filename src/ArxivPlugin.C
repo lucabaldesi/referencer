@@ -78,6 +78,8 @@ bool ArxivPlugin::resolve (BibData &bib)
 		if (url.size() >= 5 && url.substr (0, 4) == Glib::ustring("doi:")) {
 			if (newdoc.getBibData().getDoi().empty()) {
 				newdoc.getBibData().setDoi (url.substr(4, url.size()));
+				BibData::ExtrasMap::iterator it = newdoc.getBibData().extras_.find("Url");
+				newdoc.getBibData().extras_.erase(it);
 			}
 		}
 

@@ -36,6 +36,8 @@ Glib::RefPtr<Gdk::Pixbuf> Document::defaultthumb_;
 Glib::RefPtr<Gdk::Pixbuf> Document::thumbframe_;
 Glib::RefPtr<Gnome::UI::ThumbnailFactory> Document::thumbfac_;
 
+const Glib::ustring Document::defaultKey_ = _("Unnamed");
+
 Document::Document (Glib::ustring const &filename)
 {
 	setFileName (filename);
@@ -79,6 +81,20 @@ Glib::ustring Document::generateKey ()
 			year = year.substr (2,3);
 
 		Glib::ustring authors = bib_.getAuthors ();
+
+		Glib::ustring::size_type comma = authors.find (",");
+		Glib::ustring::size_type space = authors.find (" ");
+		Glib::ustring::size_type snip = Glib::ustring::npos;
+
+		if (comma != Glib::ustring::npos)
+			snip = comma;
+		if (space != Glib::ustring::npos && space < comma)
+			snip = space;
+
+		if (snip != Glib::ustring::npos)
+			authors = authors.substr(0, snip);
+
+
 		if (authors.size() > maxlen - 2) {
 			authors = authors.substr(0, maxlen - 2);
 		}
@@ -102,7 +118,7 @@ Glib::ustring Document::generateKey ()
 		}
 
 	} else {
-		name = _("Unnamed");
+		name = defaultKey_;
 	}
 
 	// Don't confuse LaTeX
@@ -413,8 +429,8 @@ void Document::readPDF ()
 		if (i == 0) {
 			bib_.guessYear (textdump);
 			bib_.guessDoi (textdump);
-			if (bib_.getDoi ().empty ())
-				bib_.guessArxiv (textdump);
+			bib_.guessArxiv (textdump);
+
 			if (!bib_.getDoi ().empty () || !bib_.getExtras ()["eprint"].empty ()) {
 				got_id = true;
 				break;
@@ -428,8 +444,7 @@ void Document::readPDF ()
 	// then search the whole document text for the ID and year
 	if (!got_id && !textdump.empty()) {
 		bib_.guessDoi (textdump);
-		if (bib_.getDoi ().empty ())
-			bib_.guessArxiv (textdump);
+		bib_.guessArxiv (textdump);
 		// We might have picked this up on the first page
 		if (bib_.getYear ().empty())
 			bib_.guessYear (textdump);
@@ -502,6 +517,8 @@ void Document::getMetaData ()
 	std::list<Plugin*>::iterator it = plugins.begin ();
 	std::list<Plugin*>::iterator end = plugins.end ();
 
+	bool success = false;
+
 	for (; it != end; ++it) {
 		if (!(*it)->cap_.hasAny(potentials)) {
 			std::cerr << "BibData::resolveDoi: module '"
@@ -510,13 +527,21 @@ void Document::getMetaData ()
 			continue;
 		}
 
-		bool success = (*it)->resolve(bib_);
+		success = (*it)->resolve(bib_);
 
 		if (success) {
 			std::cerr << "BibData::resolveDoi: paydirt with module '"
 				<< (*it)->getShortName() << "'\n";
 			break;
 		}
+	}
+
+	/*
+	 * Set up the key if it was never set to begin with
+	 */
+	if (success) {
+		if (getKey().substr(0, defaultKey_.size()) == defaultKey_)
+			setKey(generateKey ());
 	}
 }
 
