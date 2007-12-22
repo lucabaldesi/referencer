@@ -37,10 +37,7 @@ RefWindow::RefWindow ()
 {
 	tagselectionignore_ = false;
 	ignoretaggerchecktoggled_ = false;
-	/*
-	 * FIXME this variable is redundant, n'est pas?
-	 */
-	docselectionignore_ = false;
+
 	dirty_ = false;
 
 	library_ = new Library (*this);
@@ -2046,9 +2043,6 @@ void RefWindow::onFind ()
 
 void RefWindow::docSelectionChanged ()
 {
-	if (docselectionignore_)
-		return;
-
 	int selectcount = docview_->getSelectedDocCount ();
 
 	bool const somethingselected = selectcount > 0;

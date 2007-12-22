@@ -98,7 +98,6 @@ class RefWindow {
 		Glib::RefPtr<Gtk::TreeSelection> tagselection_;
 		Gtk::TreeView *tagview_;
 		bool tagselectionignore_;
-		bool docselectionignore_;
 		std::map<int, Gtk::ToggleButton*> taggerchecks_;
 		bool ignoretaggerchecktoggled_;
 		void taggerCheckToggled (Gtk::ToggleButton *check, int taguid);
