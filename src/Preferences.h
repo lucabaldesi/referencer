@@ -47,9 +47,21 @@ private:
 	 * End of Plugins
 	 */
 
+	/*
+	 * Conf for crossref plugin
+	 */
+	Gnome::Conf::Entry crossRefUsername_;
+	Gnome::Conf::Entry crossRefPassword_;
+	Gtk::Entry *crossRefUsernameEntry_;
+	Gtk::Entry *crossRefPasswordEntry_;
+	void onCrossRefChanged ();
+
+
+	/*
+	 * End of conf for crossref plugin
+	 */
+
 	Gtk::Dialog *dialog_;
-	Gtk::Entry *doilaunchentry_;
-	Gtk::Entry *metadatalookupentry_;
 
 	Gtk::Entry *proxyhostentry_;
 	Gtk::SpinButton *proxyportspin_;
@@ -59,17 +71,12 @@ private:
 	Gtk::CheckButton *useauthcheck_;
 
 	void onWorkOfflineToggled ();
-	void onURLChanged ();
 	void onProxyChanged ();
 	void updateSensitivity ();
-	// This is just for the button in the dialog!
-	void onResetToDefaults ();
 
 	void onConfChange (int number, Gnome::Conf::Entry entry);
 
 	Gnome::Conf::Entry workoffline_;
-	Gnome::Conf::Entry doilaunch_;
-	Gnome::Conf::Entry metadatalookup_;
 	Gnome::Conf::Entry uselistview_;
 	Gnome::Conf::Entry showtagpane_;
 	Gnome::Conf::Entry libraryfilename_;
@@ -87,9 +94,6 @@ private:
 	sigc::signal<void> workofflinesignal_;
 	sigc::signal<void> uselistviewsignal_;
 	sigc::signal<void> showtagpanesignal_;
-
-	Glib::ustring doilaunchdefault_;
-	Glib::ustring metadatalookupdefault_;
 
 	bool ignorechanges_;
 
@@ -124,11 +128,8 @@ public:
 
 	typedef std::pair<Glib::ustring, Glib::ustring> StringPair;
 
-	Utility::StringPair getDoiLaunch ();
-	void setDoiLaunch (Glib::ustring const &doilaunch);
-
-	Utility::StringPair getMetadataLookup ();
-	void setMetadataLookup (Glib::ustring const &metadatalookup);
+	Glib::ustring getCrossRefUsername ();
+	Glib::ustring getCrossRefPassword ();
 
 	std::pair<int, int> getWindowSize ();
 	void setWindowSize (std::pair<int, int> size);

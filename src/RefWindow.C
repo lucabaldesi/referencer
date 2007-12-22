@@ -1533,9 +1533,8 @@ void RefWindow::onWebLinkDoc ()
 	for (; it != end; ++it) {
 		Document* doc = *it;
 		if (!doc->getBibData().getDoi().empty()) {
-			Utility::StringPair ends = _global_prefs->getDoiLaunch ();
 			Glib::ustring doi = doc->getBibData().getDoi();
-			Gnome::Vfs::url_show (ends.first + doi + ends.second);
+			Gnome::Vfs::url_show (Glib::ustring("http://dx.doi.org/") + doi);
 		} else if (!doc->getBibData().getExtras()["eprint"].empty()) {
 			Glib::ustring eprint = doc->getBibData().getExtras()["eprint"];
 			Gnome::Vfs::url_show ("http://arxiv.org/abs/" + eprint);

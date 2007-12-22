@@ -1,4 +1,6 @@
 1.0.5:
+	- Add preferences options for crossref username/password
+	- Remove preferences options for crossref path + dx.doi.org path
 	- Metadata plugins (C++ or python)
 	- DOI->Pubmed resolver (Simon Greenhill)
 	- Make multiple-tag filtering AND instead of OR

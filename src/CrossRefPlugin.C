@@ -122,16 +122,25 @@ bool CrossRefPlugin::resolve (BibData &bib)
 			bib.getDoi())
 	);
 
-	Utility::StringPair ends = _global_prefs->getMetadataLookup ();
-
-	Glib::ustring const bibfilename =
-		ends.first
+	Glib::ustring const url = 
+		  Glib::ustring("http://www.crossref.org/openurl/?pid=")
+		+ _global_prefs->getCrossRefUsername ()
+		+ Glib::ustring(":")
+		+ _global_prefs->getCrossRefPassword ()
+		+ Glib::ustring("&id=doi:")
 		+ bib.getDoi()
-		+ ends.second;
+		+ Glib::ustring ("&noredirect=true");
+
+	std::cerr << "CrossRefPlugin::resolve: using url '" << url << "'\n";
+
+	// FIXME: even if we don't get any metadata, 
+	// an exceptionless download+parse is considered
+	// a success.
+	bool success = true;
 
 	try {
 		Glib::ustring &xml = Transfer::readRemoteFile (
-			_("Downloading Metadata"), messagetext, bibfilename);
+			_("Downloading Metadata"), messagetext, url);
 
 		CrossRefParser parser (bib);
 		Glib::Markup::ParseContext context (parser);
@@ -140,11 +149,15 @@ bool CrossRefPlugin::resolve (BibData &bib)
 		} catch (Glib::MarkupError const ex) {
 			std::cerr << "Markuperror while parsing:\n'''\n" << xml << "\n'''\n";
 			Utility::exceptionDialog (&ex, _("Parsing CrossRef XML.  The DOI could be invalid, or not known to crossref.org"));
+			success = false;
 		}
 		context.end_parse ();
 	} catch (Transfer::Exception ex) {
 		Utility::exceptionDialog (&ex, _("Downloading metadata"));
+		success = false;
 	}
+
+	return success;
 }
 
 
