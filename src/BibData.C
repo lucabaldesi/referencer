@@ -370,6 +370,7 @@ void BibData::guessArxiv (Glib::ustring const &raw_)
 	}
 }
 
+
 void BibData::resolveDoi ()
 {
 	if (doi_.empty() || _global_prefs->getWorkOffline())
@@ -383,7 +384,7 @@ void BibData::resolveDoi ()
 	std::list<Plugin*>::iterator end = plugins.end ();
 
 	for (; it != end; ++it) {
-		bool success = (*it)->resolveDoi (*this);
+		bool success = (*it)->resolve(*this);
 
 		if (success) {
 			std::cerr << "BibData::resolveDoi: paydirt with module '"

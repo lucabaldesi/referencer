@@ -1,4 +1,6 @@
 1.0.5:
+	- Metadata plugins (C++ or python)
+	- DOI->Pubmed resolver (Simon Greenhill)
 	- Make multiple-tag filtering AND instead of OR
 	- Fix losing bibtex fields in import (Bug 158581)
 	- Fix missing some fields in getArxiv (Bug 158815)

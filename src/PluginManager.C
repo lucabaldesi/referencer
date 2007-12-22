@@ -4,11 +4,16 @@
 #include <sys/types.h>
 #include <dirent.h>
 
+#include <glibmm/i18n.h>
+
+#include "Preferences.h"
 // FIXME just using this for the exception class
 #include <Transfer.h>
 // For exception dialog
 #include <Utility.h>
 #include <BibData.h>
+
+#include "ucompose.hpp"
 
 #include <PluginManager.h>
 
@@ -46,8 +51,8 @@ void PluginManager::scan (std::string const &pluginDir)
 
 			// Check we haven't already loaded this module
 			bool dupe = false;
-			std::list<Plugin>::iterator it = plugins_.begin();
-			std::list<Plugin>::iterator end = plugins_.end();
+			std::list<PythonPlugin>::iterator it = pythonPlugins_.begin();
+			std::list<PythonPlugin>::iterator end = pythonPlugins_.end();
 			for (; it != end; ++it) {
 				if (it->getShortName() == moduleName) {
 					dupe = true;
@@ -57,10 +62,10 @@ void PluginManager::scan (std::string const &pluginDir)
 				continue;
 
 
-			Plugin newPlugin;
-			plugins_.push_front (newPlugin);
+			PythonPlugin newPlugin;
+			pythonPlugins_.push_front (newPlugin);
 
-			std::list<Plugin>::iterator newbie = plugins_.begin();
+			std::list<PythonPlugin>::iterator newbie = pythonPlugins_.begin();
 			(*newbie).load(moduleName);
 		}
 	}
@@ -71,12 +76,14 @@ void PluginManager::scan (std::string const &pluginDir)
 std::list<Plugin*> PluginManager::getPlugins ()
 {
 	std::list<Plugin*> retval;
-	std::list<Plugin>::iterator it = plugins_.begin();
-	std::list<Plugin>::iterator end = plugins_.end();
+	std::list<PythonPlugin>::iterator it = pythonPlugins_.begin();
+	std::list<PythonPlugin>::iterator end = pythonPlugins_.end();
 
 	for (; it != end; ++it) {
 		retval.push_back (&(*it));
 	}
+
+	retval.push_back (&crossref_);
 
 	return retval;
 }
@@ -85,34 +92,30 @@ std::list<Plugin*> PluginManager::getPlugins ()
 std::list<Plugin*> PluginManager::getEnabledPlugins ()
 {
 	std::list<Plugin*> retval;
-	std::list<Plugin>::iterator it = plugins_.begin();
-	std::list<Plugin>::iterator end = plugins_.end();
+	std::list<PythonPlugin>::iterator it = pythonPlugins_.begin();
+	std::list<PythonPlugin>::iterator end = pythonPlugins_.end();
 
 	for (; it != end; ++it) {
 		if (it->isEnabled())
 			retval.push_back (&(*it));
 	}
+	
+	if (crossref_.isEnabled ())
+		retval.push_back (&crossref_);
 
 	return retval;
 }
 
-
-Plugin::Plugin()
+Plugin::Plugin ()
 {
-	pGetFunc_ = NULL;
-	pMod_ = NULL;
 	enabled_ = false;
 	loaded_ = false;
 }
 
-Plugin::~Plugin()
+Plugin::~Plugin ()
 {
-	if (loaded_) {
-		Py_DECREF (pGetFunc_);
-		Py_DECREF (pPluginInfo_);
-		Py_DECREF (pMod_);
-	}
 }
+
 
 void Plugin::setEnabled (bool const enable)
 {
@@ -122,7 +125,26 @@ void Plugin::setEnabled (bool const enable)
 		enabled_ = false;
 }
 
-void Plugin::load (std::string const &moduleName)
+
+
+PythonPlugin::PythonPlugin()
+{
+	pGetFunc_ = NULL;
+	pMod_ = NULL;
+}
+
+PythonPlugin::~PythonPlugin()
+{
+	if (loaded_) {
+		Py_DECREF (pGetFunc_);
+		Py_DECREF (pPluginInfo_);
+		Py_DECREF (pMod_);
+	}
+}
+
+
+
+void PythonPlugin::load (std::string const &moduleName)
 {
 	PyObject *pName = PyString_FromString(moduleName.c_str());
 	if (!pName) {
@@ -157,11 +179,7 @@ void Plugin::load (std::string const &moduleName)
 	moduleName_ = moduleName;
 }
 
-Glib::ustring const getLongName ()
-{
-}
-
-bool Plugin::resolveDoi (BibData &bib)
+bool PythonPlugin::resolve (BibData &bib)
 {
 	bool success = false;
 
@@ -237,13 +255,13 @@ bool Plugin::resolveDoi (BibData &bib)
 }
 
 
-Glib::ustring const Plugin::getLongName ()
+Glib::ustring const PythonPlugin::getLongName ()
 {
 	return getPluginInfoField ("longname");
 }
 
 
-Glib::ustring const Plugin::getPluginInfoField (Glib::ustring const &targetKey)
+Glib::ustring const PythonPlugin::getPluginInfoField (Glib::ustring const &targetKey)
 {
 	int const N = PyList_Size (pPluginInfo_);
 
@@ -265,3 +283,45 @@ Glib::ustring const Plugin::getPluginInfoField (Glib::ustring const &targetKey)
 
 	return Glib::ustring ();
 }
+
+
+bool CrossRefPlugin::resolve (BibData &bib)
+{
+	Glib::ustring messagetext =
+		String::ucompose (
+			"<b><big>%1</big></b>\n\n%2\n",
+			_("Downloading metadata"),
+		String::ucompose (
+			_("Contacting crossref.org to retrieve metadata for '%1'"),
+			bib.getDoi())
+	);
+
+	Utility::StringPair ends = _global_prefs->getMetadataLookup ();
+
+	Glib::ustring const bibfilename =
+		ends.first
+		+ bib.getDoi()
+		+ ends.second;
+
+	try {
+		Glib::ustring &rawtext = Transfer::readRemoteFile (
+			_("Downloading Metadata"), messagetext, bibfilename);
+		bib.parseCrossRefXML (rawtext);
+	} catch (Transfer::Exception ex) {
+		Utility::exceptionDialog (&ex, _("Downloading metadata"));
+	}
+}
+
+
+Glib::ustring const CrossRefPlugin::getShortName ()
+{
+	return Glib::ustring ("crossref");
+}
+
+
+Glib::ustring const CrossRefPlugin::getLongName ()
+{
+	return Glib::ustring (_("Crossref.org OpenURL DOI resolver"));
+}
+
+
