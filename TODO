@@ -6,7 +6,6 @@ There is no release schedule.
 		- Sort out the column sizing
 		- Make the fields editable without opening document properties
 		- (Maybe) Look into adding/removing columns
-		- Save the sorting state between sessions
 	Getting text from .ps files (a la ps2ascii)
 	Refine tagging UI:
 		Add/remove tags in document context menu

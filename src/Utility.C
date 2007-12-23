@@ -38,6 +38,74 @@
 
 namespace Utility {
 
+Glib::ustring firstAuthor (
+		Glib::ustring const &authors)
+{
+	Glib::ustring::size_type n = authors.find (" and");
+	if (n != Glib::ustring::npos) {
+		return authors.substr(0, n);
+	} else {
+		return authors;
+	}
+}
+
+Glib::ustring wrap (Glib::ustring const &str, Glib::ustring::size_type width, int lines)
+{
+	Glib::ustring::size_type n = 0;
+	int line = 0;
+	if (lines == -1)
+		lines = 99999;
+
+	int remainder = str.size();
+
+	Glib::ustring wrapped;
+
+	while (line < lines) {
+		if (line > 0)
+			wrapped += Glib::ustring("\n");
+		if (remainder > width) {
+			Glib::ustring snaffle = str.substr (n, width);
+			if (snaffle.substr(0,1) == " ")
+				snaffle = snaffle.substr(1, snaffle.size() - 1);
+
+			Glib::ustring::size_type bite = snaffle.rfind (" ");
+			if (bite == Glib::ustring::npos) {
+				bite = snaffle.size();
+			} else {
+				snaffle = snaffle.substr(0, bite);
+			}
+
+			if (line == lines - 1) {
+				if (snaffle.size() + 3 < width) {
+					snaffle += Glib::ustring ("...");
+				} else {
+					snaffle = snaffle.substr(0, snaffle.size() - 3);
+					snaffle += Glib::ustring ("...");
+				}
+			}
+			
+			wrapped += snaffle;
+			n += snaffle.size();
+			remainder -= snaffle.size();
+
+			line++;
+
+
+		} else {
+			Glib::ustring snaffle = str.substr (n, remainder);
+			if (snaffle.substr(0,1) == " ")
+				snaffle = snaffle.substr(1, snaffle.size() - 1);
+
+			wrapped += snaffle;
+			remainder -= snaffle.size();
+
+			break;
+		}
+	}
+
+	return wrapped;
+}
+
 bool hasExtension (
 	Glib::ustring const &filename,
 	Glib::ustring const &ex)

@@ -73,6 +73,7 @@ DocumentView::DocumentView (
 	doccols.add(doctooltipcol_);
 #endif
 	doccols.add(docvisiblecol_);
+	doccols.add(doccaptioncol_);
 
 	docstore_ = Gtk::ListStore::create(doccols);
 	docstorefilter_ = Gtk::TreeModelFilter::create (docstore_);
@@ -86,7 +87,8 @@ DocumentView::DocumentView (
 	
 	// Create the IconView for the document icons
 	Gtk::IconView *icons = Gtk::manage(new Gtk::IconView(docstoresort_));
-	icons->set_text_column (dockeycol_);
+	//icons->set_text_column (dockeycol_);
+	icons->set_markup_column (doccaptioncol_);
 	icons->set_pixbuf_column (docthumbnailcol_);
 #if GTK_VERSION_GE(2,12)
 	// Nasty, gtkmm doesn't have a binding for passing the column object
@@ -103,6 +105,8 @@ DocumentView::DocumentView (
 
 	icons->set_selection_mode (Gtk::SELECTION_MULTIPLE);
 	icons->set_columns (-1);
+
+	icons->set_orientation (Gtk::ORIENTATION_HORIZONTAL);
 
 	std::vector<Gtk::TargetEntry> dragtypes;
 	Gtk::TargetEntry target;
@@ -604,6 +608,31 @@ void DocumentView::loadRow (
 		Glib::Markup::escape_text (doc->getBibData().getAuthors()));
 	#endif
 	(*item)[docvisiblecol_] = isVisible (doc);
+
+	int const cropwidth = 20;
+	Glib::ustring title = Utility::wrap (doc->getBibData().getTitle(), cropwidth, 2);
+	Glib::ustring authors = Utility::wrap (
+			Utility::firstAuthor(doc->getBibData().getAuthors()), cropwidth, 1);
+	Glib::ustring key = Utility::wrap (doc->getKey(), cropwidth, 1);
+	Glib::ustring year = Utility::wrap (doc->getBibData().getYear(), cropwidth, 1);
+
+	if (title.empty())
+		title = " ";
+	if (authors.empty())
+		authors = " ";
+	if (key.empty())
+		key = " ";
+	if (year.empty())
+		year = " ";
+
+	(*item)[doccaptioncol_] = String::ucompose (
+		// Translators: this is the format for the document captions
+		_("<span size='xx-small'> </span>\n<small>%1</small>\n<b>%2</b>\n%3\n<i>%4</i>"),
+		Glib::Markup::escape_text (doc->getKey()),
+		Glib::Markup::escape_text (title),
+		Glib::Markup::escape_text (doc->getBibData().getYear()),
+		Glib::Markup::escape_text (authors));
+
 }
 
 /*

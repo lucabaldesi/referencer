@@ -25,6 +25,13 @@
 namespace Utility {
 	typedef std::pair <Glib::ustring, Glib::ustring> StringPair;
 
+Glib::ustring wrap (
+		Glib::ustring const &str, 
+		Glib::ustring::size_type width, 
+		int lines);
+
+Glib::ustring firstAuthor (
+		Glib::ustring const &authors);
 
 bool hasExtension (
 	Glib::ustring const &filename,

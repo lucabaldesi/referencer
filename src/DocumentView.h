@@ -95,6 +95,7 @@ class DocumentView : public Gtk::VBox
 	Gtk::TreeModelColumn<Glib::ustring> doctooltipcol_;
 	#endif
 	Gtk::TreeModelColumn<bool> docvisiblecol_;
+	Gtk::TreeModelColumn<Glib::ustring> doccaptioncol_;
 
 	/* Two oh-so-innocuous objects */
 	Gtk::IconView *docsiconview_;
