@@ -375,11 +375,11 @@ void RefWindow::constructMenu ()
 		"About", Gtk::Stock::ABOUT),
   	sigc::mem_fun(*this, &RefWindow::onAbout));
   	
-  // Just for the keyboard shortcut
+	// Just for the keyboard shortcut
 	actiongroup_->add( Gtk::Action::create(
 		"Find", Gtk::Stock::FIND),
 		Gtk::AccelKey ("<control>f"),
-  	sigc::mem_fun(*this, &RefWindow::onFind));
+		sigc::mem_fun(*this, &RefWindow::onFind));
 
 	uimanager_ = Gtk::UIManager::create ();
 	uimanager_->insert_action_group (actiongroup_);
