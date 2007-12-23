@@ -12,10 +12,15 @@
 
 #include <iostream>
 
+#include <glibmm/i18n.h>
+#include "ucompose.hpp"
+
 #include "Document.h"
+#include "DocumentList.h"
+#include "Preferences.h"
+
 #include "DocumentProperties.h"
 
-#include "Preferences.h"
 
 DocumentProperties::DocumentProperties ()
 {
@@ -51,6 +56,14 @@ DocumentProperties::DocumentProperties ()
 	crossrefbutton_ = (Gtk::Button *) xml_->get_widget ("CrossRefLookup");
 	crossrefbutton_->signal_clicked().connect(
 		sigc::mem_fun (*this, &DocumentProperties::onCrossRefLookup));
+
+	pastebibtexbutton_ = (Gtk::Button *) xml_->get_widget ("PasteBibtex");
+	pastebibtexbutton_->signal_clicked().connect(
+		sigc::mem_fun (*this, &DocumentProperties::onPasteBibtex));
+
+	Gtk::Button *clearButton = (Gtk::Button *) xml_->get_widget ("Clear");
+	clearButton->signal_clicked().connect (
+		sigc::mem_fun (*this, &DocumentProperties::onClear));
 
 	extrafieldsexpander_ =
 		(Gtk::Expander *) xml_->get_widget ("ExtraFieldsExpander");
@@ -149,7 +162,7 @@ void DocumentProperties::update ()
 		(*row)[extravalcol_] = (*it).second;
 	}
 
-	updateCrossrefSensitivity ();
+	updateSensitivity ();
 }
 
 void DocumentProperties::save ()
@@ -178,18 +191,6 @@ void DocumentProperties::save ()
 	}
 }
 
-
-void DocumentProperties::onCrossRefLookup ()
-{
-	Document *orig = doc_;
-	Document spoof = *doc_;
-	// Should also update the arxiv eprint field?
-	spoof.getBibData().setDoi (doientry_->get_text ());
-	spoof.getMetaData();
-	doc_ = &spoof;
-	update ();
-	doc_ = orig;
-}
 
 
 void DocumentProperties::onNewExtraField ()
@@ -229,7 +230,7 @@ void DocumentProperties::onDeleteExtraField ()
 {
 	// Oh dear, this may crash if this button was sensitive at the wrong time
 	extrafieldsstore_->erase (extrafieldssel_->get_selected ());
-	updateCrossrefSensitivity();
+	updateSensitivity();
 }
 
 
@@ -249,7 +250,7 @@ void DocumentProperties::onEditExtraField ()
 	Gtk::TreePath path = (*paths.begin ());
 	extrafieldsview_->set_cursor (path, *extrafieldsview_->get_column (1), true);
 
-	updateCrossrefSensitivity();
+	updateSensitivity();
 }
 
 
@@ -262,10 +263,10 @@ void DocumentProperties::onExtraFieldsSelectionChanged ()
 
 void DocumentProperties::onDoiEntryChanged ()
 {
-	updateCrossrefSensitivity();
+	updateSensitivity();
 }
 
-void DocumentProperties::updateCrossrefSensitivity()
+void DocumentProperties::updateSensitivity()
 {
 	bool iseprintavail = false; 
 
@@ -288,5 +289,103 @@ void DocumentProperties::updateCrossrefSensitivity()
 
 void DocumentProperties::onExtraFieldEdited (const Glib::ustring& path, const Glib::ustring& text)
 {
-	updateCrossrefSensitivity ();
+	updateSensitivity ();
+}
+
+
+void DocumentProperties::onCrossRefLookup ()
+{
+	Document *orig = doc_;
+	Document spoof = *doc_;
+	// Should also update the arxiv eprint field?
+	spoof.getBibData().setDoi (doientry_->get_text ());
+	spoof.getMetaData();
+	doc_ = &spoof;
+	update ();
+	doc_ = orig;
+}
+
+
+void DocumentProperties::onPasteBibtex ()
+{
+	GdkAtom const selection = GDK_SELECTION_PRIMARY;
+
+	Glib::RefPtr<Gtk::Clipboard> clipboard = Gtk::Clipboard::get (selection);
+
+	Glib::ustring clipboardtext = clipboard->wait_for_text ();
+
+	std::string latintext;
+	try {
+		latintext = Glib::convert (clipboardtext, "iso-8859-1", "UTF8");
+	} catch (Glib::ConvertError &ex) {
+		Utility::exceptionDialog (&ex, _("Converting clipboard text to latin1"));
+		// On conversion failure, try passing UTF-8 straight through
+		latintext = clipboardtext;
+	}
+
+
+	DocumentList doclist;
+	int const imported = doclist.import (latintext, BibUtils::FORMAT_BIBTEX);
+
+	std::cerr << "DocumentProperties::onPasteBibtex: Imported "
+		<< imported << " references\n";
+
+	if (imported) {
+		DocumentList::Container &docs = doclist.getDocs ();
+		DocumentList::Container::iterator it = docs.begin ();
+
+		/*
+		 * Can has crack pipe?
+		 */
+		(*it).getBibData();
+
+		Document *orig = doc_;
+		Document spoof = *doc_;
+		// Hmmm, wholesale overwrite
+		spoof.getBibData() = ((*it).getBibData());
+		doc_ = &spoof;
+		update ();
+		doc_ = orig;
+	} else {
+		Glib::ustring message;
+	       
+		if (imported < 1) {
+			message = String::ucompose (
+				"<b><big>%1</big></b>",
+				_("No references found on clipboard.\n"));
+		} else {
+			message = String::ucompose (
+				"<b><big>%1</big></b>",
+				_("Multiple references found on clipboard.\n"));
+		}
+
+		Gtk::MessageDialog dialog (
+			message, true,
+			Gtk::MESSAGE_ERROR, Gtk::BUTTONS_CLOSE, true);
+
+		dialog.run ();
+	}
+}
+
+
+void DocumentProperties::onClear ()
+{
+	BibData &bib = doc_->getBibData();
+
+	doientry_->set_text (bib.getDoi());
+	keyentry_->set_text (doc_->getKey());
+	typecombo_->get_entry()->set_text (bib.getType());
+
+	titleentry_->set_text ("");
+	authorsentry_->set_text ("");
+	journalentry_->set_text ("");
+	volumeentry_->set_text ("");
+	issueentry_->set_text ("");
+	pagesentry_->set_text ("");
+	yearentry_->set_text ("");
+
+	/* FIXME should preserve eprint? */
+	extrafieldsstore_->clear ();
+
+	updateSensitivity ();
 }

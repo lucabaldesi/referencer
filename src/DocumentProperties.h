@@ -36,6 +36,7 @@ class DocumentProperties {
 	Gtk::Entry *yearentry_;
 	Gtk::FileChooserButton *filechooser_;
 	Gtk::Button *crossrefbutton_;
+	Gtk::Button *pastebibtexbutton_;
 	Gtk::Button *newextrafieldbutton_;
 	Gtk::Button *deleteextrafieldbutton_;
 	Gtk::Button *editextrafieldbutton_;
@@ -44,21 +45,23 @@ class DocumentProperties {
 	Gtk::TreeView *extrafieldsview_;
 	Glib::RefPtr<Gtk::TreeSelection> extrafieldssel_;
 
-  Gtk::TreeModelColumn<Glib::ustring> extrakeycol_;
-  Gtk::TreeModelColumn<Glib::ustring> extravalcol_;
-  Gtk::TreeModel::ColumnRecord cols_;
-  Glib::RefPtr< Gtk::ListStore > extrafieldsstore_;
+	Gtk::TreeModelColumn<Glib::ustring> extrakeycol_;
+	Gtk::TreeModelColumn<Glib::ustring> extravalcol_;
+	Gtk::TreeModel::ColumnRecord cols_;
+	Glib::RefPtr< Gtk::ListStore > extrafieldsstore_;
 
 	void update ();
 	void save ();
 	void onCrossRefLookup ();
+	void onPasteBibtex ();
+	void onClear ();
 	void onNewExtraField ();
 	void onDeleteExtraField ();
 	void onEditExtraField ();
 	void onExtraFieldsSelectionChanged ();
 	void onExtraFieldEdited (const Glib::ustring& path, const Glib::ustring& text);
 	void onDoiEntryChanged ();
-	void updateCrossrefSensitivity();
+	void updateSensitivity();
 
 	public:
 		bool show (Document *doc);

@@ -1903,8 +1903,13 @@ void RefWindow::onPasteBibtex (GdkAtom selection)
 	Glib::RefPtr<Gtk::Clipboard> clipboard = Gtk::Clipboard::get (selection);
 
 /*
-Gtk::Clipboard reference:
-If you don't want to deal with providing a separate callbac		"    <toolitem action='ExportBibtex'/>"k, you can also use wait_for_contents(). This runs the GLib main loop recursively waiting for the contents. This can simplify the code flow, but you still have to be aware that other callbacks in your program can be called while this recursive mainloop is running.
+	Gtk::Clipboard reference:
+	If you don't want to deal with providing a separate callback,
+	you can also use wait_for_contents(). This runs the GLib main
+	loop recursively waiting for the contents. This can simplify
+	the code flow, but you still have to be aware that other
+	callbacks in your program can be called while this recursive
+	mainloop is running.
 */
 
 	Glib::ustring clipboardtext = clipboard->wait_for_text ();
