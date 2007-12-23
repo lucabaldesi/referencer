@@ -4,7 +4,6 @@ There is no release schedule.
 
 	ListView users are people too:
 		- Sort out the column sizing
-		- Make the fields editable without opening document properties
 		- (Maybe) Look into adding/removing columns
 	Getting text from .ps files (a la ps2ascii)
 	Refine tagging UI:
