@@ -78,6 +78,8 @@ class Document {
 	static Glib::RefPtr<Gnome::UI::ThumbnailFactory> thumbfac_;
 
 	Glib::ustring generateKey ();
+
+	void setField (Glib::ustring const &field, Glib::ustring const &value);
 };
 
 #endif

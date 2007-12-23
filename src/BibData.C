@@ -389,4 +389,3 @@ void BibData::mergeIn (BibData const &source)
 	}
 }
 
-

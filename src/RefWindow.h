@@ -68,6 +68,8 @@ class RefWindow {
 		// DocumentView needs this for populateDocStore
 		std::vector<int> filtertags_;
 		
+		/* DocumentView needs this for inline edits */
+		void setDirty (bool const &dirty);
 	private:
 		void populateTagList ();
 		void constructUI ();
@@ -167,7 +169,6 @@ class RefWindow {
 
 		/* Handle dirtyness */
 		bool ensureSaved ();
-		void setDirty (bool const &dirty);
 		bool getDirty () {return dirty_;}
 		bool dirty_;
 

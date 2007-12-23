@@ -592,3 +592,30 @@ void Document::renameFromKey ()
 	}
 }
 
+
+void Document::setField (Glib::ustring const &field, Glib::ustring const &value)
+{
+	if (field == "doi")
+		bib_.setDoi (value);
+	else if (field == "type")
+		bib_.setType (value);
+	else if (field == "title")
+		bib_.setTitle (value);
+	else if (field == "volume")
+		bib_.setVolume (value);
+	else if (field == "issue")
+		bib_.setIssue (value);
+	else if (field == "journal")
+		bib_.setJournal (value);
+	else if (field == "authors")
+		bib_.setAuthors (value);
+	else if (field == "year")
+		bib_.setYear (value);
+	else if (field == "pages")
+		bib_.setPages (value);
+	else if (field == "key")
+		setKey (value);
+	else
+		std::cerr << "Document::setField: WARNING: unknown field "
+			<< field << "\n";
+}

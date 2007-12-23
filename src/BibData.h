@@ -59,10 +59,12 @@ class BibData {
 	ExtrasMap getExtras () const {return extras_;}
 	bool hasExtras () {return !extras_.empty();}
 
-	void setType (Glib::ustring const &type) {type_ = type;}
-	Glib::ustring getType () const {return type_;} 
 	void setDoi (Glib::ustring const &doi) {doi_ = doi;}
 	Glib::ustring getDoi () const {return doi_;}
+	void setType (Glib::ustring const &type) {type_ = type;}
+	Glib::ustring getType () const {return type_;} 
+	void setTitle (Glib::ustring const &title) {title_ = title;}
+	Glib::ustring getTitle () const {return title_;}
 	void setVolume (Glib::ustring const &vol) {volume_ = vol;}
 	Glib::ustring getVolume () const {return volume_;}
 	void setIssue (Glib::ustring const &issue) {issue_ = issue;}
@@ -73,8 +75,6 @@ class BibData {
 	Glib::ustring getAuthors () const {return authors_;}
 	void setJournal (Glib::ustring const &journal) {journal_ = journal;}
 	Glib::ustring getJournal () const {return journal_;}
-	void setTitle (Glib::ustring const &title) {title_ = title;}
-	Glib::ustring getTitle () const {return title_;}
 	void setYear (Glib::ustring const &year) {year_ = year;}
 	Glib::ustring getYear () const {return year_;}
 

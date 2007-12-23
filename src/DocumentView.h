@@ -8,6 +8,7 @@
  *
  */
 
+#include <map>
 
 #include <gtkmm.h>
 
@@ -138,4 +139,20 @@ class DocumentView : public Gtk::VBox
 	bool uselistview_;
 
 	void onSortColumnChanged ();
+
+	void onColumnEdited (
+		const Glib::ustring& path, 
+		const Glib::ustring& newText,
+		const Glib::ustring &columnName);
+
+	std::map <Glib::ustring, Gtk::TreeModelColumn<Glib::ustring> > listViewColumns_;
+
+	void populateColumns ();
+
+	void addCol (
+		Glib::ustring const &name,
+		Glib::ustring const &caption,
+		Gtk::TreeModelColumn<Glib::ustring> modelCol,
+		bool const expand,
+		bool const ellipsize);
 };

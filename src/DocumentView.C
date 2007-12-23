@@ -55,14 +55,17 @@ DocumentView::DocumentView (
 #endif
 	ignoreSelectionChanged_ = false;
 
-	// The iconview side
+	/*
+	 * Pack a vbox inside a frame inside ourself
+	 */
 	Gtk::VBox *vbox = Gtk::manage(new Gtk::VBox);
 	Gtk::Frame *iconsframe = new Gtk::Frame ();
 	iconsframe->add (*vbox);
-	
 	pack_start (*iconsframe, true, true, 0);
 
-	// Create the store for the document icons
+	/*
+	 * Model common to icon and list views
+	 */
 	Gtk::TreeModel::ColumnRecord doccols;
 	doccols.add(docpointercol_);
 	doccols.add(dockeycol_);
@@ -85,10 +88,11 @@ DocumentView::DocumentView (
 
 	std::pair<int, int> sortinfo = _global_prefs->getListSort ();
 	docstoresort_->set_sort_column (sortinfo.first, (Gtk::SortType)sortinfo.second);
-	
-	// Create the IconView for the document icons
+
+	/*
+	 * Icon View
+	 */
 	Gtk::IconView *icons = Gtk::manage(new Gtk::IconView(docstoresort_));
-	//icons->set_text_column (dockeycol_);
 	icons->set_markup_column (doccaptioncol_);
 	icons->set_pixbuf_column (docthumbnailcol_);
 #if GTK_VERSION_GE(2,12)
@@ -145,8 +149,13 @@ DocumentView::DocumentView (
 	#if GTK_VERSION_LT(2,12)
 	doctooltip_ = ev_tooltip_new (GTK_WIDGET(win_.window_->gobj()));
 	#endif
+	/*
+	 * End of icon view stuff
+	 */
 
-	// The TreeView for the document list
+	/*
+	 * List view stuff
+	 */
 	Gtk::TreeView *table = Gtk::manage (new Gtk::TreeView(docstoresort_));
 	table->set_enable_search (true);
 	table->set_search_column (1);
@@ -171,32 +180,7 @@ DocumentView::DocumentView (
 	docslistselection_->signal_changed ().connect (
 		sigc::mem_fun (*this, &DocumentView::docSelectionChanged));
 
-	// Er, we're actually passing this as reference, is this the right way
-	// to create it?  Will the treeview actually copy it?
-	Gtk::CellRendererText *cell;
-	Gtk::TreeViewColumn *col;
-	col = Gtk::manage (new Gtk::TreeViewColumn (_("Key"), dockeycol_));
-	col->set_resizable (true);
-	col->set_sort_column (dockeycol_);
-	table->append_column (*col);
-	col = Gtk::manage (new Gtk::TreeViewColumn (_("Title"), doctitlecol_));
-	col->set_resizable (true);
-	col->set_expand (true);
-	col->set_sort_column (doctitlecol_);
-	cell = (Gtk::CellRendererText *) col->get_first_cell_renderer ();
-	cell->property_ellipsize () = Pango::ELLIPSIZE_END;
-	table->append_column (*col);
-	col = Gtk::manage (new Gtk::TreeViewColumn (_("Authors"), docauthorscol_));
-	col->set_resizable (true);
-	//col->set_expand (true);
-	col->set_sort_column (docauthorscol_);
-	cell = (Gtk::CellRendererText *) col->get_first_cell_renderer ();
-	cell->property_ellipsize () = Pango::ELLIPSIZE_END;
-	table->append_column (*col);
-	col = Gtk::manage (new Gtk::TreeViewColumn (_("Year  "), docyearcol_));
-	col->set_resizable (true);
-	col->set_sort_column (docyearcol_);
-	table->append_column (*col);
+
 
 	docslistview_ = table;
 
@@ -206,10 +190,19 @@ DocumentView::DocumentView (
 	vbox->pack_start(*tablescroll, true, true, 0);
 
 	docslistscroll_ = tablescroll;
+
+	populateColumns ();
+
+	/*
+	 * End of list view stuff
+	 */
 	
 	setUseListView (uselistview);
 	
 
+	/*
+	 * Search box
+	 */
 	Sexy::IconEntry *searchentry = Gtk::manage (new Sexy::IconEntry ());
 	Gtk::Image *searchicon = Gtk::manage (
 		new Gtk::Image (Gtk::Stock::FIND, Gtk::ICON_SIZE_BUTTON));
@@ -218,6 +211,9 @@ DocumentView::DocumentView (
 		sigc::mem_fun (*this, &DocumentView::onSearchChanged));
 	
 	searchentry_ = searchentry;
+	/*
+	 * End of search box
+	 */
 
 }
 
@@ -888,4 +884,98 @@ void DocumentView::onSortColumnChanged ()
 	_global_prefs->setListSort (column, order);
 }
 
+void DocumentView::onColumnEdited (
+	const Glib::ustring& pathStr, 
+	const Glib::ustring& newText,
+	const Glib::ustring &columnName)
+{
+	Gtk::TreePath sortPath (pathStr);
+	Gtk::TreePath filterPath = docstoresort_->convert_path_to_child_path (sortPath);
+	Gtk::TreePath realPath = docstorefilter_->convert_path_to_child_path (filterPath);
 
+	Gtk::TreeModel::iterator iter = docstore_->get_iter (realPath);
+	Gtk::TreeModelColumn<Glib::ustring> col = listViewColumns_[columnName];
+	(*iter)[col] = newText;
+
+	Document *doc = (*iter)[docpointercol_];
+	doc->setField (columnName, newText);
+
+	win_.setDirty (true);
+}
+
+
+void DocumentView::addCol (
+	Glib::ustring const &name,
+	Glib::ustring const &caption,
+	Gtk::TreeModelColumn<Glib::ustring> modelCol,
+	bool const expand,
+	bool const ellipsize)
+{
+	listViewColumns_[name] = modelCol;
+
+	// Er, we're actually passing this as reference, is this the right way
+	// to create it?  Will the treeview actually copy it?
+	Gtk::CellRendererText *cell;
+	Gtk::TreeViewColumn *col;
+
+	col = Gtk::manage (new Gtk::TreeViewColumn (caption, modelCol));
+	col->set_resizable (true);
+	col->set_expand (expand);
+	col->set_sort_column (modelCol);
+	cell = (Gtk::CellRendererText *) col->get_first_cell_renderer ();
+	if (ellipsize)
+		cell->property_ellipsize () = Pango::ELLIPSIZE_END;
+	cell->property_editable () = true;
+	cell->signal_edited ().connect (
+		sigc::bind (
+			sigc::mem_fun (*this, &DocumentView::onColumnEdited),
+			name)
+		);
+	docslistview_->append_column (*col);
+}
+
+
+void DocumentView::populateColumns ()
+{
+	addCol ("key", _("Key"), dockeycol_, false, false);
+	addCol ("title", _("Title"), doctitlecol_, true, true);
+	addCol ("authors", _("Authors"), docauthorscol_, false, true);
+	addCol ("year", _("Year"), docyearcol_, false, false);
+
+#if 0
+	Gtk::TreeViewColumn *col;
+
+	col = Gtk::manage (new Gtk::TreeViewColumn (_("Key"), dockeycol_));
+	col->set_resizable (true);
+	col->set_sort_column (dockeycol_);
+	docslistview_->append_column (*col);
+
+
+	col = Gtk::manage (new Gtk::TreeViewColumn (_("Title"), doctitlecol_));
+	col->set_resizable (true);
+	col->set_expand (true);
+	col->set_sort_column (doctitlecol_);
+	cell = (Gtk::CellRendererText *) col->get_first_cell_renderer ();
+	cell->property_ellipsize () = Pango::ELLIPSIZE_END;
+	cell->property_editable () = true;
+	cell->signal_edited ().connect (
+		sigc::bind (
+			sigc::mem_fun (*this, &DocumentView::onColumnEdited),
+			"title")
+		);
+	docslistview_->append_column (*col);
+
+	col = Gtk::manage (new Gtk::TreeViewColumn (_("Authors"), docauthorscol_));
+	col->set_resizable (true);
+	//col->set_expand (true);
+	col->set_sort_column (docauthorscol_);
+	cell = (Gtk::CellRendererText *) col->get_first_cell_renderer ();
+	cell->property_ellipsize () = Pango::ELLIPSIZE_END;
+	docslistview_->append_column (*col);
+
+	col = Gtk::manage (new Gtk::TreeViewColumn (_("Year  "), docyearcol_));
+	col->set_resizable (true);
+	col->set_sort_column (docyearcol_);
+	docslistview_->append_column (*col);
+#endif
+}
