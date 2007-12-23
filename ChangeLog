@@ -1,4 +1,5 @@
 1.0.5:
+	- Fix crash in tagging 
 	- Revised icon view
 	- Pick up when citebase gives us a doi: in the URL field
 	- Add preferences options for crossref username/password
