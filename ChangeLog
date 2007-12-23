@@ -1,4 +1,5 @@
 1.0.5:
+	- Revised icon view
 	- Pick up when citebase gives us a doi: in the URL field
 	- Add preferences options for crossref username/password
 	- Remove preferences options for crossref path + dx.doi.org path
