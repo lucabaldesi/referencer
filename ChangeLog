@@ -1,4 +1,6 @@
 1.0.5:
+	- Paste BibTeX button in document properties
+	- Clear button in document properties
 	- Editable list view
 	- Fix crash in tagging 
 	- Revised icon view

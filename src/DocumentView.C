@@ -384,8 +384,16 @@ std::vector<Document*> DocumentView::getSelectedDocs ()
 		Gtk::TreeSelection::ListHandle_Path::iterator it = paths.begin ();
 		Gtk::TreeSelection::ListHandle_Path::iterator const end = paths.end ();
 		for (; it != end; it++) {
-			Gtk::TreePath path = (*it);
-			Gtk::ListStore::iterator iter = docstoresort_->get_iter (path);
+			/*
+			 * Explicit resolution through the proxy models is not strictly
+			 * necessary, but this way we pick up on it if the models aren't
+			 * in sync, rather than finding out the hard way
+			 */
+			Gtk::TreePath sortPath = (*it);
+			Gtk::TreePath filterPath = docstoresort_->convert_path_to_child_path (sortPath);
+			Gtk::TreePath realPath = docstorefilter_->convert_path_to_child_path (filterPath);
+
+			Gtk::ListStore::iterator iter = docstore_->get_iter (realPath);
 			docpointers.push_back((*iter)[docpointercol_]);
 		}
 	} else {
@@ -395,8 +403,16 @@ std::vector<Document*> DocumentView::getSelectedDocs ()
 		Gtk::IconView::ArrayHandle_TreePaths::iterator it = paths.begin ();
 		Gtk::IconView::ArrayHandle_TreePaths::iterator const end = paths.end ();
 		for (; it != end; it++) {
-			Gtk::TreePath path = (*it);
-			Gtk::ListStore::iterator iter = docstoresort_->get_iter (path);
+			/*
+			 * Explicit resolution through the proxy models is not strictly
+			 * necessary, but this way we pick up on it if the models aren't
+			 * in sync, rather than finding out the hard way
+			 */
+			Gtk::TreePath sortPath = (*it);
+			Gtk::TreePath filterPath = docstoresort_->convert_path_to_child_path (sortPath);
+			Gtk::TreePath realPath = docstorefilter_->convert_path_to_child_path (filterPath);
+
+			Gtk::ListStore::iterator iter = docstore_->get_iter (realPath);
 			docpointers.push_back((*iter)[docpointercol_]);
 		}
 	}
@@ -537,10 +553,6 @@ DocumentView::Capabilities DocumentView::getDocSelectionCapabilities ()
 	bool const offline = _global_prefs->getWorkOffline();
 
 	for (; it != end; it++) {
-		if (*it == NULL) {
-			std::cerr << "NULL in DocumentView::getDocSelectionCapabilities\n";
-			continue;
-		}
 		// Allow web linking even when offline, since it might
 		// just be us that's offline, not the web browser
 		if ((*it)->canWebLink())
@@ -616,6 +628,8 @@ void DocumentView::loadRow (
 	Glib::ustring title = Utility::wrap (doc->getBibData().getTitle(), cropwidth, 2);
 	Glib::ustring authors = Utility::wrap (
 			Utility::firstAuthor(doc->getBibData().getAuthors()), cropwidth, 1);
+	authors = Utility::strip (authors, "{");
+	authors = Utility::strip (authors, "}");
 	Glib::ustring key = Utility::wrap (doc->getKey(), cropwidth, 1);
 	Glib::ustring year = Utility::wrap (doc->getBibData().getYear(), cropwidth, 1);
 
@@ -631,9 +645,9 @@ void DocumentView::loadRow (
 	(*item)[doccaptioncol_] = String::ucompose (
 		// Translators: this is the format for the document captions
 		_("<span size='xx-small'> </span>\n<small>%1</small>\n<b>%2</b>\n%3\n<i>%4</i>"),
-		Glib::Markup::escape_text (doc->getKey()),
+		Glib::Markup::escape_text (key),
 		Glib::Markup::escape_text (title),
-		Glib::Markup::escape_text (doc->getBibData().getYear()),
+		Glib::Markup::escape_text (year),
 		Glib::Markup::escape_text (authors));
 }
 
@@ -723,16 +737,23 @@ void DocumentView::updateDoc (Document * const doc)
  */
 void DocumentView::removeDoc (Document * const doc)
 {
+	bool found = false;
+
+	ignoreSelectionChanged_ = true;
 	Gtk::TreeModel::iterator it = docstore_->children().begin();
 	Gtk::TreeModel::iterator const end = docstore_->children().end();
 	for (; it != end; ++it) {
 		if ((*it)[docpointercol_] == doc) {
 			docstore_->erase (it);
-			return;
+			found = true;
+			break;
 		}
 	}
+	ignoreSelectionChanged_ = false;
+	docSelectionChanged ();
 	
-	std::cerr << "DocumentView::removeDoc: Warning: doc not found\n";
+	if (!found)
+		std::cerr << "DocumentView::removeDoc: Warning: doc not found\n";
 }
 
 /*
