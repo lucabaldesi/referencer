@@ -462,7 +462,7 @@ Glib::RefPtr<Gdk::Pixbuf> getThemeIcon(Glib::ustring const &iconname)
 
 	if (!iconname.empty()) {
 		if (theme->has_icon(iconname)) {
-			return theme->load_icon(iconname, 48, Gtk::ICON_LOOKUP_FORCE_SVG);
+			return theme->load_icon(iconname, 96, Gtk::ICON_LOOKUP_FORCE_SVG);
 		}
 	}
 

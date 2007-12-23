@@ -53,6 +53,7 @@ DocumentView::DocumentView (
 #if GTK_VERSION_LT(2,12)
 	hoverdoc_ = NULL;
 #endif
+	ignoreSelectionChanged_ = false;
 
 	// The iconview side
 	Gtk::VBox *vbox = Gtk::manage(new Gtk::VBox);
@@ -217,6 +218,7 @@ DocumentView::DocumentView (
 		sigc::mem_fun (*this, &DocumentView::onSearchChanged));
 	
 	searchentry_ = searchentry;
+
 }
 
 
@@ -539,6 +541,10 @@ DocumentView::Capabilities DocumentView::getDocSelectionCapabilities ()
 	bool const offline = _global_prefs->getWorkOffline();
 
 	for (; it != end; it++) {
+		if (*it == NULL) {
+			std::cerr << "NULL in DocumentView::getDocSelectionCapabilities\n";
+			continue;
+		}
 		// Allow web linking even when offline, since it might
 		// just be us that's offline, not the web browser
 		if ((*it)->canWebLink())
@@ -560,7 +566,8 @@ DocumentView::Capabilities DocumentView::getDocSelectionCapabilities ()
  */
 void DocumentView::docSelectionChanged ()
 {
-	selectionchangedsignal_.emit ();
+	if (!ignoreSelectionChanged_)
+		selectionchangedsignal_.emit ();
 }
 
 
@@ -632,7 +639,6 @@ void DocumentView::loadRow (
 		Glib::Markup::escape_text (title),
 		Glib::Markup::escape_text (doc->getBibData().getYear()),
 		Glib::Markup::escape_text (authors));
-
 }
 
 /*
@@ -681,12 +687,15 @@ bool DocumentView::isVisible (Document * const doc)
  */
 void DocumentView::updateVisible ()
 {
+	ignoreSelectionChanged_ = true;
 	Gtk::TreeModel::iterator item = docstore_->children().begin();
 	Gtk::TreeModel::iterator const end = docstore_->children().end();
 	for (; item != end; ++item) {
 		Document * const doc = (*item)[docpointercol_];
 		(*item)[docvisiblecol_] = isVisible (doc);
 	}
+	ignoreSelectionChanged_ = false;
+	docSelectionChanged ();
 }
 
 

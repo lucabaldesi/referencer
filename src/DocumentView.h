@@ -67,6 +67,8 @@ class DocumentView : public Gtk::VBox
 	private:
 	RefWindow &win_;
 	Library &lib_;
+
+	bool ignoreSelectionChanged_;
 	
 	/* The search box */
 	Gtk::Entry *searchentry_;

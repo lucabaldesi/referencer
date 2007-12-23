@@ -185,28 +185,15 @@ void Document::setupThumbnail ()
 	if (!thumbnail_) {
 		if (defaultthumb_) {
 			thumbnail_ = Document::defaultthumb_;
-			float const desiredwidth = 64.0;
+		} else {
+			thumbnail_ = Utility::getThemeIcon ("gnome-mime-application-pdf");
+			float const desiredwidth = 64.0 + 9;
 			int oldwidth = thumbnail_->get_width ();
 			int oldheight = thumbnail_->get_height ();
 			int newwidth = (int)desiredwidth;
 			int newheight = (int)((float)oldheight * (desiredwidth / (float)oldwidth));
 			thumbnail_ = thumbnail_->scale_simple (
 				newwidth, newheight, Gdk::INTERP_BILINEAR);
-
-			if (!thumbframe_) {
-				thumbframe_ = Gdk::Pixbuf::create_from_file (
-					Utility::findDataFile ("thumbnail_frame.png"));
-			}
-
-			int const left_offset = 3;
-			int const top_offset = 3;
-			int const right_offset = 6;
-			int const bottom_offset = 6;
-			thumbnail_ = Utility::eelEmbedImageInFrame (
-				thumbnail_, thumbframe_,
-				left_offset, top_offset, right_offset, bottom_offset);
-		} else {
-			thumbnail_ = Utility::getThemeIcon ("gnome-mime-application-pdf");
 			Document::defaultthumb_ = thumbnail_;
 		}
 	} else {
