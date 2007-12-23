@@ -12,10 +12,8 @@ There is no release schedule.
 		AND vs OR when selecting multiple tags
 		Tag toggling with double click in cloud
 	Deal with external added URIs
-		Download remote files to "library directory"
 		UI for setting "library directory"
 		Offer to move files not in subdir of reflib location
-
 
 	Browse/search:
 		Z39.50
