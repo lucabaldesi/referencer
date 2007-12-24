@@ -11,6 +11,8 @@ from xml.dom import minidom
 
 referencer_plugin_info = []
 referencer_plugin_info.append (["longname", "PubMed/Medline DOI resolver"])
+referencer_plugin_capabilities = []
+referencer_plugin_capabilities.append ("doi")
 
 def get_citation_from_doi(query, email='YOUR EMAIL GOES HERE', tool='SimonsPythonQuery', database='pubmed'):
 	params = {
@@ -88,7 +90,6 @@ def text_output(xml):
 	pages = xmldoc.getElementsByTagName('MedlinePgn')[0].childNodes[0].data.encode("utf-8")
 	 
 	output = []
-	print "pmid = ", pmid
 	if (len(pmid) > 0):
 		output.append (["pmid", pmid])
 	output.append (["title", title])
@@ -106,6 +107,9 @@ def text_output(xml):
 		output.append (["authors", authorstring])
 	return output
 
-def metadata_from_doi (doi):
-	xml = get_citation_from_doi (doi)
-	return text_output(xml)
+def resolve_metadata (code, type):
+	if (type == "doi"):
+		xml = get_citation_from_doi (code)
+		return text_output(xml)
+	else:
+		return []

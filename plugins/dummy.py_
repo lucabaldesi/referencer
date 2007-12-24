@@ -7,6 +7,8 @@ from xml.dom import minidom
 
 referencer_plugin_info = []
 referencer_plugin_info.append (["longname", "Dummy dumbo dumb"])
+referencer_plugin_capabilities = []
+referencer_plugin_capabilities.append ("doi")
 
 def metadata_from_doi (doi):
 	metadata = []

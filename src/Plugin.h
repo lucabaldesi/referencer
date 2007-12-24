@@ -33,6 +33,18 @@ class PluginCapability
 			mask_ = NONE;
 		}
 
+		std::vector<Identifier> get ()
+		{
+			std::vector<Identifier> ids;
+			for (uint64_t i = 1; i <= mask_; i *= 2) {
+				if (mask_ & i) {
+					ids.push_back ((Identifier)i);
+				}
+			}
+
+			return ids;
+		}
+
 		uint64_t mask_;
 };
 
@@ -45,7 +57,7 @@ class Plugin
 {
 	public:
 		Plugin () {enabled_ = false; loaded_ = false;};
-		~Plugin () {};
+		virtual ~Plugin () {};
 
 		virtual void load (std::string const &moduleName) {};
 		virtual bool resolve (BibData &bib) = 0;

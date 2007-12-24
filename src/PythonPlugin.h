@@ -15,6 +15,7 @@ class PythonPlugin : public Plugin
 		virtual Glib::ustring const getShortName () {return moduleName_;}
 		virtual Glib::ustring const getLongName ();
 	private:
+		bool resolveID (BibData &bib, PluginCapability::Identifier id);
 		Glib::ustring const getPluginInfoField (Glib::ustring const &targetKey);
 		std::string moduleName_;
 		PyObject *pGetFunc_;
