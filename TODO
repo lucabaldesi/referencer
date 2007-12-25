@@ -1,4 +1,7 @@
 
+Release-critical:
+ - python plugins to use proxy server
+ - python plugins to cope with timeout of http get
 
 There is no release schedule.
 
