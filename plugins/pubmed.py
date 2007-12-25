@@ -14,7 +14,7 @@ referencer_plugin_info.append (["longname", "PubMed/Medline DOI resolver"])
 referencer_plugin_capabilities = []
 referencer_plugin_capabilities.append ("doi")
 
-def get_citation_from_doi(query, email='YOUR EMAIL GOES HERE', tool='SimonsPythonQuery', database='pubmed'):
+def get_citation_from_doi(query, email='referencer@icculus.org', tool='Referencer', database='pubmed'):
 	params = {
 		'db':database,
 		'tool':tool,
