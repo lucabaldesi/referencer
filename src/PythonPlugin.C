@@ -115,20 +115,16 @@ bool PythonPlugin::resolveID (BibData &bib, PluginCapability::Identifier id)
 {
 	bool success = false;
 
-	PyObject *pCode = NULL;
-	PyObject *pType = NULL;
+	PyObject *pArgs = NULL;
 	switch (id) {
 		case PluginCapability::DOI:
-			pCode = PyString_FromString (bib.getDoi().c_str());
-			pType = PyString_FromString ("doi");
+			pArgs = Py_BuildValue ("(ss)", bib.getDoi().c_str(), "doi");
 		break;
 		case PluginCapability::ARXIV:
-			pCode = PyString_FromString (bib.extras_["eprint"].c_str());
-			pType = PyString_FromString ("arxiv");
+			pArgs = Py_BuildValue ("(ss)", bib.extras_["eprint"].c_str(), "arxiv");
 		break;
 		case PluginCapability::MEDLINE:
-			pCode = PyString_FromString (bib.extras_["pmid"].c_str());
-			pType = PyString_FromString ("pmid");
+			pArgs = Py_BuildValue ("(ss)", bib.extras_["pmid"].c_str(), "pmid");
 		break;
 		default:
 			std::cerr << "PythonPlugin::resolveID: warning, unhandled id type "
@@ -136,12 +132,10 @@ bool PythonPlugin::resolveID (BibData &bib, PluginCapability::Identifier id)
 			return false;
 	}
 
-	PyObject *pArgs = PyTuple_New(2);
-	PyTuple_SetItem (pArgs, 0, pCode);
-	PyTuple_SetItem (pArgs, 1, pType);
 
 	PyObject *pMetaData = PyObject_CallObject(pGetFunc_, pArgs);
 	Py_DECREF(pArgs);
+
 	if (pMetaData != NULL) {
 		int const N = PyList_Size (pMetaData);
 

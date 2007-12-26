@@ -186,7 +186,8 @@ void Document::setupThumbnail ()
 		if (defaultthumb_) {
 			thumbnail_ = Document::defaultthumb_;
 		} else {
-			thumbnail_ = Utility::getThemeIcon ("gnome-mime-application-pdf");
+			thumbnail_ = Gdk::Pixbuf::create_from_file
+				(Utility::findDataFile ("unknown-document.png"));
 			float const desiredwidth = 64.0 + 9;
 			int oldwidth = thumbnail_->get_width ();
 			int oldheight = thumbnail_->get_height ();

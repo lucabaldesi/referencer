@@ -1,4 +1,5 @@
 1.0.5:
+	- Add builtin generic document icon
 	- Paste BibTeX button in document properties
 	- Clear button in document properties
 	- Editable list view

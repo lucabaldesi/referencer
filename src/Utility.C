@@ -56,7 +56,7 @@ Glib::ustring wrap (Glib::ustring const &str, Glib::ustring::size_type width, in
 	if (lines == -1)
 		lines = 99999;
 
-	int remainder = str.size();
+	unsigned int remainder = str.size();
 
 	Glib::ustring wrapped;
 
@@ -457,12 +457,23 @@ Glib::RefPtr<Gdk::Pixbuf> getThemeIcon(Glib::ustring const &iconname)
 {
 	Glib::RefPtr<Gtk::IconTheme> theme = Gtk::IconTheme::get_default();
 	if (!theme) {
+		std::cerr << "Utility::getThemeIcon: failed to load default theme\n";
 		return Glib::RefPtr<Gdk::Pixbuf> (NULL);
 	}
 
 	if (!iconname.empty()) {
 		if (theme->has_icon(iconname)) {
-			return theme->load_icon(iconname, 96, Gtk::ICON_LOOKUP_FORCE_SVG);
+			Glib::RefPtr<Gdk::Pixbuf> pixbuf =
+				theme->load_icon(iconname, 96, Gtk::ICON_LOOKUP_FORCE_SVG);
+			
+			if (!pixbuf)
+				std::cerr << "Utility::getThemeIcon: icon '"
+					<< iconname << "' failed to load\n";
+				
+			return pixbuf;
+		} else {
+			std::cerr << "Utility::getThemeIcon: icon '"
+				<< iconname << "' not found\n";
 		}
 	}
 

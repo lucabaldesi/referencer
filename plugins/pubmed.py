@@ -6,7 +6,7 @@
 
 #   Modified for integration with referencer by John Spray, 2007
 
-import urllib
+import urllib2
 from xml.dom import minidom
 
 referencer_plugin_info = []
@@ -23,9 +23,18 @@ def get_citation_from_doi(query, email='referencer@icculus.org', tool='Reference
 		'usehistory':'y',
 		'retmax':1
 	}
+
+	proxy = ProxyHandler ({"http": "http://wwwcache.mars.edu:8080/"})
+
+	pwdmgr = urllib2.HTTPPasswordMgrWithDefaultRealm()
+	pwdmgr.add_password (None, "http://", "user", "pass")
+	proxyauth = urllib2.ProxyBasicAuthHandler (pwdmgr)
+
+	opener = urllib2.build_opener (proxy, proxyauth)
+
 	# try to resolve the PubMed ID of the DOI
-	url = 'http://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?' + urllib.urlencode(params)
-	data = urllib.urlopen(url).read()
+	url = 'http://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?' + urllib2.urlencode(params)
+	data = urllib2.urlopen(url).read()
 
 	# parse XML output from PubMed...
 	xmldoc = minidom.parseString(data)
@@ -48,8 +57,8 @@ def get_citation_from_doi(query, email='referencer@icculus.org', tool='Reference
 	params['retmode'] = 'xml'
 
 	# get citation info:
-	url = 'http://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?' + urllib.urlencode(params)
-	data = urllib.urlopen(url).read()
+	url = 'http://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?' + urllib2.urlencode(params)
+	data = urllib2.urlopen(url).read()
 
 	return data
  
