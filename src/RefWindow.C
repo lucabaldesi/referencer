@@ -40,6 +40,8 @@ RefWindow::RefWindow ()
 
 	dirty_ = false;
 
+	gdk_threads_enter ();
+
 	library_ = new Library (*this);
 
 	docpropertiesdialog_ = new DocumentProperties ();
@@ -59,6 +61,8 @@ RefWindow::RefWindow ()
 
 	populateTagList ();
 	updateStatusBar ();
+
+	gdk_threads_leave ();
 }
 
 
