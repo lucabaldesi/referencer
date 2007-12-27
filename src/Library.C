@@ -210,7 +210,7 @@ bool Library::load (Glib::ustring const &libfilename)
 						_("Document location ambiguity"),
 						String::ucompose (
 							_("The file '%1' exists in two locations:\n"
-							"\tOriginal: <b>%2</b>\n\tNew: <b>%3</b>\n\n"
+							"\nOriginal: <b>%2</b>\n\nNew: <b>%3</b>\n\n"
 							"Do you want to keep the original location, or update it "
 							"to the new one?"
 							),
