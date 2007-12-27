@@ -35,6 +35,8 @@ int main (int argc, char **argv)
 
 	Gnome::Vfs::init ();
 
+	gdk_threads_init ();
+
 	std::string pythonpath = "./plugins:"PLUGINDIR;
 	if (getenv("PYTHONPATH")) {
 		pythonpath += ":";
