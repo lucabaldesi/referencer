@@ -498,8 +498,12 @@ bool DocumentView::docClicked (GdkEventButton* event)
 			}
 		}
 
+
+		Gtk::Menu *popupmenu = Gtk::manage (new Gtk::Menu);
+		/*
 		Gtk::Menu *popupmenu =
 			(Gtk::Menu*)win_.uimanager_->get_widget("/DocPopup");
+			*/
 		popupmenu->popup (event->button, event->time);
 
 		return true;

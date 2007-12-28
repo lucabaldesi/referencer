@@ -1531,20 +1531,8 @@ void RefWindow::onWebLinkDoc ()
 	std::vector <Document*> docs = docview_->getSelectedDocs ();
 	std::vector <Document*>::iterator it = docs.begin ();
 	std::vector <Document*>::iterator const end = docs.end ();
-	for (; it != end; ++it) {
-		Document* doc = *it;
-		if (!doc->getBibData().getDoi().empty()) {
-			Glib::ustring doi = doc->getBibData().getDoi();
-			Gnome::Vfs::url_show (Glib::ustring("http://dx.doi.org/") + doi);
-		} else if (!doc->getBibData().getExtras()["eprint"].empty()) {
-			Glib::ustring eprint = doc->getBibData().getExtras()["eprint"];
-			Gnome::Vfs::url_show ("http://arxiv.org/abs/" + eprint);
-		} else if (!doc->getBibData().getExtras()["Url"].empty()) {
-			Gnome::Vfs::url_show (doc->getBibData().getExtras()["Url"]);
-		} else {
-			std::cerr << "Warning: RefWindow::onWebLinkDoc: nothing to link on\n";
-		}
-	}
+	for (; it != end; ++it)
+		(*it)->webLink ();
 }
 
 

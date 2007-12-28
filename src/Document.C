@@ -462,16 +462,37 @@ void Document::readPDF ()
 
 bool Document::canWebLink ()
 {
-	if (
-		   !bib_.getDoi ().empty ()
-		|| !bib_.getExtras ()["eprint"].empty()
-		|| !bib_.getExtras ()["Url"].empty()
-	   )
-	{
+	if (	   hasField ("eprint")
+		|| hasField ("doi")
+		|| hasField ("url")
+		|| hasField ("pmid") 
+	   ) {
 		return true;
 	} else {
 		return false;
 	}
+}
+
+
+void Document::webLink ()
+{
+	Glib::ustring url;
+	if (hasField("doi")) {
+		url = Glib::ustring("http://dx.doi.org/") + getField("doi");
+	} else if (hasField("eprint")) {
+		url = Glib::ustring("http://arxiv.org/abs/") + getField ("eprint");
+	} else if (hasField("url")) {
+		url = getField ("url");
+	} else if (hasField("pmid")) {
+		url = Glib::ustring ("http://www.ncbi.nlm.nih.gov/pubmed/") + getField("pmid");
+	}
+
+	if (!url.empty()) {
+		Gnome::Vfs::url_show (url);
+	} else {
+		std::cerr << "Warning: RefWindow::onWebLinkDoc: nothing to link on\n";
+	}
+
 }
 
 
@@ -618,8 +639,6 @@ void Document::setField (Glib::ustring const &field, Glib::ustring const &value)
 		setKey (value);
 	else {
 		bib_.extras_[field] = value;
-		std::cerr << "Document::setField: WARNING: unknown field "
-			<< field << "\n";
 	}
 }
 
@@ -657,3 +676,36 @@ Glib::ustring Document::getField (Glib::ustring const &field)
 		}
 	}
 }
+
+
+bool Document::hasField (Glib::ustring const &field)
+{
+	if (field == "doi")
+		return !bib_.getDoi ().empty();
+	else if (field == "type")
+		return !bib_.getType ().empty();
+	else if (field == "title")
+		return !bib_.getTitle ().empty();
+	else if (field == "volume")
+		return !bib_.getVolume ().empty();
+	else if (field == "issue")
+		return !bib_.getIssue ().empty();
+	else if (field == "journal")
+		return !bib_.getJournal ().empty();
+	else if (field == "authors")
+		return !bib_.getAuthors ().empty();
+	else if (field == "year")
+		return !bib_.getYear ().empty();
+	else if (field == "pages")
+		return !bib_.getPages ().empty();
+	else if (field == "key")
+		return true;
+	else {
+		if (bib_.extras_.find(field) != bib_.extras_.end())
+			return true;
+		else
+			return false;
+	}
+}
+
+
