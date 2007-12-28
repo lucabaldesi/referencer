@@ -28,7 +28,8 @@ namespace Utility {
 Glib::ustring wrap (
 		Glib::ustring const &str, 
 		Glib::ustring::size_type width, 
-		int lines);
+		int lines,
+		bool const pad);
 
 Glib::ustring firstAuthor (
 		Glib::ustring const &authors);

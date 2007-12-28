@@ -49,7 +49,7 @@ Glib::ustring firstAuthor (
 	}
 }
 
-Glib::ustring wrap (Glib::ustring const &str, Glib::ustring::size_type width, int lines)
+Glib::ustring wrap (Glib::ustring const &str, Glib::ustring::size_type width, int lines, bool const pad)
 {
 	Glib::ustring::size_type n = 0;
 	int line = 0;
@@ -88,9 +88,12 @@ Glib::ustring wrap (Glib::ustring const &str, Glib::ustring::size_type width, in
 			n += snaffle.size();
 			remainder -= snaffle.size();
 
+			if (pad) {
+				for (int i = 0; i < width - snaffle.size(); ++i)
+					wrapped += " ";
+			}
+
 			line++;
-
-
 		} else {
 			Glib::ustring snaffle = str.substr (n, remainder);
 			if (snaffle.substr(0,1) == " ")
@@ -98,6 +101,11 @@ Glib::ustring wrap (Glib::ustring const &str, Glib::ustring::size_type width, in
 
 			wrapped += snaffle;
 			remainder -= snaffle.size();
+
+			if (pad) {
+				for (int i = 0; i < width - snaffle.size(); ++i)
+					wrapped += " ";
+			}
 
 			break;
 		}

@@ -625,13 +625,13 @@ void DocumentView::loadRow (
 	(*item)[docvisiblecol_] = isVisible (doc);
 
 	int const cropwidth = 20;
-	Glib::ustring title = Utility::wrap (doc->getBibData().getTitle(), cropwidth, 2);
+	Glib::ustring title = Utility::wrap (doc->getBibData().getTitle(), cropwidth, 2, true);
 	Glib::ustring authors = Utility::wrap (
-			Utility::firstAuthor(doc->getBibData().getAuthors()), cropwidth, 1);
+			Utility::firstAuthor(doc->getBibData().getAuthors()), cropwidth, 1, false);
 	authors = Utility::strip (authors, "{");
 	authors = Utility::strip (authors, "}");
-	Glib::ustring key = Utility::wrap (doc->getKey(), cropwidth, 1);
-	Glib::ustring year = Utility::wrap (doc->getBibData().getYear(), cropwidth, 1);
+	Glib::ustring key = Utility::wrap (doc->getKey(), cropwidth, 1, false);
+	Glib::ustring year = Utility::wrap (doc->getBibData().getYear(), cropwidth, 1, false);
 
 	if (title.empty())
 		title = " ";
@@ -962,41 +962,4 @@ void DocumentView::populateColumns ()
 	addCol ("title", _("Title"), doctitlecol_, true, true);
 	addCol ("authors", _("Authors"), docauthorscol_, false, true);
 	addCol ("year", _("Year"), docyearcol_, false, false);
-
-#if 0
-	Gtk::TreeViewColumn *col;
-
-	col = Gtk::manage (new Gtk::TreeViewColumn (_("Key"), dockeycol_));
-	col->set_resizable (true);
-	col->set_sort_column (dockeycol_);
-	docslistview_->append_column (*col);
-
-
-	col = Gtk::manage (new Gtk::TreeViewColumn (_("Title"), doctitlecol_));
-	col->set_resizable (true);
-	col->set_expand (true);
-	col->set_sort_column (doctitlecol_);
-	cell = (Gtk::CellRendererText *) col->get_first_cell_renderer ();
-	cell->property_ellipsize () = Pango::ELLIPSIZE_END;
-	cell->property_editable () = true;
-	cell->signal_edited ().connect (
-		sigc::bind (
-			sigc::mem_fun (*this, &DocumentView::onColumnEdited),
-			"title")
-		);
-	docslistview_->append_column (*col);
-
-	col = Gtk::manage (new Gtk::TreeViewColumn (_("Authors"), docauthorscol_));
-	col->set_resizable (true);
-	//col->set_expand (true);
-	col->set_sort_column (docauthorscol_);
-	cell = (Gtk::CellRendererText *) col->get_first_cell_renderer ();
-	cell->property_ellipsize () = Pango::ELLIPSIZE_END;
-	docslistview_->append_column (*col);
-
-	col = Gtk::manage (new Gtk::TreeViewColumn (_("Year  "), docyearcol_));
-	col->set_resizable (true);
-	col->set_sort_column (docyearcol_);
-	docslistview_->append_column (*col);
-#endif
 }

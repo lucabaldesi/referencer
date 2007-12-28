@@ -80,7 +80,7 @@ class Document {
 	Glib::ustring generateKey ();
 
 	void setField (Glib::ustring const &field, Glib::ustring const &value);
-	Glib::ustring getField (Glib::ustring const &field) const;
+	Glib::ustring getField (Glib::ustring const &field);
 };
 
 #endif

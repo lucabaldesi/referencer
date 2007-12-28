@@ -616,12 +616,16 @@ void Document::setField (Glib::ustring const &field, Glib::ustring const &value)
 		bib_.setPages (value);
 	else if (field == "key")
 		setKey (value);
-	else
+	else {
+		bib_.extras_[field] = value;
 		std::cerr << "Document::setField: WARNING: unknown field "
 			<< field << "\n";
+	}
 }
 
-Glib::ustring Document::getField (Glib::ustring const &field) const
+
+/* Can't be const because of std::map[] */
+Glib::ustring Document::getField (Glib::ustring const &field)
 {
 	if (field == "doi")
 		return bib_.getDoi ();
@@ -643,7 +647,13 @@ Glib::ustring Document::getField (Glib::ustring const &field) const
 		return bib_.getPages ();
 	else if (field == "key")
 		return getKey ();
-	else
-		std::cerr << "Document::getField: WARNING: unknown field "
-			<< field << "\n";
+	else {
+		if (bib_.extras_.find(field) != bib_.extras_.end()) {
+			const Glib::ustring _field = field;
+			return bib_.extras_[_field];
+		} else {
+			std::cerr << "Document::getField: WARNING: unknown field "
+				<< field << "\n";
+		}
+	}
 }
