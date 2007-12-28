@@ -222,19 +222,19 @@ void Document::setupThumbnail ()
 }
 
 
-Glib::ustring& Document::getKey()
+Glib::ustring const & Document::getKey() const
 {
 	return key_;
 }
 
 
-Glib::ustring& Document::getFileName()
+Glib::ustring const & Document::getFileName() const
 {
 	return filename_;
 }
 
 
-Glib::ustring& Document::getRelFileName()
+Glib::ustring const & Document::getRelFileName() const
 {
 	return relfilename_;
 }
@@ -618,5 +618,32 @@ void Document::setField (Glib::ustring const &field, Glib::ustring const &value)
 		setKey (value);
 	else
 		std::cerr << "Document::setField: WARNING: unknown field "
+			<< field << "\n";
+}
+
+Glib::ustring Document::getField (Glib::ustring const &field) const
+{
+	if (field == "doi")
+		return bib_.getDoi ();
+	else if (field == "type")
+		return bib_.getType ();
+	else if (field == "title")
+		return bib_.getTitle ();
+	else if (field == "volume")
+		return bib_.getVolume ();
+	else if (field == "issue")
+		return bib_.getIssue ();
+	else if (field == "journal")
+		return bib_.getJournal ();
+	else if (field == "authors")
+		return bib_.getAuthors ();
+	else if (field == "year")
+		return bib_.getYear ();
+	else if (field == "pages")
+		return bib_.getPages ();
+	else if (field == "key")
+		return getKey ();
+	else
+		std::cerr << "Document::getField: WARNING: unknown field "
 			<< field << "\n";
 }

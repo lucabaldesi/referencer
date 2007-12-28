@@ -41,11 +41,11 @@ class Document {
 		Glib::ustring const &key,
 		std::vector<int> const &tagUids,
 		BibData const &bib);
-	Glib::ustring& getKey();
-	Glib::ustring& getFileName();
+	Glib::ustring const & getKey() const;
+	Glib::ustring const & getFileName() const;
 	// RelFileName is NOT kept up to date in general, it's
 	// used during loading and saving only
-	Glib::ustring& getRelFileName();
+	Glib::ustring const & getRelFileName() const;
 	void setFileName (Glib::ustring const &filename);
 	void updateRelFileName (Glib::ustring const &libfilename);
 	void setKey (Glib::ustring const &key);
@@ -80,6 +80,7 @@ class Document {
 	Glib::ustring generateKey ();
 
 	void setField (Glib::ustring const &field, Glib::ustring const &value);
+	Glib::ustring getField (Glib::ustring const &field) const;
 };
 
 #endif
