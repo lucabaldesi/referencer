@@ -200,7 +200,7 @@ void readCB (
 	if (result == Gnome::Vfs::OK) {
 		std::cerr << "readCB: result OK\n";
 		if (reallyread > 0) {
-Gnome::Vfs::Async::Handle &h = const_cast<Gnome::Vfs::Async::Handle&> (handle);
+			Gnome::Vfs::Async::Handle &h = const_cast<Gnome::Vfs::Async::Handle&> (handle);
 			h.read ((char*)buffer + reallyread, 1024 * 256 - reallyread, sigc::ptr_fun (&readCB));
 		} else {
 			advance = true;

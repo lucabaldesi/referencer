@@ -51,6 +51,14 @@ Glib::ustring firstAuthor (
 
 Glib::ustring wrap (Glib::ustring const &str, Glib::ustring::size_type width, int lines, bool const pad)
 {
+	/*
+	 * Note on wrapping
+	 *
+	 * This is used for padding out entries in the iconview
+	 * What we do is pad to 75% of the remaining chars needed
+	 * to reach width, with em-spaces.  It's a hack.  It just
+	 * about works most of the time.
+	 */
 	Glib::ustring::size_type n = 0;
 	int line = 0;
 	if (lines == -1)
@@ -89,7 +97,8 @@ Glib::ustring wrap (Glib::ustring const &str, Glib::ustring::size_type width, in
 			remainder -= snaffle.size();
 
 			if (pad) {
-				for (int i = 0; i < width - snaffle.size(); ++i)
+				int mspaces = (int)((float)(width - snaffle.size()) * 0.75f);
+				for (int i = 0; i < mspaces; ++i)
 					wrapped += " ";
 			}
 
@@ -103,7 +112,8 @@ Glib::ustring wrap (Glib::ustring const &str, Glib::ustring::size_type width, in
 			remainder -= snaffle.size();
 
 			if (pad) {
-				for (int i = 0; i < width - snaffle.size(); ++i)
+				int mspaces = (int)((float)(width - snaffle.size()) * 0.75f);
+				for (int i = 0; i < mspaces; ++i)
 					wrapped += " ";
 			}
 

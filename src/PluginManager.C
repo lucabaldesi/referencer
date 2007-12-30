@@ -41,7 +41,6 @@ referencer_download(PyObject *self, PyObject *args)
 		PyString_AsString(title),
 		PyString_AsString(message),
 		PyString_AsString(url));
-//	std::cerr << "referencer_download:\n\"\"\"\n" << xml << "\n\"\"\"\n";
 	std::cerr << "referencer_download: got " << xml.length() << " characters\n";
 	PyObject *ret = PyString_FromString (xml.c_str());
 	std::cerr << "ret = " << ret << "\n";
