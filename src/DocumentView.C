@@ -17,6 +17,7 @@
 #include "DocumentList.h"
 #include "icon-entry.h"
 #include "Library.h"
+#include "Linker.h"
 #include "Preferences.h"
 #include "RefWindow.h"
 #include "Transfer.h"
@@ -468,52 +469,143 @@ int DocumentView::getVisibleDocCount ()
 }
 
 
+static void activateLinker (Linker &linker, Document *doc)
+{
+	std::cerr << "activateLinker for doc " << doc << "\n";
+	linker.doLink(doc);
+}
+
+
 bool DocumentView::docClicked (GdkEventButton* event)
 {
-  if((event->type == GDK_BUTTON_PRESS) && (event->button == 3)) {
-  	if (uselistview_) {
-		  Gtk::TreeModel::Path clickedpath;
-		  Gtk::TreeViewColumn *clickedcol;
-		  int cellx;
-		  int celly;
-	  	bool const gotpath = docslistview_->get_path_at_pos (
-	  		(int)event->x, (int)event->y,
-	  		clickedpath, clickedcol,
-	  		cellx, celly);
-			if (gotpath) {
-				if (!docslistselection_->is_selected (clickedpath)) {
-					docslistselection_->unselect_all ();
-					docslistselection_->select (clickedpath);
-				}
+	static std::vector<Linker*> linkers;
+	static DoiLinker doi;
+	static ArxivLinker arxiv;
+	static UrlLinker url;
+	static MedlineLinker medline;
+
+	static Glib::RefPtr<Gdk::Pixbuf> linkerIcon;
+	if (linkers.size() == 0) {
+		linkers.push_back(&doi);
+		linkers.push_back(&arxiv);
+		linkers.push_back(&url);
+		linkers.push_back(&medline);
+
+		linkerIcon = Utility::getThemeMenuIcon("web-browser");
+	}
+
+	if((event->type == GDK_BUTTON_PRESS) && (event->button == 3)) {
+		/*
+		 * Select what's under the pointer if it isn't already
+		 * selected
+		 */
+		if (uselistview_) {
+			Gtk::TreeModel::Path clickedpath;
+			Gtk::TreeViewColumn *clickedcol;
+			int cellx;
+			int celly;
+
+			bool const gotpath = docslistview_->get_path_at_pos (
+				(int)event->x, (int)event->y,
+				clickedpath, clickedcol,
+				cellx, celly);
+
+			if (gotpath && !docslistselection_->is_selected (clickedpath)) {
+				docslistselection_->unselect_all ();
+				docslistselection_->select (clickedpath);
 			}
-  	} else {
+		} else {
 			Gtk::TreeModel::Path clickedpath =
 				docsiconview_->get_path_at_pos ((int)event->x, (int)event->y);
 
-			if (clickedpath.gobj() != NULL) {
-				if (!docsiconview_->path_is_selected (clickedpath)) {
-					docsiconview_->unselect_all ();
-					docsiconview_->select_path (clickedpath);
-				}
+			if (clickedpath.gobj() != NULL
+			    && !docsiconview_->path_is_selected (clickedpath)) {
+				docsiconview_->unselect_all ();
+				docsiconview_->select_path (clickedpath);
 			}
 		}
 
-
-		Gtk::Menu *popupmenu = Gtk::manage (new Gtk::Menu);
 		/*
+		 * Get the popup menu widget
+		 */
 		Gtk::Menu *popupmenu =
 			(Gtk::Menu*)win_.uimanager_->get_widget("/DocPopup");
-			*/
+
+		/*
+		 * Remember how many items in the popup menu
+		 * were supplied by GtkUIManager
+		 */
+		static int baseSize = -1;
+		if (baseSize == -1) {
+			baseSize = popupmenu->items().size();
+		}
+
+		/*
+		 * Remove any extra from last time we were called
+		 */
+		Gtk::Menu::MenuList::iterator it = popupmenu->items().begin();
+		Gtk::Menu::MenuList::iterator const end = popupmenu->items().end();
+		for (int count = 0; it != end; ++it, ++count) {
+			if (count == baseSize)
+				break;
+		}
+
+		if (it != end)
+			popupmenu->items().erase(it, end);
+		
+
+		/*
+		 * Append a separator because different things should not
+		 * ever mix, as God told us.
+		 */
+		Gtk::SeparatorMenuItem *sep = Gtk::manage(new Gtk::SeparatorMenuItem());
+		popupmenu->append(*(sep));
+
+
+		/*
+		 * Append Linker entries
+		 */
+		if (getSelectedDocCount () == 1) {
+			Document *doc = getSelectedDoc ();
+				
+			std::vector<Linker*>::iterator it = linkers.begin();
+			std::vector<Linker*>::iterator const end = linkers.end();
+			for (; it != end; ++it) {
+				Linker *linker = (*it);
+				if (linker->canLink (doc)) {
+					Gtk::MenuItem *item;
+					if (linkerIcon) { 
+						Gtk::Widget *image = Gtk::manage (new Gtk::Image(linkerIcon));
+						item = Gtk::manage(new Gtk::ImageMenuItem(*image, linker->getLabel(), false));
+					} else {
+						item = Gtk::manage(new Gtk::ImageMenuItem(linker->getLabel(), false));
+					}
+
+					item->signal_activate().connect(
+							sigc::bind (
+								sigc::ptr_fun (&activateLinker),
+								sigc::ref(*linker),
+								doc));
+					popupmenu->append (*(item));
+				}
+			}
+
+		}
+
+		/*
+		 * Display the menu
+		 */
+		popupmenu->show_all ();
 		popupmenu->popup (event->button, event->time);
 
 		return true;
-  } else if ((event->type == GDK_BUTTON_PRESS) && (event->button == 2)) {
-  	// Middle click pasting
-  	win_.onPasteBibtex (GDK_SELECTION_PRIMARY);
-	return true;
-  } else {
-  	return false;
-  }
+	} else if ((event->type == GDK_BUTTON_PRESS) && (event->button == 2)) {
+		// Middle click pasting
+		win_.onPasteBibtex (GDK_SELECTION_PRIMARY);
+		return true;
+	} else {
+		return false;
+	}
 }
 
 
@@ -559,9 +651,6 @@ DocumentView::Capabilities DocumentView::getDocSelectionCapabilities ()
 	for (; it != end; it++) {
 		// Allow web linking even when offline, since it might
 		// just be us that's offline, not the web browser
-		if ((*it)->canWebLink())
-			result.weblink = true;
-
 		if ((*it)->canGetMetadata() && !offline)
 			result.getmetadata = true;
 
@@ -594,8 +683,6 @@ void DocumentView::docActivated (const Gtk::TreeModel::Path& path)
 	// if the number of docs selected != 1
 	if (!doc->getFileName ().empty ()) {
 		win_.onOpenDoc ();
-	} else if (doc->canWebLink ()) {
-		win_.onWebLinkDoc ();
 	} else {
 		win_.onDocProperties ();
 	}
@@ -770,10 +857,17 @@ void DocumentView::addDoc (Document * const doc)
 }
 
 
+/*
+ * Please, please populate tags etc before calling this with 
+ * a tag-related handler connected to the selectionchanged
+ * signal
+ */
 void DocumentView::populateDocStore ()
 {
 	//std::cerr << "RefWindow::populateDocStore >>\n";
+	ignoreSelectionChanged_ = true;
 
+	/* XXX not the only one any more! */
 	// This is our notification that something about the documentlist
 	// has changed, including its length, so update dependent sensitivities:
 	win_.actiongroup_->get_action("ExportBibtex")
@@ -808,6 +902,9 @@ void DocumentView::populateDocStore ()
 	} else {
 		docsiconview_->select_path (initialpath);
 	}
+
+	ignoreSelectionChanged_ = false;
+	docSelectionChanged ();
 }
 
 

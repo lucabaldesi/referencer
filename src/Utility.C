@@ -490,6 +490,12 @@ Glib::RefPtr<Gdk::Pixbuf> getThemeIcon(Glib::ustring const &iconname)
 }
 
 
+Glib::RefPtr<Gdk::Pixbuf> getThemeMenuIcon(Glib::ustring const &iconname) {
+	Glib::RefPtr<Gdk::Pixbuf> icon = getThemeIcon (iconname);
+	return icon->scale_simple (16, 16, Gdk::INTERP_BILINEAR);
+}
+
+
 void deleteFile (
 	Glib::ustring const &target_uri_str)
 {

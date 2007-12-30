@@ -95,6 +95,7 @@ bool hasExtension (
 		Glib::ustring child);
 
 	Glib::RefPtr<Gdk::Pixbuf> getThemeIcon(Glib::ustring const &iconname);
+	Glib::RefPtr<Gdk::Pixbuf> getThemeMenuIcon(Glib::ustring const &iconname);
 
 	int wvConvertUnicodeToLaTeX(
 		gunichar char16,

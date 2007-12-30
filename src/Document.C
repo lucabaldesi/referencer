@@ -460,42 +460,6 @@ void Document::readPDF ()
 }
 
 
-bool Document::canWebLink ()
-{
-	if (	   hasField ("eprint")
-		|| hasField ("doi")
-		|| hasField ("url")
-		|| hasField ("pmid") 
-	   ) {
-		return true;
-	} else {
-		return false;
-	}
-}
-
-
-void Document::webLink ()
-{
-	Glib::ustring url;
-	if (hasField("doi")) {
-		url = Glib::ustring("http://dx.doi.org/") + getField("doi");
-	} else if (hasField("eprint")) {
-		url = Glib::ustring("http://arxiv.org/abs/") + getField ("eprint");
-	} else if (hasField("url")) {
-		url = getField ("url");
-	} else if (hasField("pmid")) {
-		url = Glib::ustring ("http://www.ncbi.nlm.nih.gov/pubmed/") + getField("pmid");
-	}
-
-	if (!url.empty()) {
-		Gnome::Vfs::url_show (url);
-	} else {
-		std::cerr << "Warning: RefWindow::onWebLinkDoc: nothing to link on\n";
-	}
-
-}
-
-
 bool Document::canGetMetadata ()
 {
 	if (!bib_.getDoi ().empty ()
@@ -678,7 +642,7 @@ Glib::ustring Document::getField (Glib::ustring const &field)
 }
 
 
-bool Document::hasField (Glib::ustring const &field)
+bool Document::hasField (Glib::ustring const &field) const
 {
 	if (field == "doi")
 		return !bib_.getDoi ().empty();

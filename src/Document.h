@@ -56,7 +56,6 @@ class Document {
 	void clearTags ();
 
 	bool hasTag (int uid);
-	bool canWebLink ();
 	bool canGetMetadata ();
 	bool matchesSearch (Glib::ustring const &search);
 
@@ -81,8 +80,7 @@ class Document {
 
 	void setField (Glib::ustring const &field, Glib::ustring const &value);
 	Glib::ustring getField (Glib::ustring const &field);
-	bool hasField (Glib::ustring const &field);
-	void webLink ();
+	bool hasField (Glib::ustring const &field) const;
 };
 
 #endif

@@ -46,6 +46,8 @@ referencer_SOURCES =	\
 	Library.C \
 	Library.h \
 	LibraryParser.h \
+	Linker.C \
+	Linker.h \
 	main.C \
 	Plugin.h \
 	PluginManager.C \

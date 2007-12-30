@@ -38,6 +38,7 @@ class DocumentView : public Gtk::VBox
 	
 	class Capabilities {
 		public:
+		// XXX unused field?
 		bool weblink;
 		bool open;
 		bool getmetadata;

@@ -54,12 +54,12 @@ RefWindow::RefWindow ()
 
 	if (!libfile.empty() && library_->load (libfile)) {
 		setOpenedLib (libfile);
+		populateTagList ();
 		docview_->populateDocStore ();
 	} else {
 		onNewLibrary ();
 	}
 
-	populateTagList ();
 	updateStatusBar ();
 
 	gdk_threads_leave ();
@@ -351,9 +351,6 @@ void RefWindow::constructMenu ()
 		Gtk::AccelKey ("<control>Delete"),
   	sigc::mem_fun(*this, &RefWindow::onRemoveDoc));
 	actiongroup_->add( Gtk::Action::create(
-		"WebLinkDoc", Gtk::Stock::CONNECT, _("_Web Link...")), Gtk::AccelKey ("<control><shift>a"),
-  	sigc::mem_fun(*this, &RefWindow::onWebLinkDoc));
-	actiongroup_->add( Gtk::Action::create(
 		"OpenDoc", Gtk::Stock::OPEN, _("_Open...")), Gtk::AccelKey ("<control>a"),
   	sigc::mem_fun(*this, &RefWindow::onOpenDoc));
 	actiongroup_->add( Gtk::Action::create(
@@ -429,7 +426,6 @@ void RefWindow::constructMenu ()
 		"      <menuitem action='AddDocDoi'/>"
 		"      <menuitem action='AddDocUnnamed'/>"
 		"      <separator/>"
-		"      <menuitem action='WebLinkDoc'/>"
 		"      <menuitem action='OpenDoc'/>"
 		"      <menuitem action='DocProperties'/>"
 		"      <separator/>"
@@ -464,7 +460,6 @@ void RefWindow::constructMenu ()
 		"    <menuitem action='AddDocFolder'/>"
 		"    <separator/>"
 		"    <menuitem action='RemoveDoc'/>"
-		"    <menuitem action='WebLinkDoc'/>"
 		"    <menuitem action='GetMetadataDoc'/>"
 		"    <menuitem action='OpenDoc'/>"
 		"    <menuitem action='DocProperties'/>"
@@ -1132,9 +1127,9 @@ void RefWindow::onNewLibrary ()
 		setOpenedLib ("");
 		library_->clear ();
 
+		populateTagList ();
 		docview_->populateDocStore ();
 		updateStatusBar ();
-		populateTagList ();
 	}
 }
 
@@ -1174,9 +1169,9 @@ void RefWindow::onOpenLibrary ()
 		std::cerr << "Calling library_->load on " << libfile << "\n";
 		if (library_->load (libfile)) {
 			setDirty (false);
+			populateTagList ();
 			docview_->populateDocStore ();
 			updateStatusBar ();
-			populateTagList ();
 			setOpenedLib (libfile);
 		} else {
 			//library_->load would have shown an exception error dialog
@@ -1526,16 +1521,6 @@ void RefWindow::onRemoveDoc ()
 }
 
 
-void RefWindow::onWebLinkDoc ()
-{
-	std::vector <Document*> docs = docview_->getSelectedDocs ();
-	std::vector <Document*>::iterator it = docs.begin ();
-	std::vector <Document*>::iterator const end = docs.end ();
-	for (; it != end; ++it)
-		(*it)->webLink ();
-}
-
-
 void RefWindow::onGetMetadataDoc ()
 {
 	bool doclistdirty = false;
@@ -1875,6 +1860,8 @@ void RefWindow::onImport ()
 
 		library_->doclist_->importFromFile (filename, format);
 
+
+		populateTagList ();
 		/*
 		 * Should iterate over added docs with addDoc
 		 * but this performance hit is acceptable since importing
@@ -1882,7 +1869,6 @@ void RefWindow::onImport ()
 		 */
 		docview_->populateDocStore ();
 		updateStatusBar ();
-		populateTagList ();
 	}
 }
 
@@ -1928,6 +1914,8 @@ void RefWindow::onPasteBibtex (GdkAtom selection)
 	std::cerr << "Imported " << imported << " references\n";
 
 	if (imported) {
+
+		populateTagList ();
 		/*
 		 * FIXME  should get the Document* from the import
 		 * call and iterate over them with addDoc to be 
@@ -1935,7 +1923,6 @@ void RefWindow::onPasteBibtex (GdkAtom selection)
 		 */
 		docview_->populateDocStore ();
 		updateStatusBar ();
-		populateTagList ();
 		statusbar_->push (String::ucompose
 			(_("Imported %1 BibTeX references"), imported), 0);
 	} else {
@@ -2055,7 +2042,6 @@ void RefWindow::docSelectionChanged ()
 
 	DocumentView::Capabilities cap
 		= docview_->getDocSelectionCapabilities ();
-	actiongroup_->get_action("WebLinkDoc")->set_sensitive (cap.weblink);
 	actiongroup_->get_action("OpenDoc")->set_sensitive (cap.open);
 	actiongroup_->get_action("GetMetadataDoc")->set_sensitive (cap.getmetadata);
 
