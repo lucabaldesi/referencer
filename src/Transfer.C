@@ -205,10 +205,14 @@ Gnome::Vfs::Async::Handle &h = const_cast<Gnome::Vfs::Async::Handle&> (handle);
 		} else {
 			advance = true;
 		}
-	} else {
-		std::cerr << "readCB: result not OK\n";
-		//transferfail = true;
-		advance = true;
+	} else  {
+		if (result == Gnome::Vfs::ERROR_EOF) {
+			std::cerr << "readCB: EOF\n";
+			advance = true;
+		} else {
+			std::cerr << "readCB: result error\n";
+			transferfail = true;
+		}
 	}
 }
 

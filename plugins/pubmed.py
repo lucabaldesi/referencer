@@ -82,7 +82,6 @@ def text_output(xml):
 	"""Makes a simple text output from the XML returned from efetch"""
 	 
 	print "calling parseString on ", len(xml) , " characters"
-	print "calling parseString on ",xml
 	xmldoc = minidom.parseString(xml)
 	print "made it out of parseString"
 
