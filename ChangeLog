@@ -1,4 +1,7 @@
 1.0.5:
+	- Add google scholar web link
+	- Add PubMed web link
+	- Allow specific selection of different web links
 	- Add builtin generic document icon
 	- Paste BibTeX button in document properties
 	- Clear button in document properties
