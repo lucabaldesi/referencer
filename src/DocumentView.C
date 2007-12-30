@@ -469,13 +469,6 @@ int DocumentView::getVisibleDocCount ()
 }
 
 
-static void activateLinker (Linker &linker, Document *doc)
-{
-	std::cerr << "activateLinker for doc " << doc << "\n";
-	linker.doLink(doc);
-}
-
-
 bool DocumentView::docClicked (GdkEventButton* event)
 {
 	static std::vector<Linker*> linkers;
@@ -584,9 +577,8 @@ bool DocumentView::docClicked (GdkEventButton* event)
 					}
 
 					item->signal_activate().connect(
-							sigc::bind (
-								sigc::ptr_fun (&activateLinker),
-								sigc::ref(*linker),
+							sigc::bind(
+								sigc::mem_fun (linker, &Linker::doLink),
 								doc));
 					popupmenu->append (*(item));
 				}
