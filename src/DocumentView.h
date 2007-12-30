@@ -29,6 +29,7 @@ class DocumentView : public Gtk::VBox
 	void removeDoc (Document * const doc);
 	void addDoc (Document * const doc);
 	void updateVisible ();
+	void clear ();
 
 
 	Document *getSelectedDoc ();

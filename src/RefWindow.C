@@ -35,8 +35,9 @@
 
 RefWindow::RefWindow ()
 {
-	tagselectionignore_ = false;
+	ignoreTagSelectionChanged_ = false;
 	ignoretaggerchecktoggled_ = false;
+	ignoreDocSelectionChanged_ = false;
 
 	dirty_ = false;
 
@@ -480,6 +481,11 @@ void RefWindow::constructMenu ()
 }
 
 
+void RefWindow::clearTagList ()
+{
+	tagstore_->clear();
+}
+
 void RefWindow::populateTagList ()
 {
 	Gtk::TreeSelection::ListHandle_Path paths =
@@ -488,7 +494,8 @@ void RefWindow::populateTagList ()
 	if (paths.size() > 0)
 		initialpath = *paths.begin ();
 
-	tagselectionignore_ = true;
+	bool const ignore = ignoreTagSelectionChanged_;
+	ignoreTagSelectionChanged_ = true;
 	tagstore_->clear();
 
 	Pango::FontDescription font_special;
@@ -564,7 +571,7 @@ void RefWindow::populateTagList ()
 	taggerbox_->show_all ();
 
 	// Restore initial selection or selected first row
-	tagselectionignore_ = false;
+	ignoreTagSelectionChanged_ = ignore;
 	if (!initialpath.empty())
 		tagselection_->select (initialpath);
 
@@ -668,7 +675,7 @@ void RefWindow::tagNameEdited (
 
 void RefWindow::tagSelectionChanged ()
 {
-	if (tagselectionignore_)
+	if (ignoreTagSelectionChanged_)
 		return;
 
 	Gtk::TreeSelection::ListHandle_Path paths =
@@ -1125,6 +1132,9 @@ void RefWindow::onNewLibrary ()
 		setDirty (false);
 
 		setOpenedLib ("");
+		clearTagList ();
+		docview_->clear ();
+
 		library_->clear ();
 
 		populateTagList ();
@@ -1166,11 +1176,19 @@ void RefWindow::onOpenLibrary ()
 		libraryfolder_ = Glib::path_get_dirname(chooser.get_filename());
 		Glib::ustring libfile = chooser.get_uri ();
 		chooser.hide ();
+
+		setDirty (false);
+
 		std::cerr << "Calling library_->load on " << libfile << "\n";
 		if (library_->load (libfile)) {
-			setDirty (false);
+			ignoreDocSelectionChanged_ = true;
+			ignoreTagSelectionChanged_ = true;
+			docview_->clear ();
 			populateTagList ();
 			docview_->populateDocStore ();
+			ignoreDocSelectionChanged_ = false;
+			ignoreTagSelectionChanged_ = false;
+
 			updateStatusBar ();
 			setOpenedLib (libfile);
 		} else {
@@ -2027,6 +2045,9 @@ void RefWindow::onFind ()
 
 void RefWindow::docSelectionChanged ()
 {
+	if (ignoreDocSelectionChanged_)
+		return;
+
 	int selectcount = docview_->getSelectedDocCount ();
 
 	bool const somethingselected = selectcount > 0;

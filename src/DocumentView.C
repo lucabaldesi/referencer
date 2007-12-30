@@ -886,9 +886,8 @@ void DocumentView::populateDocStore ()
 	DocumentList::Container& docvec = lib_.doclist_->getDocs();
 	DocumentList::Container::iterator docit = docvec.begin();
 	DocumentList::Container::iterator const docend = docvec.end();
-	for (; docit != docend; ++docit) {
+	for (; docit != docend; ++docit)
 		addDoc (&(*docit));
-	}
 
 	// Restore initial selection
 	if (uselistview_) {
@@ -899,6 +898,15 @@ void DocumentView::populateDocStore ()
 
 	ignoreSelectionChanged_ = false;
 	docSelectionChanged ();
+}
+
+
+/*
+ * Clear out all documents
+ */
+void DocumentView::clear ()
+{
+	docstore_->clear ();
 }
 
 

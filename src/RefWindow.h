@@ -71,6 +71,8 @@ class RefWindow {
 		/* DocumentView needs this for inline edits */
 		void setDirty (bool const &dirty);
 	private:
+		bool ignoreDocSelectionChanged_;
+		void clearTagList ();
 		void populateTagList ();
 		void constructUI ();
 		void constructMenu ();
@@ -99,7 +101,7 @@ class RefWindow {
 		Gtk::VBox *taggerbox_;
 		Glib::RefPtr<Gtk::TreeSelection> tagselection_;
 		Gtk::TreeView *tagview_;
-		bool tagselectionignore_;
+		bool ignoreTagSelectionChanged_;
 		std::map<int, Gtk::ToggleButton*> taggerchecks_;
 		bool ignoretaggerchecktoggled_;
 		void taggerCheckToggled (Gtk::ToggleButton *check, int taguid);
