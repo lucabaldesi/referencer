@@ -47,4 +47,12 @@ class MedlineLinker : public Linker {
 	Glib::ustring getLabel ();
 };
 
+
+class GoogleLinker : public Linker {
+	public:
+	bool canLink (Document const *doc);
+	void doLink (Document *doc);
+	Glib::ustring getLabel ();
+};
+
 #endif

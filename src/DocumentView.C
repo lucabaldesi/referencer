@@ -483,6 +483,7 @@ bool DocumentView::docClicked (GdkEventButton* event)
 	static ArxivLinker arxiv;
 	static UrlLinker url;
 	static MedlineLinker medline;
+	static GoogleLinker google;
 
 	static Glib::RefPtr<Gdk::Pixbuf> linkerIcon;
 	if (linkers.size() == 0) {
@@ -490,6 +491,7 @@ bool DocumentView::docClicked (GdkEventButton* event)
 		linkers.push_back(&arxiv);
 		linkers.push_back(&url);
 		linkers.push_back(&medline);
+		linkers.push_back(&google);
 
 		linkerIcon = Utility::getThemeMenuIcon("web-browser");
 	}

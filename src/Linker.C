@@ -7,6 +7,7 @@
 
 
 #include "Document.h"
+#include "Utility.h"
 
 #include "Linker.h"
 
@@ -91,4 +92,34 @@ void MedlineLinker::doLink (Document *doc)
 Glib::ustring MedlineLinker::getLabel ()
 {
 	return Glib::ustring (_("MedLine Link"));
+}
+
+
+
+bool GoogleLinker::canLink (Document const *doc)
+{
+	return doc->hasField("doi") || doc->hasField("title");
+}
+
+
+void GoogleLinker::doLink (Document *doc)
+{
+
+	Glib::ustring searchTerm;
+	if (doc->hasField ("doi")) {
+		searchTerm = doc->getField ("doi");
+	} else {
+		searchTerm = doc->getField ("title") + Glib::ustring(" ") + Utility::firstAuthor(doc->getField ("authors"));
+	}
+
+	Glib::ustring escaped = Gnome::Vfs::escape_string (searchTerm);
+	std::cerr << escaped << "\n";
+	Glib::ustring url = Glib::ustring ("http://scholar.google.co.uk/scholar?q=") + escaped + Glib::ustring("&btnG=Search");
+
+	Gnome::Vfs::url_show (url);
+}
+
+Glib::ustring GoogleLinker::getLabel ()
+{
+	return Glib::ustring (_("Google Scholar"));
 }
