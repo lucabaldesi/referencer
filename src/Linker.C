@@ -76,22 +76,22 @@ Glib::ustring UrlLinker::getLabel ()
 
 
 
-bool MedlineLinker::canLink (Document const *doc)
+bool PubmedLinker::canLink (Document const *doc)
 {
 	return doc->hasField("pmid");
 }
 
 
-void MedlineLinker::doLink (Document *doc)
+void PubmedLinker::doLink (Document *doc)
 {
 	Glib::ustring url = Glib::ustring ("http://www.ncbi.nlm.nih.gov/pubmed/") + doc->getField("pmid");
 
 	Gnome::Vfs::url_show (url);
 }
 
-Glib::ustring MedlineLinker::getLabel ()
+Glib::ustring PubmedLinker::getLabel ()
 {
-	return Glib::ustring (_("MedLine Link"));
+	return Glib::ustring (_("PubMed Link"));
 }
 
 

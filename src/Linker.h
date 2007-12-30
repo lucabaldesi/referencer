@@ -40,7 +40,7 @@ class UrlLinker : public Linker {
 };
 
 
-class MedlineLinker : public Linker {
+class PubmedLinker : public Linker {
 	public:
 	bool canLink (Document const *doc);
 	void doLink (Document *doc);

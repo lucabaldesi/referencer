@@ -482,7 +482,7 @@ bool DocumentView::docClicked (GdkEventButton* event)
 	static DoiLinker doi;
 	static ArxivLinker arxiv;
 	static UrlLinker url;
-	static MedlineLinker medline;
+	static PubmedLinker pubmed;
 	static GoogleLinker google;
 
 	static Glib::RefPtr<Gdk::Pixbuf> linkerIcon;
@@ -490,7 +490,7 @@ bool DocumentView::docClicked (GdkEventButton* event)
 		linkers.push_back(&doi);
 		linkers.push_back(&arxiv);
 		linkers.push_back(&url);
-		linkers.push_back(&medline);
+		linkers.push_back(&pubmed);
 		linkers.push_back(&google);
 
 		linkerIcon = Utility::getThemeMenuIcon("web-browser");
