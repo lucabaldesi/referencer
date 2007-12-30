@@ -104,13 +104,27 @@ bool GoogleLinker::canLink (Document const *doc)
 
 void GoogleLinker::doLink (Document *doc)
 {
+	/*
+	 * We assert in canLink that we at least have doi or title
+	 */
 
 	Glib::ustring searchTerm;
 	if (doc->hasField ("doi")) {
 		searchTerm = doc->getField ("doi");
 	} else {
-		searchTerm = doc->getField ("title") + Glib::ustring(" ") + Utility::firstAuthor(doc->getField ("authors"));
+		searchTerm = doc->getField ("title");
 	}
+
+	if (doc->hasField ("authors")) {
+		searchTerm += Glib::ustring (" ");
+		searchTerm += doc->getField ("authors");
+	}
+
+	if (doc->hasField ("year")) {
+		searchTerm += Glib::ustring (" ");
+		searchTerm += doc->getField ("year");
+	}
+
 
 	Glib::ustring escaped = Gnome::Vfs::escape_string (searchTerm);
 	std::cerr << escaped << "\n";
