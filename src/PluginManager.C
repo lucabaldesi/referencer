@@ -6,6 +6,8 @@
 
 #include <glibmm/i18n.h>
 
+#include "Python.h"
+
 #include "Preferences.h"
 // FIXME just using this for the exception class
 #include <Transfer.h>
@@ -19,8 +21,45 @@
 
 PluginManager *_global_plugins;
 
+
+
+static int numargs=0;
+
+/* Return the number of arguments of the application command line */
+static PyObject*
+referencer_download(PyObject *self, PyObject *args)
+{
+	PyObject *url = PyTuple_GetItem (args, 2);
+	PyObject *title = PyTuple_GetItem (args, 0);
+	PyObject *message = PyTuple_GetItem (args, 1);
+
+	std::cerr << "url = " << url << "\n";
+	char *urlStr = PyString_AsString (url);
+	std::cerr << "urlStr = " << urlStr << "\n";
+	/* XXX catch exceptions */
+	Glib::ustring &xml = Transfer::readRemoteFile (
+		PyString_AsString(title),
+		PyString_AsString(message),
+		PyString_AsString(url));
+//	std::cerr << "referencer_download:\n\"\"\"\n" << xml << "\n\"\"\"\n";
+	std::cerr << "referencer_download: got " << xml.length() << " characters\n";
+	PyObject *ret = PyString_FromString (xml.c_str());
+	std::cerr << "ret = " << ret << "\n";
+	return ret;
+}
+
+static PyMethodDef ReferencerMethods[] = {
+    {"download", referencer_download, METH_VARARGS,
+     "Retrieve a remote file"},
+    {NULL, NULL, 0, NULL}
+};
+
+
+
+
 PluginManager::PluginManager ()
 {
+	Py_InitModule ("referencer", ReferencerMethods);
 }
 
 PluginManager::~PluginManager ()

@@ -8,6 +8,8 @@
 
 import urllib
 import urllib2
+import referencer
+
 from xml.dom import minidom
 
 referencer_plugin_info = []
@@ -46,8 +48,8 @@ def get_citation_from_doi(query, email='referencer@icculus.org', tool='Reference
 
 	# try to resolve the PubMed ID of the DOI
 	url = 'http://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?' + urllib.urlencode(params)
-	req = urllib2.Request(url)
-	data = urllib2.urlopen(req).read()
+	data = referencer.download ("Resolving DOI", "Finding PubMed ID from DOI", url);
+	print "got data 1"
 
 	# parse XML output from PubMed...
 	xmldoc = minidom.parseString(data)
@@ -71,14 +73,18 @@ def get_citation_from_doi(query, email='referencer@icculus.org', tool='Reference
 
 	# get citation info:
 	url = 'http://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?' + urllib.urlencode(params)
-	data = urllib2.urlopen(url).read()
+	data = referencer.download ("Resolving DOI", "Fetching metadata from NCBI", url);
+	print "got data 2"
 
 	return data
  
 def text_output(xml):
 	"""Makes a simple text output from the XML returned from efetch"""
 	 
+	print "calling parseString on ", len(xml) , " characters"
+	print "calling parseString on ",xml
 	xmldoc = minidom.parseString(xml)
+	print "made it out of parseString"
 
 	# Encoding: every PyUnicode that minidom gives us gets
 	# cast into a PyString, this is what PyString_AsString on the C++

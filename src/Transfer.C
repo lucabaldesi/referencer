@@ -198,11 +198,17 @@ void readCB (
 	char *charbuf = (char *) buffer;
 	charbuf [reallyread] = 0;
 	if (result == Gnome::Vfs::OK) {
-		std::cerr << "readCB: result OK, read\n";
-		advance = true;
+		std::cerr << "readCB: result OK\n";
+		if (reallyread > 0) {
+Gnome::Vfs::Async::Handle &h = const_cast<Gnome::Vfs::Async::Handle&> (handle);
+			h.read ((char*)buffer + reallyread, 1024 * 256 - reallyread, sigc::ptr_fun (&readCB));
+		} else {
+			advance = true;
+		}
 	} else {
 		std::cerr << "readCB: result not OK\n";
-		transferfail = true;
+		//transferfail = true;
+		advance = true;
 	}
 }
 
@@ -212,7 +218,7 @@ void closeCB (
 	Gnome::Vfs::Result result)
 {
 	if (result == Gnome::Vfs::OK) {
-		std::cerr << "readCB: result OK, closed\n";
+		std::cerr << "closeCB: result OK, closed\n";
 	} else {
 		// Can't really do much about this
 		std::cerr << "closeCB: warning: result not OK\n";
