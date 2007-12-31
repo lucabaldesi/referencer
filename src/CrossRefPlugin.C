@@ -130,15 +130,25 @@ bool CrossRefPlugin::resolve (Document &doc)
 		dialog.add_button (Gtk::Stock::CANCEL,     0);
 		dialog.add_button (_("_Preferences"),      1);
 		dialog.add_button (_("_Disable CrossRef"), 2);
-		int response = dialog.run ();
-		if (response == 0) {
-			return false;
-		} else if (response == 1) {
-			_global_prefs->showDialog ();
-		} else if (response == 2) {
-			_global_prefs->disablePlugin (this);
-			return false;
-		}
+
+		do {
+			int response = dialog.run ();
+			if (response == 1) {
+				// Preferences
+				_global_prefs->showDialog ();
+				if (!_global_prefs->getCrossRefUsername ().empty ())
+					break;
+				// if they didn't give us one then we loop around
+				// else we go ahead
+			} else if (response == 2) {
+				// Disable
+				_global_prefs->disablePlugin (this);
+				return false;
+			} else {
+				// Cancel
+				return false;
+			}
+		} while (1);
 	}
 
 	Glib::ustring messagetext =
