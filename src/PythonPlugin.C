@@ -198,7 +198,6 @@ Glib::ustring const PythonPlugin::getLongName ()
 
 Glib::ustring const PythonPlugin::getPluginInfoField (Glib::ustring const &targetKey)
 {
-	PyObject_Print (pPluginInfo_, stderr, 0);
 	int const N = PyList_Size (pPluginInfo_);
 
 	for (int i = 0; i < N; ++i) {
