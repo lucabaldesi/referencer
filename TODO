@@ -1,6 +1,10 @@
 
 export getField/setField to plugins?
 
+allow plugins to prompt for username+password
+allow plugins to save conf
+allow plugins to provide conf ui
+
 "More by this author" on pubmed and google
 
 There is no release schedule.
@@ -65,7 +69,6 @@ Edit menu:
 	- copy bibtex
 
 Functionality wishlist:
-	Google scholar link?  Arbitrary links?
 	Parse strings "Title: foo\nISBN: bar\n" like recipe manager
 	Formatted bibliographies with Rtfbtx?
 	Import "keywords" field in bibtex, map to referencer tags
@@ -79,7 +82,6 @@ Functionality wishlist:
 	Make search bar match more fields
 	Tell the user somehow in addDocFiles when we don't add files b/c they're already in the documentlist.
 	Assign a color to a tag and highlight refs with it
-	Should have GPL headers in all files to qualify for debian packaging
 	Use installed libsexy if available, a la rhythmbox
 	Resolve symlinks before doing relative filename magic
 

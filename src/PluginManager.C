@@ -51,9 +51,22 @@ referencer_download(PyObject *self, PyObject *args)
 	return ret;
 }
 
+/* Call gettext */
+static PyObject*
+referencer_gettext(PyObject *self, PyObject *args)
+{
+	PyObject *str = PyTuple_GetItem (args, 0);
+
+	PyObject *ret = NULL;
+	return PyString_FromString (_(PyString_AsString(str)));
+}
+
+
 static PyMethodDef ReferencerMethods[] = {
     {"download", referencer_download, METH_VARARGS,
      "Retrieve a remote file"},
+    {"_", referencer_gettext, METH_VARARGS,
+     "Translate a string"},
     {NULL, NULL, 0, NULL}
 };
 

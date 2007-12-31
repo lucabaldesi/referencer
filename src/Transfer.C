@@ -33,7 +33,6 @@ void onTransferCancel ()
 	{transferfail = true;}
 
 
-
 void promptWorkOffline ()
 {
 	Glib::ustring const messagetext2 = String::ucompose (

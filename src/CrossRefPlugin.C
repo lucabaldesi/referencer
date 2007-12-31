@@ -136,6 +136,7 @@ bool CrossRefPlugin::resolve (Document &doc)
 	// FIXME: even if we don't get any metadata, 
 	// an exceptionless download+parse is considered
 	// a success.
+	// Nobody notices as long as crossref is the last resort
 	bool success = true;
 
 	try {
