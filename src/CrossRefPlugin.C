@@ -121,7 +121,9 @@ bool CrossRefPlugin::resolve (Document &doc)
 			String::ucompose (
 				"<b><big>%1</big></b>\n\n%2\n",
 				_("CrossRef credentials not found"),
-				_("To use the CrossRef service, an account is needed.  Username and password may be set in Preferences.")
+				_("To use the CrossRef service, a free account is needed.  "
+				  "Login information may be set in Preferences, or the CrossRef plugin
+				  may be disabled.")
 				);
 
 		Gtk::MessageDialog dialog(message, true, Gtk::MESSAGE_WARNING,
@@ -180,6 +182,10 @@ bool CrossRefPlugin::resolve (Document &doc)
 	try {
 		Glib::ustring &xml = Transfer::readRemoteFile (
 			_("Downloading Metadata"), messagetext, url);
+
+		// XXX
+		// Test for "Missing WWW-Authenticate header" for bad username/password
+		// Test for "No DOI found" for bad DOI
 
 		CrossRefParser parser (doc.getBibData());
 		Glib::Markup::ParseContext context (parser);
