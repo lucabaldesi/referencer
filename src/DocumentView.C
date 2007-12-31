@@ -547,19 +547,11 @@ bool DocumentView::docClicked (GdkEventButton* event)
 
 		if (it != end)
 			popupmenu->items().erase(it, end);
-		
-
-		/*
-		 * Append a separator because different things should not
-		 * ever mix, as God told us.
-		 */
-		Gtk::SeparatorMenuItem *sep = Gtk::manage(new Gtk::SeparatorMenuItem());
-		popupmenu->append(*(sep));
-
 
 		/*
 		 * Append Linker entries
 		 */
+		bool firstLinker = true;
 		if (getSelectedDocCount () == 1) {
 			Document *doc = getSelectedDoc ();
 				
@@ -568,6 +560,13 @@ bool DocumentView::docClicked (GdkEventButton* event)
 			for (; it != end; ++it) {
 				Linker *linker = (*it);
 				if (linker->canLink (doc)) {
+					
+					if (firstLinker) {
+						Gtk::SeparatorMenuItem *sep = Gtk::manage(new Gtk::SeparatorMenuItem());
+						popupmenu->append(*(sep));
+						firstLinker = false;
+					}
+
 					Gtk::MenuItem *item;
 					if (linkerIcon) { 
 						Gtk::Widget *image = Gtk::manage (new Gtk::Image(linkerIcon));
