@@ -55,7 +55,7 @@ Glib::ustring wrap (Glib::ustring const &str, Glib::ustring::size_type width, in
 	 * Note on wrapping
 	 *
 	 * This is used for padding out entries in the iconview
-	 * What we do is pad to 75% of the remaining chars needed
+	 * What we do is pad to 85% of the remaining chars needed
 	 * to reach width, with em-spaces.  It's a hack.  It just
 	 * about works most of the time.
 	 */
@@ -97,7 +97,7 @@ Glib::ustring wrap (Glib::ustring const &str, Glib::ustring::size_type width, in
 			remainder -= snaffle.size();
 
 			if (pad) {
-				int mspaces = (int)((float)(width - snaffle.size()) * 0.75f);
+				int mspaces = (int)((float)(width - snaffle.size()) * 0.85);
 				for (int i = 0; i < mspaces; ++i)
 					wrapped += " ";
 			}
@@ -112,7 +112,7 @@ Glib::ustring wrap (Glib::ustring const &str, Glib::ustring::size_type width, in
 			remainder -= snaffle.size();
 
 			if (pad) {
-				int mspaces = (int)((float)(width - snaffle.size()) * 0.75f);
+				int mspaces = (int)((float)(width - snaffle.size()) * 0.85);
 				for (int i = 0; i < mspaces; ++i)
 					wrapped += " ";
 			}
