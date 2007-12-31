@@ -10,7 +10,7 @@ class PluginCapability
 			NONE = 0,
 			DOI = 1 << 0,
 			ARXIV = 1 << 1,
-			MEDLINE = 1 << 2
+			PUBMED = 1 << 2
 		} Identifier;
 
 		void add (Identifier const id) {
@@ -48,7 +48,7 @@ class PluginCapability
 		uint64_t mask_;
 };
 
-class BibData;
+class Document;
 
 /*
  * Base class for metadata fetching plugins
@@ -60,7 +60,7 @@ class Plugin
 		virtual ~Plugin () {};
 
 		virtual void load (std::string const &moduleName) {};
-		virtual bool resolve (BibData &bib) = 0;
+		virtual bool resolve (Document &doc) = 0;
 
 		virtual Glib::ustring const getShortName () = 0;
 		virtual Glib::ustring const getLongName () = 0;

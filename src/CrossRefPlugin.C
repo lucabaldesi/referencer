@@ -16,7 +16,7 @@
 
 #include "ucompose.hpp"
 
-#include "BibData.h"
+#include "Document.h"
 #include "Preferences.h"
 #include "Transfer.h"
 #include "Utility.h"
@@ -111,7 +111,7 @@ class CrossRefParser : public Glib::Markup::Parser {
 };
 
 
-bool CrossRefPlugin::resolve (BibData &bib)
+bool CrossRefPlugin::resolve (Document &doc)
 {
 	Glib::ustring messagetext =
 		String::ucompose (
@@ -119,7 +119,7 @@ bool CrossRefPlugin::resolve (BibData &bib)
 			_("Downloading metadata"),
 		String::ucompose (
 			_("Contacting crossref.org to retrieve metadata for '%1'"),
-			bib.getDoi())
+			doc.getField("doi"))
 	);
 
 	Glib::ustring const url = 
@@ -128,7 +128,7 @@ bool CrossRefPlugin::resolve (BibData &bib)
 		+ Glib::ustring(":")
 		+ _global_prefs->getCrossRefPassword ()
 		+ Glib::ustring("&id=doi:")
-		+ bib.getDoi()
+		+ doc.getField("doi")
 		+ Glib::ustring ("&noredirect=true");
 
 	std::cerr << "CrossRefPlugin::resolve: using url '" << url << "'\n";
@@ -142,7 +142,7 @@ bool CrossRefPlugin::resolve (BibData &bib)
 		Glib::ustring &xml = Transfer::readRemoteFile (
 			_("Downloading Metadata"), messagetext, url);
 
-		CrossRefParser parser (bib);
+		CrossRefParser parser (doc.getBibData());
 		Glib::Markup::ParseContext context (parser);
 		try {
 			context.parse (xml);

@@ -13,9 +13,11 @@ import referencer
 from xml.dom import minidom
 
 referencer_plugin_info = []
-referencer_plugin_info.append (["longname", "PubMed/Medline DOI resolver"])
+referencer_plugin_info.append (["longname", "PubMed DOI resolver"])
 referencer_plugin_capabilities = []
 referencer_plugin_capabilities.append ("doi")
+referencer_plugin_capabilities.append ("pubmed")
+
 
 def get_citation_from_doi(query, email='referencer@icculus.org', tool='Referencer', database='pubmed'):
 	params = {
@@ -28,28 +30,9 @@ def get_citation_from_doi(query, email='referencer@icculus.org', tool='Reference
 	}
 
 
-	useProxy = 0
-	proxyUser = "bobcat"
-	proxyPass = "zoidberg"
-	proxyURL = "http://wwwcache.mars.edu:8080/"
-
-	if (useProxy):
-		proxy = ProxyHandler ({"http": proxyUrl})
-
-		if (len(proxyUser) > 0):
-			pwdmgr = urllib2.HTTPPasswordMgrWithDefaultRealm()
-			pwdmgr.add_password (None, "http://", proxyUser, proxyPass)
-			proxyauth = urllib2.ProxyBasicAuthHandler (pwdmgr)
-
-			urllib2.install_opener (urllib2.build_opener (proxy, proxyauth))
-
-		else:
-			urllib2.install_opener (urllib2.build_opener (proxy))
-
 	# try to resolve the PubMed ID of the DOI
 	url = 'http://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?' + urllib.urlencode(params)
 	data = referencer.download ("Resolving DOI", "Finding PubMed ID from DOI", url);
-	print "got data 1"
 
 	# parse XML output from PubMed...
 	xmldoc = minidom.parseString(data)
@@ -62,22 +45,24 @@ def get_citation_from_doi(query, email='referencer@icculus.org', tool='Reference
 	# get ID
 	id = ids[0].childNodes[0].data
 
-	# remove unwanted parameters
-	params.pop('term')
-	params.pop('usehistory')
-	params.pop('retmax')
-	# and add new ones...
-	params['id'] = id
-
-	params['retmode'] = 'xml'
+	return get_citation_from_pmid (id)
+ 
+def get_citation_from_pmid (pmid, email='referencer@icculus.org', tool='Referencer', database='pubmed'):
+	params = {
+		'db':database,
+		'tool':tool,
+		'email':email,
+		'id':pmid,
+		'retmode':'xml'
+	}
 
 	# get citation info:
 	url = 'http://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?' + urllib.urlencode(params)
 	data = referencer.download ("Resolving DOI", "Fetching metadata from NCBI", url);
-	print "got data 2"
 
 	return data
- 
+
+
 def text_output(xml):
 	"""Makes a simple text output from the XML returned from efetch"""
 	 
@@ -136,7 +121,12 @@ def text_output(xml):
 
 def resolve_metadata (code, type):
 	if (type == "doi"):
+		print "pubmed.py: resolving doi ", code
 		xml = get_citation_from_doi (code)
+		return text_output(xml)
+	if (type == "pubmed"):
+		print "pubmed.py: resolving pmid ", code
+		xml = get_citation_from_pmid (code)
 		return text_output(xml)
 	else:
 		return []

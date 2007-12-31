@@ -24,9 +24,9 @@
 
 #include "ArxivPlugin.h"
 
-bool ArxivPlugin::resolve (BibData &bib)
+bool ArxivPlugin::resolve (Document &doc)
 {
-	if (bib.extras_["eprint"].empty() || _global_prefs->getWorkOffline())
+	if (!doc.hasField("eprint") || _global_prefs->getWorkOffline())
 		return false;
 
 	Glib::ustring messagetext =
@@ -35,10 +35,10 @@ bool ArxivPlugin::resolve (BibData &bib)
 			_("Retrieving metadata"),
 			String::ucompose (
 				_("Contacting citebase.org to retrieve metadata for '%1'"),
-				bib.extras_["eprint"])
+				doc.getField("eprint"))
 		);
 
-	Glib::ustring arxivid = bib.extras_["eprint"];
+	Glib::ustring arxivid = doc.getField("eprint");
 	Glib::ustring::size_type index = arxivid.find ("v");
 	if (index != Glib::ustring::npos) {
 		arxivid = arxivid.substr (0, index);
@@ -83,7 +83,7 @@ bool ArxivPlugin::resolve (BibData &bib)
 			}
 		}
 
-		bib.mergeIn (newdoc.getBibData());	
+		doc.getBibData().mergeIn (newdoc.getBibData());	
 		
 		BibUtils::bibl_free( &b );
 	} catch (Glib::Error ex) {

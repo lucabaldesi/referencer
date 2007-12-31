@@ -117,7 +117,7 @@ void GoogleLinker::doLink (Document *doc)
 
 	if (doc->hasField ("authors")) {
 		searchTerm += Glib::ustring (" ");
-		searchTerm += doc->getField ("authors");
+		searchTerm += Utility::firstAuthor(doc->getField ("authors"));
 	}
 
 	if (doc->hasField ("year")) {

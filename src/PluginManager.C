@@ -37,13 +37,21 @@ referencer_download(PyObject *self, PyObject *args)
 	char *urlStr = PyString_AsString (url);
 	std::cerr << "urlStr = " << urlStr << "\n";
 	/* XXX catch exceptions */
-	Glib::ustring &xml = Transfer::readRemoteFile (
-		PyString_AsString(title),
-		PyString_AsString(message),
-		PyString_AsString(url));
-	std::cerr << "referencer_download: got " << xml.length() << " characters\n";
-	PyObject *ret = PyString_FromString (xml.c_str());
-	std::cerr << "ret = " << ret << "\n";
+	PyObject *ret = NULL;
+	try {
+		Glib::ustring &xml = Transfer::readRemoteFile (
+			PyString_AsString(title),
+			PyString_AsString(message),
+			PyString_AsString(url));
+		ret = PyString_FromString (xml.c_str());
+		std::cerr << "referencer_download: got " << xml.length() << " characters\n";
+	} catch (Transfer::Exception ex) {
+		Utility::exceptionDialog (&ex, _("Downloading metadata"));
+		Glib::ustring blank;
+		ret = PyString_FromString (blank.c_str());
+		
+	}
+
 	return ret;
 }
 

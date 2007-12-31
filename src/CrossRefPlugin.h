@@ -5,7 +5,7 @@
 
 #include "Plugin.h"
 
-class BibData;
+class Document;
 
 class CrossRefPlugin : public Plugin
 {
@@ -15,7 +15,7 @@ class CrossRefPlugin : public Plugin
 			cap_.add(PluginCapability::DOI);
 		}
 		~CrossRefPlugin () {};
-		virtual bool resolve (BibData &bib);
+		virtual bool resolve (Document &doc);
 		virtual Glib::ustring const getShortName ();
 		virtual Glib::ustring const getLongName ();
 };

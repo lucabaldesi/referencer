@@ -6,7 +6,7 @@
 
 #include <glibmm/ustring.h>
 
-#include "BibData.h"
+#include "Document.h"
 
 #include "PythonPlugin.h"
 
@@ -84,9 +84,8 @@ void PythonPlugin::load (std::string const &moduleName)
 			cap_.add(PluginCapability::DOI);
 		else if (str == "arxiv")
 			cap_.add(PluginCapability::ARXIV);
-		else if (str == "medline")
-			cap_.add(PluginCapability::MEDLINE);
-			
+		else if (str == "pubmed")
+			cap_.add(PluginCapability::PUBMED);
 	}
 	Py_DECREF (pCaps);
 
@@ -95,7 +94,7 @@ void PythonPlugin::load (std::string const &moduleName)
 	loaded_ = true;
 }
 
-bool PythonPlugin::resolve (BibData &bib)
+bool PythonPlugin::resolve (Document &doc)
 {
 	bool success = false;
 
@@ -103,7 +102,7 @@ bool PythonPlugin::resolve (BibData &bib)
 	std::vector<PluginCapability::Identifier>::iterator it = ids.begin();
 	std::vector<PluginCapability::Identifier>::iterator const end = ids.end();
 	for (; it != end; ++it) {
-		success = resolveID (bib, *it);
+		success = resolveID (doc, *it);
 		if (success)
 			break;
 	}
@@ -111,20 +110,26 @@ bool PythonPlugin::resolve (BibData &bib)
 	return success;
 }
 
-bool PythonPlugin::resolveID (BibData &bib, PluginCapability::Identifier id)
+bool PythonPlugin::resolveID (Document &doc, PluginCapability::Identifier id)
 {
 	bool success = false;
 
 	PyObject *pArgs = NULL;
 	switch (id) {
 		case PluginCapability::DOI:
-			pArgs = Py_BuildValue ("(ss)", bib.getDoi().c_str(), "doi");
+			if (!doc.hasField ("doi"))
+				return false;
+			pArgs = Py_BuildValue ("(ss)", doc.getField("doi").c_str(), "doi");
 		break;
 		case PluginCapability::ARXIV:
-			pArgs = Py_BuildValue ("(ss)", bib.extras_["eprint"].c_str(), "arxiv");
+			if (!doc.hasField ("eprint"))
+				return false;
+			pArgs = Py_BuildValue ("(ss)", doc.getField("eprint").c_str(), "arxiv");
 		break;
-		case PluginCapability::MEDLINE:
-			pArgs = Py_BuildValue ("(ss)", bib.extras_["pmid"].c_str(), "pmid");
+		case PluginCapability::PUBMED:
+			if (!doc.hasField ("pmid"))
+				return false;
+			pArgs = Py_BuildValue ("(ss)", doc.getField("pmid").c_str(), "pubmed");
 		break;
 		default:
 			std::cerr << "PythonPlugin::resolveID: warning, unhandled id type "
@@ -154,23 +159,7 @@ bool PythonPlugin::resolveID (BibData &bib, PluginCapability::Identifier id)
 			if (cValue)
 				value = Glib::ustring (cValue);
 
-			if (key == "title") {
-				bib.setTitle (value);
-			} else if (key == "authors") {
-				bib.setAuthors (value);
-			} else if (key == "journal") {
-				bib.setJournal (value);
-			} else if (key == "volume") {
-				bib.setVolume (value);
-			} else if (key == "issue") {
-				bib.setIssue (value);
-			} else if (key == "year") {
-				bib.setYear (value);
-			} else if (key == "pages") {
-				bib.setPages (value);
-			} else {
-				bib.addExtra (key, value);
-			}
+			doc.setField (key, value);
 		}
 		Py_DECREF(pMetaData);
 	} else {
@@ -209,6 +198,7 @@ Glib::ustring const PythonPlugin::getLongName ()
 
 Glib::ustring const PythonPlugin::getPluginInfoField (Glib::ustring const &targetKey)
 {
+	PyObject_Print (pPluginInfo_, stderr, 0);
 	int const N = PyList_Size (pPluginInfo_);
 
 	for (int i = 0; i < N; ++i) {

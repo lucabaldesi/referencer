@@ -462,8 +462,9 @@ void Document::readPDF ()
 
 bool Document::canGetMetadata ()
 {
-	if (!bib_.getDoi ().empty ()
-		|| !bib_.getExtras ()["eprint"].empty()
+	if (hasField("doi")
+		|| hasField ("eprint")
+		|| hasField ("pmid")
 	   )
 	{
 		return true;
@@ -495,11 +496,14 @@ void Document::getMetaData ()
 
 	PluginCapability potentials;
 
-	if (!bib_.getDoi().empty ())
+	if (hasField("doi"))
 		potentials.add(PluginCapability::DOI);
 
-	if (!bib_.getExtras()["eprint"].empty())
+	if (hasField("eprint"))
 		potentials.add(PluginCapability::ARXIV);
+
+	if (hasField("pmid"))
+		potentials.add(PluginCapability::PUBMED);
 
 	if (potentials.empty())
 		return;
@@ -514,13 +518,15 @@ void Document::getMetaData ()
 
 	for (; it != end; ++it) {
 		if (!(*it)->cap_.hasAny(potentials)) {
-			std::cerr << "BibData::resolveDoi: module '"
+			std::cerr << "Document::getMetaData: module '"
 				<< (*it)->getShortName() << "' has no "
 				"suitable capabilities\n";
 			continue;
 		}
 
-		success = (*it)->resolve(bib_);
+		std::cerr << "Document::getMetaData: trying module '"
+			<< (*it)->getShortName() << "'\n";
+		success = (*it)->resolve(*this);
 
 		if (success) {
 			std::cerr << "BibData::resolveDoi: paydirt with module '"

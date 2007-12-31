@@ -5,7 +5,7 @@
 
 #include "Plugin.h"
 
-class BibData;
+class Document;
 
 class ArxivPlugin : public Plugin
 {
@@ -15,7 +15,7 @@ class ArxivPlugin : public Plugin
 			cap_.add(PluginCapability::ARXIV);
 		}
 		~ArxivPlugin () {};
-		virtual bool resolve (BibData &bib);
+		virtual bool resolve (Document &doc);
 		virtual Glib::ustring const getShortName ();
 		virtual Glib::ustring const getLongName ();
 };
