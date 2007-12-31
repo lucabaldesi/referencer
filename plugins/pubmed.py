@@ -32,7 +32,7 @@ def get_citation_from_doi(query, email='referencer@icculus.org', tool='Reference
 
 	# try to resolve the PubMed ID of the DOI
 	url = 'http://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?' + urllib.urlencode(params)
-	data = referencer.download ("Resolving DOI", "Finding PubMed ID from DOI", url);
+	data = referencer.download ("Resolving DOI", "Finding PubMed ID from DOI %s" % query , url);
 
 	# parse XML output from PubMed...
 	xmldoc = minidom.parseString(data)
@@ -58,7 +58,7 @@ def get_citation_from_pmid (pmid, email='referencer@icculus.org', tool='Referenc
 
 	# get citation info:
 	url = 'http://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?' + urllib.urlencode(params)
-	data = referencer.download ("Resolving DOI", "Fetching metadata from NCBI", url);
+	data = referencer.download ("Resolving DOI", "Fetching metadata from NCBI for PubMed ID %s" % pmid, url);
 
 	return data
 
