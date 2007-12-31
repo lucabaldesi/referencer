@@ -113,14 +113,42 @@ class CrossRefParser : public Glib::Markup::Parser {
 
 bool CrossRefPlugin::resolve (Document &doc)
 {
+	/*
+	 * Prompt for username and password if needed
+	 */
+	if (_global_prefs->getCrossRefUsername ().empty ()) {
+		Glib::ustring message = 
+			String::ucompose (
+				"<b><big>%1</big></b>\n\n%2\n",
+				_("CrossRef credentials not found"),
+				_("To use the CrossRef service, an account is needed.  Username and password may be set in Preferences.")
+				);
+
+		Gtk::MessageDialog dialog(message, true, Gtk::MESSAGE_WARNING,
+				          Gtk::BUTTONS_NONE, true);
+
+		dialog.add_button (Gtk::Stock::CANCEL,     0);
+		dialog.add_button (_("_Preferences"),      1);
+		dialog.add_button (_("_Disable CrossRef"), 2);
+		int response = dialog.run ();
+		if (response == 0) {
+			return false;
+		} else if (response == 1) {
+			_global_prefs->showDialog ();
+		} else if (response == 2) {
+			_global_prefs->disablePlugin (this);
+			return false;
+		}
+	}
+
 	Glib::ustring messagetext =
 		String::ucompose (
 			"<b><big>%1</big></b>\n\n%2\n",
 			_("Downloading metadata"),
-		String::ucompose (
-			_("Contacting crossref.org to retrieve metadata for '%1'"),
-			doc.getField("doi"))
-	);
+			String::ucompose (
+				_("Contacting crossref.org to retrieve metadata for '%1'"),
+				doc.getField("doi"))
+		);
 
 	Glib::ustring const url = 
 		  Glib::ustring("http://www.crossref.org/openurl/?pid=")

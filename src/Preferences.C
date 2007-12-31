@@ -190,71 +190,9 @@ Preferences::Preferences ()
 	listSortColumn_ = confclient_->get_entry (CONF_PATH "/listsortcolumn");
 	listSortOrder_ = confclient_->get_entry (CONF_PATH "/listsortorder");
 
-	ignorechanges_ = false;
+	ignoreChanges_ = false;
 }
 
-
-std::pair<int, int> Preferences::getListSort ()
-{
-	std::pair<int, int> retval;
-	retval.first = confclient_->get_int (listSortColumn_.get_key());
-	retval.second = confclient_->get_int (listSortOrder_.get_key());
-
-	/*
-	 * XXX bit cracky, 0 is an invalid value because it
-	 * refers to the pointer col that gtk doesn't know how
-	 * to sort.  -1 means "sort on no columns".  This shouldn't
-	 * happen if we have a proper gconf schema
-	 */
-	if (retval.first == 0) {
-		retval.first = -1;
-	} 
-
-	return retval;
-}
-
-
-void Preferences::setListSort (int const column, int const order)
-{
-	confclient_->set (listSortColumn_.get_key(), column);
-	confclient_->set (listSortOrder_.get_key(), order);
-}
-
-
-void Preferences::onPluginToggled (Glib::ustring const &str)
-{
-	Gtk::TreePath path(str);
-
-	Gtk::TreeModel::iterator it = pluginStore_->get_iter (path);
-	bool enable = !(*it)[colEnabled_];
-	Plugin *plugin = (*it)[colPlugin_];
-	plugin->setEnabled (enable);
-	(*it)[colEnabled_] = plugin->isEnabled ();
-
-	std::vector<Glib::ustring> disable =
-		confclient_->get_string_list (disabledPlugins_.get_key ());
-	std::vector<Glib::ustring>::iterator dit = disable.begin();
-	std::vector<Glib::ustring>::iterator const dend = disable.end();
-	if (plugin->isEnabled() == true) {
-		// Remove from gconf list of disabled plugins
-		for (; dit != dend; ++dit) {
-			if (*dit == plugin->getShortName()) {
-				disable.erase(dit);
-				break;
-			}
-		}
-	} else {
-		// Add to gconf list of disabled plugins
-		bool found = false;
-		for (; dit != dend; ++dit)
-			if (*dit == plugin->getShortName())
-				found = true;
-		if (!found)
-			disable.push_back(plugin->getShortName());
-
-	}
-	confclient_->set_string_list (disabledPlugins_.get_key(), disable);
-}
 
 
 Preferences::~Preferences ()
@@ -266,7 +204,7 @@ Preferences::~Preferences ()
 void Preferences::onConfChange (int number, Gnome::Conf::Entry entry)
 {
 	//std::cerr << "onConfChange: '" << entry.get_key () << "'\n";
-	ignorechanges_ = true;
+	ignoreChanges_ = true;
 	Glib::ustring key = entry.get_key ();
 
 	// Settings not in dialog
@@ -317,13 +255,13 @@ void Preferences::onConfChange (int number, Gnome::Conf::Entry entry)
 	}
 	//std::cerr << "Complete.\n";
 
-	ignorechanges_ = false;
+	ignoreChanges_ = false;
 }
 
 
 void Preferences::showDialog ()
 {
-	ignorechanges_ = true;
+	ignoreChanges_ = true;
 
 	/*
 	 * Plugin stuff was populated at construction time
@@ -348,7 +286,7 @@ void Preferences::showDialog ()
 		mode != "none" && confclient_->get_bool (USE_PROXY_KEY));
 	useauthcheck_->set_active (confclient_->get_bool (HTTP_USE_AUTH_KEY));
 
-	ignorechanges_ = false;
+	ignoreChanges_ = false;
 
 	updateSensitivity ();
 
@@ -361,7 +299,7 @@ using Utility::DOIURLValid;
 
 void Preferences::onCrossRefChanged ()
 {
-	if (ignorechanges_) return;
+	if (ignoreChanges_) return;
 
 	confclient_->set (crossRefUsername_.get_key(), crossRefUsernameEntry_->get_text());
 	confclient_->set (crossRefPassword_.get_key(), crossRefPasswordEntry_->get_text());
@@ -383,7 +321,7 @@ void Preferences::updateSensitivity ()
 
 void Preferences::onProxyChanged ()
 {
-	if (ignorechanges_) return;
+	if (ignoreChanges_) return;
 
 	bool useproxy = useproxycheck_->get_active ();
 	bool useauth = useauthcheck_->get_active ();
@@ -508,4 +446,97 @@ void Preferences::setWindowSize (std::pair<int, int> size)
 {
 	confclient_->set (width_.get_key (), size.first);
 	confclient_->set (height_.get_key (), size.second);
+}
+
+
+std::pair<int, int> Preferences::getListSort ()
+{
+	std::pair<int, int> retval;
+	retval.first = confclient_->get_int (listSortColumn_.get_key());
+	retval.second = confclient_->get_int (listSortOrder_.get_key());
+
+	/*
+	 * XXX bit cracky, 0 is an invalid value because it
+	 * refers to the pointer col that gtk doesn't know how
+	 * to sort.  -1 means "sort on no columns".  This shouldn't
+	 * happen if we have a proper gconf schema
+	 */
+	if (retval.first == 0) {
+		retval.first = -1;
+	} 
+
+	return retval;
+}
+
+
+void Preferences::setListSort (int const column, int const order)
+{
+	confclient_->set (listSortColumn_.get_key(), column);
+	confclient_->set (listSortOrder_.get_key(), order);
+}
+
+
+void Preferences::onPluginToggled (Glib::ustring const &str)
+{
+	Gtk::TreePath path(str);
+
+	Gtk::TreeModel::iterator it = pluginStore_->get_iter (path);
+	bool enable = !(*it)[colEnabled_];
+	Plugin *plugin = (*it)[colPlugin_];
+	plugin->setEnabled (enable);
+	(*it)[colEnabled_] = plugin->isEnabled ();
+
+	std::vector<Glib::ustring> disable =
+		confclient_->get_string_list (disabledPlugins_.get_key ());
+	std::vector<Glib::ustring>::iterator dit = disable.begin();
+	std::vector<Glib::ustring>::iterator const dend = disable.end();
+	if (plugin->isEnabled() == true) {
+		// Remove from gconf list of disabled plugins
+		for (; dit != dend; ++dit) {
+			if (*dit == plugin->getShortName()) {
+				disable.erase(dit);
+				break;
+			}
+		}
+	} else {
+		// Add to gconf list of disabled plugins
+		bool found = false;
+		for (; dit != dend; ++dit)
+			if (*dit == plugin->getShortName())
+				found = true;
+		if (!found)
+			disable.push_back(plugin->getShortName());
+
+	}
+	confclient_->set_string_list (disabledPlugins_.get_key(), disable);
+}
+
+
+
+void Preferences::disablePlugin (Plugin *plugin)
+{
+	Gtk::ListStore::iterator it = pluginStore_->children().begin();
+	Gtk::ListStore::iterator const end = pluginStore_->children().end();
+	for (; it != end; ++it) {
+		if ((*it)[colPlugin_] == plugin) {
+			(*it)[colEnabled_] = false;
+		}
+	}
+
+	plugin->setEnabled (false);
+
+	std::vector<Glib::ustring> disable =
+		confclient_->get_string_list (disabledPlugins_.get_key ());
+	std::vector<Glib::ustring>::iterator dit = disable.begin();
+	std::vector<Glib::ustring>::iterator const dend = disable.end();
+
+
+	bool found = false;
+	for (; dit != dend; ++dit)
+		if (*dit == plugin->getShortName())
+			found = true;
+	if (!found)
+		disable.push_back(plugin->getShortName());
+
+	confclient_->set_string_list (disabledPlugins_.get_key(), disable);
 }

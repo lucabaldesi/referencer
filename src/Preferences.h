@@ -43,6 +43,9 @@ private:
 	void onPluginToggled (Glib::ustring const &str);
 
 	Gnome::Conf::Entry disabledPlugins_;
+	public:
+	void disablePlugin (Plugin *plugin);
+	private:
 	/*
 	 * End of Plugins
 	 */
@@ -115,7 +118,7 @@ private:
 	sigc::signal<void> uselistviewsignal_;
 	sigc::signal<void> showtagpanesignal_;
 
-	bool ignorechanges_;
+	bool ignoreChanges_;
 
 	Glib::RefPtr<Gnome::Conf::Client> confclient_;
 

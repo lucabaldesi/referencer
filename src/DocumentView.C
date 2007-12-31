@@ -671,7 +671,11 @@ void DocumentView::docSelectionChanged ()
  */
 void DocumentView::docActivated (const Gtk::TreeModel::Path& path)
 {
-	Gtk::ListStore::iterator it = docstoresort_->get_iter (path);
+	Gtk::TreePath filterPath = docstoresort_->convert_path_to_child_path (path);
+	Gtk::TreePath realPath = docstorefilter_->convert_path_to_child_path (filterPath);
+
+
+	Gtk::ListStore::iterator it = docstore_->get_iter (realPath);
 	Document *doc = (*it)[docpointercol_];
 	// The methods we're calling should fail out safely and quietly
 	// if the number of docs selected != 1
