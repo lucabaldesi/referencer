@@ -33,10 +33,6 @@ referencer_download(PyObject *self, PyObject *args)
 	PyObject *title = PyTuple_GetItem (args, 0);
 	PyObject *message = PyTuple_GetItem (args, 1);
 
-	std::cerr << "url = " << url << "\n";
-	char *urlStr = PyString_AsString (url);
-	std::cerr << "urlStr = " << urlStr << "\n";
-	/* XXX catch exceptions */
 	PyObject *ret = NULL;
 	try {
 		Glib::ustring &xml = Transfer::readRemoteFile (

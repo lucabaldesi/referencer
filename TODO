@@ -1,14 +1,7 @@
 
 export getField/setField to plugins?
-link plugins: 
- - pubmed (variations?)
- - doi (dx.doi.org: call it "web link")
- - arxiv (call it arxiv.org abstract)
- - google scholar: this author
 
-Release-critical:
- - python plugins to use proxy server
- - python plugins to cope with timeout of http get
+"More by this author" on pubmed and google
 
 There is no release schedule.
 

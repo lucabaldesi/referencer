@@ -6,6 +6,11 @@
 class PluginCapability
 {
 	public:
+		/*
+		 * There are if()elseif() blocks on these
+		 * in various places, beware when adding a 
+		 * new one
+		 */
 		typedef enum {
 			NONE = 0,
 			DOI = 1 << 0,

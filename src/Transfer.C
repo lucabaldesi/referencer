@@ -134,9 +134,6 @@ Glib::ustring &readRemoteFile (
 	cancelbutton->signal_clicked().connect(
 		sigc::ptr_fun (&onTransferCancel));
 
-	dialog.show_all ();
-	vbox->set_border_width (12);
-
 	transfercomplete = false;
 	transferfail = false;
 
@@ -146,14 +143,22 @@ Glib::ustring &readRemoteFile (
 	Glib::Timer timeout;
 	timeout.start ();
 
-	double const max_timeout = 10.0;
+	double const maxTimeout = 10.0;
+	double const dialogDelay = 1.0;
+	bool dialogShown = false;
 	while (transfercomplete == false && transferfail == false) {
 		progress.pulse ();
 		while (Gnome::Main::events_pending())
 			Gnome::Main::iteration ();
 		Glib::usleep (100000);
 
-		if (timeout.elapsed () > max_timeout) {
+		if (!dialogShown && timeout.elapsed () > dialogDelay) {
+			dialog.show_all ();
+			vbox->set_border_width (12);
+			dialogShown = true;
+		}
+
+		if (timeout.elapsed () > maxTimeout) {
 			transferfail = true;
 			break;
 		}
