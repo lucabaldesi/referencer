@@ -595,18 +595,16 @@ void Document::setField (Glib::ustring const &field, Glib::ustring const &value)
 		bib_.setTitle (value);
 	else if (field == "volume")
 		bib_.setVolume (value);
-	else if (field == "issue")
+	else if (field == "number")
 		bib_.setIssue (value);
 	else if (field == "journal")
 		bib_.setJournal (value);
-	else if (field == "authors")
+	else if (field == "author")
 		bib_.setAuthors (value);
 	else if (field == "year")
 		bib_.setYear (value);
 	else if (field == "pages")
 		bib_.setPages (value);
-	else if (field == "key")
-		setKey (value);
 	else {
 		bib_.extras_[field] = value;
 	}
@@ -624,18 +622,16 @@ Glib::ustring Document::getField (Glib::ustring const &field)
 		return bib_.getTitle ();
 	else if (field == "volume")
 		return bib_.getVolume ();
-	else if (field == "issue")
+	else if (field == "number")
 		return bib_.getIssue ();
 	else if (field == "journal")
 		return bib_.getJournal ();
-	else if (field == "authors")
+	else if (field == "author")
 		return bib_.getAuthors ();
 	else if (field == "year")
 		return bib_.getYear ();
 	else if (field == "pages")
 		return bib_.getPages ();
-	else if (field == "key")
-		return getKey ();
 	else {
 		if (bib_.extras_.find(field) != bib_.extras_.end()) {
 			const Glib::ustring _field = field;
@@ -658,18 +654,16 @@ bool Document::hasField (Glib::ustring const &field) const
 		return !bib_.getTitle ().empty();
 	else if (field == "volume")
 		return !bib_.getVolume ().empty();
-	else if (field == "issue")
+	else if (field == "number")
 		return !bib_.getIssue ().empty();
 	else if (field == "journal")
 		return !bib_.getJournal ().empty();
-	else if (field == "authors")
+	else if (field == "author")
 		return !bib_.getAuthors ().empty();
 	else if (field == "year")
 		return !bib_.getYear ().empty();
 	else if (field == "pages")
 		return !bib_.getPages ().empty();
-	else if (field == "key")
-		return true;
 	else {
 		if (bib_.extras_.find(field) != bib_.extras_.end())
 			return true;
@@ -678,4 +672,51 @@ bool Document::hasField (Glib::ustring const &field) const
 	}
 }
 
+
+/*
+ * Metadata fields.  Does not include document key or type
+ */
+std::map <Glib::ustring, Glib::ustring> Document::getFields ()
+{
+	std::map <Glib::ustring, Glib::ustring> fields;
+
+	if (!bib_.getDoi ().empty())
+		fields["doi"] = bib_.getDoi();
+
+	if (!bib_.getTitle ().empty())
+		fields["title"] = bib_.getTitle();
+
+	if (!bib_.getVolume ().empty())
+		fields["volume"] = bib_.getVolume();
+
+	if (!bib_.getIssue ().empty())
+		fields["number"] = bib_.getIssue();
+
+	if (!bib_.getJournal ().empty())
+		fields["journal"] = bib_.getJournal();
+
+	if (!bib_.getAuthors ().empty())
+		fields["author"] = bib_.getAuthors();
+
+	if (!bib_.getYear ().empty())
+		fields["year"] = bib_.getYear();
+
+	if (!bib_.getPages ().empty())
+		fields["pages"] = bib_.getPages();
+
+
+		
+	BibData::ExtrasMap::iterator it = bib_.extras_.begin ();
+	BibData::ExtrasMap::iterator end = bib_.extras_.end ();
+	for (; it != end; ++it) {
+		fields[(*it).first] = (*it).second;
+	}
+
+	return fields;
+}
+
+
+void Document::clearFields ()
+{
+}
 

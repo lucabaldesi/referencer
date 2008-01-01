@@ -13,6 +13,8 @@
 #ifndef DOCUMENTPROPERTIES_H
 #define DOCUMENTPROPERTIES_H
 
+#include <map>
+
 #include <libglademm.h>
 #include <gtkmm.h>
 
@@ -22,37 +24,35 @@ class DocumentProperties {
 	private:
 	Glib::RefPtr<Gnome::Glade::Xml> xml_;
 
-	Document *doc_;
-
+	/*
+	 * Local working copy
+	 */
 	Gtk::Dialog *dialog_;
-	Gtk::Entry *doientry_;
 	Gtk::Entry *keyentry_;
-	Gtk::Entry *titleentry_;
-	Gtk::Entry *authorsentry_;
-	Gtk::Entry *journalentry_;
-	Gtk::Entry *volumeentry_;
-	Gtk::Entry *issueentry_;
-	Gtk::Entry *pagesentry_;
-	Gtk::Entry *yearentry_;
 	Gtk::FileChooserButton *filechooser_;
+	Gtk::Image *iconImage_;
+
 	Gtk::Button *crossrefbutton_;
 	Gtk::Button *pastebibtexbutton_;
 	Gtk::Button *newextrafieldbutton_;
 	Gtk::Button *deleteextrafieldbutton_;
 	Gtk::Button *editextrafieldbutton_;
-	Gtk::ComboBoxEntryText *typecombo_;
 	Gtk::Expander *extrafieldsexpander_;
 	Gtk::TreeView *extrafieldsview_;
 	Glib::RefPtr<Gtk::TreeSelection> extrafieldssel_;
+
+	Gtk::ComboBoxEntryText *typeCombo_;
+	std::map <Glib::ustring, Gtk::Entry*> fieldEntries_;
 
 	Gtk::TreeModelColumn<Glib::ustring> extrakeycol_;
 	Gtk::TreeModelColumn<Glib::ustring> extravalcol_;
 	Gtk::TreeModel::ColumnRecord cols_;
 	Glib::RefPtr< Gtk::ListStore > extrafieldsstore_;
 
-	void update ();
-	void save ();
-	void onCrossRefLookup ();
+	void update (Document &doc);
+	void save (Document &doc);
+	void setupFields (Glib::ustring const &docType);
+	void onMetadataLookup ();
 	void onPasteBibtex ();
 	void onClear ();
 	void onNewExtraField ();
@@ -62,6 +62,8 @@ class DocumentProperties {
 	void onExtraFieldEdited (const Glib::ustring& path, const Glib::ustring& text);
 	void onDoiEntryChanged ();
 	void updateSensitivity();
+	void onTypeChanged ();
+	bool ignoreTypeChanged_;
 
 	public:
 		bool show (Document *doc);

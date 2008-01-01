@@ -1,4 +1,6 @@
 
+
+disambiguate "key" bibtex field from bibtex key
 export getField/setField to plugins?
 
 allow plugins to prompt for username+password

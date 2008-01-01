@@ -46,6 +46,8 @@ def get_citation_from_doi(query, email='referencer@icculus.org', tool='Reference
 	# get ID
 	id = ids[0].childNodes[0].data
 
+	print "DOI ", query, " has PubMed ID ", id
+
 	return get_citation_from_pmid (id)
  
 def get_citation_from_pmid (pmid, email='referencer@icculus.org', tool='Referencer', database='pubmed'):
@@ -108,7 +110,7 @@ def text_output(xml):
 	output.append (["title", title])
 	output.append (["journal", journal])
 	output.append (["volume", volume])
-	output.append (["issue", issue])
+	output.append (["number", issue])
 	output.append (["year", year])
 	output.append (["pages", pages])
 	authorstring = ""
@@ -117,7 +119,7 @@ def text_output(xml):
 			authorstring += " and "
 		authorstring += author
 	if (len(authorstring) > 0):
-		output.append (["authors", authorstring])
+		output.append (["author", authorstring])
 	return output
 
 def resolve_metadata (code, type):

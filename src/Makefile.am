@@ -37,6 +37,8 @@ referencer_SOURCES =	\
 	DocumentList.h	\
 	DocumentProperties.C	\
 	DocumentProperties.h	\
+	DocumentTypes.C \
+	DocumentTypes.h \
 	DocumentView.C \
 	DocumentView.h \
 	ev-tooltip.c \

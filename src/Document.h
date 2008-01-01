@@ -81,6 +81,8 @@ class Document {
 	void setField (Glib::ustring const &field, Glib::ustring const &value);
 	Glib::ustring getField (Glib::ustring const &field);
 	bool hasField (Glib::ustring const &field) const;
+	std::map <Glib::ustring, Glib::ustring> getFields ();
+	void clearFields ();
 };
 
 #endif

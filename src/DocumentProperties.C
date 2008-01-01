@@ -17,6 +17,7 @@
 
 #include "Document.h"
 #include "DocumentList.h"
+#include "DocumentTypes.h"
 #include "Preferences.h"
 
 #include "DocumentProperties.h"
@@ -29,33 +30,12 @@ DocumentProperties::DocumentProperties ()
 
 	dialog_ = (Gtk::Dialog *) xml_->get_widget ("DocumentProperties");
 	filechooser_ = (Gtk::FileChooserButton *) xml_->get_widget ("File");
-	doientry_ = (Gtk::Entry *) xml_->get_widget ("Doi");
 	keyentry_ = (Gtk::Entry *) xml_->get_widget ("Key");
-	titleentry_ = (Gtk::Entry *) xml_->get_widget ("Title");
-	authorsentry_ = (Gtk::Entry *) xml_->get_widget ("Authors");
-	journalentry_ = (Gtk::Entry *) xml_->get_widget ("Journal");
-	volumeentry_ = (Gtk::Entry *) xml_->get_widget ("Volume");
-	issueentry_ = (Gtk::Entry *) xml_->get_widget ("Issue");
-	pagesentry_ = (Gtk::Entry *) xml_->get_widget ("Pages");
-	yearentry_ = (Gtk::Entry *) xml_->get_widget ("Year");
+	iconImage_ = (Gtk::Image *) xml_->get_widget ("Icon");
 
-	Gtk::VBox *box = (Gtk::VBox *) xml_->get_widget ("Type");
-	typecombo_ = Gtk::manage (new Gtk::ComboBoxEntryText);
-	box->pack_start (*typecombo_, true, true, 0);
-	box->show_all ();
-
-	std::vector<Glib::ustring>::iterator it = BibData::getDocTypes().begin();
-	for (; it != BibData::getDocTypes().end(); ++it) {
-		typecombo_->append_text (*it);
-	}
-	typecombo_->set_active_text (BibData::getDefaultDocType ());
-
-	doientry_->signal_changed ().connect (
-		sigc::mem_fun (*this, &DocumentProperties::onDoiEntryChanged));
-	
-	crossrefbutton_ = (Gtk::Button *) xml_->get_widget ("CrossRefLookup");
+	crossrefbutton_ = (Gtk::Button *) xml_->get_widget ("Lookup");
 	crossrefbutton_->signal_clicked().connect(
-		sigc::mem_fun (*this, &DocumentProperties::onCrossRefLookup));
+		sigc::mem_fun (*this, &DocumentProperties::onMetadataLookup));
 
 	pastebibtexbutton_ = (Gtk::Button *) xml_->get_widget ("PasteBibtex");
 	pastebibtexbutton_->signal_clicked().connect(
@@ -101,6 +81,8 @@ DocumentProperties::DocumentProperties ()
 		extrafieldsview_->get_column(1)->get_first_cell_renderer() );
 	extrafieldsrenderer->signal_edited ().connect (
 		sigc::mem_fun (*this, &DocumentProperties::onExtraFieldEdited));
+
+	ignoreTypeChanged_ = false;
 }
 
 
@@ -111,9 +93,7 @@ bool DocumentProperties::show (Document *doc)
 		return false;
 	}
 
-	doc_ = doc;
-
-	update ();
+	update (*doc);
 
 	extrafieldsexpander_->set_expanded (doc->getBibData().hasExtras ());
 
@@ -122,7 +102,7 @@ bool DocumentProperties::show (Document *doc)
 	int result = dialog_->run ();
 
 	if (result == Gtk::RESPONSE_OK) {
-		save ();
+		save (*doc);
 	}
 
 	dialog_->hide ();
@@ -133,62 +113,185 @@ bool DocumentProperties::show (Document *doc)
 		return false;
 }
 
+DocumentTypeManager typeManager;
 
-void DocumentProperties::update ()
+void DocumentProperties::update (Document &doc)
 {
-	BibData &bib = doc_->getBibData();
+	BibData &bib = doc.getBibData();
 
-	filechooser_->set_uri (doc_->getFileName());
+	filechooser_->set_uri (doc.getFileName());
+	keyentry_->set_text (doc.getKey());
+	iconImage_->set (doc.getThumbnail());
 
-	doientry_->set_text (bib.getDoi());
-	keyentry_->set_text (doc_->getKey());
-	typecombo_->get_entry()->set_text (bib.getType());
+	setupFields (doc.getField("type"));
 
-	titleentry_->set_text (bib.getTitle());
-	authorsentry_->set_text (bib.getAuthors());
-	journalentry_->set_text (bib.getJournal());
-	volumeentry_->set_text (bib.getVolume());
-	issueentry_->set_text (bib.getIssue());
-	pagesentry_->set_text (bib.getPages());
-	yearentry_->set_text (bib.getYear());
+	bool const ignore = ignoreTypeChanged_;
+
+	ignoreTypeChanged_ = true;
+
+	DocumentType type = typeManager.getTypes()[doc.getField("type")];
+	typeCombo_->set_active_text (type.bibtexName_);
+	ignoreTypeChanged_ = ignore;
 
 	extrafieldsstore_->clear ();
-	BibData::ExtrasMap extras = bib.getExtras ();
-	BibData::ExtrasMap::iterator it = extras.begin ();
-	BibData::ExtrasMap::iterator const end = extras.end ();
-	for (; it != end; ++it ) {
-		Gtk::ListStore::iterator row = extrafieldsstore_->append ();
-		(*row)[extrakeycol_] = (*it).first;
-		(*row)[extravalcol_] = (*it).second;
+
+	std::map<Glib::ustring, Glib::ustring> fields = doc.getFields();
+	std::map<Glib::ustring, Glib::ustring>::iterator field = fields.begin ();
+	std::map<Glib::ustring, Glib::ustring>::iterator const endField = fields.end ();
+	for (; field != endField; ++field) {
+		Glib::ustring const key = (*field).first;
+		Glib::ustring const value = (*field).second;
+
+		if (fieldEntries_.find(key) != fieldEntries_.end()) {
+			fieldEntries_[key]->set_text (value);
+		} else {
+			Gtk::ListStore::iterator row = extrafieldsstore_->append ();
+			(*row)[extrakeycol_] = key;
+			(*row)[extravalcol_] = value;
+		}
 	}
 
 	updateSensitivity ();
 }
 
-void DocumentProperties::save ()
+void DocumentProperties::save (Document &doc)
 {
-	BibData &bib = doc_->getBibData();
+	BibData &bib = doc.getBibData();
 
 	Glib::ustring filename = filechooser_->get_uri ();
-	doc_->setFileName (filename);
-	doc_->setKey (keyentry_->get_text ());
+	doc.setFileName (filename);
+	doc.setKey (keyentry_->get_text ());
 
-	bib.setType (typecombo_->get_entry()->get_text());
-	bib.setDoi (doientry_->get_text ());
-	bib.setTitle (titleentry_->get_text ());
-	bib.setAuthors (authorsentry_->get_text ());
-	bib.setJournal (journalentry_->get_text ());
-	bib.setVolume (volumeentry_->get_text ());
-	bib.setIssue (issueentry_->get_text ());
-	bib.setPages (pagesentry_->get_text ());
-	bib.setYear (yearentry_->get_text ());
+	doc.setField ("type", typeCombo_->get_active_text ());
 
-	bib.clearExtras ();
+	doc.clearFields ();
+	std::map <Glib::ustring, Gtk::Entry*>:: iterator entry = fieldEntries_.begin();
+	std::map <Glib::ustring, Gtk::Entry*>:: iterator const endEntry = fieldEntries_.end();
+	for (; entry != endEntry; ++entry) {
+		Glib::ustring key = (*entry).first;
+		Glib::ustring value = ((*entry).second)->get_text ();
+		if (!value.empty())
+			doc.setField (key, value);
+	}
+
 	Gtk::ListStore::iterator it = extrafieldsstore_->children().begin ();
 	Gtk::ListStore::iterator const end = extrafieldsstore_->children().end ();
-	for (; it != end; ++it) {
-		bib.addExtra ((*it)[extrakeycol_], (*it)[extravalcol_]);
+	for (; it != end; ++it)
+		doc.setField ((*it)[extrakeycol_], (*it)[extravalcol_]);
+}
+
+
+void DocumentProperties::setupFields (Glib::ustring const &docType)
+{
+	Gtk::VBox *metadataBox = (Gtk::VBox *) xml_->get_widget ("MetadataBox");
+	if (metadataBox->children().size()) {
+		metadataBox->children().erase(metadataBox->children().begin());
 	}
+
+	DocumentType type = typeManager.getType (docType);
+
+	int const nRows = type.requiredFields_.size() + type.optionalFields_.size();
+	Gtk::Table *metadataTable = new Gtk::Table (nRows, 4, false);
+	metadataTable->set_col_spacings (6);
+	metadataTable->set_row_spacings (6);
+
+	fieldEntries_.clear ();
+
+	Gtk::Label *typeLabel = Gtk::manage (new Gtk::Label (_("_Type:"), Gtk::ALIGN_LEFT, Gtk::ALIGN_CENTER, true));
+	typeCombo_ = Gtk::manage (new Gtk::ComboBoxEntryText);
+	typeCombo_->signal_changed().connect (
+			sigc::mem_fun (*this, &DocumentProperties::onTypeChanged));
+	metadataTable->attach (*typeLabel, 0, 1, 0, 1, Gtk::FILL, Gtk::SHRINK | Gtk::FILL, 0, 0);
+	metadataTable->attach (*typeCombo_, 1, 4, 0, 1, Gtk::FILL, Gtk::SHRINK | Gtk::FILL, 0, 0);
+
+	for (DocumentTypeManager::TypesMap::iterator it = typeManager.getTypes().begin();
+			it != typeManager.getTypes().end();
+			++it) {
+		typeCombo_->append_text ((*it).second.bibtexName_);
+	}
+
+	int row = 1;
+	for (
+	     std::vector<DocumentField>::iterator it = type.requiredFields_.begin();
+	     it != type.requiredFields_.end();
+	     ++it) {
+
+		if (it->shortField_)
+			continue;
+
+		Gtk::Label *label = Gtk::manage (new Gtk::Label (it->displayName_ + ":", Gtk::ALIGN_LEFT, Gtk::ALIGN_CENTER, false));
+		Gtk::Entry *entry = Gtk::manage (new Gtk::Entry ());
+
+		fieldEntries_[it->internalName_] = entry;
+
+		metadataTable->attach (*label, 0, 1, row, row + 1, Gtk::FILL | Gtk::EXPAND, Gtk::SHRINK | Gtk::FILL, 0, 0);
+		metadataTable->attach (*entry, 1, 4, row, row + 1, Gtk::EXPAND | Gtk::FILL, Gtk::SHRINK | Gtk::FILL, 0, 0);
+		++row;
+	}
+	for (
+	     std::vector<DocumentField>::iterator it = type.optionalFields_.begin();
+	     it != type.optionalFields_.end();
+	     ++it) {
+
+		if (it->shortField_)
+			continue;
+
+		Gtk::Label *label = Gtk::manage (new Gtk::Label (it->displayName_ + ":", Gtk::ALIGN_LEFT, Gtk::ALIGN_CENTER, false));
+		Gtk::Entry *entry = Gtk::manage (new Gtk::Entry ());
+
+		fieldEntries_[it->internalName_] = entry;
+
+		metadataTable->attach (*label, 0, 1, row, row + 1, Gtk::FILL | Gtk::EXPAND, Gtk::SHRINK | Gtk::FILL, 0, 0);
+		metadataTable->attach (*entry, 1, 4, row, row + 1, Gtk::EXPAND | Gtk::FILL, Gtk::SHRINK | Gtk::FILL, 0, 0);
+		++row;
+	}
+
+	int col = 0;
+	for (
+	     std::vector<DocumentField>::iterator it = type.requiredFields_.begin();
+	     it != type.requiredFields_.end();
+	     ++it) {
+
+		if (!it->shortField_)
+			continue;
+
+		Gtk::Label *label = Gtk::manage (new Gtk::Label (it->displayName_ + ":", Gtk::ALIGN_LEFT, Gtk::ALIGN_CENTER, false));
+		Gtk::Entry *entry = Gtk::manage (new Gtk::Entry ());
+
+		fieldEntries_[it->internalName_] = entry;
+
+		metadataTable->attach (*label, 0 + col * 2, 1 + col * 2, row, row + 1, Gtk::FILL | Gtk::EXPAND, Gtk::SHRINK | Gtk::FILL, 0, 0);
+		metadataTable->attach (*entry, 1 + col * 2, 2 + col * 2, row, row + 1, Gtk::EXPAND | Gtk::FILL, Gtk::SHRINK | Gtk::FILL, 0, 0);
+		++col;
+		if (col > 1) {
+			++row;
+			col = 0;
+		}
+	}
+	for (
+	     std::vector<DocumentField>::iterator it = type.optionalFields_.begin();
+	     it != type.optionalFields_.end();
+	     ++it) {
+
+		if (!it->shortField_)
+			continue;
+
+		Gtk::Label *label = Gtk::manage (new Gtk::Label (it->displayName_ + ":", Gtk::ALIGN_LEFT, Gtk::ALIGN_CENTER, false));
+		Gtk::Entry *entry = Gtk::manage (new Gtk::Entry ());
+
+		fieldEntries_[it->internalName_] = entry;
+
+		metadataTable->attach (*label, 0 + col * 2, 1 + col * 2, row, row + 1, Gtk::FILL | Gtk::EXPAND, Gtk::SHRINK | Gtk::FILL, 0, 0);
+		metadataTable->attach (*entry, 1 + col * 2, 2 + col * 2, row, row + 1, Gtk::EXPAND | Gtk::FILL, Gtk::SHRINK | Gtk::FILL, 0, 0);
+		++col;
+		if (col > 1) {
+			++row;
+			col = 0;
+		}
+	}
+
+	metadataBox->pack_start (*metadataTable);
+	metadataBox->show_all ();
 }
 
 
@@ -198,7 +301,6 @@ void DocumentProperties::onNewExtraField ()
 	Gtk::Dialog dialog ("New Field", true, false);
 
 	Gtk::VBox *vbox = dialog.get_vbox ();
-
 
 	Gtk::HBox hbox;
 	hbox.set_spacing (12);
@@ -268,6 +370,7 @@ void DocumentProperties::onDoiEntryChanged ()
 
 void DocumentProperties::updateSensitivity()
 {
+#if 0
 	bool iseprintavail = false; 
 
 	//check for "eprint" field in extras
@@ -285,6 +388,7 @@ void DocumentProperties::updateSensitivity()
 		!_global_prefs->getWorkOffline () && 
 		( iseprintavail || isdoiavail )
 	);
+#endif
 }
 
 void DocumentProperties::onExtraFieldEdited (const Glib::ustring& path, const Glib::ustring& text)
@@ -293,16 +397,12 @@ void DocumentProperties::onExtraFieldEdited (const Glib::ustring& path, const Gl
 }
 
 
-void DocumentProperties::onCrossRefLookup ()
+void DocumentProperties::onMetadataLookup ()
 {
-	Document *orig = doc_;
-	Document spoof = *doc_;
-	// Should also update the arxiv eprint field?
-	spoof.getBibData().setDoi (doientry_->get_text ());
-	spoof.getMetaData();
-	doc_ = &spoof;
-	update ();
-	doc_ = orig;
+	Document doc;
+	save (doc);
+	doc.getMetaData ();
+	update (doc);
 }
 
 
@@ -337,15 +437,8 @@ void DocumentProperties::onPasteBibtex ()
 		/*
 		 * Can has crack pipe?
 		 */
-		(*it).getBibData();
 
-		Document *orig = doc_;
-		Document spoof = *doc_;
-		// Hmmm, wholesale overwrite
-		spoof.getBibData() = ((*it).getBibData());
-		doc_ = &spoof;
-		update ();
-		doc_ = orig;
+		update (*it);
 	} else {
 		Glib::ustring message;
 	       
@@ -370,22 +463,19 @@ void DocumentProperties::onPasteBibtex ()
 
 void DocumentProperties::onClear ()
 {
-	BibData &bib = doc_->getBibData();
+	std::map <Glib::ustring, Gtk::Entry*>:: iterator entry = fieldEntries_.begin();
+	std::map <Glib::ustring, Gtk::Entry*>:: iterator const endEntry = fieldEntries_.end();
+	for (; entry != endEntry; ++entry)
+		((*entry).second)->set_text (Glib::ustring());
 
-	doientry_->set_text (bib.getDoi());
-	keyentry_->set_text (doc_->getKey());
-	typecombo_->get_entry()->set_text (bib.getType());
-
-	titleentry_->set_text ("");
-	authorsentry_->set_text ("");
-	journalentry_->set_text ("");
-	volumeentry_->set_text ("");
-	issueentry_->set_text ("");
-	pagesentry_->set_text ("");
-	yearentry_->set_text ("");
-
-	/* FIXME should preserve eprint? */
 	extrafieldsstore_->clear ();
+}
 
-	updateSensitivity ();
+void DocumentProperties::onTypeChanged ()
+{
+	if (ignoreTypeChanged_)
+		return;
+	Document doc;
+	save (doc);
+	update (doc);
 }
