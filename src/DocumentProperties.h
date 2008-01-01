@@ -18,6 +18,8 @@
 #include <libglademm.h>
 #include <gtkmm.h>
 
+#include "CaseFoldCompare.h"
+
 class Document;
 
 class DocumentProperties {
@@ -42,7 +44,8 @@ class DocumentProperties {
 	Glib::RefPtr<Gtk::TreeSelection> extrafieldssel_;
 
 	Gtk::ComboBoxEntryText *typeCombo_;
-	std::map <Glib::ustring, Gtk::Entry*> fieldEntries_;
+	typedef std::map <Glib::ustring, Gtk::Entry*, casefoldCompare> FieldEntryMap;
+	FieldEntryMap fieldEntries_;
 
 	Gtk::TreeModelColumn<Glib::ustring> extrakeycol_;
 	Gtk::TreeModelColumn<Glib::ustring> extravalcol_;

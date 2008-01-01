@@ -128,9 +128,13 @@ void DocumentProperties::update (Document &doc)
 	bool const ignore = ignoreTypeChanged_;
 
 	ignoreTypeChanged_ = true;
-
-	DocumentType type = typeManager.getTypes()[doc.getBibData().getType()];
-	typeCombo_->set_active_text (type.bibtexName_);
+	if (typeManager.getTypes().find(doc.getBibData().getType()) != typeManager.getTypes().end()) {
+		DocumentType type = typeManager.getTypes()[doc.getBibData().getType()];
+		typeCombo_->set_active_text (type.bibtexName_);
+	} else {
+		typeCombo_->append_text (doc.getBibData().getType());
+		typeCombo_->set_active_text (doc.getBibData().getType());
+	}
 	ignoreTypeChanged_ = ignore;
 
 	extrafieldsstore_->clear ();
@@ -165,8 +169,8 @@ void DocumentProperties::save (Document &doc)
 	doc.getBibData().setType (typeCombo_->get_active_text ());
 
 	doc.clearFields ();
-	std::map <Glib::ustring, Gtk::Entry*>:: iterator entry = fieldEntries_.begin();
-	std::map <Glib::ustring, Gtk::Entry*>:: iterator const endEntry = fieldEntries_.end();
+	FieldEntryMap::iterator entry = fieldEntries_.begin();
+	FieldEntryMap::iterator const endEntry = fieldEntries_.end();
 	for (; entry != endEntry; ++entry) {
 		Glib::ustring key = (*entry).first;
 		Glib::ustring value = ((*entry).second)->get_text ();
