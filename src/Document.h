@@ -66,7 +66,7 @@ class Document {
 		bool const utf8);
 	void writeXML (std::ostringstream &out);
 	void readPDF ();
-	void getMetaData ();
+	bool getMetaData ();
 	void renameFromKey ();
 
 	BibData& getBibData () {return bib_;}

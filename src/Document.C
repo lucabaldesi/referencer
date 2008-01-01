@@ -488,11 +488,13 @@ bool Document::matchesSearch (Glib::ustring const &search)
 	return false;
 }
 
-
-void Document::getMetaData ()
+/*
+ * Returns true on success
+ */
+bool Document::getMetaData ()
 {
 	if (_global_prefs->getWorkOffline())
-		return;
+		return false;
 
 	PluginCapability potentials;
 
@@ -506,7 +508,7 @@ void Document::getMetaData ()
 		potentials.add(PluginCapability::PUBMED);
 
 	if (potentials.empty())
-		return;
+		return false;
 
 	PluginManager *pluginManager = _global_plugins;
 
@@ -542,6 +544,8 @@ void Document::getMetaData ()
 		if (getKey().substr(0, defaultKey_.size()) == defaultKey_)
 			setKey(generateKey ());
 	}
+
+	return success;
 }
 
 
@@ -589,8 +593,6 @@ void Document::setField (Glib::ustring const &field, Glib::ustring const &value)
 {
 	if (field == "doi")
 		bib_.setDoi (value);
-	else if (field == "type")
-		bib_.setType (value);
 	else if (field == "title")
 		bib_.setTitle (value);
 	else if (field == "volume")
@@ -616,8 +618,6 @@ Glib::ustring Document::getField (Glib::ustring const &field)
 {
 	if (field == "doi")
 		return bib_.getDoi ();
-	else if (field == "type")
-		return bib_.getType ();
 	else if (field == "title")
 		return bib_.getTitle ();
 	else if (field == "volume")
@@ -648,8 +648,6 @@ bool Document::hasField (Glib::ustring const &field) const
 {
 	if (field == "doi")
 		return !bib_.getDoi ().empty();
-	else if (field == "type")
-		return !bib_.getType ().empty();
 	else if (field == "title")
 		return !bib_.getTitle ().empty();
 	else if (field == "volume")

@@ -123,13 +123,13 @@ void DocumentProperties::update (Document &doc)
 	keyentry_->set_text (doc.getKey());
 	iconImage_->set (doc.getThumbnail());
 
-	setupFields (doc.getField("type"));
+	setupFields (doc.getBibData().getType());
 
 	bool const ignore = ignoreTypeChanged_;
 
 	ignoreTypeChanged_ = true;
 
-	DocumentType type = typeManager.getTypes()[doc.getField("type")];
+	DocumentType type = typeManager.getTypes()[doc.getBibData().getType()];
 	typeCombo_->set_active_text (type.bibtexName_);
 	ignoreTypeChanged_ = ignore;
 
@@ -162,7 +162,7 @@ void DocumentProperties::save (Document &doc)
 	doc.setFileName (filename);
 	doc.setKey (keyentry_->get_text ());
 
-	doc.setField ("type", typeCombo_->get_active_text ());
+	doc.getBibData().setType (typeCombo_->get_active_text ());
 
 	doc.clearFields ();
 	std::map <Glib::ustring, Gtk::Entry*>:: iterator entry = fieldEntries_.begin();
@@ -363,32 +363,12 @@ void DocumentProperties::onExtraFieldsSelectionChanged ()
 	editextrafieldbutton_->set_sensitive (enable);
 }
 
-void DocumentProperties::onDoiEntryChanged ()
-{
-	updateSensitivity();
-}
 
 void DocumentProperties::updateSensitivity()
 {
-#if 0
-	bool iseprintavail = false; 
-
-	//check for "eprint" field in extras
-	Gtk::ListStore::iterator it = extrafieldsstore_->children().begin ();
-	Gtk::ListStore::iterator const end = extrafieldsstore_->children().end ();
-	for(; it != end; ++it ) {
-		if( ((*it)[extrakeycol_] == "eprint") && ( (*it)[extravalcol_]!="" ) ) {
-			iseprintavail = true;
-			continue;
-		}
-	}
-	bool isdoiavail = !doientry_->get_text().empty();
-
-	crossrefbutton_->set_sensitive (
-		!_global_prefs->getWorkOffline () && 
-		( iseprintavail || isdoiavail )
-	);
-#endif
+	Document doc;
+	save (doc);
+	crossrefbutton_->set_sensitive (doc.canGetMetadata ());
 }
 
 void DocumentProperties::onExtraFieldEdited (const Glib::ustring& path, const Glib::ustring& text)
@@ -401,8 +381,8 @@ void DocumentProperties::onMetadataLookup ()
 {
 	Document doc;
 	save (doc);
-	doc.getMetaData ();
-	update (doc);
+	if (doc.getMetaData ())
+		update (doc);
 }
 
 

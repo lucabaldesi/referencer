@@ -39,7 +39,6 @@ class BibData {
 	public:
 	BibData ();
 
-	static std::vector<Glib::ustring> &getDocTypes ();
 	static Glib::ustring &getDefaultDocType ();
 
 	void writeXML (std::ostringstream &out);

@@ -36,6 +36,9 @@ class DocumentType {
 	std::vector<DocumentField> optionalFields_;
 	Glib::ustring bibtexName_;
 	Glib::ustring displayName_;
+	DocumentType () {}
+	DocumentType (Glib::ustring bibtex, Glib::ustring display)
+	{bibtexName_ = bibtex; displayName_ = display;}
 };
 
 
@@ -52,6 +55,11 @@ class DocumentTypeManager {
 		Glib::ustring internalName,
 		Glib::ustring displayName,
 		bool shortField);
+
+	void registerType (
+		DocumentType &type) {
+		documentTypes_[type.bibtexName_] = type;
+	}
 
 	void addField (
 		DocumentType &type,
