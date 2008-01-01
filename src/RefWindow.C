@@ -1943,6 +1943,8 @@ void RefWindow::onPasteBibtex (GdkAtom selection)
 		updateStatusBar ();
 		statusbar_->push (String::ucompose
 			(_("Imported %1 BibTeX references"), imported), 0);
+
+		setDirty (true);
 	} else {
 		Glib::ustring message = String::ucompose (
 			"<b><big>%1</big></b>",
