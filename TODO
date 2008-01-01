@@ -1,5 +1,8 @@
 
 
+fix paste from gecko not working
+- be more general than wait_for_text
+
 disambiguate "key" bibtex field from bibtex key
 export getField/setField to plugins?
 

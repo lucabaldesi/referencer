@@ -1,4 +1,5 @@
 1.0.5:
+	- DocumentProperties shows correct fields depending on document type
 	- Add google scholar web link
 	- Add PubMed web link
 	- Allow specific selection of different web links
