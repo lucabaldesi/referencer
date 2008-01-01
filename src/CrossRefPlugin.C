@@ -122,8 +122,8 @@ bool CrossRefPlugin::resolve (Document &doc)
 				"<b><big>%1</big></b>\n\n%2\n",
 				_("CrossRef credentials not found"),
 				_("To use the CrossRef service, a free account is needed.  "
-				  "Login information may be set in Preferences, or the CrossRef plugin
-				  may be disabled.")
+				  "Login information may be set in Preferences, or the CrossRef plugin "
+				  "may be disabled.")
 				);
 
 		Gtk::MessageDialog dialog(message, true, Gtk::MESSAGE_WARNING,
