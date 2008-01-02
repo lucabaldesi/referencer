@@ -107,6 +107,9 @@ bool PythonPlugin::resolve (Document &doc)
 			break;
 	}
 
+	if (success)
+		doc.getBibData().setType("article");
+
 	return success;
 }
 

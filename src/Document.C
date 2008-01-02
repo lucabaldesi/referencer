@@ -716,5 +716,14 @@ std::map <Glib::ustring, Glib::ustring> Document::getFields ()
 
 void Document::clearFields ()
 {
+	bib_.extras_.clear ();
+	setField ("doi", "");
+	setField ("title", "");
+	setField ("volume", "");
+	setField ("number", "");
+	setField ("journal", "");
+	setField ("author", "");
+	setField ("year", "");
+	setField ("pages", "");
 }
 
