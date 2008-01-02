@@ -95,7 +95,7 @@ bool DocumentProperties::show (Document *doc)
 
 	update (*doc);
 
-	extrafieldsexpander_->set_expanded (doc->getBibData().hasExtras ());
+	extrafieldsexpander_->set_expanded (extrafieldsstore_->children().size() > 0);
 
 	keyentry_->grab_focus ();
 
