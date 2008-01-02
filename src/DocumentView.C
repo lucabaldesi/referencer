@@ -851,6 +851,21 @@ void DocumentView::addDoc (Document * const doc)
 {
 	Gtk::TreeModel::iterator item = docstore_->append();
 	loadRow (item, doc);
+
+	Gtk::TreeModel::Path path = 
+		docstoresort_->get_path (
+			docstoresort_->convert_child_iter_to_iter (
+				docstorefilter_->convert_child_iter_to_iter (item)));
+//	if (uselistview_) {
+		docslistview_->scroll_to_row (path);
+		docslistselection_->unselect_all ();
+		docslistselection_->select (path);
+
+//	} else {
+		docsiconview_->unselect_all ();
+		docsiconview_->scroll_to_path (path, false, 0.0, 0.0);
+		docsiconview_->select_path (path);
+//	}
 }
 
 
@@ -899,6 +914,8 @@ void DocumentView::populateDocStore ()
 		docsiconview_->select_path (initialpath);
 	}
 
+	docsiconview_->unselect_all ();
+	docslistselection_->unselect_all ();
 	ignoreSelectionChanged_ = false;
 	docSelectionChanged ();
 }

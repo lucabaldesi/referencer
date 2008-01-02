@@ -1,4 +1,5 @@
 1.0.5:
+	- Added documents are scrolled to
 	- DocumentProperties shows correct fields depending on document type
 	- Add google scholar web link
 	- Add PubMed web link
