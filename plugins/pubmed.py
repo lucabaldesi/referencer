@@ -41,7 +41,7 @@ def get_citation_from_doi(query, email='referencer@icculus.org', tool='Reference
 
 	# nothing found, exit
 	if len(ids) == 0:
-		raise "DoiNotFound"
+		raise "DOI not found"
 
 	# get ID
 	id = ids[0].childNodes[0].data
@@ -66,53 +66,47 @@ def get_citation_from_pmid (pmid, email='referencer@icculus.org', tool='Referenc
 	return data
 
 
+# Encoding: every PyUnicode that minidom gives us gets
+# encoded as utf-8 into a PyString, this is what PyString_AsString on the C++
+# side will expect
+def get_field (doc, field):
+	value = doc.getElementsByTagName(field)
+	print "get_field: value = ", value
+	if len(value) == 0:
+		return ""
+	else:
+		return value[0].childNodes[0].data.encode("utf-8")
+
+
 def text_output(xml):
 	"""Makes a simple text output from the XML returned from efetch"""
 	 
 	print "calling parseString on ", len(xml) , " characters"
+	print "calling parseString on ", xml
 	xmldoc = minidom.parseString(xml)
 	print "made it out of parseString"
 
-	# Encoding: every PyUnicode that minidom gives us gets
-	# cast into a PyString, this is what PyString_AsString on the C++
-	# side will expect
+	# This is probably pretty inefficient
+	if len(xmldoc.getElementsByTagName("PubmedArticle")) == 0:
+		raise "PubmedArticle not found"
 
-	pmid = xmldoc.getElementsByTagName('PMID')[0].childNodes[0].data.encode("utf-8")
-	 
-	title = xmldoc.getElementsByTagName('ArticleTitle')[0]
-	title = title.childNodes[0].data.encode("utf-8")
-	 
-	abstract = xmldoc.getElementsByTagName('AbstractText')[0]
-	abstract = abstract.childNodes[0].data.encode("utf-8")
-	 
+	output = []
+
+	pmid = get_field (xmldoc, "PMID")
+	output.append (["pmid", pmid])
+	title = get_field (xmldoc, "ArticleTitle")
+	output.append (["title", title])
+	abstract = get_field (xmldoc, "AbstractText")
+
 	authors = xmldoc.getElementsByTagName('AuthorList')[0]
 	authors = authors.getElementsByTagName('Author')
 	authorlist = []
 	for author in authors:
-		LastName = author.getElementsByTagName('LastName')[0].childNodes[0].data.encode("utf-8")
-		Initials = author.getElementsByTagName('Initials')[0].childNodes[0].data.encode("utf-8")
+		LastName = get_field (author, "LastName")
+		Initials = get_field (author, "Initials")
 		author = '%s, %s' % (LastName, Initials)
 		authorlist.append(author)
 	 
-	journalinfo = xmldoc.getElementsByTagName('Journal')[0]
-	journal = journalinfo.getElementsByTagName('Title')[0].childNodes[0].data.encode("utf-8")
-	journalinfo = journalinfo.getElementsByTagName('JournalIssue')[0]
-	volume = journalinfo.getElementsByTagName('Volume')[0].childNodes[0].data.encode("utf-8")
-	issue = journalinfo.getElementsByTagName('Issue')[0].childNodes[0].data.encode("utf-8")
-	year = journalinfo.getElementsByTagName('Year')[0].childNodes[0].data.encode("utf-8")
-	 
-	# this is a bit odd?
-	pages = xmldoc.getElementsByTagName('MedlinePgn')[0].childNodes[0].data.encode("utf-8")
-	 
-	output = []
-	if (len(pmid) > 0):
-		output.append (["pmid", pmid])
-	output.append (["title", title])
-	output.append (["journal", journal])
-	output.append (["volume", volume])
-	output.append (["number", issue])
-	output.append (["year", year])
-	output.append (["pages", pages])
 	authorstring = ""
 	for author in authorlist:
 		if (len(authorstring) > 0):
@@ -120,7 +114,32 @@ def text_output(xml):
 		authorstring += author
 	if (len(authorstring) > 0):
 		output.append (["author", authorstring])
-	return output
+
+	journalinfo = xmldoc.getElementsByTagName('Journal')
+	if len(journalinfo) > 0:
+		journal = get_field (journalinfo[0], "ISOAbbreviation")
+		if len(journal) == 0:
+			journal = get_field (journalinfo[0], "Title")
+		output.append (["journal", journal])
+
+		journalinfo = journalinfo[0].getElementsByTagName('JournalIssue')
+		if len(journalinfo) > 0:
+			volume = get_field (journalinfo[0], "Volume")
+			issue = get_field (journalinfo[0], "Issue")
+			year = get_field (journalinfo[0], "Year")
+			output.append (["volume", volume])
+			output.append (["number", issue])
+			output.append (["year", year])
+	
+	pages = get_field (xmldoc, "MedlinePgn")
+	output.append (["pages", pages])
+
+	output2 = [];
+	for pair in output:
+		if len(pair[1]) > 0:
+			output2.append(pair)
+
+	return output2
 
 def resolve_metadata (code, type):
 	if (type == "doi"):
