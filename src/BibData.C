@@ -115,58 +115,6 @@ void BibData::writeXML (std::ostringstream &out)
 }
 
 
-/*
- *  Try to fill the journal field by doing a text search
- *  for a known long form of a journal name and then
- *  using the corresponding short form.
- *
- *  Citations always use the short form, so by searching
- *  for the long form we should only pick up the name
- *  of this paper's journal.
- */
-void BibData::guessJournal (Glib::ustring const &raw)
-{
-	int const n_titles = 2;
-	Glib::ustring search_titles[n_titles]= {
-		"PHYSICAL REVIEW B",
-		"JOURNAL OF APPLIED PHYSICS"
-	};
-	Glib::ustring bib_titles[n_titles] = {
-		"Phys. Rev. B",
-		"J. Appl. Phys."
-	};
-
-	for (int i = 0; i < n_titles; ++i) {
-		// TODO: we would like a fast, case insensitive,
-		// encoding-correct search.
-		if (strstr (raw.c_str(), search_titles[i].c_str())) {
-			setJournal (bib_titles[i]);
-			break;
-		}
-	}
-}
-
-/*
- * Try to fill the volume, number and pages fields
- * using the raw text -- these are lumped together
- * because in some cases our search expressions
- * may include all three.
- *
- * (Even page? --jcs)
- */
-void BibData::guessVolumeNumberPage (Glib::ustring const &raw)
-{
-		/*
-		 * Do regex magic to learn what we can
-		 * Interested in strings like:
-		 * "VOLUME 95, NUMBER 3"
-		 * "PHYSICAL REVIEW B 71, 064413"
-		 *
-		 * When searching for abbreviations like Vol. 1, No. 2
-		 * we must be very careful not to pick up citations
-		 * by accident
-		 */
-}
 
 /*
  * Try to guess the year of the paper from the raw text
@@ -220,42 +168,6 @@ void BibData::guessYear (Glib::ustring const &raw_)
 
 
 /*
- * Try to guess the authors of the paper from the raw text
- */
-void BibData::guessAuthors (Glib::ustring const &raw_)
-{
-	std::string const &raw = raw_;
-
-	boost::regex expression("^(\\D{5,}\n\\D{5,})$");
-
-	std::string::const_iterator start, end;
-	start = raw.begin();
-	end = raw.end();
-	boost::match_results<std::string::const_iterator> what;
-	boost::match_flag_type flags = boost::match_default;
-	while(regex_search(start, end, what, expression, flags)) {
-		Glib::ustring authors = std::string(what[1]);
-		std::cout << "Got authors = '" << authors << "'\n" << std::endl;
-		setAuthors (authors);
-		return;
-
-	  // update search position:
-	  start = what[0].second;
-	  // update flags:
-	  flags |= boost::match_prev_avail;
-	  flags |= boost::match_not_bob;
-	}
-}
-
-/*
- * Try to guess the title of the paper from the raw text
- */
-void BibData::guessTitle (Glib::ustring const &raw)
-{
-}
-
-
-/*
  * Try to guess the DOI of the paper from the raw text
  */
 void BibData::guessDoi (Glib::ustring const &raw_)
@@ -302,7 +214,6 @@ void BibData::guessDoi (Glib::ustring const &raw_)
 /*
  * Try to extract the Arxiv eprint value of the paper from the raw text
  */
-// Should really only be looking on first page of doc for this one
 void BibData::guessArxiv (Glib::ustring const &raw_)
 {
 	std::string const &raw = raw_;
@@ -336,8 +247,7 @@ void BibData::guessArxiv (Glib::ustring const &raw_)
  */
 void BibData::mergeIn (BibData const &source)
 {
-	if (type_.empty ())
-		type_ = source.getType ();
+	type_ = source.getType ();
 	if (doi_.empty ())
 		doi_ = source.getDoi ();
 	if (volume_.empty ())

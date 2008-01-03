@@ -29,14 +29,6 @@ bool ArxivPlugin::resolve (Document &doc)
 	if (!doc.hasField("eprint") || _global_prefs->getWorkOffline())
 		return false;
 
-	Glib::ustring messagetext =
-		String::ucompose (
-			"<b><big>%1</big></b>\n\n%2\n",
-			_("Retrieving metadata"),
-			String::ucompose (
-				_("Contacting citebase.org to retrieve metadata for '%1'"),
-				doc.getField("eprint"))
-		);
 
 	Glib::ustring arxivid = doc.getField("eprint");
 	Glib::ustring::size_type index = arxivid.find ("v");
@@ -48,7 +40,14 @@ bool ArxivPlugin::resolve (Document &doc)
 
 	Glib::ustring const filename = "http://www.citebase.org/openurl?url_ver=Z39.88-2004&svc_id=bibtex&rft_id=oai%3AarXiv.org%3A" + arxivid;
 
-	std::cerr << filename << "\n";
+	Glib::ustring messagetext =
+		String::ucompose (
+			"<b><big>%1</big></b>\n\n%2\n",
+			_("Retrieving metadata"),
+			String::ucompose (
+				_("Contacting citebase.org to retrieve metadata for '%1'"),
+				arxivid)
+		);
 
 	Glib::ustring *rawtext;
 	try {
