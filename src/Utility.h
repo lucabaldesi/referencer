@@ -25,18 +25,18 @@
 namespace Utility {
 	typedef std::pair <Glib::ustring, Glib::ustring> StringPair;
 
-Glib::ustring wrap (
-		Glib::ustring const &str, 
-		Glib::ustring::size_type width, 
-		int lines,
-		bool const pad);
+	Glib::ustring wrap (
+			Glib::ustring const &str, 
+			Glib::ustring::size_type width, 
+			int lines,
+			bool const pad);
 
-Glib::ustring firstAuthor (
-		Glib::ustring const &authors);
+	Glib::ustring firstAuthor (
+			Glib::ustring const &authors);
 
-bool hasExtension (
-	Glib::ustring const &filename,
-	Glib::ustring const &ex);
+	bool hasExtension (
+		Glib::ustring const &filename,
+		Glib::ustring const &ex);
 
 	bool uriIsFast (
 		Glib::RefPtr<Gnome::Vfs::Uri> uri);

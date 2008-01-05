@@ -477,13 +477,12 @@ void RefWindow::constructMenu ()
 		"</ui>";
 
 	uimanager_->add_ui_from_string (ui);
+	window_->add_accel_group (uimanager_->get_accel_group ());
 
 	// update UI for plugins and connect to changes
 	onEnabledPluginsPrefChanged ();
 	_global_prefs->getPluginDisabledSignal ().connect (
-	sigc::mem_fun (*this, &RefWindow::onEnabledPluginsPrefChanged));
-
-	window_->add_accel_group (uimanager_->get_accel_group ());
+		sigc::mem_fun (*this, &RefWindow::onEnabledPluginsPrefChanged));
 }
 	
 void RefWindow::onEnabledPluginsPrefChanged ()
@@ -492,13 +491,11 @@ void RefWindow::onEnabledPluginsPrefChanged ()
 	std::list<Plugin*>::iterator pit = plugins.begin();
 	std::list<Plugin*>::iterator const pend = plugins.end();
 	for (; pit != pend; pit++) {
-		if ((*pit)->cap_.has(PluginCapability::DOCUMENT_ACTION))
-		{
+		if ((*pit)->cap_.has(PluginCapability::DOCUMENT_ACTION)) {
 			Glib::ustring actionName = "_plugin_" + (*pit)->getShortName();
 			Gtk::UIManager::ui_merge_id mergeid = pluginUI_[actionName];
 
-			if ((*pit)->isEnabled() && !mergeid)
-			{
+			if ((*pit)->isEnabled() && !mergeid) {
 				// plugin UI needs to be added			
 				actiongroup_->add( Gtk::Action::create(
 					actionName, Gtk::Stock::EXECUTE,
@@ -511,8 +508,7 @@ void RefWindow::onEnabledPluginsPrefChanged ()
 					"  </toolbar>"
 					"</ui>";
 				pluginUI_[actionName] = uimanager_->add_ui_from_string (ui);
-			} else if (!(*pit)->isEnabled() && mergeid)
-			{
+			} else if (!(*pit)->isEnabled() && mergeid) {
 				// plugin UI need to be removed
 				uimanager_->remove_ui (mergeid);
 				actiongroup_->remove (actiongroup_->get_action (actionName));
