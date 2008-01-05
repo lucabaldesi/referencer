@@ -1,0 +1,67 @@
+
+
+Referencer Python Plugin Interface
+==================================
+Last updated 2008-01-05 by jcspray
+
+Info list
+-----------
+
+Every plugin must create a python list called referencer_plugin_info, which 
+contains [key, value] lists for keys including the following:
+
+"longname"
+"action"
+"tooltip"
+
+Capability list
+---------------
+
+Every plugin must create a python list called referencer_plugin_capabilities
+which contains strings including:
+
+"doi"
+"pubmed"
+"arxiv"
+"document_action"
+
+
+Metadata plugins
+----------------
+
+Implement a function called resolve_metadata (doc, method) which returns a boolean.
+
+Args:
+	doc: a referencer.document, use get_field and set_field methods
+	     to get ID codes and fill out the metadata
+	method:  a string indicating what kind of ID should be tried,
+	         from the list of capabilities that the plugin listed
+		 in referencer_plugin_info
+
+Return true if the metadata was retrieved successfully, otherwise false.
+
+See pubmed.py for an example.
+
+Document action plugins
+-----------------------
+
+Implement a function called do_action (docs) which returns a boolean.
+
+Args:
+	docs: a python list of referencer.document instances, where
+	      the action is to be performed on each of them.
+
+Return true if the action completed without problems, otherwise false.
+
+See lyx.py for an example.
+
+Exceptions
+----------
+
+Passing an exception up to the caller on the C++ is taken as a sign that
+something really unexpected has happened that the user needs to know 
+about.  For instance, if a DOI can't be resolved to metadata, DO NOT throw 
+an exception, simply return false from resolve_metadata.  However, if 
+the user invokes a document action that's somehow impossible (for example
+trying to cite something in lyx while lyx isn't running), that can 
+be an exception the propagates all the way to the C++ side and the user.
