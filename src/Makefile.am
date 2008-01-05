@@ -58,6 +58,8 @@ referencer_SOURCES =	\
 	Preferences.h	\
 	Progress.C	\
 	Progress.h	\
+	PythonDocument.C \
+	PythonDocument.h \
 	PythonPlugin.C \
 	PythonPlugin.h \
 	sexy-enum-types.h \

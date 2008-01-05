@@ -141,14 +141,16 @@ def text_output(xml):
 
 	return output2
 
-def resolve_metadata (code, type):
-	if (type == "doi"):
-		print "pubmed.py: resolving doi ", code
-		xml = get_citation_from_doi (code)
-		return text_output(xml)
-	if (type == "pubmed"):
-		print "pubmed.py: resolving pmid ", code
-		xml = get_citation_from_pmid (code)
-		return text_output(xml)
-	else:
-		return []
+def resolve_metadata (doc, method):
+	if (method == "doi"):
+		xml = get_citation_from_doi (doc.get_field ("doi"))
+	elif (method == "pubmed"):
+		xml = get_citation_from_pmid (doc.get_field ("pmid"))
+
+	items = text_output (xml)
+	for item in items:
+		print "pubmed: Setting %s:%s\n" % (item[0], item[1])
+		doc.set_field (item[0], item[1])
+
+	return []
+

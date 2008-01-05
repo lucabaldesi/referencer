@@ -111,6 +111,7 @@ class RefWindow {
 
 		/* The Document Properties dialog */
 		DocumentProperties *docpropertiesdialog_;
+
 		void docSelectionChanged ();
 
 		void onWorkOfflineToggled ();

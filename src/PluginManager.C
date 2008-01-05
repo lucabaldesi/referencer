@@ -8,12 +8,11 @@
 
 #include "Python.h"
 
+#include "BibData.h"
 #include "Preferences.h"
-// FIXME just using this for the exception class
-#include <Transfer.h>
-// For exception dialog
-#include <Utility.h>
-#include <BibData.h>
+#include "PythonDocument.h"
+#include "Transfer.h"
+#include "Utility.h"
 
 #include "ucompose.hpp"
 
@@ -71,11 +70,12 @@ static PyMethodDef ReferencerMethods[] = {
 };
 
 
-
-
 PluginManager::PluginManager ()
 {
-	Py_InitModule ("referencer", ReferencerMethods);
+	PyObject *module = Py_InitModule ("referencer", ReferencerMethods);
+
+	PyType_Ready (&t_referencer_document);
+	PyObject_SetAttrString (module, "document", (PyObject*)&t_referencer_document);
 }
 
 PluginManager::~PluginManager ()

@@ -8,6 +8,7 @@
 
 #include "Document.h"
 
+#include "PythonDocument.h"
 #include "PythonPlugin.h"
 
 
@@ -115,24 +116,28 @@ bool PythonPlugin::resolve (Document &doc)
 
 bool PythonPlugin::resolveID (Document &doc, PluginCapability::Identifier id)
 {
+
 	bool success = false;
+	referencer_document *pDoc =
+		PyObject_New (referencer_document, &t_referencer_document);
+	pDoc->doc_ = &doc;
 
 	PyObject *pArgs = NULL;
 	switch (id) {
 		case PluginCapability::DOI:
 			if (!doc.hasField ("doi"))
 				return false;
-			pArgs = Py_BuildValue ("(ss)", doc.getField("doi").c_str(), "doi");
+			pArgs = Py_BuildValue ("(Os)", wrappedDoc "doi");
 		break;
 		case PluginCapability::ARXIV:
 			if (!doc.hasField ("eprint"))
 				return false;
-			pArgs = Py_BuildValue ("(ss)", doc.getField("eprint").c_str(), "arxiv");
+			pArgs = Py_BuildValue ("(Os)", wrappedDoc(), "arxiv");
 		break;
 		case PluginCapability::PUBMED:
 			if (!doc.hasField ("pmid"))
 				return false;
-			pArgs = Py_BuildValue ("(ss)", doc.getField("pmid").c_str(), "pubmed");
+			pArgs = Py_BuildValue ("(Os)", wrappedDoc, "pubmed");
 		break;
 		default:
 			std::cerr << "PythonPlugin::resolveID: warning, unhandled id type "
@@ -143,28 +148,11 @@ bool PythonPlugin::resolveID (Document &doc, PluginCapability::Identifier id)
 
 	PyObject *pMetaData = PyObject_CallObject(pGetFunc_, pArgs);
 	Py_DECREF(pArgs);
+	Py_DECREF (pDoc);
 
+
+	/* XXX Need to get a success/failure from the plugin! */
 	if (pMetaData != NULL) {
-		int const N = PyList_Size (pMetaData);
-
-		if (N > 0)
-			success = true;
-
-		for (int i = 0; i < N; ++i) {
-			PyObject *pItem = PyList_GetItem (pMetaData, i);
-			const char *cKey = PyString_AsString(PyList_GetItem (pItem, 0));
-			const char *cValue = PyString_AsString(PyList_GetItem (pItem, 1));
-
-			Glib::ustring key;
-			Glib::ustring value;
-			if (cKey)
-				key = Glib::ustring (cKey);
-			if (cValue)
-				value = Glib::ustring (cValue);
-
-			doc.setField (key, value);
-		}
-		Py_DECREF(pMetaData);
 	} else {
 		std::cerr << "NULL return from PyObject_CallObject\n";
 		PyObject *pErr = PyErr_Occurred ();
@@ -188,6 +176,9 @@ bool PythonPlugin::resolveID (Document &doc, PluginCapability::Identifier id)
 			Utility::exceptionDialog (&ex, _("Downloading metadata"));*/
 		}
 	}
+
+	// not the metadata any more, always []
+	Py_DECREF(pMetaData);
 
 	return success;
 }
