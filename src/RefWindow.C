@@ -31,6 +31,7 @@
 
 #include "config.h"
 #include "RefWindow.h"
+#include "Plugin.h"
 
 
 RefWindow::RefWindow ()
@@ -447,6 +448,7 @@ void RefWindow::constructMenu ()
 		"    <separator/>"
 		"    <toolitem action='CopyCite'/>"
 		"    <toolitem action='PasteBibtex'/>"
+		"    <separator/>"
 		"  </toolbar>"
 		"  <toolbar name='TagBar'>"
 		"    <toolitem action='CreateTag'/>"
@@ -476,8 +478,48 @@ void RefWindow::constructMenu ()
 
 	uimanager_->add_ui_from_string (ui);
 
-	window_->add_accel_group (uimanager_->get_accel_group ());
+	// update UI for plugins and connect to changes
+	onEnabledPluginsPrefChanged ();
+	_global_prefs->getPluginDisabledSignal ().connect (
+	sigc::mem_fun (*this, &RefWindow::onEnabledPluginsPrefChanged));
 
+	window_->add_accel_group (uimanager_->get_accel_group ());
+}
+	
+void RefWindow::onEnabledPluginsPrefChanged ()
+{
+	std::list<Plugin*> plugins = _global_plugins->getPlugins();
+	std::list<Plugin*>::iterator pit = plugins.begin();
+	std::list<Plugin*>::iterator const pend = plugins.end();
+	for (; pit != pend; pit++) {
+		if ((*pit)->cap_.has(PluginCapability::DOCUMENT_ACTION))
+		{
+			Glib::ustring actionName = "_plugin_" + (*pit)->getShortName();
+			Gtk::UIManager::ui_merge_id mergeid = pluginUI_[actionName];
+
+			if ((*pit)->isEnabled() && !mergeid)
+			{
+				// plugin UI needs to be added			
+				actiongroup_->add( Gtk::Action::create(
+					actionName, Gtk::Stock::EXECUTE,
+					(*pit)->getActionText(), (*pit)->getActionTooltip()),
+					sigc::bind<Plugin*>( sigc::mem_fun(*this, &RefWindow::onPluginRun), (*pit)));
+				Glib::ustring ui =  
+					"<ui>"
+					"  <toolbar name='ToolBar'>"
+					"	<toolitem action='" + actionName + "'/>"
+					"  </toolbar>"
+					"</ui>";
+				pluginUI_[actionName] = uimanager_->add_ui_from_string (ui);
+			} else if (!(*pit)->isEnabled() && mergeid)
+			{
+				// plugin UI need to be removed
+				uimanager_->remove_ui (mergeid);
+				actiongroup_->remove (actiongroup_->get_action (actionName));
+				pluginUI_.erase (actionName);
+			}
+		}
+	}
 }
 
 
@@ -2063,6 +2105,21 @@ void RefWindow::docSelectionChanged ()
 	actiongroup_->get_action("DocProperties")->set_sensitive (onlyoneselected);
 	taggerbox_->set_sensitive (somethingselected);
 
+	// plugin's action
+	std::list<Plugin*> plugins = _global_plugins->getPlugins();
+	std::list<Plugin*>::iterator pit = plugins.begin();
+	std::list<Plugin*>::iterator const pend = plugins.end();
+	for (; pit != pend; pit++) {
+		if ((*pit)->isEnabled() && (*pit)->cap_.has(PluginCapability::DOCUMENT_ACTION))
+		{
+			// TODO: allow plugins to control their sensitivity
+			Glib::RefPtr<Gtk::Action> action = actiongroup_->
+				get_action("_plugin_"+(*pit)->getShortName());
+			if (action)
+				action->set_sensitive (somethingselected);
+		}
+	}
+
 	DocumentView::Capabilities cap
 		= docview_->getDocSelectionCapabilities ();
 	actiongroup_->get_action("OpenDoc")->set_sensitive (cap.open);
@@ -2110,5 +2167,11 @@ void RefWindow::onUseListViewPrefChanged ()
 	}
 	
 	updateStatusBar ();
+}
+
+
+void RefWindow::onPluginRun (Plugin* plugin)
+{
+	plugin->doAction(docview_->getSelectedDocs());
 }
 

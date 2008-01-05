@@ -55,15 +55,22 @@ static PyObject*
 referencer_gettext(PyObject *self, PyObject *args)
 {
 	PyObject *str = PyTuple_GetItem (args, 0);
-
-	PyObject *ret = NULL;
 	return PyString_FromString (_(PyString_AsString(str)));
 }
 
+static PyObject*
+referencer_get_selected(PyObject *self, PyObject *args)
+{
+	PyObject *ret = PyString_FromString ("C++ string");
+	// TODO
+	return ret;
+}
 
 static PyMethodDef ReferencerMethods[] = {
     {"download", referencer_download, METH_VARARGS,
      "Retrieve a remote file"},
+	{"get_selected", referencer_get_selected, METH_VARARGS,
+	 "Get selected Documents"},
     {"_", referencer_gettext, METH_VARARGS,
      "Translate a string"},
     {NULL, NULL, 0, NULL}

@@ -117,6 +117,7 @@ private:
 	sigc::signal<void> workofflinesignal_;
 	sigc::signal<void> uselistviewsignal_;
 	sigc::signal<void> showtagpanesignal_;
+	sigc::signal<void> plugindisabledsignal_;
 
 	bool ignoreChanges_;
 
@@ -140,6 +141,8 @@ public:
 	bool getWorkOffline ();
 	void setWorkOffline (bool const &offline);
 	sigc::signal<void>& getWorkOfflineSignal ();
+
+	sigc::signal<void>& getPluginDisabledSignal ();
 
 	bool getUseListView ();
 	void setUseListView (bool const &uselistview);

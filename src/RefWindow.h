@@ -18,6 +18,8 @@
 
 #include <gtkmm.h>
 
+#include "Plugin.h"
+
 class Gtk::TreePath;
 class Glib::ustring;
 
@@ -52,7 +54,7 @@ class RefWindow {
 		Gtk::Statusbar *getStatusBar ()
 			{return statusbar_;}
 		void setSensitive (bool const sensitive);
-		
+
 		void addDocFiles (std::vector<Glib::ustring> const &filenames);
 
 		Progress *getProgress ()
@@ -88,6 +90,9 @@ class RefWindow {
 
 		/* The Documents View */
 		DocumentView *docview_;
+
+		/* Which plugin have added UI elements */
+		std::map<Glib::ustring, Gtk::UIManager::ui_merge_id> pluginUI_;
 
 		/* The Tags View */
 		Glib::RefPtr<Gtk::ListStore> tagstore_;
@@ -151,6 +156,7 @@ class RefWindow {
 		void onImport ();
 		void onPreferences ();
 		void onFind ();
+		void onPluginRun (Plugin* plugin);
 
 		/* WM events */
 		bool onDelete (GdkEventAny *ev);
@@ -160,6 +166,7 @@ class RefWindow {
 		void onShowTagPanePrefChanged ();
 		void onUseListViewPrefChanged ();
 		void onWorkOfflinePrefChanged ();
+		void onEnabledPluginsPrefChanged ();
 
 		/* Remember which folders the user browsed last */
 		Glib::ustring addfolder_;

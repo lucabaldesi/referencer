@@ -244,6 +244,9 @@ void Preferences::onConfChange (int number, Gnome::Conf::Entry entry)
 	} else if (key == HTTP_USE_AUTH_KEY) {
 		useauthcheck_->set_active (entry.get_value ().get_bool ());
 		updateSensitivity ();
+	} else if (key == CONF_PATH "/disabledplugins") {
+		plugindisabledsignal_.emit ();
+
 	/* keys to ignore */
 	} else if (
 	    key == CONF_PATH "/width"
@@ -379,6 +382,11 @@ sigc::signal<void>& Preferences::getWorkOfflineSignal ()
 	return workofflinesignal_;
 }
 
+sigc::signal<void>& Preferences::getPluginDisabledSignal ()
+{
+	return plugindisabledsignal_;
+}
+
 
 bool Preferences::getUseListView ()
 {
@@ -483,7 +491,16 @@ void Preferences::onPluginToggled (Glib::ustring const &str)
 	Gtk::TreeModel::iterator it = pluginStore_->get_iter (path);
 	bool enable = !(*it)[colEnabled_];
 	Plugin *plugin = (*it)[colPlugin_];
-	plugin->setEnabled (enable);
+		plugin->setEnabled (enable);
+	if (enable)
+	{
+		std::cerr << "enabling plugin" << std::endl;
+		// TODO: add UI
+	} else
+	{
+		std::cerr << "disabling plugin" << std::endl;
+		// TODO: remove UI
+	}
 	(*it)[colEnabled_] = plugin->isEnabled ();
 
 	std::vector<Glib::ustring> disable =

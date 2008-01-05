@@ -2,6 +2,7 @@
 #ifndef PLUGIN_H
 #define PLUGIN_H
 
+#include <vector>
 
 class PluginCapability
 {
@@ -15,7 +16,8 @@ class PluginCapability
 			NONE = 0,
 			DOI = 1 << 0,
 			ARXIV = 1 << 1,
-			PUBMED = 1 << 2
+			PUBMED = 1 << 2,
+			DOCUMENT_ACTION = 1 << 3
 		} Identifier;
 
 		void add (Identifier const id) {
@@ -66,9 +68,13 @@ class Plugin
 
 		virtual void load (std::string const &moduleName) {};
 		virtual bool resolve (Document &doc) = 0;
+		virtual bool doAction (std::vector<Document*>) {return false;}
 
 		virtual Glib::ustring const getShortName () = 0;
 		virtual Glib::ustring const getLongName () = 0;
+
+		virtual Glib::ustring const getActionText () {return Glib::ustring();}
+		virtual Glib::ustring const getActionTooltip () {return Glib::ustring();}
 
 		bool isEnabled () {return enabled_;}
 		bool isLoaded () {return loaded_;}

@@ -17,13 +17,17 @@
 PythonPlugin::PythonPlugin()
 {
 	pGetFunc_ = NULL;
+	pActionFunc_ = NULL;
 	pMod_ = NULL;
 }
 
 PythonPlugin::~PythonPlugin()
 {
 	if (loaded_) {
-		Py_DECREF (pGetFunc_);
+		if (pGetFunc_ != NULL)
+			Py_DECREF (pGetFunc_);
+		if (pActionFunc_ != NULL)
+			Py_DECREF (pActionFunc_);
 		Py_DECREF (pPluginInfo_);
 		Py_DECREF (pMod_);
 	}
@@ -44,13 +48,6 @@ void PythonPlugin::load (std::string const &moduleName)
 
 	if (!pMod_) {
 		std::cerr << "Plugin::load: Couldn't import module\n";
-		return;
-	}
-
-	pGetFunc_ = PyObject_GetAttrString (pMod_, "resolve_metadata");
-	if (!pGetFunc_) {
-		std::cerr << "Plugin::load: Couldn't find resolver\n";
-		Py_DECREF (pMod_);
 		return;
 	}
 
@@ -87,8 +84,29 @@ void PythonPlugin::load (std::string const &moduleName)
 			cap_.add(PluginCapability::ARXIV);
 		else if (str == "pubmed")
 			cap_.add(PluginCapability::PUBMED);
+		else if (str == "document_action")
+			cap_.add(PluginCapability::DOCUMENT_ACTION);
 	}
 	Py_DECREF (pCaps);
+
+	if (cap_.has(PluginCapability::DOCUMENT_ACTION)) { 
+		pActionFunc_ = PyObject_GetAttrString (pMod_, "do_action");
+		if (!pActionFunc_) {
+			std::cerr << "Plugin::load: Couldn't find action callback\n";
+			Py_DECREF (pMod_);
+			return;
+		}
+	}
+
+	if (cap_.has(PluginCapability::DOI) || cap_.has(PluginCapability::ARXIV) || 
+		cap_.has(PluginCapability::PUBMED)) { 
+		pGetFunc_ = PyObject_GetAttrString (pMod_, "resolve_metadata");
+		if (!pGetFunc_) {
+			std::cerr << "Plugin::load: Couldn't find resolver\n";
+			Py_DECREF (pMod_);
+			return;
+		}
+	}
 
 	std::cerr << "Plugin::load: successfully loaded '" << moduleName << "'\n";
 
@@ -112,6 +130,31 @@ bool PythonPlugin::resolve (Document &doc)
 		doc.getBibData().setType("article");
 
 	return success;
+}
+
+bool PythonPlugin::doAction (std::vector<Document*> docs)
+{
+
+	PyObject *pDocList = PyList_New (docs.size());
+	std::vector<Document*>::iterator it = docs.begin ();
+	std::vector<Document*>::iterator const end = docs.end ();
+	for (int i = 0; it != end; ++it, ++i) {
+		referencer_document *pDoc =
+			PyObject_New (referencer_document, &t_referencer_document);
+		pDoc->doc_ = (*it);
+		PyList_SetItem (pDocList, i, (PyObject*)pDoc);
+	}
+	
+	PyObject *pArgs = Py_BuildValue ("(O)", pDocList);
+	PyObject *pReturn = PyObject_CallObject(pActionFunc_, pArgs);
+	Py_DECREF (pArgs);
+
+	if (pReturn == NULL) {
+		std::cerr << "PythonPlugin::doAction: NULL return value\n";
+		return false;
+	} else {
+		return pReturn == Py_True;
+	}
 }
 
 bool PythonPlugin::resolveID (Document &doc, PluginCapability::Identifier id)
@@ -185,6 +228,18 @@ bool PythonPlugin::resolveID (Document &doc, PluginCapability::Identifier id)
 Glib::ustring const PythonPlugin::getLongName ()
 {
 	return getPluginInfoField ("longname");
+}
+
+
+Glib::ustring const PythonPlugin::getActionTooltip ()
+{
+	return getPluginInfoField ("tooltip");
+}
+
+
+Glib::ustring const PythonPlugin::getActionText ()
+{
+	return getPluginInfoField ("action");
 }
 
 
