@@ -1,4 +1,6 @@
 1.0.5:
+	- Support document action plugins (AN + JCS)
+	- Lyx citation plugin (Aurélien Naldi)
 	- Added documents are scrolled to
 	- DocumentProperties shows correct fields depending on document type
 	- Add google scholar web link

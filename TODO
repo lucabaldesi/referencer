@@ -6,14 +6,13 @@ fix paste from gecko not working
 
 
 Plugins:
-	export getField/setField to plugins?
 	allow plugins to prompt for username+password
 	allow plugins to save conf
+	allow plugins to provide conf ui
 	ADS metadata
 
-	Document 'action' plugins:
 	mangle/demangle Doe, J vs Doe, J.
-	Generate keyallow plugins to provide conf ui
+	Generate key
 
 	Browse/search:
 		Z39.50

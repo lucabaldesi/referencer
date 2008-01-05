@@ -267,6 +267,12 @@ void RefWindow::constructUI ()
 	Glib::RefPtr <Gtk::RadioAction>::cast_static(
 		actiongroup_->get_action ("UseListView"))->signal_toggled ().connect (
 			sigc::mem_fun(*this, &RefWindow::onUseListViewToggled));
+
+
+	// Generate UI for plugins and connect to changes
+	onEnabledPluginsPrefChanged ();
+	_global_prefs->getPluginDisabledSignal ().connect (
+		sigc::mem_fun (*this, &RefWindow::onEnabledPluginsPrefChanged));
 }
 
 
@@ -478,11 +484,6 @@ void RefWindow::constructMenu ()
 
 	uimanager_->add_ui_from_string (ui);
 	window_->add_accel_group (uimanager_->get_accel_group ());
-
-	// update UI for plugins and connect to changes
-	onEnabledPluginsPrefChanged ();
-	_global_prefs->getPluginDisabledSignal ().connect (
-		sigc::mem_fun (*this, &RefWindow::onEnabledPluginsPrefChanged));
 }
 	
 void RefWindow::onEnabledPluginsPrefChanged ()
@@ -501,6 +502,11 @@ void RefWindow::onEnabledPluginsPrefChanged ()
 					actionName, Gtk::Stock::EXECUTE,
 					(*pit)->getActionText(), (*pit)->getActionTooltip()),
 					sigc::bind<Plugin*>( sigc::mem_fun(*this, &RefWindow::onPluginRun), (*pit)));
+
+				/* Sensitivity policy duplicated here and in docSelectionChanged */
+				actiongroup_->get_action (actionName)->set_sensitive (
+					docview_->getSelectedDocCount () > 0);
+
 				Glib::ustring ui =  
 					"<ui>"
 					"  <toolbar name='ToolBar'>"
