@@ -116,7 +116,6 @@ bool PythonPlugin::resolve (Document &doc)
 
 bool PythonPlugin::resolveID (Document &doc, PluginCapability::Identifier id)
 {
-
 	bool success = false;
 	referencer_document *pDoc =
 		PyObject_New (referencer_document, &t_referencer_document);
@@ -127,17 +126,17 @@ bool PythonPlugin::resolveID (Document &doc, PluginCapability::Identifier id)
 		case PluginCapability::DOI:
 			if (!doc.hasField ("doi"))
 				return false;
-			pArgs = Py_BuildValue ("(Os)", wrappedDoc "doi");
+			pArgs = Py_BuildValue ("(Os)", pDoc, "doi");
 		break;
 		case PluginCapability::ARXIV:
 			if (!doc.hasField ("eprint"))
 				return false;
-			pArgs = Py_BuildValue ("(Os)", wrappedDoc(), "arxiv");
+			pArgs = Py_BuildValue ("(Os)", pDoc, "arxiv");
 		break;
 		case PluginCapability::PUBMED:
 			if (!doc.hasField ("pmid"))
 				return false;
-			pArgs = Py_BuildValue ("(Os)", wrappedDoc, "pubmed");
+			pArgs = Py_BuildValue ("(Os)", pDoc, "pubmed");
 		break;
 		default:
 			std::cerr << "PythonPlugin::resolveID: warning, unhandled id type "
@@ -146,15 +145,16 @@ bool PythonPlugin::resolveID (Document &doc, PluginCapability::Identifier id)
 	}
 
 
-	PyObject *pMetaData = PyObject_CallObject(pGetFunc_, pArgs);
+	PyObject *pReturn = PyObject_CallObject(pGetFunc_, pArgs);
 	Py_DECREF(pArgs);
 	Py_DECREF (pDoc);
 
 
-	/* XXX Need to get a success/failure from the plugin! */
-	if (pMetaData != NULL) {
+	if (pReturn != NULL) {
+		Py_DECREF(pReturn);
+		success = (pReturn == Py_True);
 	} else {
-		std::cerr << "NULL return from PyObject_CallObject\n";
+		std::cerr << "PythonPlugin::resolveID: NULL return from PyObject_CallObject\n";
 		PyObject *pErr = PyErr_Occurred ();
 		if (pErr) {
 			PyObject *ptype;
@@ -177,8 +177,6 @@ bool PythonPlugin::resolveID (Document &doc, PluginCapability::Identifier id)
 		}
 	}
 
-	// not the metadata any more, always []
-	Py_DECREF(pMetaData);
 
 	return success;
 }

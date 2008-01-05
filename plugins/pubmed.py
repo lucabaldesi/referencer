@@ -30,7 +30,6 @@ def get_citation_from_doi(query, email='referencer@icculus.org', tool='Reference
 		'retmax':1
 	}
 
-
 	# try to resolve the PubMed ID of the DOI
 	url = 'http://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?' + urllib.urlencode(params)
 	data = referencer.download (_("Resolving DOI"), _("Finding PubMed ID from DOI %s") % query , url);
@@ -148,9 +147,11 @@ def resolve_metadata (doc, method):
 		xml = get_citation_from_pmid (doc.get_field ("pmid"))
 
 	items = text_output (xml)
+	itemCount = 0
 	for item in items:
 		print "pubmed: Setting %s:%s\n" % (item[0], item[1])
-		doc.set_field (item[0], item[1])
-
-	return []
+		if (len(item[1]) > 0):
+			doc.set_field (item[0], item[1])
+			itemCount = itemCount + 1
+	return itemCount > 0
 
