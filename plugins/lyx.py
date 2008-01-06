@@ -14,52 +14,39 @@ referencer_plugin_info.append (["icon", "lyx.png"])
 referencer_plugin_capabilities = []
 referencer_plugin_capabilities.append ("document_action")
 
-# assign it a value to override autodetection
-LYXPIPE = None
-HOME = os.environ.get("HOME")
-LYXPREFS = os.path.join(HOME, ".lyx/preferences")
-
 print "lyx module loaded"
-
-# read the path to the lyx pipe from the lyx configuration file
-if not LYXPIPE and os.path.exists(LYXPREFS):
-	p = open(LYXPREFS, "r")
-	while True:
-		l = p.readline()
-		if not l:
-			break
-
-		print l
-		if l.startswith("\\serverpipe "):
-			LYXPIPE = l.split('"')[1] + ".in"
-			break
-	p.close()
 
 def do_action (documents):
 	empty = True
-	s = ""
+	keys = ""
 	for document in documents:
 		if not empty:
-			s += ","
-		s += document.get_key()
+			keys += ","
+		keys += document.get_key()
 		empty = False
-
-	print "do_action: got key list ", s
-
-	if not LYXPIPE:
-		print "no pipe defined. Is lyx configured ?"
-		return False
-	if not os.path.exists(LYXPIPE):
-		print "pipe does not exist: "+LYXPIPE + ". Does lyx run ?"
-		return False
 
 	if empty:
 		return False
 
+	# Locate lyxclient
+	lyxClientBinary = ""
+	for dir in os.environ['PATH'].split (os.pathsep):
+		exe = os.path.join (dir, "lyxclient")
+		if (os.path.exists(exe)):
+			lyxClientBinary = exe
+			print "Found lyxclient at %s\n" % exe
+			break
+
+	if (len(lyxClientBinary) == 0):
+		print "Couldn't find lyxclient"
+		return False
+
+	# Compose citation insertion command
+	cmdStr = "LYXCMD:citation-insert " + keys + "\n"
 	try:
-		p = open(LYXPIPE, 'a')
-		p.write("LYXCMD:referencer:citation-insert:" + s + "\n")
-		p.close()
+		os.system ("%s -c \"%s\"" % (lyxClientBinary, cmdStr))
 	except:
 		return False
+
+	return True
 
