@@ -52,14 +52,6 @@ Document* DocumentList::newDocUnnamed ()
 }
 
 
-Document* DocumentList::newDocWithDoi (Glib::ustring const &doi)
-{
-	Document *newdoc = newDocUnnamed ();
-	newdoc->getBibData().setDoi (doi);
-	return &(docs_.back());
-}
-
-
 Glib::ustring DocumentList::uniqueKey (Glib::ustring const &basename)
 {
 	std::ostringstream name;
@@ -70,26 +62,23 @@ Glib::ustring DocumentList::uniqueKey (Glib::ustring const &basename)
 		name << basename;
 		if (extension)
 			name << "-" << extension;
-	} while (getDoc(name.str()));
+	} while (docExists(name.str()));
 
 	return name.str();
 }
 
 
-Document* DocumentList::getDoc (Glib::ustring const &name)
+bool DocumentList::docExists (Glib::ustring const &name)
 {
 	Container::iterator it = docs_.begin ();
 	Container::iterator const end = docs_.end ();
 	for (; it != end; ++it) {
 		if ((*it).getKey() == name) {
-			return &(*it);
+			return true;
 		}
 	}
 
-	// Fall through
-	std::cerr << "Warning: DocumentList::getDoc: couldn't find"
-		" doc with name '" << name << "'\n";
-	return NULL;
+	return false;
 }
 
 

@@ -128,7 +128,7 @@ class RefWindow {
 		void onDeleteTag ();
 		void onRenameTag ();
 		void onAddDocUnnamed ();
-		void onAddDocByDoi ();
+		void onAddDocById ();
 		void onAddDocFile ();
 		void onAddDocFolder ();
 		public:

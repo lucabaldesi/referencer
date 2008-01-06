@@ -352,8 +352,8 @@ void RefWindow::constructMenu ()
 		"AddDocUnnamed", Gtk::Stock::ADD, _("Add E_mpty Reference...")),
   	sigc::mem_fun(*this, &RefWindow::onAddDocUnnamed));
 	actiongroup_->add( Gtk::Action::create(
-		"AddDocDoi", Gtk::Stock::ADD, _("Add Refere_nce with DOI...")),
-  	sigc::mem_fun(*this, &RefWindow::onAddDocByDoi));
+		"AddDocDoi", Gtk::Stock::ADD, _("Add Refere_nce with ID...")),
+  	sigc::mem_fun(*this, &RefWindow::onAddDocById));
 	actiongroup_->add( Gtk::Action::create(
 		"RemoveDoc", Gtk::Stock::REMOVE, _("_Remove")),
 		Gtk::AccelKey ("<control>Delete"),
@@ -1475,22 +1475,39 @@ void RefWindow::onAddDocUnnamed ()
 }
 
 
-void RefWindow::onAddDocByDoi ()
+void RefWindow::onAddDocById ()
 {
 
-	Gtk::Dialog dialog (_("Add Reference with DOI"), true, false);
+	Gtk::Dialog dialog (_("Add Reference with ID"), true, false);
 
 	Gtk::VBox *vbox = dialog.get_vbox ();
 
+	/*
+	 * XXX
+	 * A combo to select between doi, medline, arxiv
+	 */
+
+	Glib::ustring doiDisplayName = "DOI";
+	Glib::ustring pubmedDisplayName = "PubMed ID";
+	Glib::ustring arxivDisplayName = "arXiv e-print";
+
+	Gtk::ComboBoxText combo;
+	combo.append_text (doiDisplayName);
+	combo.append_text (pubmedDisplayName);
+	combo.append_text (arxivDisplayName);
+	combo.set_active_text (doiDisplayName);
+
 	Gtk::HBox hbox;
-	hbox.set_spacing (12);
+	hbox.set_spacing (6);
 	vbox->pack_start (hbox, true, true, 0);
 
-	Gtk::Label label (_("DOI:"), false);
-	hbox.pack_start (label, false, false, 0);
+//	Gtk::Label label (_("ID:"), false);
+	hbox.pack_start (combo, false, false, 0);
 
 	Gtk::Entry entry;
 	hbox.pack_start (entry, true, true, 0);
+	entry.set_activates_default (true);
+	entry.grab_focus ();
 
 	dialog.add_button (Gtk::Stock::CANCEL, Gtk::RESPONSE_CANCEL);
 	dialog.add_button (Gtk::Stock::OK, Gtk::RESPONSE_ACCEPT);
@@ -1501,7 +1518,21 @@ void RefWindow::onAddDocByDoi ()
 
 	if (dialog.run () == Gtk::RESPONSE_ACCEPT) {
 		setDirty (true);
-		Document *newdoc = library_->doclist_->newDocWithDoi (entry.get_text ());
+		Document *newdoc = library_->doclist_->newDocUnnamed ();
+
+		Glib::ustring field;
+		Glib::ustring displayField = combo.get_active_text ();
+		if (displayField == doiDisplayName) {
+			field = "doi";
+		} else if (displayField == pubmedDisplayName) {
+			field = "pmid";
+		} else if (displayField == arxivDisplayName) {
+			field = "eprint";
+		} else {
+			throw std::runtime_error("onAddDocById");	
+		}
+
+		newdoc->setField ("doi", entry.get_text ());
 
 		newdoc->getMetaData ();
 		newdoc->setKey (library_->doclist_->uniqueKey (newdoc->generateKey ()));
@@ -1585,15 +1616,12 @@ void RefWindow::onRemoveDoc ()
 		message = String::ucompose (
 			_("Are you sure you want to remove these %1 documents?"),
 			docs.size ());
-		secondary = _("All tag associations and metadata for these documents "
-			"will be permanently lost.");
-	}
-	else {
+		secondary = _("All tag associations and metadata for these documents will be permanently lost.");
+	} else {
 		message = String::ucompose (
 			_("Are you sure you want to remove '%1'?"),
 			(*docs.begin ())->getKey ());
-		secondary = _("All tag associations and metadata for the document "
-			"will be permanently lost.");
+		secondary = _("All tag associations and metadata for the document will be permanently lost.");
 	}
 	Gtk::MessageDialog confirmdialog (
 		message, false, Gtk::MESSAGE_QUESTION,
