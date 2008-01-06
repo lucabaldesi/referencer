@@ -1,5 +1,6 @@
 
 
+Update thumbnail in documentproperties when filename changes
 Disable UI while in getMetaData
 fix paste from gecko not working
 - be more general than wait_for_text
