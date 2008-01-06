@@ -50,6 +50,14 @@ Preferences::Preferences ()
 	proxyusername_ = confclient_->get_entry (HTTP_AUTH_USER_KEY);
 	proxypassword_ = confclient_->get_entry (HTTP_AUTH_PASSWD_KEY);
 
+
+	/*
+	 * List view options
+	 */
+	listSortColumn_ = confclient_->get_entry (CONF_PATH "/listsortcolumn");
+	listSortOrder_ = confclient_->get_entry (CONF_PATH "/listsortorder");
+
+
 	if (!confclient_->dir_exists (CONF_PATH)) {
 		std::cerr << "Preferences::Preferences: CONF_PATH "
 			"doesn't exist, setting it up\n";
@@ -183,13 +191,6 @@ Preferences::Preferences ()
 	/*
 	 * End of Plugins
 	 */
-
-	/*
-	 * List view options
-	 */
-	listSortColumn_ = confclient_->get_entry (CONF_PATH "/listsortcolumn");
-	listSortOrder_ = confclient_->get_entry (CONF_PATH "/listsortorder");
-
 	ignoreChanges_ = false;
 }
 
