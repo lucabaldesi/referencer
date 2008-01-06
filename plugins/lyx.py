@@ -1,6 +1,6 @@
 #!/usr/bin/env python
  
-#  Add quote in lyx using lyxpipe
+#  Add quote in lyx using lyxclient
 
 import os
 import referencer
