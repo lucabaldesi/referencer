@@ -23,8 +23,9 @@ static PyObject *referencer_document_get_key (PyObject *self, PyObject *args)
 
 static PyObject *referencer_document_set_key (PyObject *self, PyObject *args)
 {
-	Glib::ustring value = ((referencer_document*)self)->doc_->getKey ();
-	return PyString_FromString(value.c_str());
+	PyObject *value = PyTuple_GetItem (args, 0);
+	((referencer_document*)self)->doc_->setKey (PyString_AsString(value));
+	return Py_BuildValue ("i", 0);
 }
 
 
