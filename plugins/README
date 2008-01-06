@@ -11,8 +11,17 @@ Every plugin must create a python list called referencer_plugin_info, which
 contains [key, value] lists for keys including the following:
 
 "longname"
+ - Mandatory for all plugins: a description, such as "Martian cat farmer"
 "action"
+ - Mandatory for document_action plugins, a UI item eg "Farm this cat"
 "tooltip"
+ - Mandatory for document_action plugins, a description of
+   the UI item eg "Farms the selected cat"
+"icon"
+ - Optional for document_action plugins, such as "cat_shovel.png"
+   Icons are looked for in the referencer data directory.
+   If the icon is not specified or not found then a default
+   icon is used instead.
 
 Capability list
 ---------------
@@ -23,7 +32,11 @@ which contains strings including:
 "doi"
 "pubmed"
 "arxiv"
+ - The above three are metadata fetchers.  A fetcher plugin can
+   have more than one of them.  For instance, pubmed.py supports
+   both doi and pubmed.
 "document_action"
+ - A document action plugin
 
 
 Metadata plugins
