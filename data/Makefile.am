@@ -1,5 +1,5 @@
 resourcesdir   = $(pkgdatadir)
-resources_DATA = documentproperties.glade preferences.glade introduction.html main.css thumbnail_frame.png referencer.svg unknown-document.png
+resources_DATA = documentproperties.glade preferences.glade introduction.html main.css thumbnail_frame.png referencer.svg unknown-document.png lyx.png
 
 desktopdir       = $(datadir)/applications
 desktop_in_files = referencer.desktop.in
