@@ -10,6 +10,7 @@ referencer_plugin_info = []
 referencer_plugin_info.append (["longname", _("Cite in LyX")])
 referencer_plugin_info.append (["action", _("Cite in LyX")])
 referencer_plugin_info.append (["tooltip", _("Cite the selected documents in LyX")])
+referencer_plugin_info.append (["icon", "lyx.png"])
 referencer_plugin_capabilities = []
 referencer_plugin_capabilities.append ("document_action")
 

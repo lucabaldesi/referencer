@@ -441,6 +441,7 @@ void RefWindow::constructMenu ()
 		"      <menuitem action='GetMetadataDoc'/>"
 		"      <menuitem action='RenameDoc'/>"
 		"      <menuitem action='DeleteDoc'/>"
+		"      <separator/>"
 		"    </menu>"
 		"    <menu action='HelpMenu'>"
 		"      <menuitem action='Introduction'/>"
@@ -485,7 +486,7 @@ void RefWindow::constructMenu ()
 	uimanager_->add_ui_from_string (ui);
 	window_->add_accel_group (uimanager_->get_accel_group ());
 }
-	
+
 void RefWindow::onEnabledPluginsPrefChanged ()
 {
 	std::list<Plugin*> plugins = _global_plugins->getPlugins();
@@ -497,12 +498,45 @@ void RefWindow::onEnabledPluginsPrefChanged ()
 			Gtk::UIManager::ui_merge_id mergeid = pluginUI_[actionName];
 
 			if ((*pit)->isEnabled() && !mergeid) {
-				// plugin UI needs to be added			
-				actiongroup_->add( Gtk::Action::create(
-					actionName, Gtk::Stock::EXECUTE,
-					(*pit)->getActionText(), (*pit)->getActionTooltip()),
-					sigc::bind<Plugin*>( sigc::mem_fun(*this, &RefWindow::onPluginRun), (*pit)));
+				// plugin UI needs to be added
+				Glib::ustring icon = (*pit)->getActionIcon ();
+				if (icon != "") {
+					// messy to add stock item, is it REALLY necessary ?
+					icon = Utility::findDataFile (icon);
+					Glib::RefPtr<Gtk::IconFactory> factory = Gtk::IconFactory::create();
+					Gtk::IconSource source;
+					try {
+						//This throws an exception if the file is not found:
+						source.set_pixbuf( Gdk::Pixbuf::create_from_file(icon) );
 
+						source.set_size(Gtk::ICON_SIZE_SMALL_TOOLBAR);
+						source.set_size_wildcarded(); //Icon may be scaled.
+
+						Gtk::IconSet icon_set;
+						icon_set.add_source(source); //More than one source per set is allowed.
+
+						const Gtk::StockID stock_id("referencer"+actionName);
+						factory->add(stock_id, icon_set);
+						Gtk::Stock::add(Gtk::StockItem(stock_id, (*pit)->getActionText ()));
+					
+						factory->add_default(); //Add factory to list of factories.
+
+						std::cerr << "using custom icon: " + icon << std::endl;
+						actiongroup_->add( Gtk::Action::create(
+							actionName, stock_id,
+							(*pit)->getActionText(), (*pit)->getActionTooltip()),
+							sigc::bind<Plugin*>( sigc::mem_fun(*this, &RefWindow::onPluginRun), (*pit)));
+					} catch(const Glib::Exception& ex) {
+						icon = "";
+						std::cout << "failed to use a custom icon" << std::endl;
+					}
+				}
+				if (icon == "") {
+					actiongroup_->add( Gtk::Action::create(
+						actionName, Gtk::Stock::EXECUTE,
+						(*pit)->getActionText(), (*pit)->getActionTooltip()),
+						sigc::bind<Plugin*>( sigc::mem_fun(*this, &RefWindow::onPluginRun), (*pit)));
+				}
 				/* Sensitivity policy duplicated here and in docSelectionChanged */
 				actiongroup_->get_action (actionName)->set_sensitive (
 					docview_->getSelectedDocCount () > 0);
@@ -512,6 +546,11 @@ void RefWindow::onEnabledPluginsPrefChanged ()
 					"  <toolbar name='ToolBar'>"
 					"	<toolitem action='" + actionName + "'/>"
 					"  </toolbar>"
+					"  <menubar name='MenuBar'>"
+					"    <menu action='DocMenu'>"
+					"      <menuitem action='" + actionName + "'/>"
+					"    </menu>"
+					"  </menubar>"
 					"</ui>";
 				pluginUI_[actionName] = uimanager_->add_ui_from_string (ui);
 			} else if (!(*pit)->isEnabled() && mergeid) {
@@ -523,7 +562,6 @@ void RefWindow::onEnabledPluginsPrefChanged ()
 		}
 	}
 }
-
 
 void RefWindow::clearTagList ()
 {

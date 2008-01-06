@@ -17,6 +17,7 @@ class PythonPlugin : public Plugin
 		virtual Glib::ustring const getLongName ();
 		virtual Glib::ustring const getActionText ();
 		virtual Glib::ustring const getActionTooltip ();
+		virtual Glib::ustring const getActionIcon ();
 
 	private:
 		bool resolveID (Document &doc, PluginCapability::Identifier id);

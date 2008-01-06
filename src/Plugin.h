@@ -75,6 +75,7 @@ class Plugin
 
 		virtual Glib::ustring const getActionText () {return Glib::ustring();}
 		virtual Glib::ustring const getActionTooltip () {return Glib::ustring();}
+		virtual Glib::ustring const getActionIcon () {return Glib::ustring();}
 
 		bool isEnabled () {return enabled_;}
 		bool isLoaded () {return loaded_;}

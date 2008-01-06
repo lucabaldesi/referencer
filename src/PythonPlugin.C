@@ -242,6 +242,11 @@ Glib::ustring const PythonPlugin::getActionText ()
 	return getPluginInfoField ("action");
 }
 
+Glib::ustring const PythonPlugin::getActionIcon ()
+{
+	return getPluginInfoField ("icon");
+}
+
 
 Glib::ustring const PythonPlugin::getPluginInfoField (Glib::ustring const &targetKey)
 {
