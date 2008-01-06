@@ -37,17 +37,38 @@ int main (int argc, char **argv)
 
 	gdk_threads_init ();
 
-	std::string pythonpath = "./plugins:"PLUGINDIR;
+	Glib::ustring pythonPath = "";
+	/* Pick up existing python path */
 	if (getenv("PYTHONPATH")) {
-		pythonpath += ":";
-		pythonpath += getenv("PYTHONPATH");
+		pythonPath += ":";
+		pythonPath += getenv("PYTHONPATH");
 	}
-	std::cerr << "main: setting PYTHONPATH to '" << pythonpath << "'\n";
-	setenv ("PYTHONPATH", pythonpath.c_str(), 1);
+
+	/* Locate user plugins */
+	Glib::ustring homePlugins;
+	if (getenv("HOME"))
+		homePlugins = Glib::ustring(getenv("HOME")) + Glib::ustring("/.referencer/plugins");
+
+	/* Development directory */
+	Glib::ustring localPlugins = "./plugins";
+	/* Systemwide */
+	Glib::ustring installedPlugins = PLUGINDIR;
+
+	/* Order is important, defines precedence */
+	pythonPath += localPlugins;
+	pythonPath += ":";
+	pythonPath += homePlugins;
+	pythonPath += ":";
+	pythonPath += installedPlugins;
+	pythonPath += ":";
+	/* Export the path */
+	std::cerr << "main: setting PYTHONPATH to '" << pythonPath << "'\n";
+	setenv ("PYTHONPATH", pythonPath.c_str(), 1);
 	Py_Initialize ();
 
 	_global_plugins = new PluginManager ();
 	_global_plugins->scan("./plugins");
+	_global_plugins->scan(homePlugins);
 	_global_plugins->scan(PLUGINDIR);
 
 	_global_prefs = new Preferences();

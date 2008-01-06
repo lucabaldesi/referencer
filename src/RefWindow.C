@@ -2212,6 +2212,17 @@ void RefWindow::onUseListViewPrefChanged ()
 
 void RefWindow::onPluginRun (Plugin* plugin)
 {
-	plugin->doAction(docview_->getSelectedDocs());
+	std::vector<Document*> docs = docview_->getSelectedDocs();
+	plugin->doAction(docs);
+
+	/*
+	 * Update the docs in the view since the plugin could 
+	 * have written to them
+	 */
+	std::vector<Document*>::iterator it = docs.begin ();
+	std::vector<Document*>::iterator const end = docs.end ();
+	for (; it != end; ++it) {
+		docview_->updateDoc (*it);
+	}
 }
 
