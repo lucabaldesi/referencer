@@ -7,7 +7,6 @@
 #   Modified for integration with referencer by John Spray, 2007
 
 import urllib
-import urllib2
 import referencer
 from referencer import _
 

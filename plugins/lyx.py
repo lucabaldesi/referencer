@@ -16,6 +16,33 @@ referencer_plugin_capabilities.append ("document_action")
 
 print "lyx module loaded"
 
+LYXPIPE = None
+HOME = os.environ.get("HOME")
+LYXPREFS = os.path.join(HOME, ".lyx/preferences")
+DEFAULTPIPE = os.path.join(HOME, ".lyxpipe.in")
+
+# read the path to the lyx pipe from the lyx configuration file
+if os.path.exists(LYXPREFS):
+	p = open(LYXPREFS, "r")
+	while True:
+		l = p.readline()
+		if not l:
+			break
+		if l.startswith("\\serverpipe "):
+			LYXPIPE = l.split('"')[1] + ".in"
+			break
+p.close()
+
+# Locate lyxclient
+lyxClientBinary = None
+for dir in os.environ['PATH'].split (os.pathsep):
+	exe = os.path.join (dir, "lyxclient")
+	if (os.path.exists(exe)):
+		lyxClientBinary = exe
+		print "Found lyxclient at %s\n" % exe
+		break
+
+
 def do_action (documents):
 	empty = True
 	keys = ""
@@ -28,16 +55,23 @@ def do_action (documents):
 	if empty:
 		return False
 
-	# Locate lyxclient
-	lyxClientBinary = ""
-	for dir in os.environ['PATH'].split (os.pathsep):
-		exe = os.path.join (dir, "lyxclient")
-		if (os.path.exists(exe)):
-			lyxClientBinary = exe
-			print "Found lyxclient at %s\n" % exe
-			break
+	existing_lyxpipe = None
+	if LYXPIPE and os.path.exists(LYXPIPE):
+		existing_lyxpipe = LYXPIPE
+	elif os.path.exists(DEFAULTPIPE):
+		existing_lyxpipe = DEFAULTPIPE
 
-	if (len(lyxClientBinary) == 0):
+	if existing_lyxpipe is not None:	
+		try:
+			print "using lyx pipe: "+existing_lyxpipe
+			p = open(existing_lyxpipe, 'a')
+			p.write("LYXCMD:referencer:citation-insert:" + keys + "\n")
+			p.close()
+			return True
+		except:
+			print "Error using the lyx pipe"
+
+	if lyxClientBinary is None:
 		print "Couldn't find lyxclient"
 		return False
 
