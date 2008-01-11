@@ -31,7 +31,7 @@ if os.path.exists(LYXPREFS):
 		if l.startswith("\\serverpipe "):
 			LYXPIPE = l.split('"')[1] + ".in"
 			break
-p.close()
+	p.close()
 
 # Locate lyxclient
 lyxClientBinary = None
