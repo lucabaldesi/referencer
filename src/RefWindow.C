@@ -1651,11 +1651,13 @@ void RefWindow::onRemoveDoc ()
 
 void RefWindow::onGetMetadataDoc ()
 {
+	progress_->start (_("Fetching metadata"));
+
 	bool doclistdirty = false;
 	std::vector <Document*> docs = docview_->getSelectedDocs ();
 	std::vector <Document*>::iterator it = docs.begin ();
 	std::vector <Document*>::iterator const end = docs.end ();
-	for (; it != end; ++it) {
+	for (int i = 0; it != end; ++it, ++i) {
 		Document* doc = *it;
 		if (doc->canGetMetadata ()) {
 			setDirty (true);
@@ -1663,8 +1665,11 @@ void RefWindow::onGetMetadataDoc ()
 			doc->getMetaData ();
 			docview_->updateDoc(doc);
 		}
+
+		progress_->update ((float)i / (float)(docs.size()));
 	}
 
+	progress_->finish ();
 }
 
 
