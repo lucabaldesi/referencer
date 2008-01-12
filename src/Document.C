@@ -15,7 +15,6 @@
 #include <sstream>
 
 #include <glibmm/markup.h>
-#include <libgnomevfsmm.h>
 #include <glibmm/i18n.h>
 #include "ucompose.hpp"
 #include <poppler.h>
@@ -106,6 +105,7 @@ Glib::ustring Document::generateKey ()
 		if (comma != Glib::ustring::npos)
 			snip = comma;
 		if (space != Glib::ustring::npos && space < comma)
+			snip = space;
 
 		if (snip != Glib::ustring::npos)
 			authors = authors.substr(0, snip);
