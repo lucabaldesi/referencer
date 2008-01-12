@@ -28,7 +28,8 @@ PythonPlugin::~PythonPlugin()
 			Py_DECREF (pGetFunc_);
 		if (pActionFunc_ != NULL)
 			Py_DECREF (pActionFunc_);
-		Py_DECREF (pPluginInfo_);
+		if (pPluginInfo_ != NULL)
+			Py_DECREF (pPluginInfo_);
 		Py_DECREF (pMod_);
 	}
 }
@@ -134,7 +135,6 @@ bool PythonPlugin::resolve (Document &doc)
 
 bool PythonPlugin::doAction (std::vector<Document*> docs)
 {
-
 	PyObject *pDocList = PyList_New (docs.size());
 	std::vector<Document*>::iterator it = docs.begin ();
 	std::vector<Document*>::iterator const end = docs.end ();
@@ -250,6 +250,9 @@ Glib::ustring const PythonPlugin::getActionIcon ()
 
 Glib::ustring const PythonPlugin::getPluginInfoField (Glib::ustring const &targetKey)
 {
+	if (!loaded_)
+		return Glib::ustring ();
+
 	int const N = PyList_Size (pPluginInfo_);
 
 	for (int i = 0; i < N; ++i) {
