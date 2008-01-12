@@ -713,7 +713,7 @@ void DocumentView::loadRow (
 	#endif
 	(*item)[docvisiblecol_] = isVisible (doc);
 
-	Glib::ustring title = Utility::wrap (doc->getField ("title"), 30, 1, false);
+	Glib::ustring title = Utility::wrap (doc->getField ("title"), 35, 1, false);
 	Glib::ustring authors =	Utility::firstAuthor(doc->getField("author"));
 	authors = Utility::strip (authors, "{");
 	authors = Utility::strip (authors, "}");
