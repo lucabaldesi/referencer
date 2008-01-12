@@ -67,6 +67,8 @@ referencer_SOURCES =	\
 	sexy-icon-entry.h \
 	TagList.C	\
 	TagList.h	\
+	ThumbnailGenerator.C \
+	ThumbnailGenerator.h \
 	RefWindow.C	\
 	RefWindow.h	\
 	Transfer.C	\

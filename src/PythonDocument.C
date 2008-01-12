@@ -1,4 +1,6 @@
 
+#include <iostream>
+
 #include <Python.h>
 #include <structmember.h>
 
