@@ -29,6 +29,7 @@ referencer_SOURCES =	\
 	BibData.h	\
 	BibUtils.C	\
 	BibUtils.h	\
+	CaseFoldCompare.h \
 	CrossRefPlugin.C	\
 	CrossRefPlugin.h	\
 	Document.C	\
