@@ -113,6 +113,7 @@ DocumentView::DocumentView (
 	icons->set_columns (-1);
 
 	icons->set_orientation (Gtk::ORIENTATION_HORIZONTAL);
+	icons->set_item_width (256);
 
 	std::vector<Gtk::TargetEntry> dragtypes;
 	Gtk::TargetEntry target;
@@ -712,14 +713,12 @@ void DocumentView::loadRow (
 	#endif
 	(*item)[docvisiblecol_] = isVisible (doc);
 
-	int const cropwidth = 20;
-	Glib::ustring title = Utility::wrap (doc->getBibData().getTitle(), cropwidth, 2, true);
-	Glib::ustring authors = Utility::wrap (
-			Utility::firstAuthor(doc->getBibData().getAuthors()), cropwidth, 1, false);
+	Glib::ustring title = Utility::wrap (doc->getField ("title"), 30, 1, false);
+	Glib::ustring authors =	Utility::firstAuthor(doc->getField("author"));
 	authors = Utility::strip (authors, "{");
 	authors = Utility::strip (authors, "}");
-	Glib::ustring key = Utility::wrap (doc->getKey(), cropwidth, 1, false);
-	Glib::ustring year = Utility::wrap (doc->getBibData().getYear(), cropwidth, 1, false);
+	Glib::ustring key = doc->getKey();
+	Glib::ustring year = doc->getField("year");
 
 	if (title.empty())
 		title = " ";

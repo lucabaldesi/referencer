@@ -49,7 +49,11 @@ Glib::ustring firstAuthor (
 	}
 }
 
-Glib::ustring wrap (Glib::ustring const &str, Glib::ustring::size_type width, int lines, bool const pad)
+Glib::ustring wrap (
+	Glib::ustring const &str,
+	Glib::ustring::size_type width,
+	int lines,
+	bool const pad)
 {
 	/*
 	 * Note on wrapping
@@ -67,6 +71,9 @@ Glib::ustring wrap (Glib::ustring const &str, Glib::ustring::size_type width, in
 	unsigned int remainder = str.size();
 
 	Glib::ustring wrapped;
+
+	gunichar wideSpace = 0x2002;
+	Glib::ustring padElement = Glib::ustring (1, wideSpace);
 
 	while (line < lines) {
 		if (line > 0)
@@ -99,7 +106,7 @@ Glib::ustring wrap (Glib::ustring const &str, Glib::ustring::size_type width, in
 			if (pad) {
 				int mspaces = (int)((float)(width - snaffle.size()) * 0.85);
 				for (int i = 0; i < mspaces; ++i)
-					wrapped += " ";
+					wrapped += padElement;
 			}
 
 			line++;
@@ -114,7 +121,7 @@ Glib::ustring wrap (Glib::ustring const &str, Glib::ustring::size_type width, in
 			if (pad) {
 				int mspaces = (int)((float)(width - snaffle.size()) * 0.85);
 				for (int i = 0; i < mspaces; ++i)
-					wrapped += " ";
+					wrapped += padElement;
 			}
 
 			break;
