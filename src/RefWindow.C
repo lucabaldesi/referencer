@@ -1531,9 +1531,9 @@ void RefWindow::onAddDocById ()
 			field = "pmid";
 		} else if (displayField == arxivDisplayName) {
 			field = "eprint";
-		} else {
+		}/* else {
 			throw std::runtime_error("onAddDocById");	
-		}
+		}*/
 
 		newdoc->setField ("doi", entry.get_text ());
 
