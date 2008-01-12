@@ -96,9 +96,12 @@ void RefWindow::constructUI ()
 	window_->signal_configure_event().connect_notify (
 		sigc::mem_fun (*this, &RefWindow::onResize));
 
-	window_->set_icon (
-		Gdk::Pixbuf::create_from_file(
-			Utility::findDataFile("referencer.svg")));
+	try {
+		Glib::RefPtr<Gdk::Pixbuf> icon = Gdk::Pixbuf::create_from_file(
+			Utility::findDataFile("referencer.svg"));
+		window_->set_icon (icon);
+	} catch (Gdk::PixbufError ex) {
+	}
 
 	/* Vbox fills the whole window */
 	Gtk::VBox *vbox = Gtk::manage(new Gtk::VBox);

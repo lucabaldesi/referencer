@@ -22,30 +22,46 @@
 
 #include "config.h"
 
-#include "Utility.h"
+#include "DocumentView.h"
 #include "Library.h"
 #include "PluginManager.h"
 #include "Preferences.h"
 #include "TagList.h"
+#include "ThumbnailGenerator.h"
+#include "Utility.h"
 
 
 #include "Document.h"
 
-
-Glib::RefPtr<Gdk::Pixbuf> Document::defaultthumb_;
-Glib::RefPtr<Gdk::Pixbuf> Document::thumbframe_;
-Glib::RefPtr<Gnome::UI::ThumbnailFactory> Document::thumbfac_;
+static ThumbnailGenerator *thumbnailGenerator;
 
 const Glib::ustring Document::defaultKey_ = _("Unnamed");
+Glib::RefPtr<Gdk::Pixbuf> Document::loadingthumb_;
+
+
+Document::~Document ()
+{
+	if (thumbnailGenerator)
+		thumbnailGenerator->deregisterRequest (this);
+}
+
+Document::Document (Document const &x)
+{
+	view_ = NULL;
+	*this = x;
+	setupThumbnail ();
+}
 
 Document::Document (Glib::ustring const &filename)
 {
+	view_ = NULL;
 	setFileName (filename);
 }
 
 
 Document::Document ()
 {
+	view_ = NULL;
 	// Pick up the default thumbnail
 	setupThumbnail ();
 }
@@ -58,6 +74,7 @@ Document::Document (
 	std::vector<int> const &tagUids,
 	BibData const &bib)
 {
+	view_ = NULL;
 	setFileName (filename);
 	key_ = key;
 	tagUids_ = tagUids;
@@ -89,7 +106,6 @@ Glib::ustring Document::generateKey ()
 		if (comma != Glib::ustring::npos)
 			snip = comma;
 		if (space != Glib::ustring::npos && space < comma)
-			snip = space;
 
 		if (snip != Glib::ustring::npos)
 			authors = authors.substr(0, snip);
@@ -137,88 +153,40 @@ Glib::ustring Document::generateKey ()
 }
 
 
+void Document::setThumbnail (Glib::RefPtr<Gdk::Pixbuf> thumb)
+{
+	thumbnail_ = thumb;
+	if (view_)
+		view_->updateDoc(this);
+}
+
+
 void Document::setupThumbnail ()
 {
-	thumbnail_.clear ();
-	Glib::RefPtr<Gnome::Vfs::Uri> uri = Gnome::Vfs::Uri::create (filename_);
-	if (!filename_.empty () && Utility::uriIsFast (uri) && uri->uri_exists()) {
-		Glib::RefPtr<Gnome::Vfs::FileInfo> fileinfo = uri->get_file_info ();
-		time_t mtime = fileinfo->get_modification_time ();
-
-		if (!thumbfac_)
-			thumbfac_ =	Gnome::UI::ThumbnailFactory::create (Gnome::UI::THUMBNAIL_SIZE_NORMAL);
-
-		Glib::ustring thumbfile;
-		thumbfile = thumbfac_->lookup (filename_, mtime);
-
-		/*
-		 * Upsettingly, this leads to two full opens-read-close operations 
-		 * on the thumbnail.  ThumbnailFactory does one, presumably to 
-		 * read the PNG metadata, then we do it again to get the 
-		 * image itself.
-		 */
-
-		// Should we be using Gnome::UI::icon_lookup_sync?
-		if (thumbfile.empty()) {
-			std::cerr << "Couldn't find thumbnail:'" << filename_ << "'\n";
-			if (thumbfac_->has_valid_failed_thumbnail (filename_, mtime)) {
-				std::cerr << "Has valid failed thumbnail: '" << filename_ << "'\n";
-			} else {
-				std::cerr << "Generate thumbnail: '" << filename_ << "'\n";
-				Glib::ustring mimetype = 
-					(uri->get_file_info (Gnome::Vfs::FILE_INFO_GET_MIME_TYPE))->get_mime_type ();
-
-				thumbnail_ = thumbfac_->generate_thumbnail (filename_, mimetype);
-				if (thumbnail_) {
-					thumbfac_->save_thumbnail (thumbnail_, filename_, mtime);
-				} else {
-					std::cerr << "Failed to generate thumbnail: '" << filename_ << "'\n";
-					thumbfac_->create_failed_thumbnail (filename_, mtime);
-				}
-			}
-
-		} else {
-			thumbnail_ = Gdk::Pixbuf::create_from_file (thumbfile);
-		}
-	}
-
-	if (!thumbnail_) {
-		if (defaultthumb_) {
-			thumbnail_ = Document::defaultthumb_;
-		} else {
-			thumbnail_ = Gdk::Pixbuf::create_from_file
+	if (!loadingthumb_) {
+		loadingthumb_ = Utility::getThemeIcon ("image-loading");
+		if (!loadingthumb_)
+			loadingthumb_ = Gdk::Pixbuf::create_from_file
 				(Utility::findDataFile ("unknown-document.png"));
+
+		if (loadingthumb_) {
+			/* FIXME magic number duplicated elsewhere */
 			float const desiredwidth = 64.0 + 9;
-			int oldwidth = thumbnail_->get_width ();
-			int oldheight = thumbnail_->get_height ();
+			int oldwidth = loadingthumb_->get_width ();
+			int oldheight = loadingthumb_->get_height ();
 			int newwidth = (int)desiredwidth;
 			int newheight = (int)((float)oldheight * (desiredwidth / (float)oldwidth));
-			thumbnail_ = thumbnail_->scale_simple (
+			loadingthumb_ = loadingthumb_->scale_simple (
 				newwidth, newheight, Gdk::INTERP_BILINEAR);
-			Document::defaultthumb_ = thumbnail_;
-		}
-	} else {
-		float const desiredwidth = 64.0;
-		int oldwidth = thumbnail_->get_width ();
-		int oldheight = thumbnail_->get_height ();
-		int newwidth = (int)desiredwidth;
-		int newheight = (int)((float)oldheight * (desiredwidth / (float)oldwidth));
-		thumbnail_ = thumbnail_->scale_simple (
-			newwidth, newheight, Gdk::INTERP_BILINEAR);
-
-		if (!thumbframe_) {
-			thumbframe_ = Gdk::Pixbuf::create_from_file (
-				Utility::findDataFile ("thumbnail_frame.png"));
 		}
 
-		int const left_offset = 3;
-		int const top_offset = 3;
-		int const right_offset = 6;
-		int const bottom_offset = 6;
-		thumbnail_ = Utility::eelEmbedImageInFrame (
-			thumbnail_, thumbframe_,
-			left_offset, top_offset, right_offset, bottom_offset);
-		}
+	}
+	thumbnail_ = loadingthumb_;
+	if (!thumbnailGenerator)
+		thumbnailGenerator = new ThumbnailGenerator ();
+ 
+	thumbnailGenerator->registerRequest (filename_, this);
+
 }
 
 
@@ -242,6 +210,9 @@ Glib::ustring const & Document::getRelFileName() const
 
 void Document::setFileName (Glib::ustring const &filename)
 {
+	if (thumbnailGenerator)
+		thumbnailGenerator->deregisterRequest (this);
+
 	if (filename != filename_) {
 		filename_ = filename;
 		setupThumbnail ();

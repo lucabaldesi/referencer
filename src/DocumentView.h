@@ -27,7 +27,7 @@ class DocumentView : public Gtk::VBox
 	void updateAllDocs ();
 	void updateDoc (Document * const doc);
 	void removeDoc (Document * const doc);
-	void addDoc (Document * const doc);
+	void addDoc (Document * doc);
 	void updateVisible ();
 	void clear ();
 

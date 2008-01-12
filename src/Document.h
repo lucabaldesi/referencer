@@ -13,10 +13,11 @@
 #ifndef DOCUMENT_H
 #define DOCUMENT_H
 
+#include <glibmm.h>
+
 #include "BibData.h"
 
-#include <libgnomeuimm.h>
-
+class DocumentView;
 class Library;
 
 class Document {
@@ -27,13 +28,17 @@ class Document {
 	std::vector<int> tagUids_;
 	Glib::RefPtr<Gdk::Pixbuf> thumbnail_;
 	static const Glib::ustring defaultKey_;
+	static Glib::RefPtr<Gdk::Pixbuf> loadingthumb_;
 
 	void setupThumbnail ();
+	DocumentView *view_;
 
 	BibData bib_;
 
 	public:
+	~Document ();
 	Document ();
+	Document (Document const & x);
 	Document (Glib::ustring const &filename);
 	Document (
 		Glib::ustring const &filename,
@@ -55,6 +60,9 @@ class Document {
 	void clearTag (int uid);
 	void clearTags ();
 
+	void setThumbnail (Glib::RefPtr<Gdk::Pixbuf> thumb);
+	void setView (DocumentView *view) {view_ = view;}
+
 	bool hasTag (int uid);
 	bool canGetMetadata ();
 	bool matchesSearch (Glib::ustring const &search);
@@ -71,10 +79,6 @@ class Document {
 
 	BibData& getBibData () {return bib_;}
 	void setBibData (BibData& bib){bib_ = bib;}
-
-	static Glib::RefPtr<Gdk::Pixbuf> defaultthumb_;
-	static Glib::RefPtr<Gdk::Pixbuf> thumbframe_;
-	static Glib::RefPtr<Gnome::UI::ThumbnailFactory> thumbfac_;
 
 	Glib::ustring generateKey ();
 

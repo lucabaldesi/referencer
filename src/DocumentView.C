@@ -847,8 +847,9 @@ void DocumentView::removeDoc (Document * const doc)
 /*
  * Append a row to docstore_ and load data from Document
  */
-void DocumentView::addDoc (Document * const doc)
+void DocumentView::addDoc (Document * doc)
 {
+	doc->setView(this);
 	Gtk::TreeModel::iterator item = docstore_->append();
 	loadRow (item, doc);
 
@@ -856,16 +857,15 @@ void DocumentView::addDoc (Document * const doc)
 		docstoresort_->get_path (
 			docstoresort_->convert_child_iter_to_iter (
 				docstorefilter_->convert_child_iter_to_iter (item)));
-//	if (uselistview_) {
-		docslistview_->scroll_to_row (path);
-		docslistselection_->unselect_all ();
-		docslistselection_->select (path);
 
-//	} else {
-		docsiconview_->unselect_all ();
-		docsiconview_->scroll_to_path (path, false, 0.0, 0.0);
-		docsiconview_->select_path (path);
-//	}
+
+	docslistview_->scroll_to_row (path);
+	docslistselection_->unselect_all ();
+	docslistselection_->select (path);
+
+	docsiconview_->unselect_all ();
+	docsiconview_->scroll_to_path (path, false, 0.0, 0.0);
+	docsiconview_->select_path (path);
 }
 
 
@@ -904,8 +904,9 @@ void DocumentView::populateDocStore ()
 	DocumentList::Container& docvec = lib_.doclist_->getDocs();
 	DocumentList::Container::iterator docit = docvec.begin();
 	DocumentList::Container::iterator const docend = docvec.end();
-	for (; docit != docend; ++docit)
+	for (; docit != docend; ++docit) {
 		addDoc (&(*docit));
+	}
 
 	// Restore initial selection
 	if (uselistview_) {
