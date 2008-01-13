@@ -1,7 +1,5 @@
 
 
-Don't complain when getting a 404 in openCB (Transfer.C)
-
 fix paste from gecko not working
 - be more general than wait_for_text
 
