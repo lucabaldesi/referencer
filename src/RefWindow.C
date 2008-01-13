@@ -1394,6 +1394,38 @@ void RefWindow::addDocFiles (std::vector<Glib::ustring> const &filenames)
 	Gtk::ProgressBar progress;
 	vbox->pack_start (progress, false, false, 0);
 
+	Gtk::TreeModelColumn<Glib::ustring> keyColumn;
+	Gtk::TreeModelColumn<Glib::ustring> textColumn;
+	Gtk::TreeModelColumn<Glib::ustring> idColumn;
+	Gtk::TreeModelColumn<Glib::ustring> metadataColumn;
+	Gtk::TreeModelColumn<Glib::ustring> resultColumn;
+	Gtk::TreeModelColumnRecord columns;
+	columns.add (keyColumn);
+	columns.add (textColumn);
+	columns.add (idColumn);
+	columns.add (metadataColumn);
+	columns.add (resultColumn);
+	Glib::RefPtr<Gtk::ListStore> reportModel = Gtk::ListStore::create(columns);
+
+	Gtk::TreeView reportView (reportModel);
+	reportView.insert_column (_("Document"), keyColumn, 0);
+	reportView.insert_column (_("Got text"), textColumn, 1);
+	reportView.insert_column (_("Got ID"), idColumn, 2);
+	reportView.insert_column (_("Got metadata"), metadataColumn, 3);
+	reportView.insert_column (_("Outcome"), resultColumn, 4);
+	reportView.show_all ();
+
+	Gtk::ScrolledWindow reportScroll;
+	reportScroll.set_policy (Gtk::POLICY_NEVER, Gtk::POLICY_AUTOMATIC);
+	reportScroll.add (reportView);
+	reportScroll.set_size_request (-1, 200);
+	vbox->pack_start (reportScroll, true, true, 0);
+
+	Gtk::Button *cancelButton = dialog.add_button (Gtk::Stock::CANCEL, Gtk::RESPONSE_ACCEPT);
+	Gtk::Button *closeButton = dialog.add_button (Gtk::Stock::CLOSE, Gtk::RESPONSE_ACCEPT);
+	closeButton->set_sensitive (false);
+	cancelButton->set_sensitive (true);
+
 	dialog.show_all ();
 	vbox->set_border_width (12);
 
@@ -1416,14 +1448,19 @@ void RefWindow::addDocFiles (std::vector<Glib::ustring> const &filenames)
 		}
 
 		Document *newdoc = library_->doclist_->newDocWithFile(*it);
+		bool added = false;
+		bool gotMetadata = false;
+		bool gotText = false;
+		bool gotId = false;
+		Glib::ustring key = "";
 		if (newdoc) {
-			newdoc->readPDF ();
+			gotText = newdoc->readPDF ();
 
 			while (Gnome::Main::events_pending())
 				Gnome::Main::iteration ();
 
 			// If we got a DOI or eprint field this will work
-			newdoc->getMetaData ();
+			gotMetadata = newdoc->getMetaData ();
 
 			// Generate a Zoidberg99 type key
 			newdoc->setKey (
@@ -1444,12 +1481,47 @@ void RefWindow::addDocFiles (std::vector<Glib::ustring> const &filenames)
 			}
 			
 			docview_->addDoc (newdoc);
+			added = true;
+			gotId = newdoc->hasField ("doi") || newdoc->hasField ("eprint") || newdoc->hasField ("pmid");
+			key = newdoc->getKey ();
 				
 		} else {
 			std::cerr << "RefWindow::addDocFiles: Warning: didn't succeed adding '" << *it << "'.  Duplicate file?\n";
 		}
+
+	
+
+		if (key.empty ()) {
+			// We didn't add this guy so didn't work out his key
+			Glib::ustring filename = (*it);
+			Glib::ustring::size_type len = filename.size();
+			key = (*it).substr(len - 14, len);
+		}
+
+		/*
+		Glib::ustring yes = _("Yes");
+		Glib::ustring no = _("No");
+		*/
+		Glib::ustring yes (1, (gunichar)0x2713);
+		Glib::ustring no (1, (gunichar)0x2717);
+
+		Gtk::TreeModel::iterator newRow = reportModel->append();
+		(*newRow)[keyColumn] = key;
+		(*newRow)[resultColumn] = added ? "Added" : "Not added";
+		(*newRow)[idColumn] = gotId ? yes : no;
+		(*newRow)[textColumn] = gotText ? yes : no;
+		(*newRow)[metadataColumn] = gotMetadata ? yes : no;
+
+		reportView.scroll_to_row (reportModel->get_path(newRow));
+
 		++n;
 	}
+
+	progress.set_fraction (1.0);
+	progress.set_text (_("Finished"));
+	closeButton->set_sensitive (true);
+	cancelButton->set_sensitive (false);
+	dialog.run ();
 
 	if (!filenames.empty()) {
 		// We added something

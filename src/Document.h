@@ -73,7 +73,7 @@ class Document {
 		bool const usebraces,
 		bool const utf8);
 	void writeXML (std::ostringstream &out);
-	void readPDF ();
+	bool readPDF ();
 	bool getMetaData ();
 	void renameFromKey ();
 

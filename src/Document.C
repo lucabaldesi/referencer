@@ -356,11 +356,11 @@ void Document::writeXML (std::ostringstream &out)
 }
 
 
-void Document::readPDF ()
+bool Document::readPDF ()
 {
 	if (filename_.empty()) {
 		std::cerr << "Document::readPDF: has no filename\n";
-		return;
+		return false;
 	}
 
 	GError *error = NULL;
@@ -370,7 +370,7 @@ void Document::readPDF ()
 		std::cerr << "Document::readPDF: Failed to load '"
 			<< filename_ << "'\n";
 		g_error_free (error);
-		return;
+		return false;
 	}
 
 	Glib::ustring textdump;
@@ -428,6 +428,8 @@ void Document::readPDF ()
 		if (bib_.getYear ().empty())
 			bib_.guessYear (textdump);
 	}
+
+	return !(textdump.empty ());
 }
 
 
