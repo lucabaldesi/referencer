@@ -1,4 +1,6 @@
-1.0.5:
+1.1.0
+	- Detailed report in add documents dialog
+	- Thumbnails generated asynchronously for more responsive loading
 	- Support document action plugins (AN + JCS)
 	- Lyx citation plugin (Aurélien Naldi)
 	- Added documents are scrolled to
