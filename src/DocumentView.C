@@ -333,8 +333,6 @@ void DocumentView::onIconsDragData (
 				}
 			}
 
-			
-
 			Glib::ustring const destination = Glib::build_filename (
 				destinationdir,
 				uri->extract_short_path_name ());
