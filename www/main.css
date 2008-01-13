@@ -43,7 +43,7 @@ h1.maintitle{
 
 div#titlebar
 {
-	background-color:#FCFCF2;
+	background-color:#EEEEFF;
 	border-width: 0px;
 	padding:10px;
 }
@@ -68,7 +68,7 @@ div#footer p
 div.menubox {
 	float:				right;
 	width:				150px;
-	background-color:		#FCFCF2;
+	background-color:		#EEEEFF;
 	margin-top:15px;
 	/*
 	border-top:1px solid black;
@@ -103,7 +103,7 @@ div.menubox p {
 div.textbox {
 	float:				left;
 	width:				610px;
-	background-color:#FCFCF2;
+	background-color:#EEEEFF;
 
 	padding-top:   10px;
 	padding-left: 10px;
@@ -151,5 +151,5 @@ h2
 	padding-left: 3px;
 	padding-top:1px;
 	padding-bottom:1px;
-	background-color: #c6c4a2;
+	background-color: #CCCCEE;
 }
