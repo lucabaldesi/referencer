@@ -23,15 +23,19 @@ DEFAULTPIPE = os.path.join(HOME, ".lyxpipe.in")
 
 # read the path to the lyx pipe from the lyx configuration file
 if os.path.exists(LYXPREFS):
-	p = open(LYXPREFS, "r")
-	while True:
-		l = p.readline()
-		if not l:
-			break
-		if l.startswith("\\serverpipe "):
-			LYXPIPE = l.split('"')[1] + ".in"
-			break
-	p.close()
+	try:
+		p = open(LYXPREFS, "r")
+		while True:
+			l = p.readline()
+			if not l:
+				break
+			if l.startswith("\\serverpipe "):
+				LYXPIPE = l.split('"')[1] + ".in"
+				break
+		p.close()
+	except:
+		# Fall through to lyxclient
+		pass
 
 # Locate lyxclient
 lyxClientBinary = None
@@ -53,6 +57,7 @@ def do_action (documents):
 		empty = False
 
 	if empty:
+		raise "No keys"
 		return False
 
 	existing_lyxpipe = None
@@ -70,17 +75,19 @@ def do_action (documents):
 			return True
 		except:
 			print "Error using the lyx pipe"
+	elif lyxClientBinary is not None:
+		# Compose citation insertion command
+		cmdStr = "LYXCMD:citation-insert " + keys + "\n"
+		try:
+			retval = os.system ("%s -c \"%s\"" % (lyxClientBinary, cmdStr))
+		except:
+			return False
 
-	if lyxClientBinary is None:
-		print "Couldn't find lyxclient"
-		return False
-
-	# Compose citation insertion command
-	cmdStr = "LYXCMD:citation-insert " + keys + "\n"
-	try:
-		os.system ("%s -c \"%s\"" % (lyxClientBinary, cmdStr))
-	except:
-		return False
+		if retval != 0:
+			raise "LyXClient failed, is LyX running?"
+	else:
+		raise "Couldn't find lyxclient"
+		#return False
 
 	return True
 
