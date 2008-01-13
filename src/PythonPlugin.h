@@ -21,6 +21,7 @@ class PythonPlugin : public Plugin
 
 	private:
 		bool resolveID (Document &doc, PluginCapability::Identifier id);
+		void displayException ();
 		Glib::ustring const getPluginInfoField (Glib::ustring const &targetKey);
 		std::string moduleName_;
 		PyObject *pGetFunc_;
