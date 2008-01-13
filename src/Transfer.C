@@ -24,13 +24,20 @@
 
 namespace Transfer {
 
-static bool transfercomplete;
-static bool transferfail;
+typedef enum {
+	TRANSFER_NONE = 0,
+	TRANSFER_OK = 1,
+	TRANSFER_FAIL_SILENT = 2,
+	TRANSFER_FAIL_LOUD = 4
+} Status;
+
+static uint64_t transferStatus;
+
 static Glib::ustring transferresults;
 void fetcherThread (Glib::ustring const &filename);
 
 void onTransferCancel ()
-	{transferfail = true;}
+	{transferStatus |= TRANSFER_FAIL_SILENT;}
 
 
 void promptWorkOffline ()
@@ -133,8 +140,7 @@ Glib::ustring &readRemoteFile (
 	cancelbutton->signal_clicked().connect(
 		sigc::ptr_fun (&onTransferCancel));
 
-	transfercomplete = false;
-	transferfail = false;
+	transferStatus = TRANSFER_NONE;
 
 	Glib::Thread *fetcher = Glib::Thread::create (
 		sigc::bind (sigc::ptr_fun (&fetcherThread), filename), true);
@@ -145,7 +151,7 @@ Glib::ustring &readRemoteFile (
 	double const maxTimeout = 10.0;
 	double const dialogDelay = 1.0;
 	bool dialogShown = false;
-	while (transfercomplete == false && transferfail == false) {
+	while (transferStatus == TRANSFER_NONE) {
 		progress.pulse ();
 		while (Gnome::Main::events_pending())
 			Gnome::Main::iteration ();
@@ -158,19 +164,23 @@ Glib::ustring &readRemoteFile (
 		}
 
 		if (timeout.elapsed () > maxTimeout) {
-			transferfail = true;
+			transferStatus |= TRANSFER_FAIL_SILENT;
 			break;
 		}
 	}
 
 	fetcher->join ();
 
-	if (transferfail) {
+	if (!(transferStatus & TRANSFER_OK)) {
+		/*
 		promptWorkOffline ();
 		throw Exception ("Transfer failed\n");
+		*/
+		transferresults = "";
+		return transferresults;
+	} else {
+		return transferresults;
 	}
-
-	return transferresults;
 }
 
 
@@ -186,7 +196,7 @@ void openCB (
 		advance = true;
 	} else {
 		std::cerr << "openCB: result not OK\n";
-		transferfail = true;
+		transferStatus |= TRANSFER_FAIL_SILENT;
 	}
 }
 
@@ -215,7 +225,7 @@ void readCB (
 			advance = true;
 		} else {
 			std::cerr << "readCB: result error\n";
-			transferfail = true;
+			transferStatus |= TRANSFER_FAIL_SILENT;
 		}
 	}
 }
@@ -243,7 +253,7 @@ static bool waitForFlag (volatile bool &flag)
 	while (flag == false) {
 		std::cerr << "Waiting...\n";
 		Glib::usleep (100000);
-		if (transferfail) {
+		if ((transferStatus & TRANSFER_FAIL_SILENT) | (transferStatus & TRANSFER_FAIL_LOUD)) {
 			// The parent decided we've timed out or cancelled and should give up
 			//     libgnomevfsmm-WARNING **: gnome-vfsmm Async::Handle::cancel():
 			//     This method currently leaks memory
@@ -270,7 +280,7 @@ void fetcherThread (Glib::ustring const &filename)
 		              sigc::ptr_fun(&openCB));
 	} catch (const Gnome::Vfs::exception ex) {
 		std::cerr << "Got an exception from open\n";
-		transferfail = true;
+		transferStatus |= TRANSFER_FAIL_SILENT;
 		Utility::exceptionDialog (&ex,
 			String::ucompose (
 				_("Opening URI '%1' on server"),
@@ -295,7 +305,7 @@ void fetcherThread (Glib::ustring const &filename)
 	} catch (const Gnome::Vfs::exception ex) {
 		std::cerr << "Got an exception from read\n";
 		// should close handle?
-		transferfail = true;
+		transferStatus |= TRANSFER_FAIL_SILENT;
 		Utility::exceptionDialog (&ex,
 			String::ucompose (
 				_("Reading URI '%1' on server"),
@@ -314,7 +324,7 @@ void fetcherThread (Glib::ustring const &filename)
 		bibfile.close (sigc::ptr_fun (&closeCB));
 	} catch (const Gnome::Vfs::exception ex) {
 		std::cerr << "Got an exception from close\n";
-		transferfail = true;
+		transferStatus |= TRANSFER_FAIL_SILENT;
 		Utility::exceptionDialog (&ex,
 			String::ucompose (
 				_("Closing URI '%1' on server"),
@@ -325,7 +335,7 @@ void fetcherThread (Glib::ustring const &filename)
 	if (waitForFlag (advance))
 		return;
 
-	transfercomplete = true;
+	transferStatus |= TRANSFER_OK;
 }
 
 
