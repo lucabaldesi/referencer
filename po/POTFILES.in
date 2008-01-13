@@ -1,12 +1,15 @@
 data/referencer.desktop.in
 data/documentproperties.glade
 data/preferences.glade
+plugins/pubmed.py
+plugins/lyx.py
 src/ArxivPlugin.C
 src/ArxivPlugin.h
 src/BibData.C
 src/BibData.h
 src/BibUtils.C
 src/BibUtils.h
+src/CaseFoldCompare.h
 src/CrossRefPlugin.C
 src/CrossRefPlugin.h
 src/Document.C
@@ -15,6 +18,8 @@ src/DocumentList.C
 src/DocumentList.h
 src/DocumentProperties.C
 src/DocumentProperties.h
+src/DocumentTypes.C
+src/DocumentTypes.h
 src/DocumentView.C
 src/DocumentView.h
 src/ev-tooltip.h
@@ -32,6 +37,8 @@ src/Preferences.C
 src/Preferences.h
 src/Progress.C
 src/Progress.h
+src/PythonDocument.C
+src/PythonDocument.h
 src/PythonPlugin.C
 src/PythonPlugin.h
 src/RefWindow.C
@@ -40,8 +47,9 @@ src/sexy-enum-types.h
 src/sexy-icon-entry.h
 src/TagList.C
 src/TagList.h
+src/ThumbnailGenerator.C
+src/ThumbnailGenerator.h
 src/Transfer.C
 src/Transfer.h
 src/Utility.C
 src/Utility.h
-plugins/pubmed.py
