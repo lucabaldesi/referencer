@@ -5,6 +5,8 @@
 #include <Python.h>
 
 #include <glibmm/ustring.h>
+#include <glibmm/i18n.h>
+#include "ucompose.hpp"
 
 #include "Document.h"
 
@@ -151,11 +153,48 @@ bool PythonPlugin::doAction (std::vector<Document*> docs)
 
 	if (pReturn == NULL) {
 		std::cerr << "PythonPlugin::doAction: NULL return value\n";
+		displayException ();
 		return false;
 	} else {
 		return pReturn == Py_True;
 	}
 }
+
+
+void PythonPlugin::displayException ()
+{
+	PyObject *pErr = PyErr_Occurred ();
+	if (pErr) {
+		PyObject *ptype;
+		PyObject *pvalue;
+		PyObject *ptraceback;
+
+		PyErr_Fetch(&ptype, &pvalue, &ptraceback);
+
+		PyObject *pStr;
+		pStr = PyObject_Str (ptype);
+		Glib::ustring const exType = PyString_AsString (pStr);
+		pStr = PyObject_Str (pvalue);
+		Glib::ustring const exValue = PyString_AsString (pStr);
+
+		Glib::ustring message = String::ucompose (
+			_("<big><b>%1: %2</b></big>\n\n%3: %4\n%5: %6"),
+			_("Exception"),
+			Glib::Markup::escape_text (exType),
+			_("Module"),
+			Glib::Markup::escape_text (getShortName()),
+			_("Explanation"),
+			Glib::Markup::escape_text (exValue)
+			);
+
+		Gtk::MessageDialog dialog (
+			message, true,
+			Gtk::MESSAGE_ERROR, Gtk::BUTTONS_CLOSE, true);
+
+		dialog.run ();
+	}
+}
+
 
 bool PythonPlugin::resolveID (Document &doc, PluginCapability::Identifier id)
 {
@@ -198,26 +237,7 @@ bool PythonPlugin::resolveID (Document &doc, PluginCapability::Identifier id)
 		success = (pReturn == Py_True);
 	} else {
 		std::cerr << "PythonPlugin::resolveID: NULL return from PyObject_CallObject\n";
-		PyObject *pErr = PyErr_Occurred ();
-		if (pErr) {
-			PyObject *ptype;
-			PyObject *pvalue;
-			PyObject *ptraceback;
-
-			PyErr_Fetch(&ptype, &pvalue, &ptraceback);
-
-			std::string exceptionText;
-			PyObject *pStr;
-			pStr = PyObject_Str (ptype);
-			exceptionText += PyString_AsString (pStr);
-			exceptionText += ", ";
-			pStr = PyObject_Str (pvalue);
-			exceptionText += PyString_AsString (pStr);
-
-			/*
-			Transfer::Exception ex(exceptionText);
-			Utility::exceptionDialog (&ex, _("Downloading metadata"));*/
-		}
+		displayException ();
 	}
 
 
