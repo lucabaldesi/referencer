@@ -2091,7 +2091,7 @@ Glib::ustring mozUrlSelectionToUTF8 (
             sel.get_length() == 0 ||
             (sel.get_length() % 2) != 0)
           {
-            g_printerr (_("Mozilla url dropped on terminal had wrong format (%d) or length (%d)\n"),
+            g_printerr ("Mozilla url dropped on terminal had wrong format (%d) or length (%d)\n",
                         sel.get_format(),
                         sel.get_length());
             return Glib::ustring();

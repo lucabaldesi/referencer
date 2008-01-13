@@ -131,6 +131,10 @@ class RefWindow {
 		void onAddDocById ();
 		void onAddDocFile ();
 		void onAddDocFolder ();
+
+		/* Helpers for addDocFiles */
+		void onCancelAddDocFiles (Gtk::Button *button, Gtk::ProgressBar *progress);
+		bool cancelAddDocFiles_;
 		public:
 		void onPasteBibtex (GdkAtom selection);
 		private:

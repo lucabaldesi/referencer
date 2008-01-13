@@ -1374,9 +1374,20 @@ void RefWindow::onIntroduction ()
 }
 
 
+void RefWindow::onCancelAddDocFiles (Gtk::Button *button, Gtk::ProgressBar *progress)
+{
+	cancelAddDocFiles_ = true;
+
+	progress->set_text (_("Cancelling"));
+	button->set_sensitive (false);
+}
+
 void RefWindow::addDocFiles (std::vector<Glib::ustring> const &filenames)
 {
+	bool const singular = (filenames.size() == 1);
+
 	Gtk::Dialog dialog (_("Add Document Files"), true, false);
+	dialog.set_icon (window_->get_icon());
 
 	Gtk::VBox *vbox = dialog.get_vbox ();
 	vbox->set_spacing (12);
@@ -1419,22 +1430,32 @@ void RefWindow::addDocFiles (std::vector<Glib::ustring> const &filenames)
 	reportScroll.set_policy (Gtk::POLICY_NEVER, Gtk::POLICY_AUTOMATIC);
 	reportScroll.add (reportView);
 	reportScroll.set_size_request (-1, 200);
-	vbox->pack_start (reportScroll, true, true, 0);
+
+	Gtk::Frame reportFrame;
+	reportFrame.add (reportScroll);
+	if (!singular)
+		vbox->pack_start (reportFrame, true, true, 0);
 
 	Gtk::Button *cancelButton = dialog.add_button (Gtk::Stock::CANCEL, Gtk::RESPONSE_ACCEPT);
 	Gtk::Button *closeButton = dialog.add_button (Gtk::Stock::CLOSE, Gtk::RESPONSE_ACCEPT);
 	closeButton->set_sensitive (false);
 	cancelButton->set_sensitive (true);
+	cancelButton->signal_clicked().connect(
+		sigc::bind (
+			sigc::mem_fun (*this, &RefWindow::onCancelAddDocFiles),
+			cancelButton,
+			&progress));
 
 	dialog.show_all ();
 	vbox->set_border_width (12);
 
 	Glib::ustring progresstext;
 
+	cancelAddDocFiles_ = false;
 	int n = 0;
 	std::vector<Glib::ustring>::const_iterator it = filenames.begin();
 	std::vector<Glib::ustring>::const_iterator const end = filenames.end();
-	for (; it != end; ++it) {
+	for (; it != end && !cancelAddDocFiles_; ++it) {
 		progress.set_fraction ((float)n / (float)filenames.size());
 		progresstext = String::ucompose (_("%1 of %2 documents"), n, filenames.size ());
 		progress.set_text (progresstext);
@@ -1502,8 +1523,9 @@ void RefWindow::addDocFiles (std::vector<Glib::ustring> const &filenames)
 		Glib::ustring yes = _("Yes");
 		Glib::ustring no = _("No");
 		*/
-		Glib::ustring yes (1, (gunichar)0x2713);
-		Glib::ustring no (1, (gunichar)0x2717);
+		/* A tick and a cross */
+		Glib::ustring yes (1, (gunichar)0x2714);
+		Glib::ustring no  (1, (gunichar)0x2718);
 
 		Gtk::TreeModel::iterator newRow = reportModel->append();
 		(*newRow)[keyColumn] = key;
@@ -1517,11 +1539,21 @@ void RefWindow::addDocFiles (std::vector<Glib::ustring> const &filenames)
 		++n;
 	}
 
-	progress.set_fraction (1.0);
-	progress.set_text (_("Finished"));
+	if (cancelAddDocFiles_) {
+		progress.set_text (_("Cancelled"));
+		Gtk::TreeModel::iterator newRow = reportModel->append();
+		(*newRow)[keyColumn] = _("Cancelled");
+		reportView.scroll_to_row (reportModel->get_path(newRow));
+	} else {
+		progress.set_fraction (1.0);
+		progress.set_text (_("Finished"));
+	}
+
 	closeButton->set_sensitive (true);
 	cancelButton->set_sensitive (false);
-	dialog.run ();
+	dialog.set_urgency_hint (true);
+	if (!singular)
+		dialog.run ();
 
 	if (!filenames.empty()) {
 		// We added something
