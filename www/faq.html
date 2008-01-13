@@ -36,20 +36,20 @@ urchinTracker();
 	<div id="faq">
 	<h2>Frequently Asked Questions</h2>
 	<h3>Why am I only getting the surname of the first author when I look up metadata?</h3>
-	<p>This issue appears when resolving DOIs using crossref.org.  Unfortunately, crossref.org's public OpenURL interface does not provide enough information to fully fill out author information.  crossref.org's more fully-featured interfaces are unfortunately not available without subscription.  This issue does not affect looking up arXiv or MedLine metadata</p>
+	<p>This issue appears when resolving DOIs using crossref.org.  Unfortunately, crossref.org's public OpenURL interface only provides the surname of the first author.
 	<p>This issue will persist until crossref fix their OpenURL interface, or another metadata backend replaces it in referencer.</p>
 	<h3>Is there a Windows or Mac version?</h3>
-	<p>Referencer is designed to be quite portable, using the gtkmm toolkit which can run be used both Windows and Mac platforms.  At present Referencer hasn't been compiled on either of these platforms.  Any developers wishing to work on supporting non-UNIX platforms are welcome to do so.</p>  
-	<h3>What about searching databases such as medline from within referencer?</h3>
-	<p>This is recognised as desirable functionality and may be implemented at some point in the future.</p>
+	<p>Referencer is designed to be quite portable, using the gtkmm toolkit which can run be used both Windows and Mac platforms.  At present Referencer hasn't been compiled on either of these platforms.  Any developers wishing to work on supporting non-UNIX platforms are welcome to do so.  Please don't ask John about a mac version unless you're going to send him a mac to do it on.</p>  
+	<h3>Can I have Referencer fetch metadata from database X?</h3>
+	<p>If you can write a bit of python that fetches the information you're interested in for a given DOI, then you can write a referencer plugin to do the same.</p>
 	<h3>Why are special characters like ß getting mangled in my BibTeX imports?</h3>
-	<p>Referencer assumes that BibTeX files are in ISO-8859-1 (latin1) encoding.  Other encodings, such as UTF-8 may cause problems.  The reason for this is that vanilla LaTeX doesn't support UTF-8, and Referencer assumes your BibTeX file is compatible with an unmodified LaTeX.  A quick workaround (since version 1.0.4) is to open your BibTeX file in a text editor such as gedit, and copy and paste it into Referencer -- this should work if your text editor understands the encoding of your BibTeX file and works properly with the clipboard.</p>
+	<p>Referencer assumes that BibTeX files are in ISO-8859-1 (latin1) encoding.  Other encodings, such as UTF-8 may cause problems.  The reason for this is that vanilla LaTeX doesn't support UTF-8, and Referencer assumes your BibTeX file is compatible with an unmodified LaTeX.  A quick workaround is to open your BibTeX file in a text editor such as gedit, and copy and paste it into Referencer -- this should work if your text editor understands the encoding of your BibTeX file and works properly with the clipboard.</p>
 	<h3>Why isn't Referencer extracting ArXiV IDs from some of my PDFs?</h3>
 	<p>Sometimes the PDFs from arxiv.org aren't formed in such a way that the ID code is readable as plain text.  This may be related to whether the paper was produced using LaTeX or Word.</p>
 	<h3>Why can't I use an auto-configuration URL in my proxy settings?</h3>
-	<p>Proxy auto-configuration scripts require a javascript interpreter, which is a tall order for applications other than browsers.  In most cases, it is possible to work around this limitation by extracting the static proxy information from the script by downloading it and opening it in a text edtior.</p>
+	<p>Proxy auto-configuration scripts require a javascript interpreter, which is a tall order for applications other than browsers.  In most cases, it is possible to work around this limitation by extracting the static proxy information from the script by downloading it and opening it in a text editor.</p>
 	<h3>I have a question which isn't answered here</h3>
-	<p>Please send a message to the <a href="contact.html">mailing list</a></p>
+	<p>Ask on the <a href="contact.html">mailing list</a></p>
 
 </div>
 
