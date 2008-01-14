@@ -145,9 +145,15 @@ def resolve_metadata (doc, method):
 		elif (method == "pubmed"):
 			xml = get_citation_from_pmid (doc.get_field ("pmid"))
 	except:
+		# Couldn't get any metadata
 		return False
 
-	items = text_output (xml)
+	try:
+		items = text_output (xml)
+	except:
+		# Couldn't parse XML
+		return False
+
 	itemCount = 0
 	for item in items:
 		print "pubmed: Setting %s:%s\n" % (item[0], item[1])
