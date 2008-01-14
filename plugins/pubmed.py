@@ -84,7 +84,6 @@ def text_output(xml):
 	xmldoc = minidom.parseString(xml)
 	print "made it out of parseString"
 
-	# This is probably pretty inefficient
 	if len(xmldoc.getElementsByTagName("PubmedArticle")) == 0:
 		raise "PubmedArticle not found"
 
@@ -140,10 +139,13 @@ def text_output(xml):
 	return output2
 
 def resolve_metadata (doc, method):
-	if (method == "doi"):
-		xml = get_citation_from_doi (doc.get_field ("doi"))
-	elif (method == "pubmed"):
-		xml = get_citation_from_pmid (doc.get_field ("pmid"))
+	try:
+		if (method == "doi"):
+			xml = get_citation_from_doi (doc.get_field ("doi"))
+		elif (method == "pubmed"):
+			xml = get_citation_from_pmid (doc.get_field ("pmid"))
+	except:
+		return False
 
 	items = text_output (xml)
 	itemCount = 0
