@@ -83,17 +83,16 @@ DocumentView::DocumentView (
 	docstore_ = Gtk::ListStore::create(doccols);
 	docstorefilter_ = Gtk::TreeModelFilter::create (docstore_);
 	docstorefilter_->set_visible_column (docvisiblecol_);
-	docstoresort_ = Gtk::TreeModelSort::create (docstorefilter_);
-	docstoresort_->signal_sort_column_changed ().connect(
+	docstore_->signal_sort_column_changed ().connect(
 		sigc::mem_fun (*this, &DocumentView::onSortColumnChanged));
 
 	std::pair<int, int> sortinfo = _global_prefs->getListSort ();
-	docstoresort_->set_sort_column (sortinfo.first, (Gtk::SortType)sortinfo.second);
+	docstore_->set_sort_column (sortinfo.first, (Gtk::SortType)sortinfo.second);
 
 	/*
 	 * Icon View
 	 */
-	Gtk::IconView *icons = Gtk::manage(new Gtk::IconView(docstoresort_));
+	Gtk::IconView *icons = Gtk::manage(new Gtk::IconView(docstorefilter_));
 	icons->set_markup_column (doccaptioncol_);
 	icons->set_pixbuf_column (docthumbnailcol_);
 #if GTK_VERSION_GE(2,12)
@@ -158,7 +157,7 @@ DocumentView::DocumentView (
 	/*
 	 * List view stuff
 	 */
-	Gtk::TreeView *table = Gtk::manage (new Gtk::TreeView(docstoresort_));
+	Gtk::TreeView *table = Gtk::manage (new Gtk::TreeView(docstorefilter_));
 	table->set_enable_search (true);
 	table->set_search_column (1);
 	table->set_rules_hint (true);
@@ -250,7 +249,7 @@ void DocumentView::onDocMouseMotion (GdkEventMotion* event)
 
 	Document *doc = NULL;
 	if (havepath) {
-		Gtk::ListStore::iterator it = docstoresort_->get_iter (path);
+		Gtk::ListStore::iterator it = docstorefilter_->get_iter (path);
 		doc = (*it)[docpointercol_];
 	}
 
@@ -389,9 +388,8 @@ std::vector<Document*> DocumentView::getSelectedDocs ()
 			 * necessary, but this way we pick up on it if the models aren't
 			 * in sync, rather than finding out the hard way
 			 */
-			Gtk::TreePath sortPath = (*it);
-			Gtk::TreePath filterPath = docstoresort_->convert_path_to_child_path (sortPath);
-			Gtk::TreePath realPath = docstorefilter_->convert_path_to_child_path (filterPath);
+			Gtk::TreePath rawPath = (*it);
+			Gtk::TreePath realPath = docstorefilter_->convert_path_to_child_path (rawPath);
 
 			Gtk::ListStore::iterator iter = docstore_->get_iter (realPath);
 			docpointers.push_back((*iter)[docpointercol_]);
@@ -408,9 +406,8 @@ std::vector<Document*> DocumentView::getSelectedDocs ()
 			 * necessary, but this way we pick up on it if the models aren't
 			 * in sync, rather than finding out the hard way
 			 */
-			Gtk::TreePath sortPath = (*it);
-			Gtk::TreePath filterPath = docstoresort_->convert_path_to_child_path (sortPath);
-			Gtk::TreePath realPath = docstorefilter_->convert_path_to_child_path (filterPath);
+			Gtk::TreePath rawPath = (*it);
+			Gtk::TreePath realPath = docstorefilter_->convert_path_to_child_path (rawPath);
 
 			Gtk::ListStore::iterator iter = docstore_->get_iter (realPath);
 			docpointers.push_back((*iter)[docpointercol_]);
@@ -433,7 +430,7 @@ Document *DocumentView::getSelectedDoc ()
 		}
 
 		Gtk::TreePath path = (*paths.begin ());
-		Gtk::ListStore::iterator iter = docstoresort_->get_iter (path);
+		Gtk::ListStore::iterator iter = docstorefilter_->get_iter (path);
 		return (*iter)[docpointercol_];
 
 	} else {
@@ -446,7 +443,7 @@ Document *DocumentView::getSelectedDoc ()
 		}
 
 		Gtk::TreePath path = (*paths.begin ());
-		Gtk::ListStore::iterator iter = docstoresort_->get_iter (path);
+		Gtk::ListStore::iterator iter = docstorefilter_->get_iter (path);
 		return (*iter)[docpointercol_];
 	}
 }
@@ -464,7 +461,7 @@ int DocumentView::getSelectedDocCount ()
 
 int DocumentView::getVisibleDocCount ()
 {
-	return docstoresort_->children().size();
+	return docstorefilter_->children().size();
 }
 
 
@@ -669,8 +666,7 @@ void DocumentView::docSelectionChanged ()
  */
 void DocumentView::docActivated (const Gtk::TreeModel::Path& path)
 {
-	Gtk::TreePath filterPath = docstoresort_->convert_path_to_child_path (path);
-	Gtk::TreePath realPath = docstorefilter_->convert_path_to_child_path (filterPath);
+	Gtk::TreePath realPath = docstorefilter_->convert_path_to_child_path (path);
 
 
 	Gtk::ListStore::iterator it = docstore_->get_iter (realPath);
@@ -850,11 +846,13 @@ void DocumentView::addDoc (Document * doc)
 	Gtk::TreeModel::iterator item = docstore_->append();
 	loadRow (item, doc);
 
+	docstorefilter_->refilter();
+	
 	Gtk::TreeModel::Path path = 
-		docstoresort_->get_path (
-			docstoresort_->convert_child_iter_to_iter (
-				docstorefilter_->convert_child_iter_to_iter (item)));
-
+		docstorefilter_->get_path (
+			docstorefilter_->convert_child_iter_to_iter (item));
+			
+//	Gtk::TreeModel::Path path = docstore_->get_path (item);
 
 	docslistview_->scroll_to_row (path);
 	docslistselection_->unselect_all ();
@@ -1022,7 +1020,7 @@ void DocumentView::onSortColumnChanged ()
 {
 	Gtk::SortType order;
 	int column;
-	docstoresort_->get_sort_column_id (column, order);
+	docstore_->get_sort_column_id (column, order);
 	_global_prefs->setListSort (column, order);
 }
 
@@ -1031,9 +1029,8 @@ void DocumentView::onColumnEdited (
 	const Glib::ustring& newText,
 	const Glib::ustring &columnName)
 {
-	Gtk::TreePath sortPath (pathStr);
-	Gtk::TreePath filterPath = docstoresort_->convert_path_to_child_path (sortPath);
-	Gtk::TreePath realPath = docstorefilter_->convert_path_to_child_path (filterPath);
+	Gtk::TreePath rawPath (pathStr);
+	Gtk::TreePath realPath = docstorefilter_->convert_path_to_child_path (rawPath);
 
 	Gtk::TreeModel::iterator iter = docstore_->get_iter (realPath);
 	Gtk::TreeModelColumn<Glib::ustring> col = listViewColumns_[columnName];
