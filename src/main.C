@@ -73,7 +73,7 @@ int main (int argc, char **argv)
 
 	_global_prefs = new Preferences();
 
-	if (argc > 1) {
+	if (argc > 1 && Glib::ustring(argv[1]).substr(0,1) != "-") {
 		Glib::ustring libfile = argv[1];
 		if (!Glib::path_is_absolute (libfile)) {
 			libfile = Glib::build_filename (Glib::get_current_dir (), libfile);
