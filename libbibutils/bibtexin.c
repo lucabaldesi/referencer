@@ -72,14 +72,6 @@ bibtexin_readf( FILE *fp, char *buf, int bufsize, int *bufpos, newstr *line, new
 	*fcharset = CHARSET_UNKNOWN;
 	return haveref;
 }
-#ifdef NOCOMPILE
-void
-bibtex_strfree( void )
-{
-	lists_free( &find );
-	lists_free( &replace );
-}
-#endif
 
 static char *
 bibtex_item( char *p, newstr *s )
@@ -198,7 +190,7 @@ bibtex_removeprotection( newstr *data )
 		newstr_init( &s );
 		newstr_segcpy( &s, &(data->data[1]), 
 				&(data->data[data->len-1]) );
-		newstr_strcpy( data, s.data );
+		newstr_newstrcpy( data, &s );
 		newstr_free( &s );
 	}
 }
@@ -229,7 +221,7 @@ bibtex_split( lists *tokens, newstr *s )
 		}
 	}
 	if ( currtok.len ) lists_add( tokens, currtok.data );
-	for ( i=0; i<tokens->nstr; ++i ) {
+	for ( i=0; i<tokens->n; ++i ) {
 		newstr_trimendingws( &(tokens->str[i]) );
 	}
 	newstr_free( &currtok );
@@ -239,7 +231,7 @@ static int
 bibtex_usestrings( newstr *s )
 {
 	int i;
-	for ( i=0; i<find.nstr; ++i ) {
+	for ( i=0; i<find.n; ++i ) {
 		if ( !strcasecmp( s->data, (find.str[i]).data ) ) {
 			newstr_findreplace( s, (find.str[i]).data, 
 					(replace.str[i]).data );
@@ -253,25 +245,55 @@ bibtex_usestrings( newstr *s )
 static char*
 process_bibtextype( char *p, newstr *data )
 {
-	if ( *p ) p++; /* skip '@' character */
-	newstr_addchar( data, '{' ); /*protect type from string expansion */
-	while ( *p && *p!='{' && *p!='(' )
-		newstr_addchar( data, *p++ );
-	if ( *p ) p++; /* skip ending bracket */
+	newstr tmp;
+	newstr_init( &tmp );
+
+	newstr_empty( data );
+
+	if ( *p=='@' ) p++; /* skip '@' character */
+	while ( *p && *p!='{' && *p!='(' ) newstr_addchar( &tmp, *p++ );
+	if ( *p=='{' || *p=='(' ) p++;
 	if ( is_ws( *p ) ) p++;
-	newstr_addchar( data, '}' ); /* protect type from string expansion */
+
+	if ( tmp.len ) {
+		/* add '{' and '}' to protect from string expansion */
+		newstr_addchar( data, '{' );
+		newstr_strcat( data, tmp.data );
+		newstr_addchar( data, '}' );
+	}
+	newstr_free( &tmp );
 	return p;
 }
 /* get reference name */
 static char*
 process_bibtexid( char *p, newstr *data )
 {
-	newstr_addchar( data, '{' ); /*protect type from string expansion */
-	while ( *p && *p!=',' )
-		newstr_addchar( data, *p++ );
-	if ( *p ) p++; /* skip ending comma */
+	newstr tmp;
+	char *start_p = p;
+	newstr_init( &tmp );
+	newstr_empty( data );
+
+	while ( *p && *p!=',' ) newstr_addchar( &tmp, *p++ );
+	if ( *p==',' ) p++;
 	if ( is_ws( *p ) ) p++; /* skip ending newline/carriage return */
-	newstr_addchar( data, '}' ); /*protect type from string expansion */
+
+	if ( tmp.len ) {
+		if ( strchr( tmp.data, '=' ) ) {
+			/* Endnote writes bibtex files w/o fields, try to
+			 * distinguish via presence of an equal sign.... if
+			 * it's there, assume that it's a tag/data pair instead
+			 * and roll back.
+			 */
+			p = start_p;
+		} else {
+			/* add '{' and '}' to protect from string expansion */
+			newstr_addchar( data, '{' );
+			newstr_strcat( data, tmp.data );
+			newstr_addchar( data, '}' );
+		}
+	}
+
+	newstr_free( &tmp );
 	return p;
 }
 
@@ -283,7 +305,6 @@ process_cite( fields *bibin, char *p, char *filename, long nref )
 	newstr_init( &data );
 	p = process_bibtextype( p, &data );
 	if ( data.len ) fields_add( bibin, "TYPE", data.data, 0 );
-	newstr_empty( &data );
 	if ( *p ) p = process_bibtexid ( p, &data );
 	if ( data.len ) fields_add( bibin, "REFNUM", data.data, 0 );
 	newstr_empty( &data );
@@ -347,7 +368,7 @@ bibtex_cleandata( newstr *s, fields *info )
 	int i;
 	if ( !s->len ) return;
 	bibtex_split( &tokens, s );
-	for ( i=0; i<tokens.nstr; ++i ) {
+	for ( i=0; i<tokens.n; ++i ) {
 		if ( !bibtex_protected( &(tokens.str[i] ) ) ) {
 			bibtex_usestrings( &(tokens.str[i]) );
 		} else {
@@ -358,7 +379,7 @@ bibtex_cleandata( newstr *s, fields *info )
 		}
 	}
 	newstr_empty( s );
-	for ( i=0; i<tokens.nstr; ++i ) {
+	for ( i=0; i<tokens.n; ++i ) {
 		if ( bibtex_protected( &(tokens.str[i]) ) )
 			bibtex_removeprotection( &(tokens.str[i]));
 		newstr_strcat( s, tokens.str[i].data ); 
@@ -403,7 +424,8 @@ bibtexin_crossref( bibl *bin )
 		}
 		ntype = fields_find( bin->ref[i], "TYPE", -1 );
 		type = bin->ref[i]->data[ntype].data;
-		bin->ref[i]->used[n] = 1;
+		fields_setused( bin->ref[i], n );
+/*		bin->ref[i]->used[n] = 1; */
 		for ( j=0; j<bin->ref[ncross]->nfields; ++j ) {
 			nt = bin->ref[ncross]->tag[j].data;
 			if ( !strcasecmp( nt, "TYPE" ) ) continue;
@@ -523,6 +545,15 @@ bibtexin_typef( fields *bibin, char *filename, int nrefs, variants *all,
 	return reftype;
 }
 
+static void
+report( fields *info )
+{
+	int i;
+	for ( i=0; i<info->nfields; ++i )
+		fprintf(stderr, "'%s' %d = '%s'\n",info->tag[i].data,info->level[i],
+			info->data[i].data);
+}
+
 void
 bibtexin_convertf( fields *bibin, fields *info, int reftype, int verbose,
 		variants *all, int nall )
@@ -566,12 +597,6 @@ bibtexin_convertf( fields *bibin, fields *info, int reftype, int verbose,
 		else if ( process==BIBTEX_URL )
 			process_url( info, d->data, level );
 	}
-{
-if ( verbose ) {
-	for ( i=0; i<info->nfields; ++i )
-		fprintf(stderr, "'%s' %d = '%s'\n",info->tag[i].data,info->level[i],
-			info->data[i].data);
-}
-}
+	if ( verbose ) report( info );
 }
 

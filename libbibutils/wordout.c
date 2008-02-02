@@ -58,7 +58,7 @@ output_item( fields *info, FILE *outptr, char *tag, int item, int level )
 	if ( item==-1 ) return;
 	for ( i=0; i<level; ++i ) fprintf( outptr, " " );
 	fprintf( outptr, "<%s>%s</%s>\n", tag, info->data[item].data, tag );
-	info->used[ item ] = 1; 
+	fields_setused( info, item );
 }
 
 /* range output
@@ -81,8 +81,8 @@ output_range( fields *info, FILE *outptr, char *tag, int start, int end,
 			fprintf( outptr, " " );
 		fprintf( outptr, "<%s>%s-%s</%s>\n", tag, 
 			info->data[start].data, info->data[end].data, tag );
-		info->used[ start ] = 1;
-		info->used[ end ] = 1;
+		fields_setused( info, start );
+		fields_setused( info, end );
 	}
 }
 
@@ -139,7 +139,7 @@ output_titleinfo( fields *info, FILE *outptr, char *tag, int level )
 		fprintf( outptr, "<%s>", tag );
 		if ( ttl!=-1 ) {
 			fprintf( outptr, "%s", info->data[ttl].data );
-			info->used[ttl] = 1;
+			fields_setused( info, ttl );
 		}
 		if ( subttl!=-1 ) {
 			if ( ttl!=-1 ) {
@@ -149,7 +149,7 @@ output_titleinfo( fields *info, FILE *outptr, char *tag, int level )
 				fprintf( outptr, " " );
 			}
 			fprintf( outptr, "%s", info->data[subttl].data );
-			info->used[subttl] = 1;
+			fields_setused( info, subttl );
 		}
 		fprintf( outptr, "</%s>\n", tag );
 	}
@@ -174,7 +174,7 @@ output_title( fields *info, FILE *outptr, int level )
 			fprintf( outptr, "%s", info->data[shrttl].data );
 			fprintf( outptr, "</b:ShortTitle>\n" );
 		}
-		info->used[shrttl] = 1;
+		fields_setused( info, shrttl );
 	}
 }
 
@@ -241,7 +241,7 @@ output_name_type( fields *info, FILE *outptr, int level,
 			} else {
 				output_name(outptr, info->data[i].data, level);
 			}
-			info->used[i] = 1;
+			fields_setused( info, i );
 		}
 	}
 	fprintf( outptr, "</b:NameList></%s>\n", tag );
@@ -350,14 +350,17 @@ output_date( fields *info, FILE *outptr, int level )
 static void
 output_pages( fields *info, FILE *outptr, int level )
 {
-	int start, end;
-	start = fields_find( info, "PAGESTART", -1 );
-	end = fields_find( info, "PAGEEND", -1 );
-	output_range( info, outptr, "b:Pages", start, end, level );
+	int start = fields_find( info, "PAGESTART", -1 );
+	int end = fields_find( info, "PAGEEND", -1 );
+	int ar = fields_find( info, "ARTICLENUMBER", -1 );
+	if ( start!=-1 || end!=-1 )
+		output_range( info, outptr, "b:Pages", start, end, level );
+	else if ( ar!=-1 )
+		output_range( info, outptr, "b:Pages", ar, -1, level );
 }
 
 static void
-output_includedin( fields *info, FILE *outptr, int level, int type )
+output_includedin( fields *info, FILE *outptr, int type )
 {
 	if ( type==TYPE_ARTICLE ) {
 		output_titleinfo( info, outptr, "b:JournalName", 1 );
@@ -397,7 +400,7 @@ output_thesisdetails( fields *info, FILE *outptr, int type )
 }
 
 static void
-output_type( fields *info, FILE *outptr, int level, int type )
+output_type( fields *info, FILE *outptr, int type )
 {
 	fprintf( outptr, "<b:SourceType>" );
 	if ( type==TYPE_UNKNOWN || type==TYPE_BOOK )
@@ -467,10 +470,10 @@ output_citeparts( fields *info, FILE *outptr, int level, int max, int type )
 	int nparts=sizeof(parts)/sizeof(convert);
 	
 	output_bibkey( info, outptr );
-	output_type( info, outptr, level, type );
+	output_type( info, outptr, type );
 	output_list( info, outptr, origin, norigin );
 	output_date( info, outptr, level );
-	output_includedin( info, outptr, level, type );
+	output_includedin( info, outptr, type );
 	output_list( info, outptr, parts, nparts );
 	output_pages( info, outptr, level );
 	output_names( info, outptr, level);

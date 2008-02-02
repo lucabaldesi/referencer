@@ -19,41 +19,43 @@
 #include "newstr.h"
 #include "is_ws.h"
 
+#include <assert.h>
+
 #define newstr_initlen (64)
 
 void 
-newstr_init(newstr *string)
+newstr_init( newstr *s )
 {
-	if (string==NULL) return;
-	string->dim=0;
-	string->len=0;
-	string->data=NULL;
+	assert( s );
+	s->dim=0;
+	s->len=0;
+	s->data=NULL;
 }
 
 static void 
-newstr_initalloc(newstr *string, unsigned long minsize)
+newstr_initalloc( newstr *s, unsigned long minsize )
 {
 	unsigned long size = newstr_initlen;
-	if (string==NULL) return;
-	if (minsize > newstr_initlen) size=minsize;
-	string->data = (char *) malloc (sizeof( *(string->data) ) * size);
-	if (string->data==NULL) {
+	assert( s );
+	if ( minsize > newstr_initlen ) size = minsize;
+	s->data = (char *) malloc (sizeof( *(s->data) ) * size);
+	if ( !s->data ) {
 		fprintf(stderr,"Error.  Cannot allocate memory in newstr_initalloc.\n");
 		exit(1);
 	}
-	string->data[0]='\0';
-	string->dim=size;
-	string->len=0;
+	s->data[0]='\0';
+	s->dim=size;
+	s->len=0;
 }
 
 newstr *
 newstr_new( void )
 {
-	newstr *string;
-	string = (newstr *) malloc( sizeof( *string ) );
-	if (string!=NULL) 
-		newstr_initalloc( string, newstr_initlen );
-	return string;
+	newstr *s;
+	s = (newstr *) malloc( sizeof( *s ) );
+	if ( s ) 
+		newstr_initalloc( s, newstr_initlen );
+	return s;
 }
 
 /* newstr_empty()
@@ -61,166 +63,183 @@ newstr_new( void )
  * empty data in string
  */
 void
-newstr_empty( newstr *string )
+newstr_empty( newstr *s )
 {
-	if (string && string->data) {
-		string->data[0]='\0';
-		string->len=0;
+	assert( s );
+	if ( s->data ) {
+		s->data[0]='\0';
+		s->len=0;
 	}
 }
 
 #ifndef NEWSTR_PARANOIA
 
 void 
-newstr_free(newstr *string)
+newstr_free( newstr *s )
 {
-	if (string==NULL) return;
-	string->dim=0;
-	string->len=0;
-	if (string->data!=NULL) free(string->data);
-	string->data=NULL;
+	assert( s );
+	s->dim=0;
+	s->len=0;
+	if ( s->data ) free( s->data );
+	s->data=NULL;
 }
 
 static void 
-newstr_realloc(newstr *string, unsigned long minsize)
+newstr_realloc( newstr *s, unsigned long minsize )
 {
 	char *newptr;
 	unsigned long size;
-	size = 2 * string->dim;
+	assert( s );
+	size = 2 * s->dim;
 	if (size < minsize) size = minsize;
-	newptr = (char *) realloc (string->data, sizeof( *(string->data) )*size);
+	newptr = (char *) realloc( s->data, sizeof( *(s->data) )*size );
 	if (newptr==NULL) {
-		fprintf(stderr,"Error.  Cannot reallocate memory (%ld bytes) in newstr_realloc.\n", sizeof(*(string->data))*size);
+		fprintf(stderr,"Error.  Cannot reallocate memory (%ld bytes) in newstr_realloc.\n", sizeof(*(s->data))*size);
 		exit(1);
 	}
-	string->data = newptr;
-	string->dim = size;
+	s->data = newptr;
+	s->dim = size;
 }
 
 #else
 
 void 
-newstr_free(newstr *string)
+newstr_free( newstr *s )
 {
 	unsigned long i;
-	if (string==NULL) return;
-	for (i=0; i<string->dim; ++i) string->data[i]='\0';
-	string->dim=0;
-	if (string->data!=NULL) free(string->data);
-	string->data=NULL;
+	assert( s );
+	for ( i=0; i<s->dim; ++i )
+		s->data[i]='\0';
+	s->dim = 0;
+	if ( s->data ) free( s->data );
+	s->data = NULL;
 }
 
 void 
-newstr_realloc(newstr *string, unsigned long minsize)
+newstr_realloc(newstr *s, unsigned long minsize)
 {
 	char *newptr;
-	unsigned long size;
-	unsigned long i;
-	size = 2 * string->dim;
-	if (size < minsize) size = minsize;
-	newptr = (char *) malloc( sizeof( *(string->data) ) * size );
-	if ( newptr == NULL ) {
-		fprintf(stderr,"Error.  Cannot reallocate memory (%d bytes) in newstr_realloc.\n", sizeof(*(string->data))*size);
+	unsigned long size, i;
+	assert( s );
+	size = 2 * s->dim;
+	if ( size < minsize )
+		size = minsize;
+	newptr = (char *) malloc( sizeof( *(s->data) ) * size );
+	if ( !newptr ) {
+		fprintf( stderr, "Error.  Cannot reallocate memory (%d bytes)"
+			" in newstr_realloc.\n", sizeof(*(s->data))*size );
 		exit(1);
 	}
-	for (i=0; i<string->dim; ++i) string->data[i]='\0';
-	free( string->data );
-	string->data = newptr;
-	string->dim = size;
+	for ( i=0; i<s->dim; ++i )
+		s->data[i]='\0';
+	if ( s->data ) free( s->data );
+	s->data = newptr;
+	s->dim = size;
 }
 
 #endif
 
 void
-newstr_addchar(newstr *string, char newchar)
+newstr_addchar( newstr *s, char newchar )
 {
-	if ( !string ) return;
-	if ( !string->data || string->dim==0 ) 
-		newstr_initalloc(string,newstr_initlen);
-	if ( string->len + 2 > string->dim ) 
-		newstr_realloc(string,string->len+2);
-	string->data[string->len++] = newchar;
-	string->data[string->len] = '\0';
+	assert( s );
+	if ( !s->data || s->dim==0 ) 
+		newstr_initalloc( s, newstr_initlen );
+	if ( s->len + 2 > s->dim ) 
+		newstr_realloc( s, s->len+2 );
+	s->data[s->len++] = newchar;
+	s->data[s->len] = '\0';
 }
 
 void 
-newstr_fprintf( FILE *fp, newstr *string )
+newstr_fprintf( FILE *fp, newstr *s )
 {
-    if ( string && string->data ) fprintf(fp,"%s",string->data);
+    if ( s && s->data ) fprintf( fp, "%s", s->data );
 }
 
 void
-newstr_prepend( newstr *string, char *addstr )
+newstr_prepend( newstr *s, char *addstr )
 {
 	unsigned long lenaddstr, i;
-	if ( !string || !addstr ) return;
+	assert( s && addstr );
 	lenaddstr = strlen( addstr );
-	if ( string->data==NULL || string->dim==0 )
-		newstr_initalloc( string, lenaddstr+1 );
+	if ( !s->data || !s->dim )
+		newstr_initalloc( s, lenaddstr+1 );
 	else {
-		if ( string->len + lenaddstr  + 1 > string->dim )
-			newstr_realloc( string, string->len + lenaddstr + 1 );
-		for ( i=string->len+lenaddstr-1; i>=lenaddstr; i-- )
-			string->data[i] = string->data[i-lenaddstr];
+		if ( s->len + lenaddstr  + 1 > s->dim )
+			newstr_realloc( s, s->len + lenaddstr + 1 );
+		for ( i=s->len+lenaddstr-1; i>=lenaddstr; i-- )
+			s->data[i] = s->data[i-lenaddstr];
 	}
-	strncpy( string->data, addstr, lenaddstr );
-	string->len += lenaddstr;
-	string->data[ string->len ] = '\0';
+	strncpy( s->data, addstr, lenaddstr );
+	s->len += lenaddstr;
+	s->data[ s->len ] = '\0';
 }
 
 void 
-newstr_strcat( newstr *string, char *addstr )
+newstr_strcat( newstr *s, char *addstr )
 {
 	unsigned long lenaddstr;
-	if ( !string || !addstr ) return;
+	assert( s && addstr );
 	lenaddstr = strlen( addstr );
-	if (string->data==NULL || string->dim==0) 
-		newstr_initalloc(string, lenaddstr+1 );
+	if ( !s->data || !s->dim ) 
+		newstr_initalloc( s, lenaddstr+1 );
 	else {
-		if ( string->len + lenaddstr + 1 > string->dim )
-			newstr_realloc( string, string->len + lenaddstr + 1 );
+		if ( s->len + lenaddstr + 1 > s->dim )
+			newstr_realloc( s, s->len + lenaddstr + 1 );
 	}
-	strncpy(&(string->data[string->len]),addstr,lenaddstr);
-	string->len += lenaddstr;
-	string->data[string->len]='\0';
+	strncpy( &(s->data[s->len]), addstr, lenaddstr );
+	s->len += lenaddstr;
+	s->data[s->len]='\0';
 }
 
 void
-newstr_segcat( newstr *string, char *startat, char *endat )
+newstr_segcat( newstr *s, char *startat, char *endat )
 {
-	unsigned int seglength;
+	size_t seglength;
 	char *p, *q;
 
-	if (string==NULL || startat==NULL || endat==NULL ) return;
-	if ( (size_t) startat > (size_t) endat ) return;
+	assert( s && startat && endat );
+	assert( (size_t) startat < (size_t) endat );
 
 	seglength=(size_t) endat - (size_t) startat;
-	if (string->data==NULL || string->dim==0)
-		newstr_initalloc(string, seglength+1);
+	if ( !s->data || !s->dim )
+		newstr_initalloc( s, seglength+1 );
 	else {
-		if ( string->len + seglength + 1 > string->dim )
-			newstr_realloc(string, string->len + seglength+1);
+		if ( s->len + seglength + 1 > s->dim )
+			newstr_realloc(s, s->len + seglength+1);
 	}
-	q = &(string->data[string->len]);
+	q = &(s->data[s->len]);
 	p = startat;
 	while ( *p && p!=endat ) *q++ = *p++;
 	*q = '\0';
-	string->len += seglength;
+	s->len += seglength;
+}
+
+void
+newstr_newstrcpy( newstr *s, newstr *old )
+{
+	assert( s && old );
+	if ( !old->data || !old->dim ) {
+		s->dim = 0;
+		if ( s->data ) s->data[0]='\0';
+		/* modify for NEWSTR_PARANOIA */
+	} else newstr_strcpy( s, old->data );
 }
 
 void 
-newstr_strcpy (newstr *string, char *addstr)
+newstr_strcpy( newstr *s, char *addstr )
 {
-	unsigned long lenaddstr;
-	if ( !string || !addstr ) return;
-	lenaddstr = strlen( addstr );
-	if (string->data==NULL || string->dim==0)
-		newstr_initalloc( string, lenaddstr+1 );
-	else if ( lenaddstr+1 > string->dim) 
-		newstr_realloc(string,lenaddstr+1);
-	strncpy(string->data,addstr,lenaddstr);
-	string->data[lenaddstr]='\0';
-	string->len=lenaddstr;
+	unsigned long n;
+	assert( s && addstr );
+	n = strlen( addstr );
+	if ( !s->data || !s->dim )
+		newstr_initalloc( s, n+1 );
+	else if ( n+1 > s->dim ) 
+		newstr_realloc( s, n+1 );
+	strncpy( s->data, addstr, n );
+	s->data[n] = '\0';
+	s->len = n;
 }
 
 /* newstr_segcpy( s, start, end );
@@ -228,39 +247,43 @@ newstr_strcpy (newstr *string, char *addstr)
  * copies [start,end) into s
  */
 void
-newstr_segcpy (newstr *string, char *startat, char *endat )
+newstr_segcpy( newstr *s, char *startat, char *endat )
 {
-	unsigned long seglength;
+	size_t seglength;
 	char *p, *q;
 
-	if (string==NULL || startat==NULL || endat==NULL ) return;
-	if ( (unsigned long) startat > (unsigned long) endat ) return;
+	assert( s && startat && endat );
+	assert( ((size_t) startat) <= ((size_t) endat) );
 
-	seglength=(unsigned long) endat - (unsigned long) startat;
-	if (string->data==NULL || string->dim==0)
-		newstr_initalloc(string, seglength+1);
+	seglength=(size_t) endat - (size_t) startat;
+	if ( seglength==0 ) return;
+	if (s->data==NULL || s->dim==0)
+		newstr_initalloc( s, seglength+1 );
 	else {
-		if ( seglength+1 > string->dim )
-			newstr_realloc(string, seglength+1);
+		if ( seglength+1 > s->dim )
+			newstr_realloc( s, seglength+1 );
 	}
-	q = string->data;
+	q = s->data;
 	p = startat;
 	while ( *p && p!=endat ) *q++ = *p++;
 	*q = '\0';
-	string->len = seglength;
+	s->len = seglength;
 }
 
 void
 newstr_segdel( newstr *s, char *p, char *q )
 {
 	newstr tmp1, tmp2;
-	char *r = &(s->data[s->len]);
+	char *r;
+	assert( s );
+	r = &(s->data[s->len]);
 	newstr_init( &tmp1 );
 	newstr_init( &tmp2 );
 	newstr_segcpy( &tmp1, s->data, p );
 	newstr_segcpy( &tmp2, q, r );
-	newstr_strcpy( s, tmp1.data );
-	newstr_strcat( s, tmp2.data );
+	newstr_empty( s );
+	if ( tmp1.data ) newstr_strcat( s, tmp1.data );
+	if ( tmp2.data ) newstr_strcat( s, tmp2.data );
 	newstr_free( &tmp2 );
 	newstr_free( &tmp1 );
 }
@@ -272,18 +295,19 @@ newstr_segdel( newstr *s, char *p, char *q )
  */
 
 int
-newstr_findreplace( newstr *string, char *find, char *replace )
+newstr_findreplace( newstr *s, char *find, char *replace )
 {
 	long diff;
-	unsigned long findstart, searchstart;
-	unsigned long p1, p2;
-	unsigned long find_len, rep_len, curr_len;
+	size_t findstart, searchstart;
+	size_t p1, p2;
+	size_t find_len, rep_len, curr_len;
 	char empty[2] = "";
 	unsigned long minsize;
 	char *p;
 	int n = 0;
 
-	if ( !string || !string->data || !string->dim || !find ) return n;
+	assert ( s && find );
+	if ( !s->data || !s->dim ) return n;
 	if ( !replace ) replace = empty;
 
 	find_len = strlen( find );
@@ -292,27 +316,27 @@ newstr_findreplace( newstr *string, char *find, char *replace )
 	if ( diff < 0 ) diff = 0;
 
 	searchstart=0;
-	while ((p=strstr(string->data + searchstart,find))!=NULL) {
-		curr_len = strlen(string->data);
-		findstart=(unsigned long) p - (unsigned long) string->data;
+	while ((p=strstr(s->data + searchstart,find))!=NULL) {
+		curr_len = strlen(s->data);
+		findstart=(size_t) p - (size_t) s->data;
 		minsize = curr_len + diff + 1;
-	 	if (string->dim <= minsize) newstr_realloc( string, minsize );
+	 	if (s->dim <= minsize) newstr_realloc( s, minsize );
 		if ( find_len > rep_len ) {
 			p1 = findstart + rep_len;
 			p2 = findstart + find_len;
-			while( string->data[p2] )
-				string->data[p1++]=string->data[p2++];
-			string->data[p1]='\0';
+			while( s->data[p2] )
+				s->data[p1++]=s->data[p2++];
+			s->data[p1]='\0';
 			n++;
 		} else if ( find_len < rep_len ) {
-			for (p1=curr_len; p1>=findstart+find_len; p1--)
-				string->data[p1+diff] = string->data[p1];
+			for ( p1=curr_len; p1>=findstart+find_len; p1-- )
+				s->data[p1+diff] = s->data[p1];
 			n++;
 		}
 		for (p1=0; p1<rep_len; p1++)
-			string->data[findstart+p1]=replace[p1];
+			s->data[findstart+p1]=replace[p1];
 		searchstart = findstart + rep_len; 
-		string->len += rep_len - find_len;
+		s->len += rep_len - find_len;
 	}
 	return n;
 }
@@ -352,8 +376,8 @@ newstr_fget( FILE *fp, char *buf, int bufsize, int *pbufpos, newstr *outs )
 void
 newstr_toupper( newstr *s )
 {
-	unsigned int i;
-	if ( !s ) return;
+	unsigned long i;
+	assert( s );
 	for ( i=0; i<s->len; ++i )
 		s->data[i] = toupper( s->data[i] );
 }
@@ -367,6 +391,8 @@ newstr_swapstrings( newstr *s1, newstr *s2 )
 {
 	char *tmpp;
 	int tmp;
+
+	assert( s1 && s2 );
 
 	/* swap dimensioning info */
 	tmp = s1->dim;
@@ -387,6 +413,7 @@ newstr_swapstrings( newstr *s1, newstr *s2 )
 void
 newstr_trimendingws( newstr *s )
 {
+	assert( s );
 	while ( s->len > 0 && is_ws( s->data[s->len-1] ) ) {
 		s->data[s->len-1] = '\0';
 		s->len--;

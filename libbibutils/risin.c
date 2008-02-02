@@ -248,4 +248,18 @@ risin_convertf( fields *risin, fields *info, int reftype, int verbose, variants 
 			addsn( info, d->data, level );
 		else { /* do nothing */ }
 	}
+	/* look for thesis-type hint */
+	if ( !strcasecmp( all[reftype].type, "THES" ) ) {
+		for ( i=0; i<risin->nfields; ++i ) {
+			if ( strcasecmp(risin->tag[i].data, "U1") )
+				continue;
+			if ( !strcasecmp(risin->data[i].data,"Ph.D. Thesis")||
+			     !strcasecmp(risin->data[i].data,"Masters Thesis")||
+			     !strcasecmp(risin->data[i].data,"Diploma Thesis")||
+			     !strcasecmp(risin->data[i].data,"Doctoral Thesis")||
+			     !strcasecmp(risin->data[i].data,"Habilitation Thesis"))
+				fields_add( info, "GENRE", risin->data[i].data,
+					0 );
+		}
+	}
 }

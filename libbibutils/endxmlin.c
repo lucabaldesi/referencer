@@ -43,7 +43,18 @@ endxmlin_readf( FILE *fp, char *buf, int bufsize, int *bufpos, newstr *line,
 			} else
 				endptr = xml_findend( line->data, "RECORD" );
 		}
-		if ( !startptr ) newstr_empty( line );
+
+		/* If no <record> tag, we can trim up to last 8 bytes */
+		/* Emptying string can lose fragments of <record> tag */
+		if ( !startptr ) {
+			if ( line->len > 8 ) {
+				int n = 8;
+				char *p = &(line->data[line->len-1]);
+				while ( *p && n ) { p--; n--; }
+				newstr_segdel( line, line->data, p ); 
+			}
+		}
+
 		if ( !startptr || !endptr ) {
 			done = xml_readmore( fp, buf, bufsize, bufpos );
 			newstr_strcat( line, buf );
@@ -54,7 +65,7 @@ endxmlin_readf( FILE *fp, char *buf, int bufsize, int *bufpos, newstr *line,
 			newstr_segcpy( reference, startptr, endptr );
 			/* clear out information in line */
 			newstr_strcpy( &tmp, endptr );
-			newstr_strcpy( line, tmp.data );
+			newstr_newstrcpy( line, &tmp );
 			haveref = 1;
 		}
 		if ( line->data ) {
@@ -71,27 +82,47 @@ endxmlin_readf( FILE *fp, char *buf, int bufsize, int *bufpos, newstr *line,
  * add data to fields
  */
 
+/*
+ * handle fields with (potentially) several style pieces
+ *
+ *   <datatype>
+ *          <style>aaaaa</style>
+ *   </datatype>
+ *
+ *   <datatype>aaaaaa</datatype>
+ *
+ *   <datatype>
+ *          <style>aaa</style><style>aaaa</style>
+ *   </datatype>
+ */
+void
+endxmlin_datar( xml *node, newstr *s )
+{
+	if ( node->value && node->value->len )
+		newstr_strcat( s, node->value->data );
+	if ( node->down && xml_tagexact( node->down, "style" ) )
+		endxmlin_datar( node->down, s );
+	if ( xml_tagexact( node, "style" ) && node->next )
+		endxmlin_datar( node->next, s );
+}
+
+void
+endxmlin_data( xml *node, char *inttag, fields *info, int level )
+{
+	newstr s;
+	newstr_init( &s );
+	endxmlin_datar( node, &s );
+	if ( s.len )
+		fields_add( info, inttag, s.data, level );
+	newstr_free( &s );
+}
 
 /* <titles>
  *    <title>
- *       <style>ACTUAL TITLE HERE</style>
+ *       <style>ACTUAL TITLE HERE</style><style>MORE TITLE</style>
  *    </title>
  * </titles>
  */
-void
-endxmlin_title( xml *node, fields *info, char *int_tag, int level )
-{
-
-	if ( node->down && xml_tagexact( node->down, "style" ) ) {
-		endxmlin_title( node->down, info, int_tag, level );
-	} else {
-		if ( node->value && node->value->len )
-			fields_add( info, int_tag, node->value->data, level );
-	}
-	if ( node->next )
-		endxmlin_title( node->next, info, int_tag, level );
-}
-
 void
 endxmlin_titles( xml *node, fields *info )
 {
@@ -103,21 +134,17 @@ endxmlin_titles( xml *node, fields *info )
 		{ "short-title", "SHORTTITLE" },
 	};
 	int i, n = sizeof( a ) / sizeof ( a[0] );
+	newstr title;
+	newstr_init( &title );
 	for ( i=0; i<n; ++i ) {
-		if ( xml_tagexact( node, a[i].attrib ) && node->down )
-			endxmlin_title( node->down, info, a[i].internal, 0 );
+		if ( xml_tagexact( node, a[i].attrib ) && node->down ) {
+			newstr_empty( &title );
+			endxmlin_datar( node, &title );
+			fields_add( info, a[i].internal, title.data, 0);
+		}
 	}
 	if ( node->next ) endxmlin_titles( node->next, info );
-}
-
-void
-endxmlin_data( xml *node, char *inttag, fields *info, int level )
-{
-	if ( node->down && xml_tagexact( node->down, "style" ) ) 
-		endxmlin_data( node->down, inttag, info, level );
-	else if ( node && node->value && node->value->data ) {
-		fields_add( info, inttag, node->value->data, level );
-	}
+	newstr_free( &title );
 }
 
 /* <contributors>
@@ -209,6 +236,34 @@ endxmlin_urls( xml *node, fields *info )
 		endxmlin_urls( node->next, info );
 }
 
+static void
+endxmlin_pubdates( xml *node, fields *info )
+{
+	if ( xml_tagexact( node, "date" ) )
+		endxmlin_data( node, "%8", info, 0 );
+	else {
+		if ( node->down && xml_tagexact( node->down, "date" ) )
+			endxmlin_pubdates( node->down, info );
+	}
+}
+
+static void
+endxmlin_dates( xml *node, fields *info )
+{
+	if ( xml_tagexact( node, "year" ) )
+		endxmlin_data( node, "%D", info, 0 );
+	else {
+		if ( node->down ) {
+			if ( xml_tagexact( node->down, "year" ) )
+				endxmlin_dates( node->down, info );
+			if ( xml_tagexact( node->down, "pub-dates" ) )
+				endxmlin_pubdates( node->down, info );
+		}
+	}
+	if ( node->next )
+		endxmlin_dates( node->next, info );
+}
+
 #ifdef NOCOMPILE
 /*
  * There are a lot of elements in the end2xml stuff buried in element
@@ -289,7 +344,6 @@ static void
 endxmlin_record( xml *node, fields *info )
 {
 	attribs a[] = {
-		{ "year", "%D" },
 		{ "volume", "%V" },
 		{ "num-vol", "%6" },
 		{ "pages",  "%P" },
@@ -330,6 +384,8 @@ endxmlin_record( xml *node, fields *info )
 		endxmlin_keywords( node, info );
 	} else if ( xml_tagexact( node, "urls" ) ) {
 		endxmlin_urls( node, info );
+	} else if ( xml_tagexact( node, "dates" ) ) {
+		endxmlin_dates( node, info );
 	} else if ( xml_tagexact( node, "periodical" ) ) {
 	} else if ( xml_tagexact( node, "secondary-volume" ) ) {
 	} else if ( xml_tagexact( node, "secondary-issue" ) ) {

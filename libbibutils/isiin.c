@@ -75,10 +75,13 @@ isiin_readf( FILE *fp, char *buf, int bufsize, int *bufpos, newstr *line, newstr
 			newstr_strcat( reference, p );
 			newstr_empty( line );
 		}
-/*		else {
+		else {
+			newstr_empty( line );
+/*
 			fprintf( stderr, "%s warning: '%s' outside of tag\n",
 					r->progname, p );
-		}*/
+*/
+		}
 	}
 	*fcharset = CHARSET_UNKNOWN;
 	return haveref;
@@ -111,27 +114,28 @@ isiin_processf( fields *isiin, char *p, char *filename, long nref )
 	newstr_init( &tag );
 	newstr_init( &data );
 	while ( *p ) {
-		if ( isiin_istag( p ) ) {
-			p = process_isiline( &tag, &data, p );
-			if ( data.len )
-				fields_add( isiin, tag.data, data.data, 0 );
+		newstr_empty( &tag );
+		newstr_empty( &data );
+		p = process_isiline( &tag, &data, p );
+		if ( !data.len ) continue;
+		if ( (tag.len>1) && isiin_istag( tag.data ) ) {
+			fields_add( isiin, tag.data, data.data, 0 );
 		} else {
-			p = process_isiline( &tag, &data, p );
-			if ( data.len!=0 ) {
-				n = isiin->nfields;
-				if ( n>0 && data.len ){
-				/* only one AU for list of authors */
-				if ( !strcmp( isiin->tag[n-1].data,"AU")){
+			n = isiin->nfields;
+			if ( n>0 ) {
+				/* only one AU or AF for list of authors */
+				if ( !strcmp( isiin->tag[n-1].data,"AU") ){
 					fields_add( isiin, "AU", data.data, 0);
-				} else {
+				} else if ( !strcmp( isiin->tag[n-1].data,"AF") ){
+					fields_add( isiin, "AF", data.data, 0);
+				}
+				/* otherwise append multiline data */
+				else {
 					newstr_addchar( &(isiin->data[n-1]),' ');
 					newstr_strcat( &(isiin->data[n-1]), data.data );
 				}
-				}
 			}
 		}
-		newstr_empty( &tag );
-		newstr_empty( &data );
 	}
 	newstr_free( &data );
 	newstr_free( &tag );
@@ -170,14 +174,45 @@ isiin_typef( fields *isiin, char *filename, int nref, variants *all, int nall )
 	return reftype;
 }
 
+/* pull off authors first--use AF before AU */
+static void
+isiin_addauthors( fields *isiin, fields *info, int reftype, variants *all, int nall )
+{
+	newstr *t, *d;
+	char *newtag, *authortype, use_af[]="AF", use_au[]="AU";
+	int level, i, n, has_af=0, has_au=0;
+	for ( i=0; i<isiin->nfields && has_af==0; ++i ) {
+		t = &( isiin->tag[i] );
+		if ( !strcasecmp( t->data, "AU" ) ) has_au++;
+		if ( !strcasecmp( t->data, "AF" ) ) has_af++;
+	}
+	if ( has_af ) authortype = use_af;
+	else authortype = use_au;
+	for ( i=0; i<isiin->nfields; ++i ) {
+		t = &( isiin->tag[i] );
+		if ( !strcasecmp( t->data, "AU" ) ) has_au++;
+		if ( strcasecmp( t->data, authortype ) ) continue;
+		d = &( isiin->data[i] );
+		n = process_findoldtag( authortype, reftype, all, nall );
+		level = ((all[reftype]).tags[n]).level;
+		newtag = all[reftype].tags[n].newstr;
+		name_add( info, newtag, d->data, level );
+	}
+}
+
 void
 isiin_convertf( fields *isiin, fields *info, int reftype, int verbose, variants *all, int nall )
 {
 	newstr *t, *d;
 	int process, level, i, n;
 	char *newtag;
+
+	isiin_addauthors( isiin, info, reftype, all, nall );
+
 	for ( i=0; i<isiin->nfields; ++i ) {
 		t = &( isiin->tag[i] );
+		if ( !strcasecmp( t->data, "AU" ) || !strcasecmp( t->data, "AF" ) )
+			continue;
 		d = &( isiin->data[i] );
 		n = process_findoldtag( t->data, reftype, all, nall );
 		if ( n==-1 ) {
@@ -201,6 +236,6 @@ isiin_convertf( fields *isiin, fields *info, int reftype, int verbose, variants 
 			keyword_process( info, newtag, d->data, level );
 		else if ( process == SERIALNO )
 			addsn( info, d->data, level );
-		else if ( process == TYPE || process == ALWAYS ) {/*empty*/}
+		/* do nothing if process==TYPE || process==ALWAYS */
 	}
 }

@@ -10,8 +10,8 @@
 #define WORDOUT_H
 
 /* format-specific options */
-#define WORDOUT_DROPKEY (1)
-#define WORDOUT_BOM     (2)
+#define WORDOUT_DROPKEY (2)
+#define WORDOUT_BOM     (4)
 
 #include <stdio.h>
 #include <stdlib.h>

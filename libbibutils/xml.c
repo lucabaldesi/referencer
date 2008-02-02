@@ -9,10 +9,10 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include "is_ws.h"
 #include "strsearch.h"
 #include "newstr.h"
 #include "xml.h"
-#include "fields.h"
 
 #define TRUE (1)
 #define FALSE (0)
@@ -20,8 +20,7 @@
 static xml_attrib *
 xmlattrib_new( void )
 {
-	xml_attrib *a;
-	a = (xml_attrib *) malloc( sizeof( xml_attrib ) );
+	xml_attrib *a = (xml_attrib *) malloc( sizeof( xml_attrib ) );
 	if ( a ) {
 		lists_init( &(a->attrib) );
 		lists_init( &(a->value) );
@@ -46,8 +45,7 @@ xmlattrib_free( xml_attrib *a )
 static xml *
 xml_new( void )
 {
-	xml *x;
-	x = (xml *) malloc( sizeof( xml ) );
+	xml *x = ( xml * ) malloc( sizeof( xml ) );
 	if ( x ) xml_init( x );
 	return x;
 }
@@ -194,10 +192,9 @@ xml_processtag( char *p, newstr *tag, xml_attrib **attrib, int *type )
 static void
 xml_appendnode( xml *onode, xml *nnode )
 {
-	xml *p;
-	if ( onode->down==NULL ) onode->down = nnode;
+	if ( !onode->down ) onode->down = nnode;
 	else {
-		p = onode->down;
+		xml *p = onode->down;
 		while ( p->next ) p = p->next;
 		p->next = nnode;
 	}
@@ -208,14 +205,16 @@ xml_tree( char *p, xml *onode )
 {
 	newstr tag;
 	xml_attrib *attrib;
-	int type;
+	int type, is_style = 0;
 
 	newstr_init( &tag );
 
 	while ( *p ) {
+		/* retain white space for <style> tags in endnote xml */
+		if ( onode->tag && onode->tag->data && 
+			!strcasecmp(onode->tag->data,"style") ) is_style=1;
 		while ( *p && *p!='<' ) {
-			if ( onode->value->len>0 || 
-			      (*p!='\n' && *p!='\r' && *p!='\t' && *p!=' ' ) )
+			if ( onode->value->len>0 || is_style || !is_ws( *p ) )
 				newstr_addchar( onode->value, *p );
 			p++;
 		}
@@ -225,7 +224,7 @@ xml_tree( char *p, xml *onode )
 			if ( type==XML_OPEN || type==XML_OPENCLOSE ||
 			     type==XML_DESCRIPTOR ) {
 				xml *nnode = xml_new();
-				newstr_strcpy( nnode->tag, tag.data );
+				newstr_newstrcpy( nnode->tag, &tag );
 				nnode->a = attrib;
 				xml_appendnode( onode, nnode );
 				if ( type==XML_OPEN )
@@ -248,7 +247,7 @@ xml_draw( xml *x, int n )
 	for ( i=0; i<n; ++i ) printf( "    " );
 	printf("n=%d tag='%s' value='%s'\n", n, x->tag->data, x->value->data );
 	if ( x->a ) {
-		for ( j=0; j<x->a->value.nstr; ++j ) {
+		for ( j=0; j<x->a->value.n; ++j ) {
 			for ( i=0; i<n; ++i ) printf( "    " );
 			printf("    attrib='%s' value='%s'\n",
 				(x->a)->attrib.str[j].data,
@@ -265,24 +264,21 @@ xml_draw( xml *x, int n )
 char *
 xml_findstart( char *buffer, char *tag )
 {
-	int length;
-	char *p;
-	char starttag[XML_BUFSIZE], *startptr;
-	length = strlen(tag);
-	if (length<XML_BUFSIZE-4) {
-		sprintf(starttag,"<%s>",tag);
-		p = strsearch(buffer,starttag);
+	char starttag[XML_BUFSIZE], *startptr, *p = NULL;
+	int length = strlen( tag );
+	if ( length < XML_BUFSIZE-4 ) {
+		sprintf( starttag, "<%s>", tag );
+		p = strsearch( buffer, starttag );
 		if ( !p ) {
-			sprintf( starttag,"<%s ",tag);
-			p = strsearch(buffer,starttag);
+			sprintf( starttag, "<%s ",tag );
+			p = strsearch( buffer, starttag );
 		}
 	} else {
-		p = NULL;
-		startptr = (char *) malloc( sizeof(char)*(length+4));
-		if (startptr!=NULL) {
-			sprintf(startptr,"<%s",tag);
-			p = strsearch(buffer,startptr);
-			free(startptr);
+		startptr = (char *) malloc( sizeof(char) * (length+4) );
+		if ( startptr ) {
+			sprintf( startptr, "<%s", tag );
+			p = strsearch( buffer, startptr );
+			free( startptr );
 		}
 	}
 	return p;
@@ -335,7 +331,7 @@ xml_tag_attrib( xml *node, char *s, char *attrib, char *value )
 	xml_attrib *na = node->a;
 	int i, nattrib = 0;
 	if ( !na ) return 0;
-	else nattrib = na->attrib.nstr;
+	else nattrib = na->attrib.n;
 
 #ifdef COUNT_TRAVERSAL
 	node->count++;
@@ -360,7 +356,7 @@ xml_getattrib( xml *node, char *attrib )
 	xml_attrib *na = node->a;
 	int i, nattrib;
 	if ( na ) {
-		nattrib = na->attrib.nstr;
+		nattrib = na->attrib.n;
 		for ( i=0; i<nattrib; ++i )
 			if ( !strcasecmp( na->attrib.str[i].data, attrib ) )
 				ns = &(na->value.str[i]);

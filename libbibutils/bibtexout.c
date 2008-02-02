@@ -36,37 +36,18 @@ enum {
 };
 
 static void
-output_citekeysafe( FILE *fp, char *q1, char *q2 )
+output_citekey( FILE *fp, fields *info, unsigned long refnum )
 {
+	int n = fields_find( info, "REFNUM", -1 );
 	char *p;
-	int i, n = 0;
-	for ( i=0; i<2; ++i ) {
-		if ( i==0 ) p = q1;
-		else p = q2;
+	if ( n!=-1 ) {
+		p = info->data[n].data;
 		while ( p && *p && *p!='|' ) {
 			if ( *p!=' ' && *p!='\t' ) {
-				if ( n==0 && (*p>='0' && *p<='9') ) 
-					fprintf(fp,"ref");
-				fprintf(fp,"%c",*p);
-				n++;
+				fprintf( fp, "%c", *p );
 			}
 			p++;
 		}
-	}
-}
-
-static void
-output_citekey( FILE *fp, fields *info, unsigned long refnum )
-{
-	int n = fields_find( info, "REFNUM", -1 ), n1, n2;
-	if ( n!=-1 ) output_citekeysafe( fp, info->data[n].data, NULL );
-	else {
-		n1 = fields_find( info, "AUTHOR", -1 );
-		n2 = fields_find( info, "YEAR", -1 );
-		if ( n1!=-1 && n2!=-1 ) {
-			output_citekeysafe( fp, info->data[n1].data,
-				       info->data[n2].data );
-		} else fprintf( fp, "ref%ld", refnum+1 );
 	}
 }
 
@@ -84,7 +65,8 @@ bibtexout_type( fields *info, char *filename, int refnum )
 		level = info->level[i];
 		if ( !strcasecmp( genre, "periodical" ) ||
 		     !strcasecmp( genre, "academic journal" ) ||
-		     !strcasecmp( genre, "magazine" ) )
+		     !strcasecmp( genre, "magazine" ) ||
+		     !strcasecmp( genre, "newspaper" ) )
 			type = TYPE_ARTICLE;
 		else if ( !strcasecmp( genre, "instruction" ) )
 			type = TYPE_MANUAL;
@@ -239,10 +221,11 @@ add_person( newstr *s, char *p )
 
 static void
 output_people( FILE *fp, fields *info, unsigned long refnum, char *tag, 
-		char *ctag, char *bibtag, int level, int format_opts )
+		char *ctag, char *atag, char *bibtag, int level, 
+		int format_opts )
 {
 	newstr allpeople;
-	int i, npeople, person, corp;
+	int i, npeople, person, corp, asis;
 
 	/* primary citation authors */
 	npeople = 0;
@@ -250,7 +233,8 @@ output_people( FILE *fp, fields *info, unsigned long refnum, char *tag,
 		if ( level!=-1 && info->level[i]!=level ) continue;
 		person = ( strcasecmp( info->tag[i].data, tag ) == 0 );
 		corp   = ( strcasecmp( info->tag[i].data, ctag ) == 0 );
-		if ( person || corp ) {
+		asis   = ( strcasecmp( info->tag[i].data, atag ) == 0 );
+		if ( person || corp || asis ) {
 			if ( npeople==0 ) newstr_init( &allpeople );
 			else {
 				if ( format_opts & BIBOUT_WHITESPACE )
@@ -261,8 +245,12 @@ output_people( FILE *fp, fields *info, unsigned long refnum, char *tag,
 				newstr_addchar( &allpeople, '{' );
 				newstr_strcat( &allpeople, info->data[i].data );
 				newstr_addchar( &allpeople, '}' );
+			} else if ( asis ) {
+				newstr_addchar( &allpeople, '{' );
+				newstr_strcat( &allpeople, info->data[i].data );
+				newstr_addchar( &allpeople, '}' );
 			} else add_person( &allpeople, info->data[i].data ); 
-			info->used[i] = 1;
+			fields_setused( info, i );
 			npeople++;
 		}
 	}
@@ -280,14 +268,14 @@ output_title( FILE *fp, fields *info, unsigned long refnum, char *bibtag, int le
 	int n2 = fields_find( info, "SUBTITLE", level );
 	if ( n1!=-1 ) {
 		newstr_init( &title );
-		newstr_strcpy( &title, info->data[n1].data );
-		info->used[n1] = 1;
+		newstr_newstrcpy( &title, &(info->data[n1]) );
+		fields_setused( info, n1 );
 		if ( n2!=-1 ) {
 			if ( info->data[n1].data[info->data[n1].len]!='?' )
 				newstr_strcat( &title, ": " );
 			else newstr_addchar( &title, ' ' );
 			newstr_strcat( &title, info->data[n2].data );
-			info->used[n2] = 1;
+			fields_setused( info, n2 );
 		}
 		output_element( fp, bibtag, title.data, format_opts );
 		newstr_free( &title );
@@ -304,7 +292,7 @@ output_date( FILE *fp, fields *info, unsigned long refnum, int format_opts )
 	if ( n==-1 ) n = fields_find( info, "PARTYEAR", -1 );
 	if ( n!=-1 ) {
 		output_element( fp, "year", info->data[n].data, format_opts );
-		info->used[n] = 1;
+		fields_setused( info, n );
 	}
 	n = fields_find( info, "MONTH", -1 );
 	if ( n==-1 ) n = fields_find( info, "PARTMONTH", -1 );
@@ -314,13 +302,30 @@ output_date( FILE *fp, fields *info, unsigned long refnum, int format_opts )
 			output_element( fp, "month", months[month-1], format_opts );
 		else
 			output_element( fp, "month", info->data[n].data, format_opts );
-		info->used[n] = 1;
+		fields_setused( info, n );
 	}
 	n = fields_find( info, "DAY", -1 );
 	if ( n==-1 ) n = fields_find( info, "PARTDAY", -1 );
 	if ( n!=-1 ) {
 		output_element( fp, "day", info->data[n].data, format_opts );
-		info->used[n] = 1;
+		fields_setused( info, n );
+	}
+}
+
+
+/* output article number as pages if true pages aren't found */
+static void
+output_articlenumber( FILE *fp, fields *info, unsigned long refnum,
+	int format_opts )
+{
+	int ar = fields_find( info, "ARTICLENUMBER", -1 );
+	if ( ar!=-1 ) {
+		newstr pages;
+		newstr_init( &pages );
+		newstr_strcat( &pages, info->data[ar].data );
+		output_element( fp, "pages", pages.data, format_opts );
+		fields_setused( info, ar );
+		newstr_free( &pages );
 	}
 }
 
@@ -331,11 +336,14 @@ output_pages( FILE *fp, fields *info, unsigned long refnum, int format_opts )
 	int sn, en;
 	sn = fields_find( info, "PAGESTART", -1 );
 	en = fields_find( info, "PAGEEND", -1 );
-	if ( sn==-1 && en==-1 ) return;
+	if ( sn==-1 && en==-1 ) {
+		output_articlenumber( fp, info, refnum, format_opts );
+		return;
+	}
 	newstr_init( &pages );
 	if ( sn!=-1 ) {
 		newstr_strcat( &pages, info->data[sn].data );
-		info->used[sn] = 1;
+		fields_setused( info, sn );
 	}
 	if ( sn!=-1 && en!=-1 ) {
 		if ( format_opts & BIBOUT_SINGLEDASH ) 
@@ -345,7 +353,7 @@ output_pages( FILE *fp, fields *info, unsigned long refnum, int format_opts )
 	}
 	if ( en!=-1 ) {
 		newstr_strcat( &pages, info->data[en].data );
-		info->used[en] = 1;
+		fields_setused( info, en );
 	}
 	output_element( fp, "pages", pages.data, format_opts );
 	newstr_free( &pages );
@@ -358,7 +366,7 @@ output_simple( FILE *fp, fields *info, char *intag, char *outtag,
 	int n = fields_find( info, intag, -1 );
 	if ( n!=-1 ) {
 		output_element( fp, outtag, info->data[n].data, format_opts );
-		info->used[n] = 1;
+		fields_setused( info, n );
 	}
 }
 
@@ -370,26 +378,23 @@ output_simpleall( FILE *fp, fields *info, char *intag, char *outtag,
 	for ( i=0; i<info->nfields; ++i ) {
 		if ( strcasecmp( info->tag[i].data, intag ) ) continue;
 		output_element( fp, outtag, info->data[i].data, format_opts );
-		info->used[i] = 1;
+		fields_setused( info, i );
 	}
 }
 
 void
 bibtexout_write( fields *info, FILE *fp, int format_opts, unsigned long refnum )
 {
-	int i, type;
-
-	/* Clear all used fields */
-	for ( i=0; i<info->nfields; ++i )
-		info->used[i] = 0;
-
+	int type;
+	fields_clearused( info );
 	type = bibtexout_type( info, "", refnum );
 	output_type( fp, type, format_opts );
 	output_citekey( fp, info, refnum );
-	output_people( fp, info, refnum, "AUTHOR", "CORPAUTHOR", "author", 0,
+	output_people( fp, info, refnum, "AUTHOR", "AUTHOR:CORP", "AUTHOR:ASIS", "author", 0,
 		format_opts );
-	output_people( fp, info, refnum, "EDITOR", "CORPEDITOR", "editor", -1,
+	output_people( fp, info, refnum, "EDITOR", "EDITOR:CORP", "EDITOR:ASIS", "editor", -1,
 		format_opts );
+	output_people( fp, info, refnum, "TRANSLATOR", "TRANSLATOR:CORP", "TRANSLATOR:ASIS", "translator", -1, format_opts );
 
 	/* item=main level title */
 	if ( type==TYPE_INBOOK )
@@ -400,10 +405,17 @@ bibtexout_write( fields *info, FILE *fp, int format_opts, unsigned long refnum )
 	/* item=host level title */
 	if ( type==TYPE_ARTICLE )
 		output_title( fp, info, refnum, "journal", 1, format_opts );
-	else if ( type==TYPE_INBOOK )
+	else if ( type==TYPE_INBOOK ) {
 		output_title( fp, info, refnum, "title", 1, format_opts );
-	else if ( type==TYPE_INPROCEEDINGS || type==TYPE_INCOLLECTION )
+		output_title( fp, info, refnum, "series", 2, format_opts );
+	}
+	else if ( type==TYPE_INPROCEEDINGS || type==TYPE_INCOLLECTION ) {
 		output_title( fp, info, refnum, "booktitle", 1, format_opts );
+		output_title( fp, info, refnum, "series", 2, format_opts );
+	}
+	else if ( type==TYPE_PHDTHESIS || type==TYPE_MASTERSTHESIS ) {
+		output_title( fp, info, refnum, "series", 1, format_opts );
+	}
 	else if ( type==TYPE_BOOK || type==TYPE_COLLECTION || type==TYPE_PROCEEDINGS )
 		output_title( fp, info, refnum, "series", 1, format_opts );
 
@@ -414,8 +426,6 @@ bibtexout_write( fields *info, FILE *fp, int format_opts, unsigned long refnum )
 	output_simple( fp, info, "VOLUME", "volume", format_opts );
 	output_simple( fp, info, "ISSUE", "issue", format_opts );
 	output_simple( fp, info, "NUMBER", "number", format_opts );
-	/* bibtex normally avoid article number, so output as page */
-	output_simple( fp, info, "ARTICLENUMBER", "pages", format_opts );
 	output_pages( fp, info, refnum, format_opts );
 	output_simpleall( fp, info, "KEYWORD", "keywords", format_opts );
 	output_simple( fp, info, "CONTENTS", "contents", format_opts );

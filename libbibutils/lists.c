@@ -10,62 +10,102 @@
  */
 #include "lists.h"
 
-int
-lists_add( lists *info, char *value )
+static int
+lists_alloc( lists *a )
 {
-	newstr *newdata;
-	int min_alloc = 20, i;
-	if ( info->maxstr==0 ) {
-		info->str = (newstr*) malloc( sizeof(newstr)*min_alloc );
-		if ( !(info->str) ) return 0;
-		info->maxstr = min_alloc;
-		info->nstr = 0;
-		for ( i=0; i<min_alloc; ++i )
-			newstr_init( &(info->str[i]) );
-	} else if ( info->nstr >= info->maxstr ) {
-		min_alloc = info->maxstr * 2;
-		newdata = (newstr*) realloc( info->str,
-				sizeof( newstr ) * min_alloc );
-		if ( !newdata ) return 0;
-		info->maxstr = min_alloc;
-		info->str = newdata;
-		for ( i=info->nstr; i<info->maxstr; ++i )
-			newstr_init( &(info->str[i]) );
-	}
-	newstr_strcpy( &(info->str[info->nstr]), value );
-	info->nstr++;
+	int i, min_alloc = 20;
+	a->str = ( newstr* ) malloc( sizeof( newstr ) * min_alloc );
+	if ( !(a->str) ) return 0;
+	a->max = min_alloc;
+	a->n = 0;
+	for ( i=0; i<min_alloc; ++i )
+		newstr_init( &(a->str[i]) );
 	return 1;
 }
 
-void
-lists_free( lists *info )
+static int
+lists_realloc( lists *a )
 {
-	int i;
-	for ( i=0; i<info->maxstr; ++i )
-		newstr_free( &(info->str[i]) );
-	free( info->str );
-	lists_init( info );
-}
-
-void
-lists_init( lists *info  )
-{
-	info->str = NULL;
-	info->maxstr = 0;
-	info->nstr = 0;
+	newstr *nd;
+	int i, min_alloc = a->max * 2;
+	nd = ( newstr* ) realloc( a->str, sizeof( newstr ) * min_alloc );
+	if ( !nd ) return 0;
+	a->max = min_alloc;
+	a->str = nd;
+	for ( i=a->n; i<a->max; ++i )
+		newstr_init( &(a->str[i]) );
+	return 1;
 }
 
 int
-lists_find( lists *info, char *searchstr )
+lists_add( lists *a, char *value )
+{
+	int ok = 1;
+
+	/* ensure sufficient space */
+	if ( a->max==0 ) ok = lists_alloc( a );
+	else if ( a->n >= a->max ) ok = lists_realloc( a );
+
+	if ( ok ) {
+		newstr_strcpy( &(a->str[a->n]), value );
+		a->n++;
+	}
+
+	return ok;
+}
+
+newstr *
+lists_getstr( lists *a, int n )
+{
+	if ( n<0 || n>a->n ) return NULL;
+	else return &(a->str[n]);
+}
+
+char *
+lists_getcharptr( lists *a, int n )
+{
+	if ( n<0 || n>a->n ) return NULL;
+	else return a->str[n].data;
+}
+
+void
+lists_empty( lists *a )
 {
 	int i;
-	for ( i=0; i<info->nstr; ++i )
-		if ( !strcmp(info->str[i].data,searchstr) ) return i;
+	for ( i=0; i<a->max; ++i )
+		newstr_empty( &(a->str[i]) );
+	a->n = 0;
+}
+
+void
+lists_free( lists *a )
+{
+	int i;
+	for ( i=0; i<a->max; ++i )
+		newstr_free( &(a->str[i]) );
+	free( a->str );
+	lists_init( a );
+}
+
+void
+lists_init( lists *a  )
+{
+	a->str = NULL;
+	a->max = 0;
+	a->n = 0;
+}
+
+int
+lists_find( lists *a, char *searchstr )
+{
+	int i;
+	for ( i=0; i<a->n; ++i )
+		if ( !strcmp(a->str[i].data,searchstr) ) return i;
 	return -1;
 }
 
 int
-lists_fill( lists *info, char *filename )
+lists_fill( lists *a, char *filename )
 {
 	newstr line;
 	FILE *fp;
@@ -76,14 +116,13 @@ lists_fill( lists *info, char *filename )
 	fp = fopen( filename, "r" );
 	if ( !fp ) return 0;
 
-	info->str = NULL;
-	info->nstr = info->maxstr = 0;
+	lists_init( a );
 
 	newstr_init( &line );
 	while ( newstr_fget( fp, buf, sizeof(buf), &bufpos, &line ) ) {
 		p = &(line.data[0]);
 		if ( *p=='\0' ) continue;
-		if ( !lists_add( info, line.data ) ) return 0;
+		if ( !lists_add( a, line.data ) ) return 0;
 	}
 	newstr_free( &line );
 	fclose( fp );

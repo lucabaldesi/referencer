@@ -15,12 +15,7 @@
 #include "fields.h"
 #include "utf8.h"
 #include "modsout.h"
-
-typedef struct convert {
-	char oldtag[25];
-	char newtag[25];
-	int  code;
-} convert;
+#include "modstypes.h"
 
 extern char progname[];
 
@@ -60,7 +55,7 @@ output_fill2( FILE *outptr, int level, char *tag, fields *info, int n, int cr )
 {
 	if ( n!=-1 ) {
 		output_tab2( outptr, level, tag, info->data[n].data, cr );
-		info->used[n] = 1;
+		fields_setused( info, n );
 	}
 }
 
@@ -71,7 +66,7 @@ output_fill4( FILE *outptr, int level, char *tag, char *aname, char *avalue,
 	if ( n!=-1 ) {
 		output_tab4( outptr, level, tag, aname, avalue,
 				info->data[n].data, cr );
-		info->used[n] = 1;
+		fields_setused( info, n );
 	}
 }
 
@@ -98,7 +93,7 @@ output_title( fields *info, FILE *outptr, int level )
 			output_fill2( outptr, level+1, "title", info, shrttl,1);
 			output_tab1( outptr, level, "</titleInfo>\n" );
 		}
-		info->used[shrttl] = 1;
+		fields_setused( info, shrttl );
 	}
 }
 
@@ -161,74 +156,73 @@ static void
 output_names( fields *info, FILE *outptr, int level )
 {
 	convert   names[] = {
-		{ "AUTHOR",       "author",       MARC_AUTHORITY },
-		{ "AUTHOR:ASIS",  "author",       MARC_AUTHORITY | NAME_ASIS },
-		{ "AUTHOR:CORP",  "author",       MARC_AUTHORITY | NAME_CORP },
-		{ "WRITER",       "writer",       MARC_AUTHORITY },
-		{ "WRITER:ASIS",  "writer",       MARC_AUTHORITY | NAME_ASIS },
-		{ "WRITER:CORP",  "writer",       MARC_AUTHORITY | NAME_CORP },
-		{ "ASSIGNEE",     "patent holder",MARC_AUTHORITY },
-		{ "ASSIGNEE:ASIS","patent holder",MARC_AUTHORITY | NAME_ASIS },
-		{ "ASSIGNEE:CORP","patent holder",MARC_AUTHORITY | NAME_CORP },
-		{ "EDITOR",       "editor",       MARC_AUTHORITY },
-		{ "EDITOR:ASIS",  "editor",       MARC_AUTHORITY | NAME_ASIS },
-		{ "EDITOR:CORP",  "editor",       MARC_AUTHORITY | NAME_CORP },
-		{ "ARTIST",       "artist",       MARC_AUTHORITY },
-		{ "ARTIST:ASIS",  "artist",       MARC_AUTHORITY | NAME_ASIS },
-		{ "ARTIST:CORP",  "artist",       MARC_AUTHORITY | NAME_CORP },
-		{ "CARTOGRAPHER", "cartographer", MARC_AUTHORITY },
-		{ "CARTOGRAPHER:ASIS", "cartographer",MARC_AUTHORITY|NAME_ASIS},
-		{ "CARTOGRAPHER:CORP", "cartographer",MARC_AUTHORITY|NAME_CORP},
-		{ "DEGREEGRANTOR","degree grantor", MARC_AUTHORITY },
-		{ "DEGREEGRANTOR:ASIS","degree grantor", MARC_AUTHORITY | NAME_ASIS },
-		{ "DEGREEGRANTOR:CORP","degree grantor", MARC_AUTHORITY | NAME_CORP },
-		{ "INVENTOR",     "inventor",     MARC_AUTHORITY },
-		{ "INVENTOR:ASIS","inventor",     MARC_AUTHORITY |NAME_ASIS},
-		{ "INVENTOR:CORP","inventor",     MARC_AUTHORITY |NAME_CORP},
-		{ "ORGANIZER",    "organizer of meeting", MARC_AUTHORITY },
-		{ "ORGANIZER:ASIS","organizer of meeting", MARC_AUTHORITY|NAME_ASIS },
-		{ "ORGANIZER:CORP","organizer of meeting", MARC_AUTHORITY|NAME_CORP },
-		{ "DIRECTOR",     "director",     MARC_AUTHORITY },
-		{ "DIRECTOR:ASIS","director",     MARC_AUTHORITY | NAME_ASIS },
-		{ "DIRECTOR:CORP","director",     MARC_AUTHORITY | NAME_CORP },
-		{ "PERFORMER",    "performer",    MARC_AUTHORITY },
-		{ "PERFORMER:ASIS","performer",   MARC_AUTHORITY | NAME_ASIS },
-		{ "PERFORMER:CORP","performer",   MARC_AUTHORITY | NAME_CORP },
-		{ "REPORTER",     "reporter",     NO_AUTHORITY   },
-		{ "REPORTER:ASIS","reporter",     NO_AUTHORITY   | NAME_ASIS },
-		{ "REPORTER:CORP","reporter",     NO_AUTHORITY   | NAME_CORP },
-		{ "TRANSLATOR",   "translator",   MARC_AUTHORITY },
-		{ "DIRECTOR",     "director",     MARC_AUTHORITY },
-		{ "DIRECTOR:ASIS","director",     MARC_AUTHORITY | NAME_ASIS },
-		{ "DIRECTOR:CORP","director",     MARC_AUTHORITY | NAME_CORP },
-		{ "PERFORMER",    "performer",    MARC_AUTHORITY },
-		{ "PERFORMER:ASIS","performer",   MARC_AUTHORITY | NAME_ASIS },
-		{ "PERFORMER:CORP","performer",   MARC_AUTHORITY | NAME_CORP },
-		{ "TRANSLATOR",   "translator",   MARC_AUTHORITY },
-		{ "TRANSLATOR:ASIS", "translator",MARC_AUTHORITY | NAME_ASIS },
-		{ "TRANSLATOR:CORP", "translator",MARC_AUTHORITY | NAME_CORP },
-		{ "RECIPIENT",    "recipient",    MARC_AUTHORITY },
-		{ "RECIPIENT:ASIS","recipient",   MARC_AUTHORITY | NAME_ASIS },
-		{ "RECIPIENT:CORP","recipient",   MARC_AUTHORITY | NAME_CORP },
-		{ "2ND_AUTHOR",   "author",       MARC_AUTHORITY },
-		{ "2ND_AUTHOR:ASIS","author",     MARC_AUTHORITY | NAME_ASIS },
-		{ "2ND_AUTHOR:CORP","author",     MARC_AUTHORITY | NAME_CORP },
-		{ "3RD_AUTHOR",   "author",       MARC_AUTHORITY },
-		{ "3RD_AUTHOR:ASIS","author",     MARC_AUTHORITY | NAME_ASIS },
-		{ "3RD_AUTHOR:CORP","author",     MARC_AUTHORITY | NAME_CORP },
-		{ "SUB_AUTHOR",   "author",       MARC_AUTHORITY },
-		{ "SUB_AUTHOR:ASIS","author",     MARC_AUTHORITY | NAME_ASIS },
-		{ "COMMITTEE",         "author",  MARC_AUTHORITY | NAME_CORP },
-		{ "COURT",             "author",  MARC_AUTHORITY | NAME_CORP },
-		{ "LEGISLATIVEBODY",   "author",  MARC_AUTHORITY | NAME_CORP }
+	  { "author",        "AUTHOR",             MARC_AUTHORITY },
+	  { "author",        "AUTHOR:ASIS",        MARC_AUTHORITY | NAME_ASIS },
+	  { "author",        "AUTHOR:CORP",        MARC_AUTHORITY | NAME_CORP },
+	  { "writer",        "WRITER",             MARC_AUTHORITY },
+	  { "writer",        "WRITER:ASIS",        MARC_AUTHORITY | NAME_ASIS },
+	  { "writer",        "WRITER:CORP",        MARC_AUTHORITY | NAME_CORP },
+	  { "patent holder", "ASSIGNEE",           MARC_AUTHORITY },
+	  { "patent holder", "ASSIGNEE:ASIS",      MARC_AUTHORITY | NAME_ASIS },
+	  { "patent holder", "ASSIGNEE:CORP",      MARC_AUTHORITY | NAME_CORP },
+	  { "editor",        "EDITOR",             MARC_AUTHORITY },
+	  { "editor",        "EDITOR:ASIS",        MARC_AUTHORITY | NAME_ASIS },
+	  { "editor",        "EDITOR:CORP",        MARC_AUTHORITY | NAME_CORP },
+	  { "artist",        "ARTIST",             MARC_AUTHORITY },
+	  { "artist",        "ARTIST:ASIS",        MARC_AUTHORITY | NAME_ASIS },
+	  { "artist",        "ARTIST:CORP",        MARC_AUTHORITY | NAME_CORP },
+	  { "cartographer",  "CARTOGRAPHER",       MARC_AUTHORITY },
+	  { "cartographer",  "CARTOGRAPHER:ASIS",  MARC_AUTHORITY | NAME_ASIS},
+	  { "cartographer",  "CARTOGRAPHER:CORP",  MARC_AUTHORITY | NAME_CORP},
+	  { "degree grantor","DEGREEGRANTOR",      MARC_AUTHORITY },
+	  { "degree grantor","DEGREEGRANTOR:ASIS", MARC_AUTHORITY | NAME_ASIS },
+	  { "degree grantor","DEGREEGRANTOR:CORP", MARC_AUTHORITY | NAME_CORP },
+	  { "inventor",      "INVENTOR",           MARC_AUTHORITY },
+	  { "inventor",      "INVENTOR:ASIS",      MARC_AUTHORITY | NAME_ASIS},
+	  { "inventor",      "INVENTOR:CORP",      MARC_AUTHORITY | NAME_CORP},
+	  { "organizer of meeting","ORGANIZER",    MARC_AUTHORITY },
+	  { "organizer of meeting","ORGANIZER:ASIS",MARC_AUTHORITY| NAME_ASIS },
+	  { "organizer of meeting","ORGANIZER:CORP",MARC_AUTHORITY| NAME_CORP },
+	  { "director",      "DIRECTOR",           MARC_AUTHORITY },
+	  { "director",      "DIRECTOR:ASIS",      MARC_AUTHORITY | NAME_ASIS },
+	  { "director",      "DIRECTOR:CORP",      MARC_AUTHORITY | NAME_CORP },
+	  { "performer",     "PERFORMER",          MARC_AUTHORITY },
+	  { "performer",     "PERFORMER:ASIS",     MARC_AUTHORITY | NAME_ASIS },
+	  { "performer",     "PERFORMER:CORP",     MARC_AUTHORITY | NAME_CORP },
+	  { "reporter",      "REPORTER",           NO_AUTHORITY   },
+	  { "reporter",      "REPORTER:ASIS",      NO_AUTHORITY   | NAME_ASIS },
+	  { "reporter",      "REPORTER:CORP",      NO_AUTHORITY   | NAME_CORP },
+	  { "translator",    "TRANSLATOR",         MARC_AUTHORITY },
+	  { "director",      "DIRECTOR",           MARC_AUTHORITY },
+	  { "director",      "DIRECTOR:ASIS",      MARC_AUTHORITY | NAME_ASIS },
+	  { "director",      "DIRECTOR:CORP",      MARC_AUTHORITY | NAME_CORP },
+	  { "performer",     "PERFORMER",          MARC_AUTHORITY },
+	  { "performer",     "PERFORMER:ASIS",     MARC_AUTHORITY | NAME_ASIS },
+	  { "performer",     "PERFORMER:CORP",     MARC_AUTHORITY | NAME_CORP },
+	  { "translator",    "TRANSLATOR",         MARC_AUTHORITY },
+	  { "translator",    "TRANSLATOR:ASIS",    MARC_AUTHORITY | NAME_ASIS },
+	  { "translator",    "TRANSLATOR:CORP",    MARC_AUTHORITY | NAME_CORP },
+	  { "recipient",     "RECIPIENT",          MARC_AUTHORITY },
+	  { "recipient",     "RECIPIENT:ASIS",     MARC_AUTHORITY | NAME_ASIS },
+	  { "recipient",     "RECIPIENT:CORP",     MARC_AUTHORITY | NAME_CORP },
+	  { "author",        "2ND_AUTHOR",         MARC_AUTHORITY },
+	  { "author",        "2ND_AUTHOR:ASIS",    MARC_AUTHORITY | NAME_ASIS },
+	  { "author",        "2ND_AUTHOR:CORP",    MARC_AUTHORITY | NAME_CORP },
+	  { "author",        "3RD_AUTHOR",         MARC_AUTHORITY },
+	  { "author",        "3RD_AUTHOR:ASIS",    MARC_AUTHORITY | NAME_ASIS },
+	  { "author",        "3RD_AUTHOR:CORP",    MARC_AUTHORITY | NAME_CORP },
+	  { "author",        "SUB_AUTHOR",         MARC_AUTHORITY },
+	  { "author",        "SUB_AUTHOR:ASIS",    MARC_AUTHORITY | NAME_ASIS },
+	  { "author",        "COMMITTEE",          MARC_AUTHORITY | NAME_CORP },
+	  { "author",        "COURT",              MARC_AUTHORITY | NAME_CORP },
+	  { "author",        "LEGISLATIVEBODY",    MARC_AUTHORITY | NAME_CORP }
 	};
-
 	int       i, n, ntypes = sizeof( names ) / sizeof( convert );
 
 	for ( n=0; n<ntypes; ++n ) {
 		for ( i=0; i<info->nfields; ++i ) {
 			if ( info->level[i]!=level ) continue;
-			if ( strcasecmp(info->tag[i].data,names[n].oldtag) )
+			if ( strcasecmp(info->tag[i].data,names[n].internal) )
 				continue;
 			if ( names[n].code & NAME_ASIS ) {
 				output_tab0( outptr, level );
@@ -246,11 +240,11 @@ output_names( fields *info, FILE *outptr, int level )
 			if ( names[n].code & MARC_AUTHORITY )
 				fprintf( outptr, " authority=\"marcrelator\"");
 			fprintf( outptr, " type=\"text\">");
-			fprintf( outptr, "%s", names[n].newtag );
+			fprintf( outptr, "%s", names[n].mods );
 			fprintf( outptr, "</roleTerm>\n");
 			output_tab1( outptr, level+1, "</role>\n" );
 			output_tab1( outptr, level, "</name>\n" );
-			info->used[i] = 1;
+			fields_setused( info, i );
 		}
 	}
 }
@@ -293,7 +287,7 @@ output_dateissued( fields *info, FILE *outptr, int level, int pos[3] )
 			fprintf( outptr, "0" ); /*zero pad Jan,Feb,etc*/
 		fprintf( outptr,"%s",info->data[pos[i]].data );
 		nprinted++;
-		info->used[ pos[i] ] = 1;
+		fields_setused( info, pos[i] );
 	}
 	fprintf( outptr, "</dateIssued>\n" );
 }
@@ -302,10 +296,10 @@ static void
 output_origin( fields *info, FILE *outptr, int level )
 {
 	convert origin[] = {
-		{ "ISSUANCE",	"issuance",	0 },
-		{ "PUBLISHER",	"publisher",	0 },
-		{ "ADDRESS",	"place",	1 },
-		{ "EDITION",	"edition",	0 }
+		{ "issuance",	"ISSUANCE",	0 },
+		{ "publisher",	"PUBLISHER",	0 },
+		{ "place",	"ADDRESS",	1 },
+		{ "edition",	"EDITION",	0 }
 	};
 	int n, ntypes = sizeof( origin ) / sizeof ( convert );
 	int found, datefound, pos[5], date[3];
@@ -313,7 +307,7 @@ output_origin( fields *info, FILE *outptr, int level )
 	/* find all information to be outputted */
 	found = -1;
 	for ( n=0; n<ntypes; ++n ) {
-		pos[n] = fields_find( info, origin[n].oldtag, level );
+		pos[n] = fields_find( info, origin[n].internal, level );
 		if ( pos[n]!=-1 ) found = pos[n];
 	}
 	datefound = output_finddateissued( info, level, date );
@@ -326,7 +320,7 @@ output_origin( fields *info, FILE *outptr, int level )
 	for ( n=1; n<ntypes; n++ ) {
 		if ( pos[n]==-1 ) continue;
 		output_tab0( outptr, level+1 );
-		fprintf( outptr, "<%s", origin[n].newtag );
+		fprintf( outptr, "<%s", origin[n].mods );
 		fprintf( outptr, ">" );
 		if ( origin[n].code ) {
 			fprintf( outptr, "\n" );
@@ -335,9 +329,9 @@ output_origin( fields *info, FILE *outptr, int level )
 			output_tab0( outptr, level+1 );
 		} else {
 			fprintf( outptr, "%s", info->data[pos[n]].data );
-			info->used[ pos[n] ] = 1;
+			fields_setused( info, pos[n] );
 		}
-		fprintf( outptr, "</%s>\n", origin[n].newtag );
+		fprintf( outptr, "</%s>\n", origin[n].mods );
 	}
 	output_tab1( outptr, level, "</originInfo>\n" );
 }
@@ -372,13 +366,13 @@ static void
 output_partdate( fields *info, FILE *outptr, int level, int *wrote_header )
 {
 	convert parts[3] = {
-		{ "PARTYEAR",        "",                -1 },
-		{ "PARTMONTH",       "",                -1 },
-		{ "PARTDAY",         "",                -1 },
+		{ "",	"PARTYEAR",                -1 },
+		{ "",	"PARTMONTH",               -1 },
+		{ "",	"PARTDAY",                 -1 },
 	};
 	int i, found = 0;
 	for ( i=0; i<3; ++i ) {
-		parts[i].code = fields_find( info, parts[i].oldtag, level );
+		parts[i].code = fields_find( info, parts[i].internal, level );
 		found += ( parts[i].code!=-1 );
 	}
 	if ( !found ) return;
@@ -392,21 +386,21 @@ output_partdate( fields *info, FILE *outptr, int level, int *wrote_header )
 
 	if ( parts[0].code!=-1 ) {
 		fprintf( outptr, "%s", info->data[ parts[0].code ].data);
-		info->used[ parts[0].code ]=1;
+		fields_setused( info, parts[0].code );
 	}
 
 	if ( parts[1].code!=-1 ) {
 		if ( parts[0].code!=-1 ) fprintf( outptr, "-" );
 		else fprintf( outptr, "XXXX-" );
 		fprintf( outptr, "%s", info->data[parts[1].code].data );
-		info->used[parts[1].code]=1;
+		fields_setused( info, parts[1].code );
 	}
 
 	if ( parts[2].code!=-1 ) {
 		if ( parts[1].code!=-1 ) fprintf( outptr, "-" );
 		else if ( parts[0].code!=-1 ) fprintf( outptr, "-XX-" );
 		fprintf( outptr, "%s", info->data[parts[2].code].data );
-		info->used[parts[2].code]=1;
+		fields_setused( info, parts[2].code );
 	}
 
 	fprintf( outptr,"</date>\n");
@@ -426,7 +420,7 @@ mods_output_detail( fields *info, FILE *outptr, int item, char *item_name,
 	output_tab0( outptr, level+1 );
 	fprintf( outptr, "<detail type=\"%s\"><number>", item_name );
 	fprintf( outptr, "%s</number></detail>\n", info->data[item].data );
-	info->used[item] = 1; 
+	fields_setused( info, item );
 }
 
 
@@ -453,13 +447,13 @@ static void
 mods_output_partpages( fields *info, FILE *outptr, int level, int *wrote_header )
 {
 	convert parts[3] = {
-		{ "PAGESTART",       "",                -1 },
-		{ "PAGEEND",         "",                -1 },
-		{ "TOTALPAGES",      "",                -1 }
+		{ "",  "PAGESTART",                -1 },
+		{ "",  "PAGEEND",                  -1 },
+		{ "",  "TOTALPAGES",               -1 }
 	};
 	int i, found = 0;
 	for ( i=0; i<3; ++i ) {
-		parts[i].code = fields_find( info, parts[i].oldtag, level );
+		parts[i].code = fields_find( info, parts[i].internal, level );
 		found += ( parts[i].code!=-1 );
 	}
 	if ( !found ) return;
@@ -490,16 +484,17 @@ static void
 output_partelement( fields *info, FILE *outptr, int level, int *wrote_header )
 {
 	convert parts[] = {
-		{ "VOLUME",          "volume",          -1 },
-		{ "SECTION",         "section",         -1 },
-		{ "ISSUE",           "issue",           -1 },
-		{ "NUMBER",          "number",          -1 },
-		{ "PUBLICLAWNUMBER", "publiclawnumber", -1 },
-		{ "SESSION",         "session",         -1 },
+		{ "volume",          "VOLUME",          -1 },
+		{ "section",         "SECTION",         -1 },
+		{ "issue",           "ISSUE",           -1 },
+		{ "number",          "NUMBER",          -1 },
+		{ "publiclawnumber", "PUBLICLAWNUMBER", -1 },
+		{ "session",         "SESSION",         -1 },
+		{ "articlenumber",   "ARTICLENUMBER",   -1 }
 	};
 	int i, nparts = sizeof( parts ) / sizeof( convert ), found = 0;
 	for ( i=0; i<nparts; ++i ) {
-		parts[i].code = fields_find( info, parts[i].oldtag, level );
+		parts[i].code = fields_find( info, parts[i].internal, level );
 		found += ( parts[i].code!=-1 );
 	}
 	if ( !found ) return;
@@ -510,7 +505,7 @@ output_partelement( fields *info, FILE *outptr, int level, int *wrote_header )
 	for ( i=0; i<nparts; ++i ) {
 		if ( parts[i].code==-1 ) continue;
 		mods_output_detail( info, outptr, parts[i].code, 
-			parts[i].newtag, level );
+			parts[i].mods, level );
 	}
 }
 
@@ -566,7 +561,7 @@ output_genre( fields *info, FILE *outptr, int level )
 		if ( ismarc ) 
 			fprintf( outptr, " authority=\"marcgt\"" );
 		fprintf( outptr, ">%s</genre>\n", info->data[i].data );
-		info->used[i] = 1;
+		fields_setused( info, i );
 	}
 }
 
@@ -594,7 +589,7 @@ output_typeresource( fields *info, FILE *outptr, int level )
 			fprintf( outptr, "<typeOfResource>%s</typeOfResource>\n",
 			      info->data[resource].data );
 		}
-		info->used[resource] = 1;
+		fields_setused( info, resource );
 	}
 }
 
@@ -602,7 +597,7 @@ static void
 output_type( fields *info, FILE *outptr, int level )
 {
 	int n = fields_find( info, "TYPE", 0 );
-	if ( n!=-1 ) info->used[n] = 1;
+	if ( n!=-1 ) fields_setused( info, n );
 	output_typeresource( info, outptr, level );
 	output_genre( info, outptr, level );
 }
@@ -628,7 +623,7 @@ output_timescited( fields *info, FILE *outptr, int level )
 		output_tab0( outptr, level );
 		fprintf( outptr, "<note>Times Cited: %s</note>\n",
 				info->data[n].data );
-		info->used[n] = 1;
+		fields_setused( info, n );
 	}
 }
 
@@ -640,7 +635,7 @@ output_indexkey( fields *info, FILE *outptr, int level )
 		output_tab0( outptr, level );
 		fprintf( outptr, "<note>Key: %s</note>\n",
 				info->data[n].data );
-		info->used[n] = 1;
+		fields_setused( info, n );
 	}
 }
 
@@ -679,15 +674,15 @@ output_sn( fields *info, FILE *outptr, int level )
 				mods_types[n],
 				info->data[found].data
 		       );
-		info->used[found] = 1;
+		fields_setused( info, found );
 	}
 	for ( i=0; i<info->nfields;++i ) {
 		if ( info->level[i]!=level ) continue;
 		if ( !strcasecmp( info->tag[i].data, "SERIALNUMBER" ) ) {
 			output_tab0( outptr, level );
-			fprintf( outptr, "<identifier type=\"%s\">%s</identifier\n",
+			fprintf( outptr, "<identifier type=\"%s\">%s</identifier>\n",
 				"serial number", info->data[i].data );
-			info->used[i] = 1;
+			fields_setused( info, i );
 		}
 	}
 }

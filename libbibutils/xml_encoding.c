@@ -38,22 +38,24 @@ xml_getencodingr( xml *node )
 int
 xml_getencoding( newstr *s )
 {
-	char *p = strstr( s->data, "<?xml" );
-	char *q;
-	int file_charset = CHARSET_UNKNOWN;
 	newstr descriptor;
 	xml descriptxml;
+	int file_charset = CHARSET_UNKNOWN;
+	char *p, *q;
+	p = strstr( s->data, "<?xml" );
 	if ( !p ) p = strstr( s->data, "<?XML" );
-	if ( p ) q = strstr( p, "?>" );
-	if ( p && q ) {
-		newstr_init( &descriptor );
-		newstr_segcpy( &descriptor, p, q+2 );
-		xml_init( &descriptxml );
-		xml_tree( descriptor.data, &descriptxml );
-		file_charset = xml_getencodingr( &descriptxml );
-		xml_free( &descriptxml );
-		newstr_free( &descriptor );
-		newstr_segdel( s, p, q+2 );
+	if ( p ) {
+		q = strstr( p, "?>" );
+		if ( q ) {
+			newstr_init( &descriptor );
+			newstr_segcpy( &descriptor, p, q+2 );
+			xml_init( &descriptxml );
+			xml_tree( descriptor.data, &descriptxml );
+			file_charset = xml_getencodingr( &descriptxml );
+			xml_free( &descriptxml );
+			newstr_free( &descriptor );
+			newstr_segdel( s, p, q+2 );
+		}
 	}
 	return file_charset;
 }

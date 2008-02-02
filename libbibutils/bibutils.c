@@ -27,6 +27,7 @@
 #include "modsout.h"
 #include "wordout.h"
 #include "newstr_conv.h"
+#include "is_ws.h"
 
 typedef struct convert_rules {
 	int  (*readf)(FILE*,char*,int,int*,newstr*,newstr*,int*);
@@ -59,11 +60,7 @@ bibl_initparams( param *p, int readmode, int writemode )
 	p->singlerefperfile = 0;
 	p->output_raw       = 0;	/* keep MODS tags for output filter */
 
-	if ( readmode == BIBL_MEDLINEIN ) {
-		/* default medline to UTF8 Unicode */
-		p->charsetin = BIBL_CHARSET_UNICODE;
-		p->utf8in = 1;
-	} else if ( readmode == BIBL_BIBTEXIN ) {
+	if ( readmode == BIBL_BIBTEXIN ) {
 		p->latexin = 1;
 	} else if ( readmode == BIBL_MODSIN ) {
 		p->xmlin = 1;
@@ -72,6 +69,9 @@ bibl_initparams( param *p, int readmode, int writemode )
 				BIBL_RAW_WITHCHARCONVERT;
 		p->charsetin = BIBL_CHARSET_UNICODE;
 	} else if ( readmode == BIBL_MEDLINEIN ) {
+		/* default medline to UTF8 Unicode */
+		p->charsetin = BIBL_CHARSET_UNICODE;
+		p->utf8in = 1;
 		p->xmlin = 1;
 		p->output_raw = BIBL_RAW_WITHMAKEREFID |
 				BIBL_RAW_WITHCHARCONVERT;
@@ -303,6 +303,118 @@ bibl_checkrefid( bibl *b, param *p )
 	}
 }
 
+static int
+generate_citekey( fields *info, int nref )
+{
+	newstr citekey;
+	int n1, n2;
+	char *p, buf[100];
+	newstr_init( &citekey );
+	n1 = fields_find( info, "AUTHOR", 0 );
+	if ( n1==-1 ) n1 = fields_find( info, "AUTHOR", -1 );
+	n2 = fields_find( info, "YEAR", 0 );
+	if ( n2==-1 ) n2 = fields_find( info, "YEAR", -1 );
+	if ( n2==-1 ) n2 = fields_find( info, "PARTYEAR", 0 );
+	if ( n2==-1 ) n2 = fields_find( info, "PARTYEAR", -1 );
+	if ( n1!=-1 && n2!=-1 ) {
+		p = info->data[n1].data;
+		while ( p && *p && *p!='|' ) {
+			if ( !is_ws( *p ) ) newstr_addchar( &citekey, *p ); 
+			p++;
+		}
+		p = info->data[n2].data;
+		while ( p && *p ) {
+			if ( !is_ws( *p ) ) newstr_addchar( &citekey, *p );
+			p++;
+		}
+		fields_add( info, "REFNUM", citekey.data, 0 );
+	} else {
+		sprintf( buf, "ref%d\n", nref );
+		newstr_strcpy( &citekey, buf );
+	}
+	newstr_free( &citekey );
+	return fields_find( info, "REFNUM", -1 );
+}
+
+static void
+resolve_citekeys( bibl *b, lists *citekeys, int *dup )
+{
+	char abc[]="abcdefghijklmnopqrstuvwxyz";
+	newstr tmp;
+	int nsame, ntmp, n, i, j;
+
+	newstr_init( &tmp );
+
+	for ( i=0; i<citekeys->n; ++i ) {
+		if ( dup[i]==-1 ) continue;
+		nsame = 0;
+		for ( j=i; j<citekeys->n; ++j ) {
+			if ( dup[j]!=i ) continue;
+			newstr_strcpy( &tmp, citekeys->str[j].data );
+			ntmp = nsame;
+			while ( ntmp >= 26 ) {
+				newstr_addchar( &tmp, 'a' );
+					ntmp -= 26;
+			}
+			if ( ntmp<26 && ntmp>=0 )
+			newstr_addchar( &tmp, abc[ntmp] );
+			nsame++;
+			dup[j] = -1;
+			n = fields_find( b->ref[j], "REFNUM", -1 );
+			if ( n!=-1 )
+				newstr_strcpy( &((b->ref[j])->data[n]), tmp.data);
+		}
+	}
+	newstr_free( &tmp );
+}
+
+static void
+get_citekeys( bibl *b, lists *citekeys )
+{
+	fields *info;
+	int i, n;
+	for ( i=0; i<b->nrefs; ++i ) {
+		info = b->ref[i];
+		n = fields_find( info, "REFNUM", -1 );
+		if ( n==-1 ) n = generate_citekey( info, i );
+		if ( n!=-1 ) lists_add( citekeys, info->data[n].data );
+		else lists_add( citekeys, "" );
+	}
+}
+
+static int 
+dup_citekeys( bibl *b, lists *citekeys )
+{
+	int i, j, *dup, ndup=0;
+	dup = ( int * ) malloc( sizeof( int ) * citekeys->n );
+	if ( !dup ) return 0;
+	for ( i=0; i<citekeys->n; ++i ) dup[i] = -1;
+	for ( i=0; i<citekeys->n-1; ++i ) {
+		if ( dup[i]!=-1 ) continue;
+		for ( j=i+1; j<citekeys->n; ++j ) {
+			if ( !strcmp( citekeys->str[i].data, 
+				citekeys->str[j].data ) ) {
+					dup[i] = i;
+					dup[j] = i;
+					ndup++;
+			}
+		}
+	}
+	if ( ndup ) resolve_citekeys( b, citekeys, dup );
+	free( dup );
+	return ndup;
+}
+
+static void
+uniqueify_citekeys( bibl *b )
+{
+	lists citekeys;
+	lists_init( &citekeys );
+	get_citekeys( b, &citekeys );
+	dup_citekeys( b, &citekeys );
+	lists_free( &citekeys );
+}
+
 static int 
 convert_ref( bibl *bin, char *fname, bibl *bout, convert_rules *r, param *p )
 {
@@ -319,10 +431,12 @@ convert_ref( bibl *bin, char *fname, bibl *bout, convert_rules *r, param *p )
 		else reftype = 0;
 		r->convertf( rin, rout, reftype, p->verbose, r->all, r->nall );
 		if ( r->all ) process_alwaysadd( rout, reftype, r );
-		if ( p->verbose>1 ) 
+/*		if ( p->verbose>1 ) */
+		if ( p->verbose ) 
 			bibl_verbose1( rout, rin, fname, i+1 );
 		bibl_addref( bout, rout );
 	}
+	uniqueify_citekeys( bout );
 	return BIBL_OK;
 }
 
@@ -431,6 +545,9 @@ rules_init( convert_rules *r, int mode )
 			r->headerf = wordout_writeheader;
 			r->footerf = wordout_writefooter;
 			r->writef  = wordout_write;
+			break;
+		default:
+			break;
 	}
 }
 

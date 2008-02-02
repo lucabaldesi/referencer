@@ -169,6 +169,7 @@ addtype( fields *info, char *data, int level )
 		{ "BILL", "BILL" },
 		{ "CASE", "CASE" },
 		{ "JOURNAL ARTICLE", "ARTICLE" }, 
+		{ "MAGAZINE ARTICLE", "ARTICLE" }, 
 		{ "BOOK SECTION", "INBOOK" },
 		{ "EDITED BOOK", "BOOK" },
        		{ "NEWSPAPER ARTICLE",  "NEWSARTICLE" },
@@ -178,7 +179,8 @@ addtype( fields *info, char *data, int level )
 		{ "FILM OR BROADCAST", "AUDIOVISUAL" },
 		{ "MAP", "MAP" },
 		{ "HEARING", "HEARING" },
-		{ "STATUTE", "STATUTE" }
+		{ "STATUTE", "STATUTE" },
+		{ "CHART OR TABLE", "CHART" },
 	};
 	int  ntypes = sizeof( types ) / sizeof( lookups );
 	int  i, found=0;
@@ -289,13 +291,15 @@ endin_convertf( fields *endin, fields *info, int reftype, int verbose, variants 
 	int  i, level, n, process;
 	char *newtag, *t;
 	for ( i=0; i<endin->nfields; ++i ) {
-		t = endin->tag[i].data;
+		/* Ensure that data exists */
 		d = &( endin->data[i] );
+		if ( !(d->data) || d->len==0 ) continue;
 		/*
 		 * All refer format tags start with '%'.  If we have one
 		 * that doesn't, assume that it comes from endx2xml
 		 * and just copy and paste to output
 		 */
+		t = endin->tag[i].data;
 		if ( t[0]!='%' ) {
 			fields_add( info, t, d->data, endin->level[i] );
 			continue;

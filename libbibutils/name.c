@@ -293,16 +293,20 @@ name_add( fields *info, char *tag, char *q, int level )
 		while ( is_ws( *q ) ) q++;
 		start = q;
 
-		/* strip tailing whitespace */
+		/* strip tailing whitespace and commas */
 		while ( *q && *q!='|' ) q++;
 		end = q;
-		while ( is_ws( *end ) || *end=='|' || *end=='\0' ) end--;
+		while ( is_ws( *end ) || *end==',' || *end=='|' || *end=='\0' )
+			end--;
 
 		for ( p=start; p<=end; p++ )
 			newstr_addchar( &inname, *p );
 
-		name_process( info, tag, level, &inname );
-		newstr_empty( &inname );
+		/* keep "names" like " , " from coredumping program */
+		if ( inname.len ) {
+			name_process( info, tag, level, &inname );
+			newstr_empty( &inname );
+		}
 
 		if ( *q=='|' ) q++;
 	}

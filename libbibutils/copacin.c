@@ -58,17 +58,21 @@ copacin_readf( FILE *fp, char *buf, int bufsize, int *bufpos, newstr *line, news
 		if ( inref && line->len==0 ) haveref=1; 
 		p = &(line->data[0]);
 		if ( copacin_istag( p ) ) {
-			if ( inref) newstr_addchar( reference, '\n' );
+			if ( inref ) newstr_addchar( reference, '\n' );
 			newstr_strcat( reference, p );
 			newstr_empty( line );
 			inref = 1;
-		} else if ( inref && p ) {
-			/* copac puts tag only on 1st line */
-			newstr_addchar( reference, ' ' );
-			if ( *p ) p++;
-			if ( *p ) p++;
-			if ( *p ) p++;
-		   	newstr_strcat( reference, p );
+		} else if ( inref ) {
+			if ( p ) {
+				/* copac puts tag only on 1st line */
+				newstr_addchar( reference, ' ' );
+				if ( *p ) p++;
+				if ( *p ) p++;
+				if ( *p ) p++;
+			   	newstr_strcat( reference, p );
+			}
+			newstr_empty( line );
+		} else {
 			newstr_empty( line );
 		}
 	}

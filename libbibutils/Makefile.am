@@ -25,6 +25,8 @@ CONTAIN_SOURCES =	\
 	fields.h	\
 	lists.c		\
 	lists.h		\
+	modstypes.c     \
+	modstypes.h     \
 	xml.c		\
 	xml.h		\
 	xml_encoding.c	\

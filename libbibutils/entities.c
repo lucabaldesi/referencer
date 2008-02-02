@@ -21,6 +21,7 @@ entities html_entities[] = {
 	/* Special Entities */
 	{ "&quot;",     34 },  /* quotation mark */
 	{ "&amp;",      38 },  /* ampersand */
+	{ "&apos;",     39 },  /* apostrophe */
 	{ "&lpar;",     40 },  /* left parenthesis */
 	{ "&rpar;",     41 },  /* right parenthesis */
 	{ "&hyphen;",   45 },  /* hyphen */

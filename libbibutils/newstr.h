@@ -10,6 +10,8 @@
 #ifndef NEWSTR_H
 #define NEWSTR_H
 
+#include <stdio.h>
+
 typedef struct newstr {
 	char *data;
 	unsigned long dim;
@@ -24,6 +26,7 @@ void newstr_strcat      ( newstr *string, char *addstr );
 void newstr_segcat      ( newstr *string, char *startat, char *endat );
 void newstr_prepend     ( newstr *string, char *addstr );
 void newstr_strcpy      ( newstr *string, char *addstr );
+void newstr_newstrcpy   ( newstr *s, newstr *old );
 void newstr_segcpy      ( newstr *string, char *startat, char *endat );
 void newstr_segdel      ( newstr *string, char *startat, char *endat );
 void newstr_fprintf     ( FILE *fp, newstr *string );

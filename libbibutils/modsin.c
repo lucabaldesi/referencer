@@ -16,11 +16,14 @@
 #include "fields.h"
 #include "name.h"
 #include "reftypes.h"
+#include "modstypes.h"
 
+#ifdef NOCOMPILE
 typedef struct convert {
 	char *o; /* old */
 	char *n; /* new */
 } convert;
+#endif
 
 static void
 modsin_detailr( xml *node, newstr *value )
@@ -42,7 +45,7 @@ modsin_detail( xml *node, fields *info, int level )
 		newstr_init( &value );
 		tp = xml_getattrib( node, "type" );
 		if ( tp ) {
-			newstr_strcpy( &type, tp->data );
+			newstr_newstrcpy( &type, tp );
 			newstr_toupper( &type );
 		}
 		modsin_detailr( node->down, &value );
@@ -90,33 +93,39 @@ modsin_date( xml *node, fields *info, int level, int part )
 }
 
 static void
-modsin_pager( xml *node, newstr *sp, newstr *ep )
+modsin_pager( xml *node, newstr *sp, newstr *ep, newstr *tp )
 {
 	if ( xml_tagexact( node, "start" ) ) {
-		newstr_strcpy( sp, node->value->data );
+		newstr_newstrcpy( sp, node->value );
 	} else if ( xml_tagexact( node, "end" ) ) {
-		newstr_strcpy( ep, node->value->data );
+		newstr_newstrcpy( ep, node->value );
+	} else if ( xml_tagexact( node, "total" ) ) {
+		newstr_newstrcpy( tp, node->value );
 	}
-	if ( node->down ) modsin_pager( node->down, sp, ep );
-	if ( node->next ) modsin_pager( node->next, sp, ep );
+	if ( node->down ) modsin_pager( node->down, sp, ep, tp );
+	if ( node->next ) modsin_pager( node->next, sp, ep, tp );
 }
 
 static void
 modsin_page( xml *node, fields *info, int level )
 {
-	newstr sp, ep;
+	newstr sp, ep, tp;
 	if ( node->down ) {
 		newstr_init( &sp );
 		newstr_init( &ep );
-		modsin_pager( node->down, &sp, &ep );
+		newstr_init( &tp );
+		modsin_pager( node->down, &sp, &ep, &tp );
 		if ( sp.len || ep.len ) {
 			if ( sp.len )
 				fields_add( info, "PAGESTART", sp.data, level );
 			if ( ep.len )
 				fields_add( info, "PAGEEND", ep.data, level );
 		}
+		if ( tp.len )
+			fields_add( info, "TOTALPAGES", tp.data, level );
 		newstr_free( &sp );
 		newstr_free( &ep );
+		newstr_free( &tp );
 	}
 }
 
@@ -158,10 +167,68 @@ modsin_title( xml *node, fields *info, int level )
 }
 
 static void
+modsin_asisr( xml *node, newstr *name, newstr *role )
+{
+	if ( xml_tagexact( node, "namePart" ) )
+		newstr_newstrcpy( name, node->value );
+	else if ( xml_tagexact( node, "roleTerm" ) )
+		newstr_strcat( role, node->value->data );
+	if ( node->down ) modsin_asisr( node->down, name, role );
+	if ( node->next ) modsin_asisr( node->next, name, role );
+}
+
+static void
+modsin_asis( xml *node, fields *info, int level )
+{
+	convert roles_convert[] = {
+		{ "author",              "AUTHOR:ASIS" },
+		{ "creator",             "AUTHOR:ASIS" },
+		{ "editor",              "EDITOR:ASIS" },
+		{ "degree grantor",      "DEGREEGRANTOR:ASIS" },
+		{ "organizer of meeting","ORGANIZER:ASIS" },
+		{ "patent holder",       "ASSIGNEE:ASIS" }
+	};
+	newstr name, role;
+	int i, found;
+	int nroles = sizeof( roles_convert ) / sizeof( roles_convert[0] );
+	xml *dnode = node->down;
+	if ( dnode ) {
+		newstr_init( &name );
+		newstr_init( &role );
+		modsin_asisr( dnode, &name, &role );
+		if ( role.len ) {
+			found = -1;
+			for ( i=0; i<nroles; ++i ) {
+				if ( !strcasecmp( role.data, roles_convert[i].mods ) )
+					found = i;
+			}
+			if ( found!=-1 ) {
+				fields_add( info, roles_convert[found].internal, name.data, level );
+			} else {
+				fields_add( info, role.data, name.data, level );
+			}
+		}
+		else fields_add( info, "AUTHOR:ASIS", name.data, level );
+/*
+		if ( !role.len || !strcasecmp( role.data, "author" ) ||
+				!strcasecmp( role.data, "creator" ) )
+			fields_add( info, "AUTHOR:CORP", name.data, level );
+		else if ( !strcasecmp( role.data, "editor" ) )
+			fields_add( info, "EDITOR:CORP", name.data, level );
+		else if ( !strcasecmp( role.data, "degree grantor" ) )
+			fields_add( info, "DEGREEGRANTOR", name.data, level );
+		else fields_add( info, role.data, name.data, level );
+*/
+		newstr_free( &name );
+		newstr_free( &role );
+	}
+}
+
+static void
 modsin_corpr( xml *node, newstr *name, newstr *role )
 {
 	if ( xml_tagexact( node, "namePart" ) )
-		newstr_strcpy( name, node->value->data );
+		newstr_newstrcpy( name, node->value );
 	else if ( xml_tagexact( node, "roleTerm" ) )
 		newstr_strcat( role, node->value->data );
 	if ( node->down ) modsin_corpr( node->down, name, role );
@@ -172,12 +239,12 @@ static void
 modsin_corp( xml *node, fields *info, int level )
 {
 	convert roles_convert[] = {
-		{ "author",              "CORPAUTHOR" },
-		{ "creator",             "CORPAUTHOR" },
-		{ "editor",              "CORPEDITOR" },
-		{ "degree grantor",      "DEGREEGRANTOR" },
-		{ "organizer of meeting","ORGANIZER" },
-		{ "patent holder",       "ASSIGNEE"  }
+		{ "author",              "AUTHOR:CORP" },
+		{ "creator",             "AUTHOR:CORP" },
+		{ "editor",              "EDITOR:CORP" },
+		{ "degree grantor",      "DEGREEGRANTOR:CORP" },
+		{ "organizer of meeting","ORGANIZER:CORP" },
+		{ "patent holder",       "ASSIGNEE:CORP" }
 	};
 	newstr name, role;
 	int i, found;
@@ -190,22 +257,22 @@ modsin_corp( xml *node, fields *info, int level )
 		if ( role.len ) {
 			found = -1;
 			for ( i=0; i<nroles; ++i ) {
-				if ( !strcasecmp( role.data, roles_convert[i].o ) )
+				if ( !strcasecmp( role.data, roles_convert[i].mods ) )
 					found = i;
 			}
 			if ( found!=-1 ) {
-				fields_add( info, roles_convert[found].n, name.data, level );
+				fields_add( info, roles_convert[found].internal, name.data, level );
 			} else {
 				fields_add( info, role.data, name.data, level );
 			}
 		}
-		else fields_add( info, "CORPAUTHOR", name.data, level );
+		else fields_add( info, "AUTHOR:CORP", name.data, level );
 /*
 		if ( !role.len || !strcasecmp( role.data, "author" ) ||
 				!strcasecmp( role.data, "creator" ) )
-			fields_add( info, "CORPAUTHOR", name.data, level );
+			fields_add( info, "AUTHOR:CORP", name.data, level );
 		else if ( !strcasecmp( role.data, "editor" ) )
-			fields_add( info, "CORPEDITOR", name.data, level );
+			fields_add( info, "EDITOR:CORP", name.data, level );
 		else if ( !strcasecmp( role.data, "degree grantor" ) )
 			fields_add( info, "DEGREEGRANTOR", name.data, level );
 		else fields_add( info, role.data, name.data, level );
@@ -289,7 +356,7 @@ modsin_placer( xml *node, fields *info, int level, int school )
 			newstr_init( &s );
 			newtag = addresscode_tag;
 			type = xml_getattrib( node, "authority" );
-			if ( type && type->len ) newstr_strcpy(&s, type->data);
+			if ( type && type->len ) newstr_newstrcpy(&s, type);
 			newstr_addchar( &s, '|' );
 			newstr_strcat( &s, node->value->data );
 			fields_add( info, newtag, s.data, level );
@@ -414,7 +481,11 @@ modsin_genre( xml *node, fields *info, int level )
 		"web site"
 	};
 	char *added[] = { "manuscript", "academic journal", "magazine",
-		"hearing", "report"
+		"hearing", "report", "Ph.D. thesis", "Masters thesis",
+		"Diploma thesis", "Doctoral thesis", "Habilitation thesis",
+		"collection", "handwritten note", "communication",
+		"teletype", "airtel", "memo", "e-mail communication",
+		"press release", "television broadcast", "electronic"
 	};
 	int nmarc = sizeof( marc ) / sizeof( char* );
 	int nadded = sizeof( added ) /sizeof( char *);
@@ -471,41 +542,33 @@ modsin_abstract( xml *node, fields *info, int level )
 }
 
 static void
-modsin_locationr( xml *node, newstr *phys, newstr *school, newstr *url )
+modsin_locationr( xml *node, fields *info, int level )
 {
-	if ( xml_tagexact( node, "url" ) ) 
-		newstr_strcpy( url, node->value->data );
-	if ( xml_tag_attrib( node, "physicalLocation", "type", "school" ) )
-		newstr_strcpy( school, node->value->data );
-	else if ( xml_tagexact( node, "physicalLocation" ) )
-		newstr_strcpy( phys, node->value->data );
-	if ( node->down ) modsin_locationr( node->down, phys, school, url );
-	if ( node->next ) modsin_locationr( node->next, phys, school, url );
+	char url[]="URL", school[]="SCHOOL", loc[]="LOCATION", *tag=NULL;
+	if ( xml_tagexact( node, "url" ) ) {
+		tag = url;
+	}
+	if ( xml_tag_attrib( node, "physicalLocation", "type", "school" ) ) {
+		tag = school;
+	} else if ( xml_tagexact( node, "physicalLocation" ) ) {
+		tag = loc;
+	}
+	if ( tag ) fields_add( info, tag, node->value->data, level );
+	if ( node->down ) modsin_locationr( node->down, info, level );
+	if ( node->next ) modsin_locationr( node->next, info, level );
 }
 
 static void
 modsin_location( xml *node, fields *info, int level )
 {
-	newstr url, phys, school;
-	if ( node->down ) {
-		newstr_init( &url );
-		newstr_init( &phys );
-		newstr_init( &school );
-		modsin_locationr( node->down, &phys, &school, &url );
-		if ( phys.len ) fields_add( info, "LOCATION", phys.data,level);
-		if ( school.len ) fields_add( info, "SCHOOL", phys.data,level);
-		if ( url.len ) fields_add( info, "URL", url.data, level );
-		newstr_free( &url );
-		newstr_free( &phys );
-		newstr_free( &school );
-	}
+	if ( node->down ) modsin_locationr( node->down, info, level );
 }
 
 static void
 modsin_descriptionr( xml *node, newstr *s )
 {
 	if ( xml_tagexact( node, "extent" ) ) 
-		newstr_strcpy( s, node->value->data );
+		newstr_newstrcpy( s, node->value );
 	if ( node->down ) modsin_descriptionr( node->down, s );
 	if ( node->next ) modsin_descriptionr( node->next, s );
 }
@@ -518,7 +581,7 @@ modsin_description( xml *node, fields *info, int level )
 	if ( node->down ) modsin_descriptionr( node->down, &s );
 	else {
 		if ( node->value && node->value->data );
-		newstr_strcpy( &s, node->value->data );
+		newstr_newstrcpy( &s, node->value );
 	}
 	if ( s.len ) fields_add( info, "DESCRIPTION", s.data, level );
 	newstr_free( &s );
@@ -554,6 +617,7 @@ modsin_classification( xml *node, fields *info, int level )
 		} else
 		 fields_add( info, "CLASSIFICATION", node->value->data, level );
 	}
+	if ( node->down ) modsin_classification( node->down, info, level );
 }
 
 static void
@@ -569,13 +633,15 @@ modsin_identifier( xml *node, fields *info, int level )
 		{ "pubmed",  "PUBMED" },
 		{ "medline", "MEDLINE" },
 		{ "pii",     "PII" },
-		{ "isi",     "ISIREFNUM" }
+		{ "isi",     "ISIREFNUM" },
+		{ "serial number", "SERIALNUMBER" },
+		{ "accessnum", "ACCESSNUM" }
 	};
 	int i , n = sizeof( ids ) / sizeof( ids[0] );
 	if ( !node->value || !node->value->data ) return;
 	for ( i=0; i<n; ++i ) {
-		if ( xml_tag_attrib( node, "identifier", "type", ids[i].o ) )
-			fields_add( info, ids[i].n, node->value->data, level );
+		if ( xml_tag_attrib( node, "identifier", "type", ids[i].mods ) )
+			fields_add( info, ids[i].internal, node->value->data, level );
 	}
 }
 
@@ -589,7 +655,7 @@ modsin_mods( xml *node, fields *info, int level )
 	else if ( xml_tag_attrib( node, "name", "type", "corporate" ) )
 		modsin_corp( node, info, level );
 	else if ( xml_tagexact( node, "name" ) )
-		modsin_corp( node, info, level );
+		modsin_asis( node, info, level );
 	else if  ( xml_tagexact( node, "part" ) )
 		modsin_part( node, info, level );
 	else if ( xml_tagexact( node, "identifier" ) )
@@ -688,7 +754,7 @@ modsin_readf( FILE *fp, char *buf, int bufsize, int *bufpos, newstr *line,
 	newstr_init( &tmp );
 
 	do {
-		newstr_strcat( &tmp, line->data );
+		if ( line->data ) newstr_strcat( &tmp, line->data );
 		if ( tmp.data ) {
 			m = xml_getencoding( &tmp );
 			if ( m!=CHARSET_UNKNOWN ) file_charset = m;

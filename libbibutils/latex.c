@@ -23,12 +23,12 @@ static struct latex_chars latex_chars[] = {
    {  36, "\\$",     "",   ""        }, /* Dollar Sign */
    {  37, "\\%",     "",   ""        }, /* Percent Sign */
    {  38, "\\&",     "",   ""        }, /* Ampersand */
-   {  92, "\\backslash", "", ""   }, /* Backslash */
+   {  92, "{\\backslash}", "\\backslash", ""   }, /* Backslash */
    { 123, "\\{", "{\\textbraceleft}", "\\textbraceleft" }, /* Left Curly Bracket */
    { 125, "\\}", "{\\textbraceright}", "\\textbraceright" }, /* Right Curly Bracket */
    {  95, "\\_",     "", ""        }, /* Underscore alone indicates subscript */
    { 176, "{\\textdegree}", "\\textdegree", "^\\circ" }, /* Degree sign */
-   {  32, "~",       "", ""        }, /* Tilde is a sticky space */
+   {  32, "~",       "\\ ", ""        }, /* Tilde is a sticky space */
    { 126, "{\\textasciitilde}", "\\textasciitilde", "\\~{}" }, /* How to get a tilde in latex */
                                  /* This is a cheat, should use "\verb" */
                                  /* Need same for ^ character */
@@ -232,83 +232,83 @@ static struct latex_chars latex_chars[] = {
    { 168,  "{\\textasciidieresis}", "\\textasciidieresis", "" }, /* dieresis &#xA8; */
    { 175,  "{\\textasciimacron}", "\\textasciimacron", "" }, /* macron &#xAF; */
 
-   { 8593, "\\textuparrow", "", "" },    /* Up arrow &#x2191; */
-   { 8595, "\\textdownarrow", "", "" },  /* Down arrow &#x2193; */
-   { 8594, "\\textrightarrow", "", "" }, /* Right arrow &#x2192; */
-   { 8592, "\\textleftarrow", "", "" },  /* Left arrow &#x2190; */
-   { 12296, "\\textlangle", "", "" } ,   /* L-angle &#x3008; */
-   { 12297, "\\textrangle", "", "" } ,   /* L-angle &#x3009; */
+   { 8593, "{\\textuparrow}", "\\textuparrow", "" },    /* Up arrow &#x2191; */
+   { 8595, "{\\textdownarrow}", "\\textdownarrow", "" },  /* Down arrow &#x2193; */
+   { 8594, "{\\textrightarrow}", "\\textrightarrow", "" }, /* Right arrow &#x2192; */
+   { 8592, "{\\textleftarrow}", "\\textleftarrow", "" },  /* Left arrow &#x2190; */
+   { 12296, "{\\textlangle}", "\\textlangle", "" } ,   /* L-angle &#x3008; */
+   { 12297, "{\\textrangle}", "\\textrangle", "" } ,   /* L-angle &#x3009; */
 
-   { 166, "\\textbrokenbar", "", "" }, /* Broken vertical bar &#xA6; */
-   { 167, "\\textsection", "", "" },   /* Section sign, &#xA7; */
-   { 170, "\\textordfeminine", "", "" }, /* &#xAA; */
-   { 172, "\\textlnot", "", "" },      /* Lnot &#xAC; */
-   { 182, "\\textparagraph", "", "" }, /* Paragraph sign &#xB6; */
-   { 183, "\\textperiodcentered", "", "" }, /* Period-centered &#xB7; */
-   { 186, "\\textordmasculine", "", "" }, /* &#xBA; */
-   { 8214, "\\textbardbl", "", "" },   /* Double vertical bar &#x2016; */
-   { 8224, "\\textdagger", "", "" },   /* Dagger &#x2020; */
-   { 8225, "\\textdaggerdbl", "", "" },/* Double dagger &x2021; */
-   { 8226, "\\textbullet", "", "" },   /* Bullet &#x2022; */
-   { 8494, "\\textestimated", "", "" },/* Estimated &#x212E; */
-   { 9526, "\\textopenbullet", "", "" },/* &#x2536; */
+   { 166, "{\\textbrokenbar}", "\\textbrokenbar", "" }, /* Broken vertical bar &#xA6; */
+   { 167, "{\\textsection}", "\\textsection", "" },   /* Section sign, &#xA7; */
+   { 170, "{\\textordfeminine}", "\\textordfeminine", "" }, /* &#xAA; */
+   { 172, "{\\textlnot}", "\\textlnot", "" },      /* Lnot &#xAC; */
+   { 182, "{\\textparagraph}", "\\textparagraph", "" }, /* Paragraph sign &#xB6; */
+   { 183, "{\\textperiodcentered}", "\\textperiodcentered", "" }, /* Period-centered &#xB7; */
+   { 186, "{\\textordmasculine}", "\\textordmasculine", "" }, /* &#xBA; */
+   { 8214, "{\\textbardbl}", "\\textbardbl", "" },   /* Double vertical bar &#x2016; */
+   { 8224, "{\\textdagger}", "\\textdagger", "" },   /* Dagger &#x2020; */
+   { 8225, "{\\textdaggerdbl}", "\\textdaggerdbl", "" },/* Double dagger &x2021; */
+   { 8226, "{\\textbullet}", "\\textbullet", "" },   /* Bullet &#x2022; */
+   { 8494, "{\\textestimated}", "\\textestimated", "" },/* Estimated &#x212E; */
+   { 9526, "{\\textopenbullet}", "\\textopenbullet", "" },/* &#x2536; */
 
-   { 8220, "``", "\\textquotedblleft", "" }, /* Opening double quote &#x201C; */
-   { 8221, "''", "\\textquotedblright","" }, /* Closing double quote &#x201D; */
-   { 8216, "`",  "\\textquoteleft", "" },    /* Opening single quote &#x2018; */
-   { 8217, "'",  "\\textquoteright", "" },   /* Closing single quote &#x2019; */
-   { 8261, "\\textlquill", "", "" },         /* Left quill &#x2045; */
-   { 8262, "\\textrquill", "", "" },         /* Right quill &#x2046; */
+   { 8220, "``", "{\\textquotedblleft}", "\\textquotedblleft" }, /* Opening double quote &#x201C; */
+   { 8221, "''", "{\\textquotedblright}","\\textquotedblright" }, /* Closing double quote &#x201D; */
+   { 8216, "`",  "{\\textquoteleft}", "\\textquoteleft" },    /* Opening single quote &#x2018; */
+   { 8217, "'",  "{\\textquoteright}", "\\textquoteright" },   /* Closing single quote &#x2019; */
+   { 8261, "{\\textlquill}", "\\textlquill", "" },         /* Left quill &#x2045; */
+   { 8262, "{\\textrquill}", "\\textrquill", "" },         /* Right quill &#x2046; */
 
-   { 8211, "--",      "\\textendash", "" },     /* En-dash &#x2013; */
-   { 8212, "---",     "\\textemdash", "" },     /* Em-dash &#x2014; */
-   { 8230, "\\ldots", "\\textellipsis", "" },   /* Ellipsis &#x2026; */
+   { 8211, "--",      "{\\textendash}", "\\textendash" },     /* En-dash &#x2013; */
+   { 8212, "---",     "{\\textemdash}", "\\textemdash" },     /* Em-dash &#x2014; */
+   { 8230, "\\ldots", "{\\textellipsis}", "\\textellipsis" },   /* Ellipsis &#x2026; */
 
    { 8194, "\\enspace", "\\hspace{.5em}", "" }, /* En-space &#x2002; */
    { 8195, "\\emspace", "\\hspace{1em}",  "" }, /* Em-space &#x2003; */
    { 8201, "\\thinspace", "", ""},              /* Thin space &#x2009; */
-   { 8203, "\\textnospace", "", "" },           /* No space &#x200B; */
-   { 9251, "\\textvisiblespace", "", "" },      /* Visible space &#x2423; */
+   { 8203, "{\\textnospace}", "\\textnospace", "" },           /* No space &#x200B; */
+   { 9251, "{\\textvisiblespace}", "\\textvisiblespace", "" },      /* Visible space &#x2423; */
 
-   { 215, "\\texttimes", "", "" }, /* Multiplication symbol &#xD7; */
-   { 247, "\\textdiv", "", "" },   /* Division symbol &#xF7; */
-   { 177, "\\textpm", "", "" }, /* Plus-minus character &#B1; */
-   { 189, "\\textonehalf", "", "" }, /* Vulgar fraction one half &#xBD; */
-   { 188, "\\textonequarter", "", "" }, /* Vulgar fraction one quarter &#xBD; */
-   { 190, "\\textthreequarters", "", "" }, /* Vulgar fraction three quarters &#xBE; */
-   { 8240, "\\texttenthousand", "", "" }, /* Per thousand sign &#x2030; */
-   { 8241, "\\textpertenthousand", "", "" }, /* Per ten thousand sign &#x2031;*/
-   { 8260, "\\textfractionsolidus", "", "" }, /* &x8260; */
-   { 8451, "\\textcelcius", "", "" }, /* Celcicus &#x2103; */
-   { 8470, "\\textnumero", "", "" },  /* Numero symbol &#x2116; */
-   { 8486, "\\textohm", "", "" }, /* Ohm symbol &#x2126; */
-   { 8487, "\\textmho", "", "" }, /* Mho symbol &#x2127; */
-   { 8730, "\\textsurd", "", "" }, /* &#x221A; */
+   { 215, "{\\texttimes}", "\\texttimes", "" }, /* Multiplication symbol &#xD7; */
+   { 247, "{\\textdiv}", "\\textdiv", "" },   /* Division symbol &#xF7; */
+   { 177, "{\\textpm}", "\\textpm", "" }, /* Plus-minus character &#B1; */
+   { 189, "{\\textonehalf}", "\\textonehalf", "" }, /* Vulgar fraction one half &#xBD; */
+   { 188, "{\\textonequarter}", "\\textonequarter", "" }, /* Vulgar fraction one quarter &#xBD; */
+   { 190, "{\\textthreequarters}", "\\textthreequarters", "" }, /* Vulgar fraction three quarters &#xBE; */
+   { 8240, "{\\texttenthousand}", "\\texttenthousand", "" }, /* Per thousand sign &#x2030; */
+   { 8241, "{\\textpertenthousand}", "\\textpertenthousand", "" }, /* Per ten thousand sign &#x2031;*/
+   { 8260, "{\\textfractionsolidus}", "\\textfractionsolidus", "" }, /* &x8260; */
+   { 8451, "{\\textcelcius}", "\\textcelcius", "" }, /* Celcicus &#x2103; */
+   { 8470, "{\\textnumero}", "\\textnumero", "" },  /* Numero symbol &#x2116; */
+   { 8486, "{\\textohm}", "\\textohm", "" }, /* Ohm symbol &#x2126; */
+   { 8487, "{\\textmho}", "\\textmho", "" }, /* Mho symbol &#x2127; */
+   { 8730, "{\\textsurd}", "\\textsurd", "" }, /* &#x221A; */
 
-   { 185, "\\textonesuperior", "", "" },   /*Superscript 1 &#xB9; */
-   { 178, "\\texttwosuperior", "", "" },   /*Superscript 2 &#xB2; */
-   { 179, "\\textthreesuperior", "", "" }, /*Superscript 3 &#xB3; */
+   { 185, "{\\textonesuperior}", "\\textonesuperior", "" },   /*Superscript 1 &#xB9; */
+   { 178, "{\\texttwosuperior}", "\\texttwosuperior", "" },   /*Superscript 2 &#xB2; */
+   { 179, "{\\textthreesuperior}", "\\textthreesuperior", "" }, /*Superscript 3 &#xB3; */
 
-   { 161, "\\textexclamdown", "", "" },   /* Inverted exclamation mark &#xA1;*/
-   { 191, "\\textquestiondown", "", "" }, /* Inverted question mark &#xBF; */
+   { 161, "{\\textexclamdown}", "\\textexclamdown", "" },   /* Inverted exclamation mark &#xA1;*/
+   { 191, "{\\textquestiondown}", "\\textquestiondown", "" }, /* Inverted question mark &#xBF; */
 
-   { 162, "\\textcent", "", "" },         /* Cent sign &#xA2; */
-   { 163, "\\textsterling", "\\pounds", "" },     /* Pound sign &#xA3; */
-   { 165, "\\textyen", "", "" },          /* Yen sign &#xA5; */
-   { 402, "\\textflorin", "", "" },       /* Florin sign &#x192; */
-   { 3647, "\\textbaht", "", "" },        /* Thai currency &#xE3F; */
-   { 8355, "\\textfrenchfranc", "", "" }, /* French franc &#x20A3; */
-   { 8356, "\\textlira", "", "" },        /* Lira &#x20A4; */
-   { 8358, "\\textnaira", "", "" },       /* Naira &#x20A6; */
-   { 8361, "\\textwon", "", "" },         /* &#x20A9; */
-   { 8363, "\\textdong", "", "" },        /* Vietnamese currency &#x20AB; */
-   { 8364, "\\texteuro", "", "" },        /* Euro sign */
+   { 162, "{\\textcent}", "\\textcent", "" },         /* Cent sign &#xA2; */
+   { 163, "{\\textsterling}", "\\textsterling", "\\pounds" },     /* Pound sign &#xA3; */
+   { 165, "{\\textyen}", "\\textyen", "" },          /* Yen sign &#xA5; */
+   { 402, "{\\textflorin}", "\\textflorin", "" },       /* Florin sign &#x192; */
+   { 3647, "{\\textbaht}", "\\textbaht", "" },        /* Thai currency &#xE3F; */
+   { 8355, "{\\textfrenchfranc}", "\\textfrenchfranc", "" }, /* French franc &#x20A3; */
+   { 8356, "{\\textlira}", "\\textlira", "" },        /* Lira &#x20A4; */
+   { 8358, "{\\textnaira}", "\\textnaria", "" },       /* Naira &#x20A6; */
+   { 8361, "{\\textwon}", "\\textwon", "" },         /* &#x20A9; */
+   { 8363, "{\\textdong}", "\\textdong", "" },        /* Vietnamese currency &#x20AB; */
+   { 8364, "{\\texteuro}", "\\texteuro", "" },        /* Euro sign */
 
-   { 169, "\\textcopyright", "", "" },           /* Copyright (C) &#xA9; */
-   { 175, "\\textregistered", "", "" },          /* Registered sign (R) &#xAF;*/
-   { 8482, "\\texttrademark", "$^{TM}$", "" },   /* Trademark (TM) &#x2122; */
-   { 8480, "\\textservicemark", "$^{SM}$", "" }, /* Servicemark (SM) &#x2120;*/
-   { 8471, "\\textcircledP", "", "" },           /* Circled P &#2117; */
+   { 169, "{\\textcopyright}", "\\textcopyright", "" },           /* Copyright (C) &#xA9; */
+   { 175, "{\\textregistered}", "\\textregistered", "" },          /* Registered sign (R) &#xAF;*/
+   { 8482, "{\\texttrademark}", "\\texttrademark", "$^{TM}$" },   /* Trademark (TM) &#x2122; */
+   { 8480, "{\\textservicemark}", "\\textservicemark", "$^{SM}$" }, /* Servicemark (SM) &#x2120;*/
+   { 8471, "{\\textcircledP}", "\\textcircledP", "" },           /* Circled P &#2117; */
 
 };
 
