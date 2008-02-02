@@ -1,4 +1,5 @@
 1.1.0
+	- Update to bibutils 3.39
 	- Detailed report in add documents dialog
 	- Thumbnails generated asynchronously for more responsive loading
 	- Support document action plugins (AN + JCS)
