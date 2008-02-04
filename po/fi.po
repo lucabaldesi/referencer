@@ -1,62 +1,41 @@
-# Portuguese translation for referencer
+# Finnish translation for referencer
 # Copyright (c) 2007 Rosetta Contributors and Canonical Ltd 2007
 # This file is distributed under the same license as the referencer package.
-# FIRST AUTHOR <EMAIL@ADDRESS>, 2007.
+# Ilkka Tuohela <hile@iki.fi> 2007.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: referencer\n"
-"Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
+"Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2008-02-03 00:06+0000\n"
-"PO-Revision-Date: 2007-09-01 23:13+0000\n"
-"Last-Translator: Ondreia <a.terrapinto@gmail.com>\n"
-"Language-Team: Portuguese <pt@li.org>\n"
+"PO-Revision-Date: 2007-09-15 23:54+0000\n"
+"Last-Translator: Ilkka Tuohela <hile@iki.fi>\n"
+"Language-Team: Finnish <gnome-fi-laatu@lists.sourceforge.net>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Launchpad-Export-Date: 2008-02-04 19:08+0000\n"
 "X-Generator: Launchpad (build Unknown)\n"
 
-#~ msgid "   "
-#~ msgstr "   "
-
-#~ msgid "Pages:"
-#~ msgstr "Páginas:"
-
-#~ msgid "Type:"
-#~ msgstr "Tipo:"
-
-#~ msgid "Year:"
-#~ msgstr "Ano:"
-
-#~ msgid "_Title:"
-#~ msgstr "_Título:"
-
-#~ msgid "_Search:"
-#~ msgstr "_Procura:"
-
-#~ msgid "Year  "
-#~ msgstr "Ano  "
-
 #: ../data/documentproperties.glade.h:1
 msgid "<b>Document</b>"
-msgstr "<b>Documento<b>"
+msgstr "<b>Asiakirja</b>"
 
 #: ../data/documentproperties.glade.h:2
 msgid "<b>E_xtra Fields</b>"
-msgstr "<b>Campos E_xtra</b>"
+msgstr "<b>Lisäkentät</b>"
 
 #: ../data/documentproperties.glade.h:3
 msgid "<b>Metadata</b>"
-msgstr "<b>Metadados</b>"
+msgstr "<b>Metatiedot</b>"
 
 #: ../data/documentproperties.glade.h:4
 msgid "Add a field"
-msgstr "Adicionar um campo"
+msgstr "Lisää kenttä"
 
 #: ../data/documentproperties.glade.h:5
 msgid "Attempt to look up metadata for this document online"
-msgstr "Tentativa de procurar online metadados para este documento"
+msgstr "Yritä hakea tämän asiakirjan metatietoja verkosta"
 
 #: ../data/documentproperties.glade.h:6
 msgid "Clear metadata"
@@ -64,15 +43,15 @@ msgstr ""
 
 #: ../data/documentproperties.glade.h:7
 msgid "Delete this field"
-msgstr "Apagar este campo"
+msgstr "Poista tämä kenttä"
 
 #: ../data/documentproperties.glade.h:8
 msgid "Document Properties"
-msgstr "Propriedades do documento"
+msgstr "Asiakirjan ominaisuudet"
 
 #: ../data/documentproperties.glade.h:9
 msgid "File:"
-msgstr "Ficheiro"
+msgstr "Tiedosto:"
 
 #: ../data/documentproperties.glade.h:10
 msgid "Fill out metadata from BibTeX on clipboard"
@@ -80,24 +59,23 @@ msgstr ""
 
 #: ../data/documentproperties.glade.h:11
 msgid "Rename this field"
-msgstr "Renomear este campo"
+msgstr "Nimeä tämä kenttä uudelleen"
 
 #: ../data/documentproperties.glade.h:12
 msgid "Select A File"
-msgstr "Seleccionar um ficheiro"
+msgstr "Valitse tiedosto"
 
 #: ../data/documentproperties.glade.h:13
 msgid "_Key:"
-msgstr ""
+msgstr "_Avain:"
 
 #: ../data/documentproperties.glade.h:14
 msgid "_Look Up"
 msgstr ""
 
 #: ../data/documentproperties.glade.h:15 ../src/RefWindow.C:317
-#, fuzzy
 msgid "_Paste BibTeX"
-msgstr "_Colar BibTeX"
+msgstr "_Liitä BibTex"
 
 #: ../data/preferences.glade.h:1
 msgid "<b>CrossRef Plugin</b>"
@@ -105,7 +83,7 @@ msgstr ""
 
 #: ../data/preferences.glade.h:2
 msgid "<b>Proxy</b>"
-msgstr "<b>Proxy</b>"
+msgstr "<b>Välipalvelin</b>"
 
 #: ../data/preferences.glade.h:3
 msgid ""
@@ -119,11 +97,13 @@ msgid ""
 "to all Gnome applications.  Auto-configuration\n"
 " URLs are not supported.</i>"
 msgstr ""
+"<i>Nämä välipalvelimen asetukset ovat yhteisiä\n"
+"kaikille Gnome-ohjelmille. Automaattisten asetusten\n"
+"URL:eja ei tueta.</i>"
 
 #: ../data/preferences.glade.h:7
-#, fuzzy
 msgid "Host:"
-msgstr "Anfitrião:"
+msgstr "Verkkonimi:"
 
 #: ../data/preferences.glade.h:8
 msgid "Move _down"
@@ -139,7 +119,7 @@ msgstr ""
 
 #: ../data/preferences.glade.h:11
 msgid "Password:"
-msgstr "Palavra-passe:"
+msgstr "Salasana:"
 
 #: ../data/preferences.glade.h:12
 msgid "Plugins"
@@ -147,11 +127,11 @@ msgstr ""
 
 #: ../data/preferences.glade.h:13
 msgid "Port:"
-msgstr "Porta:"
+msgstr "Portti"
 
 #: ../data/preferences.glade.h:14
 msgid "Preferences"
-msgstr "Definições"
+msgstr "Asetukset"
 
 #: ../data/preferences.glade.h:15
 msgid ""
@@ -161,15 +141,15 @@ msgstr ""
 
 #: ../data/preferences.glade.h:17
 msgid "Use authentication"
-msgstr "Usar autenticação"
+msgstr "Käytä tunnistatumista"
 
 #: ../data/preferences.glade.h:18
 msgid "Use web proxy"
-msgstr ""
+msgstr "Käytä välipalvelinta"
 
 #: ../data/preferences.glade.h:19
 msgid "Username:"
-msgstr "Utilizador"
+msgstr "Käyttäjätunnus:"
 
 #: ../plugins/pubmed.py:16
 msgid "PubMed DOI resolver"
@@ -203,24 +183,25 @@ msgstr ""
 
 #: ../src/ArxivPlugin.C:46
 msgid "Retrieving metadata"
-msgstr ""
+msgstr "Noudetaan metadataa"
 
 #: ../src/ArxivPlugin.C:48
 msgid "Contacting citebase.org to retrieve metadata for '%1'"
 msgstr ""
+"Otetaan yhteyttä palveluun citeabase.org \"%1\"-metadatan noutamiseksi"
 
 #: ../src/ArxivPlugin.C:55 ../src/CrossRefPlugin.C:184
 msgid "Downloading Metadata"
-msgstr "Descarregar Metadados"
+msgstr "Noudetaan metadataa"
 
 #: ../src/ArxivPlugin.C:59 ../src/CrossRefPlugin.C:159
 #: ../src/CrossRefPlugin.C:201 ../src/PluginManager.C:44
 msgid "Downloading metadata"
-msgstr "A transferir metadados"
+msgstr "Noudetaan metadataa"
 
 #: ../src/ArxivPlugin.C:90
 msgid "Parsing BibTeX"
-msgstr ""
+msgstr "Tulkitaan BibTeX-tietoja"
 
 #: ../src/ArxivPlugin.C:106
 msgid "Arxiv.org ArXiv-ID resolver"
@@ -247,11 +228,14 @@ msgstr ""
 #: ../src/CrossRefPlugin.C:161
 msgid "Contacting crossref.org to retrieve metadata for '%1'"
 msgstr ""
+"Otetaan yhteyttä palveluun crossref.org \"%1\"-metadatan noutamiseksi"
 
 #: ../src/CrossRefPlugin.C:196
 msgid ""
 "Parsing CrossRef XML.  The DOI could be invalid, or not known to crossref.org"
 msgstr ""
+"Tulkitaan CrossRef-XML-muotoa. DOI voi olla virheellinen tai ei tunnettu "
+"crossref.org -palvelussa"
 
 #: ../src/CrossRefPlugin.C:217
 msgid "Crossref.org OpenURL DOI resolver"
@@ -259,27 +243,27 @@ msgstr ""
 
 #: ../src/Document.C:37
 msgid "Unnamed"
-msgstr "Sem Nome"
+msgstr "Nimeämätön"
 
 #: ../src/Document.C:557
 msgid "Moving '%1' to '%2'"
-msgstr "A mover '%1' para '%2'"
+msgstr "Siirretään \"%s\" kohtaan \"%s\""
 
 #: ../src/DocumentList.C:177
 msgid "Opening file '%1'"
-msgstr "A abrir o ficheiro '%1'"
+msgstr "Avataan tiedostoa \"%1\""
 
 #: ../src/DocumentList.C:196
 msgid "Reading file '%1'"
-msgstr "A ler o ficheiro '%1'"
+msgstr "Luetaan tiedostoa \"%1\""
 
 #: ../src/DocumentList.C:242
 msgid "Parsing import"
-msgstr ""
+msgstr "Tulkitaan tuontia"
 
 #: ../src/DocumentList.C:255
 msgid "Extracting document %1 from bibutils structure"
-msgstr ""
+msgstr "Puretaan asiakirja %1 bibutils-rakenteesta"
 
 #: ../src/DocumentProperties.C:204
 msgid "_Type:"
@@ -287,11 +271,11 @@ msgstr ""
 
 #: ../src/DocumentProperties.C:405 ../src/RefWindow.C:2142
 msgid "Converting clipboard text to latin1"
-msgstr ""
+msgstr "Muunnetaan leikepöydän tekstiä latin1-merkistöön"
 
 #: ../src/DocumentProperties.C:432 ../src/RefWindow.C:2169
 msgid "No references found on clipboard.\n"
-msgstr ""
+msgstr "Leikepöydältä ei löytynyt viitteitä.\n"
 
 #: ../src/DocumentProperties.C:436
 msgid "Multiple references found on clipboard.\n"
@@ -299,11 +283,11 @@ msgstr ""
 
 #: ../src/DocumentTypes.C:31 ../src/DocumentView.C:1080
 msgid "Title"
-msgstr "Título"
+msgstr "Otsikko"
 
 #: ../src/DocumentTypes.C:32 ../src/DocumentView.C:1081
 msgid "Authors"
-msgstr "Autores"
+msgstr "Kirjoittajat"
 
 #: ../src/DocumentTypes.C:33
 msgid "Journal"
@@ -335,7 +319,7 @@ msgstr ""
 
 #: ../src/DocumentTypes.C:41 ../src/DocumentView.C:1079
 msgid "Key"
-msgstr ""
+msgstr "Avain"
 
 #: ../src/DocumentTypes.C:43
 msgid "Editor"
@@ -454,11 +438,11 @@ msgstr ""
 
 #: ../src/DocumentView.C:328
 msgid "Downloaded Documents"
-msgstr ""
+msgstr "Noudetaan asiakirjoja"
 
 #: ../src/DocumentView.C:353
 msgid "Getting info for file '%1'"
-msgstr "A obter informação para o ficheiro '%1'"
+msgstr "Luetaan tietoja tiedostosta \"%1\""
 
 #. Translators: this is the format for the document captions
 #: ../src/DocumentView.C:728
@@ -472,19 +456,17 @@ msgstr ""
 
 #: ../src/Library.C:80
 msgid "Parsing Library XML"
-msgstr ""
+msgstr "Tulkitaan kirjaston XML-esitystä"
 
 #: ../src/Library.C:120
 msgid "Opening %1"
-msgstr "A abrir %1"
+msgstr "Avataan %1"
 
 #: ../src/Library.C:210
-#, fuzzy
 msgid "Document location ambiguity"
-msgstr "Ambiguidade na localização do documento"
+msgstr "Asiakirjan sijainnin epäselvyys"
 
 #: ../src/Library.C:212
-#, fuzzy
 msgid ""
 "The file '%1' exists in two locations:\n"
 "\tOriginal: <b>%2</b>\n"
@@ -492,23 +474,23 @@ msgid ""
 "\n"
 "Do you want to keep the original location, or update it to the new one?"
 msgstr ""
-"O ficheiro '%1' existe em dois locais:\n"
-"\tOriginal: <b>%2</b>\n"
-"\tNovo: <b>%3</b>\n"
+"Tiedosto \"%1\" löytyi kahdesta eri paikasta:\n"
+"\tAlkuperäinen: <b>%2</b>\n"
+"\tUusi: <b>%3</b>\n"
 "\n"
-"Quer manter a localização original ou actualizar para a nova?"
+"Haluatko säilyttää alkuperäisen sijainnin vai päivittää sijainnin uuteen?"
 
 #: ../src/Library.C:228
 msgid "Apply choice to all ambiguous locations"
-msgstr "Aplicar a escolha a todas as localizações ambíguas"
+msgstr "Toteuta valinta kaikille epäselville sijainneille"
 
 #: ../src/Library.C:232
 msgid "Keep _Original"
-msgstr "Manter _Original"
+msgstr "Säilytä _alkuperäinen"
 
 #: ../src/Library.C:233
 msgid "Use _New"
-msgstr "Usar _Nova"
+msgstr "Käytä _uutta"
 
 #: ../src/LibraryParser.h:85
 #, c-format
@@ -537,7 +519,7 @@ msgstr ""
 
 #: ../src/main.C:91
 msgid "Terminating due to unhandled exception"
-msgstr ""
+msgstr "Keskeytetään käsittelemättömän poikkeuksen takia"
 
 #: ../src/Preferences.C:179
 msgid "Enabled"
@@ -561,7 +543,7 @@ msgstr ""
 
 #: ../src/PythonPlugin.C:182 ../src/Utility.C:267
 msgid "Exception"
-msgstr "Excepção"
+msgstr "Poikkeus"
 
 #: ../src/PythonPlugin.C:186
 msgid "Explanation"
@@ -569,109 +551,103 @@ msgstr ""
 
 #: ../src/RefWindow.C:188
 msgid "Tags"
-msgstr "Etiquetas"
+msgstr "Merkinnät"
 
 #: ../src/RefWindow.C:216
 msgid "This Document"
-msgstr "Este Documento"
+msgstr "Tämä asiakirja"
 
 #: ../src/RefWindow.C:286
 msgid "_Library"
-msgstr "_Livraria"
+msgstr "_Kirjasto"
 
 #: ../src/RefWindow.C:291 ../src/RefWindow.C:365
 msgid "_Open..."
-msgstr "_Abrir..."
+msgstr "_Avaa..."
 
 #: ../src/RefWindow.C:297
 msgid "Save _As..."
-msgstr ""
+msgstr "Tallenna _nimellä..."
 
 #: ../src/RefWindow.C:300
-#, fuzzy
 msgid "E_xport as BibTeX..."
-msgstr "E_xportar como BibTeX..."
+msgstr "Vie _BibTex-muodossa..."
 
 #: ../src/RefWindow.C:303
-#, fuzzy
 msgid "_Manage BibTeX File..."
-msgstr "_Gerir Ficheiro BibTeX..."
+msgstr "_Hallitse BibTeX-tiedostoa..."
 
 #: ../src/RefWindow.C:306
 msgid "_Import..."
-msgstr "_Importar..."
+msgstr "_Tuo..."
 
 #: ../src/RefWindow.C:309
 msgid "_Work Offline"
-msgstr "_Trabalhar Offline"
+msgstr "_Yhteydetön tila"
 
 #: ../src/RefWindow.C:313
 msgid "_Edit"
-msgstr "_Editar"
+msgstr "_Muokkaa"
 
 #: ../src/RefWindow.C:315
 msgid "_View"
-msgstr "_Vista"
+msgstr "_Näytä"
 
 #: ../src/RefWindow.C:318
 msgid "Import references from BibTeX on the clipboard"
-msgstr ""
+msgstr "Tuo viitteitä BibTeX-tiedoista leikepöydällä"
 
 #: ../src/RefWindow.C:321
-#, fuzzy
 msgid "_Copy LaTeX citation"
-msgstr "_Copiar citação LaTeX"
+msgstr "_Kopioi LaTeX-lainaus"
 
 #: ../src/RefWindow.C:322
 msgid "Copy currently selected keys to the clipboard as a LaTeX citation"
-msgstr ""
+msgstr "Valitse valitut avaimet leikepöydälle LaTeX-lainauksena"
 
 #: ../src/RefWindow.C:330
-#, fuzzy
 msgid "Use _List View"
-msgstr "Usar vista em _Lista"
+msgstr "_Luettelonäkymä"
 
 #: ../src/RefWindow.C:332
-#, fuzzy
 msgid "Use _Icon View"
-msgstr "Usar vista em _Ícones"
+msgstr "_Kuvakenäkymä"
 
 #: ../src/RefWindow.C:334
 msgid "_Show Tag Pane"
-msgstr ""
+msgstr "_Näytä merkintäpaneeli"
 
 #: ../src/RefWindow.C:336
 msgid "_Tags"
-msgstr "E_tiquetas"
+msgstr "_Merkinnät"
 
 #: ../src/RefWindow.C:338
 msgid "_Create Tag..."
-msgstr "_Criar Etiqueta..."
+msgstr "_Luo merkintä"
 
 #: ../src/RefWindow.C:341
-#, fuzzy
 msgid "_Delete Tag"
-msgstr "_Apagar Etiqueta"
+msgstr "_Poista merkintä"
 
 #: ../src/RefWindow.C:344
 msgid "_Rename Tag"
-msgstr "_Renomear Etiqueta"
+msgstr "Ni_meä merkintä uudestaan"
 
 #: ../src/RefWindow.C:347
 msgid "_Documents"
-msgstr "_Documentos"
+msgstr "_Asiakirjat"
 
 #: ../src/RefWindow.C:349
 msgid "_Add File..."
-msgstr "_Adicionar Ficheiro..."
+msgstr "_Lisää tiedosto..."
 
 #: ../src/RefWindow.C:352
 msgid "Add _Folder..."
-msgstr ""
+msgstr "Lisää _kansio..."
 
 #: ../src/RefWindow.C:355
 msgid "Add E_mpty Reference..."
-msgstr ""
+msgstr "Lisää _tyhjä lähdeviite..."
 
 #: ../src/RefWindow.C:358
 msgid "Add Refere_nce with ID..."
@@ -679,178 +655,169 @@ msgstr ""
 
 #: ../src/RefWindow.C:361
 msgid "_Remove"
-msgstr "_Remover"
+msgstr "_Poista"
 
 #: ../src/RefWindow.C:372
-#, fuzzy
 msgid "_Get Metadata"
-msgstr "_Obter Metadados"
+msgstr "_Nouda metatiedot"
 
 #: ../src/RefWindow.C:375
 msgid "_Delete File from drive"
-msgstr ""
+msgstr "_Poista tiedosto kiintolevyltä"
 
 #: ../src/RefWindow.C:379
 msgid "R_ename File from Key"
-msgstr ""
+msgstr "_Nimeä tiedosto avaimen mukaan uudestaan"
 
 #: ../src/RefWindow.C:382
-#, fuzzy
 msgid "_Help"
-msgstr "_Ajuda"
+msgstr "O_hje"
 
 #: ../src/RefWindow.C:384
 msgid "Introduction"
-msgstr "Introdução"
+msgstr "Esittely"
 
 #: ../src/RefWindow.C:588
 msgid "All"
-msgstr "Todas"
+msgstr "Kaikki"
 
 #: ../src/RefWindow.C:593
 msgid "Untagged"
-msgstr ""
+msgstr "Ei merkitty"
 
 #: ../src/RefWindow.C:811
 msgid "%1 documents (%2 selected)"
-msgstr "%1 documentos (%2 seleccionados)"
+msgstr "%1 asiakirjaa (%s valittu)"
 
 #: ../src/RefWindow.C:815
-#, fuzzy
 msgid "%1 documents"
-msgstr "%1 documentos"
+msgstr "%1 asiakirjaa"
 
 #: ../src/RefWindow.C:856
 msgid "Save changes to library before closing?"
-msgstr ""
+msgstr "Tallennetaanko muutokset kirjastoon ennen sulkemista?"
 
 #: ../src/RefWindow.C:862
-#, fuzzy
 msgid "Close _without Saving"
-msgstr "Fechar _sem Gravar"
+msgstr "Sulje t_allentamatta"
 
 #: ../src/RefWindow.C:895
 msgid "Type a tag"
-msgstr "Escreva uma etiqueta"
+msgstr "Syötä merkintä"
 
 #: ../src/RefWindow.C:940
 msgid "Are you sure you want to delete \"%1\"?"
-msgstr "Tem a certeza que pretende apagar \"%1\"?"
+msgstr "Haluatko varmasti poistaa merkinnän \"%s\"?"
 
 #: ../src/RefWindow.C:947
 msgid ""
 "When a tag is deleted it is also permanently removed from all documents it "
 "is currently associated with."
 msgstr ""
-"Quando uma etiqueta é apagada, é também permanentemente removida de todos os "
-"documentos aos quais estiver actualmente associada."
+"Kun merkintä poistetaan, se poistetaa pysyvästi myös kaikista asiakirjoista, "
+"joihin se on nyt liitetty."
 
 #: ../src/RefWindow.C:1000
 msgid "Export BibTeX"
-msgstr "Exportar BibTeX"
+msgstr "Vie BibTex"
 
 #: ../src/RefWindow.C:1009 ../src/RefWindow.C:1087 ../src/RefWindow.C:2052
 msgid "BibTeX Files"
-msgstr "Ficheiros do BibTeX"
+msgstr "BibTex-tiedostot"
 
 #: ../src/RefWindow.C:1014 ../src/RefWindow.C:1092 ../src/RefWindow.C:1254
 #: ../src/RefWindow.C:1312 ../src/RefWindow.C:2039
 msgid "All Files"
-msgstr "Todos os Ficheiros"
+msgstr "Kaikki tiedostot"
 
 #: ../src/RefWindow.C:1025
 msgid "Selection:"
-msgstr "Selecção:"
+msgstr "Valinta:"
 
 #: ../src/RefWindow.C:1028
 msgid "All Documents"
-msgstr "Todos os Documentos"
+msgstr "Kaikki asiakirjat"
 
 #: ../src/RefWindow.C:1029
 msgid "Selected Documents"
-msgstr "Documentos Seleccionados"
+msgstr "Valitut asiakirjat"
 
 #. Any options here should be replicated in onManageBibtex
 #. Any options here should be replicated in onExportBibtex
 #: ../src/RefWindow.C:1035 ../src/RefWindow.C:1174
 msgid "Protect capitalization (surround values with {})"
-msgstr ""
+msgstr "Suojaa kirjainkoko (ympäröi arvot {}-merkeillä)"
 
 #: ../src/RefWindow.C:1037 ../src/RefWindow.C:1177
 msgid "Use Unicode (UTF-8) encoding"
-msgstr ""
+msgstr "Käytä Unicode (UTF-8) -koodausta"
 
 #: ../src/RefWindow.C:1080
-#, fuzzy
 msgid "Browse"
-msgstr "Explorar"
+msgstr "Selaa"
 
 #: ../src/RefWindow.C:1114 ../src/RefWindow.C:1129
-#, fuzzy
 msgid "Manage BibTeX File"
-msgstr "Gerir Ficheiro BibTeX"
+msgstr "Hallitse BibTeX-tiedostoa"
 
 #: ../src/RefWindow.C:1130
 msgid ""
 "If you choose a file here, it will be overwritten whenever this library is "
 "saved."
 msgstr ""
+"Jos valitse tiedoston tästä, se ylikirjoitetaan aina, kun tämä kirjasto "
+"tallennetaan."
 
 #: ../src/RefWindow.C:1137
 msgid "BibTeX file:"
-msgstr "Ficheiro BibTeX:"
+msgstr "BibTex-tiedosto:"
 
 #: ../src/RefWindow.C:1158
-#, fuzzy
 msgid "_Browse..."
-msgstr "_Explorar"
+msgstr "_Selaa..."
 
 #: ../src/RefWindow.C:1232
 msgid "Open Library"
-msgstr ""
+msgstr "Avaa kirjasto"
 
 #: ../src/RefWindow.C:1249 ../src/RefWindow.C:1307
 msgid "Referencer Libraries"
-msgstr ""
+msgstr "Referencer-kirjastot"
 
 #: ../src/RefWindow.C:1298
 msgid "Save Library As"
-msgstr ""
+msgstr "Tallenna kirjasto nimellä"
 
 #. Translators: your name here!
 #: ../src/RefWindow.C:1352
 msgid "translator-credits"
 msgstr ""
 "Launchpad Contributions:\n"
-"  Ondreia https://launchpad.net/~a-terrapinto\n"
-"  VCarvalho https://launchpad.net/~v-carvalho"
+"  Ilkka Tuohela https://launchpad.net/~hile"
 
 #: ../src/RefWindow.C:1372
-#, fuzzy
 msgid "Showing '%1'"
-msgstr "A mostrar '%1'"
+msgstr "Näytetään \"%1\""
 
 #: ../src/RefWindow.C:1381
 msgid "Cancelling"
 msgstr ""
 
 #: ../src/RefWindow.C:1389
-#, fuzzy
 msgid "Add Document Files"
-msgstr "Adicionar Ficheiro do Documento"
+msgstr "Lisää asiakirjatiedostoja"
 
 #: ../src/RefWindow.C:1396
-#, fuzzy
 msgid "Adding document files"
-msgstr "A adicionar ficheiros do documento"
+msgstr "Lisätään asiakirjoja"
 
 #: ../src/RefWindow.C:1397
 msgid ""
 "This process may take some time as the bibliographic information for each "
 "document is looked up."
 msgstr ""
-"Este processo poderá levar algum tempo enquanto a informação bibliográfica "
-"para cada documento for procurada."
+"Tämä saattaa kestää hetken, koska jokaisen asiakirjan lähdeviitetiedot "
+"etsitään."
 
 #: ../src/RefWindow.C:1422
 msgid "Document"
@@ -874,7 +841,7 @@ msgstr ""
 
 #: ../src/RefWindow.C:1460
 msgid "%1 of %2 documents"
-msgstr "%1 de %2 documentos"
+msgstr "%1/%2 asiakirjaa"
 
 #: ../src/RefWindow.C:1543 ../src/RefWindow.C:1545
 msgid "Cancelled"
@@ -890,35 +857,31 @@ msgstr ""
 
 #: ../src/RefWindow.C:1653
 msgid "Add Document"
-msgstr "Adicionar Documento"
+msgstr "Lisää asiakirja"
 
 #: ../src/RefWindow.C:1684
 msgid "Add Folder"
-msgstr "Adicionar Pasta"
+msgstr "Lisää kansio"
 
 #: ../src/RefWindow.C:1721
-#, fuzzy
 msgid "Are you sure you want to remove these %1 documents?"
-msgstr "Tem a certeza que pretende remover estes documentos %1?"
+msgstr "Haluatko varmasti poistaa nämä %1 asiakirjaa?"
 
 #: ../src/RefWindow.C:1723
 msgid ""
 "All tag associations and metadata for these documents will be permanently "
 "lost."
 msgstr ""
-"Todas as etiquetas associadas e metadados destes documentos serão "
-"permanentemente perdidos."
+"Kaikki merkinnät ja metatiedot näille asiakirjoille hukataan pysyvästi."
 
 #: ../src/RefWindow.C:1726
 msgid "Are you sure you want to remove '%1'?"
-msgstr "Tem a certeza que pretende remover '%1'?"
+msgstr "Haluatko varmasti poistaa \"%1\"?"
 
 #: ../src/RefWindow.C:1728
 msgid ""
 "All tag associations and metadata for the document will be permanently lost."
-msgstr ""
-"Todas as associações de etiquetas e metadados para este documento serão "
-"permanentemente perdidos."
+msgstr "Kaikki merkinnät ja metadata asiakirjalle hukataan pysyvästi."
 
 #: ../src/RefWindow.C:1758
 msgid "Fetching metadata"
@@ -926,54 +889,51 @@ msgstr ""
 
 #: ../src/RefWindow.C:1788
 msgid "Really rename this file to '%1'?"
-msgstr "Quer mesmo renomear este documento para '%1'?"
+msgstr "Nimetäänkö tämä tiedosto uudelleen nimelle \"%s\"?"
 
 #: ../src/RefWindow.C:1791
 msgid "Really rename these %1 files to their keys?"
-msgstr ""
+msgstr "Nimetäänkö nämä %1 tiedostoa avainten mukaan?"
 
 #: ../src/RefWindow.C:1799
 msgid "This action <b>cannot be undone</b>."
-msgstr "Esta acção <b>não pode ser desfeita</b>."
+msgstr "Tätä toimintoa <b>ei voi perua</b>."
 
 #: ../src/RefWindow.C:1802
 msgid "Rename from Key"
-msgstr ""
+msgstr "Nimeä uudestaan avaimen mukaan"
 
 #: ../src/RefWindow.C:1833
 msgid "Are you sure you want to delete the files of these %1 documents?"
-msgstr ""
-"Tem a certeza que pretende apagar estes ficheiros destes %1 documentos?"
+msgstr "Haluatko varmasti poistaa kaikki näiden %1 asiakirjan tiedostot?"
 
 #: ../src/RefWindow.C:1835
 msgid ""
 "All tag associations and metadata for these documents will be permanently "
 "lost, and the files they refer to will be irretrievably deleted."
 msgstr ""
-"Todas as associações de etiquetas e metadados para este documento serão "
-"permanentemente perdidos e os ficheiros aos quais se referem serão "
-"irremediavelmente apagados."
+"Kaikki näihin tiedostoihin liittyvät merkinnät ja metatieto hukataan "
+"pysyvästi ja kyseiset tiedostot poistetaan."
 
 #: ../src/RefWindow.C:1841
 msgid "Are you sure you want to delete the file of '%1'?"
-msgstr "Tem a certeza que quer apagar o ficheiro de '%1'?"
+msgstr "Haluatko varmasti poistaa kohteen \"%1\" tiedoston?"
 
 #: ../src/RefWindow.C:1843
 msgid ""
 "All tag associations and metadata for the document will be permanently lost, "
 "and the file it refers to will be irretrievably deleted."
 msgstr ""
-"Todas as associações de etiquetas e metadados para este documento serão "
-"permanentemente perdidos e o ficheiro a que se refere será irremediavelmente "
-"apagado."
+"Kaikki tähän tiedostoon liittyvät merkinnät ja metatieto hukataan pysyvästi "
+"ja kyseinen tiedosto poistetaan."
 
 #: ../src/RefWindow.C:1871
 msgid "Deleting '%1'"
-msgstr "A apagar '%1'"
+msgstr "Poistetaan \"%1\""
 
 #: ../src/RefWindow.C:1893
 msgid "Trying to open file '%1'"
-msgstr "A tentar abrir o ficheiro '%1'"
+msgstr "Yritetään avata tiedostoa \"%1\""
 
 #: ../src/RefWindow.C:1954
 msgid "Working offline"
@@ -985,28 +945,27 @@ msgstr ""
 
 #: ../src/RefWindow.C:1990
 msgid "Unnamed Library"
-msgstr ""
+msgstr "Nimeämätön kirjasto"
 
 #: ../src/RefWindow.C:2024
 msgid "Import References"
-msgstr "Importar Refernces"
+msgstr "Tuo viitteet"
 
 #: ../src/RefWindow.C:2047
-#, fuzzy
 msgid "Bibliography Files"
-msgstr "Ficheiros de Bibliografia"
+msgstr "Kirjallisuusviitetiedostot"
 
 #: ../src/RefWindow.C:2058
 msgid "Format:"
-msgstr ""
+msgstr "Muoto:"
 
 #: ../src/RefWindow.C:2163
 msgid "Imported %1 BibTeX references"
-msgstr ""
+msgstr "Tuotiin %1 BibTex-viitettä"
 
 #: ../src/Transfer.C:47
 msgid "Work offline?"
-msgstr ""
+msgstr "Työskennellänkö yhteydettömässä tilassa?"
 
 #: ../src/Transfer.C:48
 msgid ""
@@ -1015,30 +974,33 @@ msgid ""
 "operations will be attempted until you choose to work online again in the "
 "Preferences dialog."
 msgstr ""
+"Metatietoja noudettaessa tapahtui virhe. Haluatko jatkaa yhteydettömässä "
+"tilassa? Jos valitse yhteydettömän tilan, ei verkkotoimintoja yritetä "
+"käyttää, ennen kuin valitset yhteydellisen tilan asetusikkunasta."
 
 #: ../src/Transfer.C:59
 msgid "_Stay Online"
-msgstr ""
+msgstr "_Pysy yhteydellisessä tilassa"
 
 #: ../src/Transfer.C:61
 msgid "_Go Offline"
-msgstr ""
+msgstr "_Siirry yhteydelliseen tilaan"
 
 #: ../src/Transfer.C:101
 msgid "Downloading %1"
-msgstr ""
+msgstr "Noudetaan %1"
 
 #: ../src/Transfer.C:286
 msgid "Opening URI '%1' on server"
-msgstr ""
+msgstr "Avataan URI:a \"%1\" palvelimelta"
 
 #: ../src/Transfer.C:311
 msgid "Reading URI '%1' on server"
-msgstr ""
+msgstr "Luetaan URI:a \"%1\" palvelimelta"
 
 #: ../src/Transfer.C:330
 msgid "Closing URI '%1' on server"
-msgstr ""
+msgstr "Suljetaan URIa \"%1\" palvelimella"
 
 #: ../src/Utility.C:266
 msgid ""
@@ -1052,4 +1014,4 @@ msgstr ""
 
 #: ../src/Utility.C:270
 msgid "The operation underway was: \"%1\""
-msgstr ""
+msgstr "Käynnissä oleva toiminto oli: \"%1\""
