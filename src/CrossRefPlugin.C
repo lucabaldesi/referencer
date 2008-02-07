@@ -191,17 +191,20 @@ bool CrossRefPlugin::resolve (Document &doc)
 		Glib::Markup::ParseContext context (parser);
 		try {
 			context.parse (xml);
+			context.end_parse ();
 		} catch (Glib::MarkupError const ex) {
 			std::cerr << "Markuperror while parsing:\n'''\n" << xml << "\n'''\n";
-			Utility::exceptionDialog (&ex, _("Parsing CrossRef XML.  The DOI could be invalid, or not known to crossref.org"));
+			//Utility::exceptionDialog (&ex, _("Parsing CrossRef XML.  The DOI could be invalid, or not known to crossref.org"));
 			success = false;
 		}
-		context.end_parse ();
+		std::cerr << ">> end_parse\n";
+		std::cerr << "<< end_parse\n";
 	} catch (Transfer::Exception ex) {
-		Utility::exceptionDialog (&ex, _("Downloading metadata"));
+		//Utility::exceptionDialog (&ex, _("Downloading metadata"));
 		success = false;
 	}
 
+	std::cerr << "resolve returning " << success << "\n";
 	return success;
 }
 

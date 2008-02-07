@@ -813,8 +813,6 @@ void DocumentView::updateDoc (Document * const doc)
 
 /*
  * Remove the row with docpointercol_ == doc from docstore_
- *
- * Optimisation: O(N)
  */
 void DocumentView::removeDoc (Document * const doc)
 {
@@ -846,13 +844,11 @@ void DocumentView::addDoc (Document * doc)
 	Gtk::TreeModel::iterator item = docstore_->append();
 	loadRow (item, doc);
 
-	docstorefilter_->refilter();
-	
 	Gtk::TreeModel::Path path = 
 		docstorefilter_->get_path (
 			docstorefilter_->convert_child_iter_to_iter (item));
 			
-//	Gtk::TreeModel::Path path = docstore_->get_path (item);
+	//Gtk::TreeModel::Path path = docstore_->get_path (item);
 
 	docslistview_->scroll_to_row (path);
 	docslistselection_->unselect_all ();

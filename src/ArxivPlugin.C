@@ -26,6 +26,7 @@
 
 bool ArxivPlugin::resolve (Document &doc)
 {
+	std::cerr << ">> resolve\n";
 	if (!doc.hasField("eprint") || _global_prefs->getWorkOffline())
 		return false;
 
@@ -49,6 +50,7 @@ bool ArxivPlugin::resolve (Document &doc)
 				arxivid)
 		);
 
+	std::cerr << ">> netops\n";
 	Glib::ustring *rawtext;
 	try {
 		rawtext = &Transfer::readRemoteFile (
@@ -60,6 +62,11 @@ bool ArxivPlugin::resolve (Document &doc)
 		return false;
 	}
 
+	std::cerr << "<< netops\n";
+
+	if (rawtext->size() == 0)
+		return false;
+
 	BibUtils::param p;
 	BibUtils::bibl b;
 	BibUtils::bibl_init( &b );
@@ -67,6 +74,8 @@ bool ArxivPlugin::resolve (Document &doc)
 
 	try {
 		BibUtils::biblFromString (b, *rawtext, BibUtils::FORMAT_BIBTEX, p);
+		if (b.nrefs < 1)
+			return false;
 
 		Document newdoc = BibUtils::parseBibUtils (b.ref[0]);
 
