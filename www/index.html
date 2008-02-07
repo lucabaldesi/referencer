@@ -40,12 +40,14 @@ urchinTracker();
 	<div id="downloads">
 		<h2><img src="download.png" style="float:right;">Download</h2>
 		<p>
+		<!--
 			<p>&nbsp;<img src="ubuntu.png" style="margin-right:5px"><a href="http://www.getdeb.net/app.php?name=referencer">Ubuntu package</a>
 			<br>&nbsp;<img src="fedora.png" style="margin-right:5px"><a href="#fedora">Fedora package</a>
 			<br>&nbsp;<img src="mandriva.ico" style="margin-right:5px"><a href="#mandriva">Mandriva package</a>
 			<br>&nbsp;<img src="debian.png" style="margin-right:5px"><a href="#debian">Debian package</a>
 			<br>&nbsp;<img src="zenwalk.png" style="margin-right:5px"><a href="#zenwalk">ZenWalk package</a>
-			<br>&nbsp;<img src="source.png" style="margin-right:5px"><a href="downloads/referencer-1.0.4.tar.gz">Source code</a>
+			
+			<br>&nbsp;--><img src="source.png" style="margin-right:5px"><a href="downloads/referencer-1.1.0.tar.gz">Source code</a>
 		</p>
 	</div>
 
@@ -63,11 +65,12 @@ urchinTracker();
 		<h2><img src="dev.png" style="float:right;">Develop</h2>
 		<p><a href="development.html">Development info</a>
 		<br>
-		<a href="https://bugs.launchpad.net/referencer/">Bugs</a></p>
+		<a href="https://bugs.launchpad.net/referencer/">Report a bug</a></p>
 	</div>
 	<div id="contact">
 		<h2><img src="contact.png" style="float:right;">Contact</h2>
-		<p><a href="http://icculus.org/~jcspray/">John Spray</a>
+		<p><a href="contact.html">Mailing list</a>
+		<br><a href="http://icculus.org/~jcspray/">Maintainer</a></p>
 		</div>
 </div>
 
@@ -89,6 +92,12 @@ urchinTracker();
 	<li><b>Automatic arXiv, PubMed and CrossRef metadata retrieval</b><br>
 	If you show Referencer a PDF which has an <a href="http://www.arxiv.org">arXiv</a> ID or <a href="http://www.doi.org/">DOI</a> code, Referencer will retrieve the metadata for this document over the internet.
 	</li>
+	<li><b>Python plugin support</b><br>
+	Referencer can be extended using the versatile <a href="http://www.python.org">Python</a> scripting language.
+	</li>
+	<li><b>Localisation</b><br>
+	Referencer is fully translated into French and German, with support for other languages <a href="https://translations.launchpad.net/referencer/trunk/+pots/referencer">in progress</a>.
+	</li>
 	</ul>
 	<!--
 	<p style="background:#C8C8D0; border:1px solid; padding:5px; margin-right:5px"><img src="warning.png" style="float:left;"><b>CrossRef users:</b>  The crossref.org OpenURL interface now requires user registration, and thus is not working with Referencer at the moment.  Alternatives are under investigation for the next release.</p>
@@ -107,9 +116,12 @@ urchinTracker();
 	
 	<div id="getting">
 	<h2>Getting Referencer</h2>
+	<p>The latest version of referencer is 1.1.0, the <i>First Birthday</i> release (7th February 2008).</p>
+	<p><img src="source.png" style="margin-right:5px"><b>Source code:</b> <a href="downloads/referencer-1.1.0.tar.gz">referencer-1.1.0.tar.gz</a>
+	  (<a href="ChangeLog">ChangeLog</a>)</p>
 	<p><i>Note: distribution packages may not always correspond to the 
-	latest version of referencer.</i></p>
-	<p><img src="ubuntu.png" style="margin-right:5px"><b>Ubuntu package:</b> <a href="http://www.getdeb.net/app.php?name=referencer">Get it from GetDeb</a> (7.10 Gutsy users can get Referencer 1.0.4 from apt)</p>
+	latest version of referencer.  If there is not yet a package for your distribution, you'll need to compile referencer from source.  See the <a href="development.html">development page</a> for more details.</i></p>
+	<p><img src="ubuntu.png" style="margin-right:5px"><b>Ubuntu package:</b> <a href="http://www.getdeb.net/app.php?name=referencer">Get it from GetDeb</a></p>
 	<a name="fedora">
 	<p><img src="fedora.png" style="margin-right:5px"><b>Fedora package:</b> Referencer is available from the fedora-extras repository for Fedora Core versions 6 and 7.</p>
 	<p><img src="gentoo.png" style="margin-right:5px"><b>Gentoo Ebuild:</b> <a href="http://bugs.gentoo.org/show_bug.cgi?id=164750">Bugzilla thread</a></p>
@@ -123,9 +135,6 @@ urchinTracker();
 	<p><img src="debian.png" style="margin-right:5px"><b>Debian package:</b> Referencer is available in debian unstable</p>
 	<a name="zenwalk">
 	<p><img src="zenwalk.png" style="margin-right:5px"><b>ZenWalk package:</b> Referencer is available in the main ZenWalk repository</p>
-	<p><img src="source.png" style="margin-right:5px"><b>Source code:</b> <a href="downloads/referencer-1.0.4.tar.gz">referencer-1.0.4.tar.gz</a>
-	  (<a href="ChangeLog">ChangeLog</a>)</p>
-	<p>If there is not yet a package for your distribution, you'll need to compile referencer from source.  See the <a href="development.html">development page</a> for more details.</p>
 
 	</div>
 </div>
