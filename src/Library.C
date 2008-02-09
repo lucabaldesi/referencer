@@ -11,6 +11,7 @@
 
 
 #include <iostream>
+#include <cstring>
 
 #include <libgnomevfsmm.h>
 #include <glibmm/i18n.h>
