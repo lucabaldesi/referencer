@@ -1,4 +1,5 @@
 1.1.1:
+	- Add parse_bibtex to PythonDocument
 	- Fix compilation with gcc 4.3 (Deji Akingunola)
 
 1.1.0:

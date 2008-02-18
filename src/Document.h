@@ -82,6 +82,8 @@ class Document {
 
 	Glib::ustring generateKey ();
 
+	bool parseBibtex (Glib::ustring const &bibtex);
+
 	void setField (Glib::ustring const &field, Glib::ustring const &value);
 	Glib::ustring getField (Glib::ustring const &field);
 	bool hasField (Glib::ustring const &field) const;

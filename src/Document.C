@@ -21,6 +21,7 @@
 
 #include "config.h"
 
+#include "BibUtils.h"
 #include "DocumentView.h"
 #include "Library.h"
 #include "PluginManager.h"
@@ -700,3 +701,28 @@ void Document::clearFields ()
 	setField ("pages", "");
 }
 
+
+bool Document::parseBibtex (Glib::ustring const &bibtex)
+{
+	BibUtils::param p;
+	BibUtils::bibl b;
+	BibUtils::bibl_init( &b );
+	BibUtils::bibl_initparams( &p, BibUtils::FORMAT_BIBTEX, BIBL_MODSOUT);
+
+	try {
+		/* XXX should convert this to latin1? */
+		BibUtils::biblFromString (b, bibtex, BibUtils::FORMAT_BIBTEX, p);
+		if (b.nrefs != 1)
+			return false;
+
+		Document newdoc = BibUtils::parseBibUtils (b.ref[0]);
+
+		getBibData().mergeIn (newdoc.getBibData());	
+		
+		BibUtils::bibl_free( &b );
+	} catch (Glib::Error ex) {
+		BibUtils::bibl_free( &b );
+		Utility::exceptionDialog (&ex, _("Parsing BibTeX"));
+		return false;
+	}
+}
