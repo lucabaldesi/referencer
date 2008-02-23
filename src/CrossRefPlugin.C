@@ -109,7 +109,8 @@ class CrossRefParser : public Glib::Markup::Parser {
 				}
 				authorString += *it;
 			}
-			bib_.setAuthors (authorString);
+			if (!authorString.empty())
+				bib_.setAuthors (authorString);
 		}
 	}
 
