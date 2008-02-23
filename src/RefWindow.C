@@ -183,14 +183,20 @@ void RefWindow::constructUI ()
 	render->property_editable() = true;
 	render->signal_edited().connect (
 		sigc::mem_fun (*this, &RefWindow::tagNameEdited));
+	render->signal_editing_started().connect (
+		sigc::mem_fun (*this, &RefWindow::tagNameEditingStarted));
 	render->property_xalign () = 0.5;
-	Gtk::TreeView::Column *namecol = Gtk::manage(
+        Gtk::TreeView::Column *namecol = Gtk::manage(
 		new Gtk::TreeView::Column (_("Tags"), *render));
+	namecol->set_cell_data_func (
+		*render, sigc::mem_fun (*this, &RefWindow::tagCellRenderer));
 	namecol->add_attribute (render->property_markup (), tagnamecol_);
 	namecol->add_attribute (render->property_font_desc (), tagfontcol_);
 	tags->append_column (*namecol);
 	tags->signal_button_press_event().connect_notify(
 		sigc::mem_fun (*this, &RefWindow::tagClicked));
+	tags->set_row_separator_func(
+		sigc::mem_fun(*this, &RefWindow::tagSeparator));
 	tags->set_headers_visible (false);
 	tags->set_search_column (tagnamecol_);
 
@@ -593,8 +599,10 @@ void RefWindow::populateTagList ()
 	(*none)[tagnamecol_] = String::ucompose ("%1", _("Untagged"));
 	(*none)[tagfontcol_] = font_special;
 
-	taggerbox_->children().clear();
+	Gtk::TreeModel::iterator sep = tagstore_->append();
+	(*sep)[taguidcol_] = SEPARATOR_UID;
 
+	taggerbox_->children().clear();
 	taggerchecks_.clear();
 
 	std::map <int, int> tagusecounts;
@@ -722,6 +730,17 @@ void RefWindow::taggerCheckToggled (Gtk::ToggleButton *check, int taguid)
 }
 
 
+void RefWindow::tagNameEditingStarted (
+        Gtk::CellEditable *,
+        Glib::ustring const &pathstr)
+{
+	Gtk::TreePath path(pathstr);
+	Gtk::ListStore::iterator iter = tagstore_->get_iter (path);
+
+	tagoldname_ = (*iter)[tagnamecol_];
+}
+
+
 void RefWindow::tagNameEdited (
 	Glib::ustring const &text1,
 	Glib::ustring const &text2)
@@ -741,17 +760,41 @@ void RefWindow::tagNameEdited (
 	Gtk::TreePath path = (*paths.begin ());
 	Gtk::ListStore::iterator iter = tagstore_->get_iter (path);
 
-	if ((*iter)[taguidcol_] == ALL_TAGS_UID
-	    || (*iter)[taguidcol_] == NO_TAGS_UID)
-		return;
+	// Should escape this
+	Glib::ustring newname = text2;
+
+        if (newname == tagoldname_)
+                return;
 
 	setDirty (true);
 
-	// Should escape this
-	Glib::ustring newname = text2;
 	(*iter)[tagnamecol_] = newname;
 	library_->taglist_->renameTag ((*iter)[taguidcol_], newname);
 	taggerchecks_[(*iter)[taguidcol_]]->set_label (newname);
+}
+
+
+bool RefWindow::tagSeparator (
+        const Glib::RefPtr<Gtk::TreeModel> &model,
+        const Gtk::TreeModel::iterator &iter)
+{
+        return ((*iter)[taguidcol_] == SEPARATOR_UID);
+}
+
+
+void RefWindow::tagCellRenderer (
+        Gtk::CellRenderer * cell,
+        const Gtk::TreeModel::iterator &iter) const
+{
+        Gtk::CellRendererText *render = dynamic_cast<Gtk::CellRendererText*> (cell);
+
+        if (!render)
+                return;
+
+        if ((*iter)[taguidcol_] == ALL_TAGS_UID || (*iter)[taguidcol_] == NO_TAGS_UID)
+                render->property_editable () = false;
+        else
+                render->property_editable () = true;
 }
 
 

@@ -33,6 +33,7 @@ class TagList;
 
 #define ALL_TAGS_UID -1
 #define NO_TAGS_UID -2
+#define SEPARATOR_UID -3
 
 #define DISPLAY_PROGRAM "Referencer"
 
@@ -95,6 +96,7 @@ class RefWindow {
 		std::map<Glib::ustring, Gtk::UIManager::ui_merge_id> pluginUI_;
 
 		/* The Tags View */
+		Glib::ustring tagoldname_;
 		Glib::RefPtr<Gtk::ListStore> tagstore_;
 		Gtk::TreeModelColumn<int> taguidcol_;
 		Gtk::TreeModelColumn<Glib::ustring> tagnamecol_;
@@ -113,6 +115,9 @@ class RefWindow {
 		void tagSelectionChanged ();
 		void tagClicked (GdkEventButton* event);
 		void tagNameEdited (Glib::ustring const &text1, Glib::ustring const &text2);
+		void tagNameEditingStarted (Gtk::CellEditable *, Glib::ustring const &path);
+		bool tagSeparator (const Glib::RefPtr<Gtk::TreeModel> &model, const Gtk::TreeModel::iterator &iter);
+		void tagCellRenderer (Gtk::CellRenderer *cell, const Gtk::TreeModel::iterator &iter) const;
 
 		/* The Document Properties dialog */
 		DocumentProperties *docpropertiesdialog_;
