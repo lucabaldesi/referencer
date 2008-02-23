@@ -27,6 +27,8 @@ class CrossRefParser : public Glib::Markup::Parser {
 	BibData &bib_;
 
 	Glib::ustring text_;
+	Glib::ustring given_name_;
+	std::vector<Glib::ustring> authors_;
 
 	public:
 	CrossRefParser (BibData &bib)
@@ -76,9 +78,15 @@ class CrossRefParser : public Glib::Markup::Parser {
 			bib_.setDoi (text_);
 		} else if (element == "article_title") {
 			bib_.setTitle (text_);
-		// Should handle multiple 'author' elements
-		} else if (element == "author") {
-			bib_.setAuthors (text_);
+		/* FIXME: assuming given_name precedes surname */
+		} else if (element == "given_name") {
+			given_name_ = text_;
+		} else if (element == "surname") {
+			if (!given_name_.empty()) {
+				text_ = text_ + ", " + given_name_;
+				given_name_ = "";
+			}
+			authors_.push_back (text_);
 		} else if (element == "journal_title") {
 			bib_.setJournal (text_);
 		} else if (element == "volume") {
@@ -91,6 +99,17 @@ class CrossRefParser : public Glib::Markup::Parser {
 			bib_.setYear (text_);
 		} else if (element == "volume_title") {
 			bib_.addExtra ("BookTitle", text_);
+		} else if (element == "body") {
+			/* End of entry */
+			Glib::ustring authorString;
+			std::vector<Glib::ustring>::iterator it = authors_.begin ();
+			for (; it != authors_.end(); ++it) {
+				if (it != authors_.begin()) {
+					authorString += " and ";
+				}
+				authorString += *it;
+			}
+			bib_.setAuthors (authorString);
 		}
 	}
 
@@ -182,6 +201,8 @@ bool CrossRefPlugin::resolve (Document &doc)
 	try {
 		Glib::ustring &xml = Transfer::readRemoteFile (
 			_("Downloading Metadata"), messagetext, url);
+
+		std::cout << "\n\n" << xml << "\n\n";
 
 		// XXX
 		// Test for "Missing WWW-Authenticate header" for bad username/password
