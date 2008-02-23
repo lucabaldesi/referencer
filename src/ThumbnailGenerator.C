@@ -111,7 +111,10 @@ Glib::RefPtr<Gdk::Pixbuf> ThumbnailGenerator::lookupThumb (Glib::ustring const &
 		}
 	}
 
-	if (!thumbnail) {
+	// Disallow crazy sized thumbs
+	int const minimumDimension = 8;
+
+	if (!thumbnail || thumbnail->get_width() < minimumDimension || thumbnail->get_height() < minimumDimension) {
 		if (defaultthumb_) {
 			thumbnail = defaultthumb_;
 			std::cerr << "Set thumbnail to default\n";
