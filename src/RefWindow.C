@@ -1679,7 +1679,7 @@ void RefWindow::onAddDocById ()
 			throw std::runtime_error("onAddDocById");	
 		}*/
 
-		newdoc->setField ("doi", entry.get_text ());
+		newdoc->setField (field, entry.get_text ());
 
 		newdoc->getMetaData ();
 		newdoc->setKey (library_->doclist_->uniqueKey (newdoc->generateKey ()));
