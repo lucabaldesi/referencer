@@ -55,19 +55,25 @@ def resolve_metadata (doc, method):
 			name = author.childNodes[0].data.encode("utf-8")
 			if (first == False):
 				authorString += " and "
+			print "got author", name
 			authorString += name
 			first = False
 
 		fields.append (["author", authorString])
 
-		pages = get_field (doc, "page")
-		lastPage = get_field (doc, "lastpage")
+		print "appended authors"
+		pages = get_field (xmldoc, "page")
+		print "getting lastPage"
+		lastPage = get_field (xmldoc, "lastpage")
 		if (len(lastPage) > 0):
 			pages += "-"
 			pages += lastPage
 
+		print "got pages " , pages
 		fields.append (["page", pages])
+		print "appended pages"
 	except:
+		print "exception"
 		return False
 
 	for field in fields:
