@@ -322,7 +322,7 @@ void RefWindow::constructMenu ()
 	actiongroup_->add( Gtk::Action::create(
 		"PasteBibtex", Gtk::Stock::PASTE, _("_Paste BibTeX"),
 		_("Import references from BibTeX on the clipboard")),
-  	sigc::bind (sigc::mem_fun(*this, &RefWindow::onPasteBibtex), GDK_SELECTION_PRIMARY));
+		sigc::bind (sigc::mem_fun(*this, &RefWindow::onPasteBibtex), GDK_SELECTION_CLIPBOARD));
 	actiongroup_->add( Gtk::Action::create(
 		"CopyCite", Gtk::Stock::COPY, _("_Copy LaTeX citation"),
 		_("Copy currently selected keys to the clipboard as a LaTeX citation")),

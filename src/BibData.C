@@ -248,21 +248,21 @@ void BibData::guessArxiv (Glib::ustring const &raw_)
 void BibData::mergeIn (BibData const &source)
 {
 	type_ = source.getType ();
-	if (doi_.empty ())
+	if (!source.getDoi ().empty ())
 		doi_ = source.getDoi ();
-	if (volume_.empty ())
+	if (!source.getVolume().empty ())
 		volume_ = source.getVolume ();
-	if (issue_.empty ())
+	if (!source.getIssue().empty ())
 		issue_ = source.getIssue ();
-	if (pages_.empty ())
+	if (!source.getPages().empty ())
 		pages_ = source.getPages ();
-	if (authors_.empty ())
+	if (!source.getAuthors().empty ())
 		authors_ = source.getAuthors ();
-	if (journal_.empty ())
+	if (!source.getJournal().empty ())
 		journal_ = source.getJournal ();
-	if (title_.empty ())
+	if (!source.getTitle().empty ())
 		title_ = source.getTitle ();
-	if (year_.empty ())
+	if (!source.getYear().empty ())
 		year_ = source.getYear ();
 		
 	ExtrasMap sourceextras = source.getExtras();

@@ -117,8 +117,6 @@ DocumentTypeManager typeManager;
 
 void DocumentProperties::update (Document &doc)
 {
-	BibData &bib = doc.getBibData();
-
 	filechooser_->set_uri (doc.getFileName());
 	keyentry_->set_text (doc.getKey());
 	iconImage_->set (doc.getThumbnail());
@@ -160,8 +158,6 @@ void DocumentProperties::update (Document &doc)
 
 void DocumentProperties::save (Document &doc)
 {
-	BibData &bib = doc.getBibData();
-
 	Glib::ustring filename = filechooser_->get_uri ();
 	doc.setFileName (filename);
 	doc.setKey (keyentry_->get_text ());
@@ -392,7 +388,7 @@ void DocumentProperties::onMetadataLookup ()
 
 void DocumentProperties::onPasteBibtex ()
 {
-	GdkAtom const selection = GDK_SELECTION_PRIMARY;
+	GdkAtom const selection = GDK_SELECTION_CLIPBOARD;
 
 	Glib::RefPtr<Gtk::Clipboard> clipboard = Gtk::Clipboard::get (selection);
 
@@ -419,10 +415,13 @@ void DocumentProperties::onPasteBibtex ()
 		DocumentList::Container::iterator it = docs.begin ();
 
 		/*
-		 * Can has crack pipe?
+		 * This will lose the key from the bibtex since it's
+		 * in Document not BibData
 		 */
-
-		update (*it);
+		Document doc;
+		save(doc);
+		doc.getBibData().mergeIn (it->getBibData());
+		update (doc);
 	} else {
 		Glib::ustring message;
 	       
