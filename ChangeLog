@@ -1,4 +1,6 @@
 1.1.1:
+	- Fix parsing data-less elements in pubmed plugin (Bug 196174)
+	- Fix paste in document properties (Bug 195819)
 	- Fix add doc with ID dialog
 	- Make "All" and "Untagged" immutable, add separator (Bug 192680, Jochen Martin Eppler)
 	- Check for zero-sized thumbnails (Bug 192279)

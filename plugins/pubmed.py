@@ -73,7 +73,10 @@ def get_field (doc, field):
 	if len(value) == 0:
 		return ""
 	else:
-		return value[0].childNodes[0].data.encode("utf-8")
+		if (len(value[0].childNodes) == 0):
+			return ""
+		else:
+			return value[0].childNodes[0].data.encode("utf-8")
 
 
 def text_output(xml):
@@ -131,7 +134,7 @@ def text_output(xml):
 	pages = get_field (xmldoc, "MedlinePgn")
 	output.append (["pages", pages])
 
-	output2 = [];
+	output2 = []
 	for pair in output:
 		if len(pair[1]) > 0:
 			output2.append(pair)
@@ -145,12 +148,14 @@ def resolve_metadata (doc, method):
 		elif (method == "pubmed"):
 			xml = get_citation_from_pmid (doc.get_field ("pmid"))
 	except:
+		print "pubmed.py:resolve_metadata: Got no metadata"
 		# Couldn't get any metadata
 		return False
 
 	try:
 		items = text_output (xml)
 	except:
+		print "pubmed.py:resolve_metadata: Couldn't parse metadata"
 		# Couldn't parse XML
 		return False
 
