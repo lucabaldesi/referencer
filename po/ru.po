@@ -8,13 +8,13 @@ msgstr ""
 "Project-Id-Version: referencer\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
 "POT-Creation-Date: 2008-02-03 00:06+0000\n"
-"PO-Revision-Date: 2007-07-25 11:27+0000\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"PO-Revision-Date: 2008-02-27 12:52+0000\n"
+"Last-Translator: Sergey B Kirpichev <Unknown>\n"
 "Language-Team: Russian <ru@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2008-02-04 19:08+0000\n"
+"X-Launchpad-Export-Date: 2008-03-01 10:48+0000\n"
 "X-Generator: Launchpad (build Unknown)\n"
 
 #: ../data/documentproperties.glade.h:1
@@ -39,7 +39,7 @@ msgstr "Поиск метаданных для документа в интер�
 
 #: ../data/documentproperties.glade.h:6
 msgid "Clear metadata"
-msgstr ""
+msgstr "Очистить метаданные"
 
 #: ../data/documentproperties.glade.h:7
 msgid "Delete this field"
@@ -55,7 +55,7 @@ msgstr "Файл:"
 
 #: ../data/documentproperties.glade.h:10
 msgid "Fill out metadata from BibTeX on clipboard"
-msgstr ""
+msgstr "Заполнить метаданные из буфера обмена (в формате BibTeX)"
 
 #: ../data/documentproperties.glade.h:11
 msgid "Rename this field"
@@ -71,7 +71,7 @@ msgstr "_Ключ"
 
 #: ../data/documentproperties.glade.h:14
 msgid "_Look Up"
-msgstr ""
+msgstr "Получить"
 
 #: ../data/documentproperties.glade.h:15 ../src/RefWindow.C:317
 msgid "_Paste BibTeX"
@@ -79,7 +79,7 @@ msgstr "В_ставить BibTeX"
 
 #: ../data/preferences.glade.h:1
 msgid "<b>CrossRef Plugin</b>"
-msgstr ""
+msgstr "<b>CrossRef плагин</b>"
 
 #: ../data/preferences.glade.h:2
 msgid "<b>Proxy</b>"
@@ -90,6 +90,8 @@ msgid ""
 "<i>Plugins at the top of the list are tried first when looking up "
 "metadata.</i>"
 msgstr ""
+"<i>Плагины в верхней части списка используются первыми при поиске "
+"метаданных.</i>"
 
 #: ../data/preferences.glade.h:4
 msgid ""
@@ -106,15 +108,15 @@ msgstr "Адрес сервера:"
 
 #: ../data/preferences.glade.h:8
 msgid "Move _down"
-msgstr ""
+msgstr "Переместить в_низ"
 
 #: ../data/preferences.glade.h:9
 msgid "Move _up"
-msgstr ""
+msgstr "Переместить _вверх"
 
 #: ../data/preferences.glade.h:10
 msgid "Network"
-msgstr ""
+msgstr "Сеть"
 
 #: ../data/preferences.glade.h:11
 msgid "Password:"
@@ -122,7 +124,7 @@ msgstr "Пароль:"
 
 #: ../data/preferences.glade.h:12
 msgid "Plugins"
-msgstr ""
+msgstr "Плагины"
 
 #: ../data/preferences.glade.h:13
 msgid "Port:"
@@ -137,6 +139,8 @@ msgid ""
 "The CrossRef OpenURL interface requires a username and password.\n"
 "http://www.crossref.org/requestaccount/"
 msgstr ""
+"CrossRef OpenURL интерфейс требует ввода имени пользователя и пароля.\n"
+"http://www.crossref.org/requestaccount/"
 
 #: ../data/preferences.glade.h:17
 msgid "Use authentication"
@@ -152,33 +156,33 @@ msgstr "Пользователь:"
 
 #: ../plugins/pubmed.py:16
 msgid "PubMed DOI resolver"
-msgstr ""
+msgstr "PubMed DOI резольвер"
 
 #: ../plugins/pubmed.py:34
 msgid "Resolving DOI"
-msgstr ""
+msgstr "Расшифровка DOI"
 
 #: ../plugins/pubmed.py:34
 #, python-format
 msgid "Finding PubMed ID from DOI %s"
-msgstr ""
+msgstr "Поиск PubMed ID по DOI %s"
 
 #: ../plugins/pubmed.py:62
 msgid "Resolving PubMed ID"
-msgstr ""
+msgstr "Расшифровка PubMed ID"
 
 #: ../plugins/pubmed.py:62
 #, python-format
 msgid "Fetching metadata from NCBI for PubMed ID %s"
-msgstr ""
+msgstr "Получение метаданных из NCBI для PubMed ID %s"
 
 #: ../plugins/lyx.py:10 ../plugins/lyx.py:11
 msgid "Cite in LyX"
-msgstr ""
+msgstr "Цитировать в LyX"
 
 #: ../plugins/lyx.py:12
 msgid "Cite the selected documents in LyX"
-msgstr ""
+msgstr "Цитировать выбранные документы в LyX"
 
 #: ../src/ArxivPlugin.C:46
 msgid "Retrieving metadata"
@@ -186,7 +190,7 @@ msgstr "Получение метаданных"
 
 #: ../src/ArxivPlugin.C:48
 msgid "Contacting citebase.org to retrieve metadata for '%1'"
-msgstr "Соединение с citebase.org с целью получения метаданных для '%1'"
+msgstr "Соединение с citebase.org для получения метаданных '%1'"
 
 #: ../src/ArxivPlugin.C:55 ../src/CrossRefPlugin.C:184
 msgid "Downloading Metadata"
@@ -199,33 +203,36 @@ msgstr "Загрузка метаданных"
 
 #: ../src/ArxivPlugin.C:90
 msgid "Parsing BibTeX"
-msgstr "Анализ BibTeX"
+msgstr "Анализ BibTeX записи"
 
 #: ../src/ArxivPlugin.C:106
 msgid "Arxiv.org ArXiv-ID resolver"
-msgstr ""
+msgstr "Arxiv.org ArXiv-ID резольвер"
 
 #: ../src/CrossRefPlugin.C:123
 msgid "CrossRef credentials not found"
-msgstr ""
+msgstr "Реквизиты доступа для CrossRef не найдены"
 
 #: ../src/CrossRefPlugin.C:124
 msgid ""
 "To use the CrossRef service, a free account is needed.  Login information "
 "may be set in Preferences, or the CrossRef plugin may be disabled."
 msgstr ""
+"Для использования сервиса CrossRef, необходим бесплатный аккаунт.  Реквизиты "
+"доступа могут быть указаны в Настройках, либо CrossRef плагин может быть "
+"отключен."
 
 #: ../src/CrossRefPlugin.C:133
 msgid "_Preferences"
-msgstr ""
+msgstr "_Настройки"
 
 #: ../src/CrossRefPlugin.C:134
 msgid "_Disable CrossRef"
-msgstr ""
+msgstr "_Отключить CrossRef"
 
 #: ../src/CrossRefPlugin.C:161
 msgid "Contacting crossref.org to retrieve metadata for '%1'"
-msgstr "Соединение с crossref.org с целью получения метаданных для '%1'"
+msgstr "Соединение с crossref.org для получения метаданных '%1'"
 
 #: ../src/CrossRefPlugin.C:196
 msgid ""
@@ -235,8 +242,9 @@ msgstr ""
 "crossref.org"
 
 #: ../src/CrossRefPlugin.C:217
+#, fuzzy
 msgid "Crossref.org OpenURL DOI resolver"
-msgstr ""
+msgstr "Crossref.org OpenURL DOI резольвер"
 
 #: ../src/Document.C:37
 msgid "Unnamed"
@@ -244,7 +252,7 @@ msgstr "Безымянный"
 
 #: ../src/Document.C:557
 msgid "Moving '%1' to '%2'"
-msgstr "Перенос '%1' в '%2'"
+msgstr "Перемещение '%1' в '%2'"
 
 #: ../src/DocumentList.C:177
 msgid "Opening file '%1'"
@@ -260,11 +268,11 @@ msgstr "Анализ импорта"
 
 #: ../src/DocumentList.C:255
 msgid "Extracting document %1 from bibutils structure"
-msgstr ""
+msgstr "Извлечение информации о документе %1 из структуры bibutils"
 
 #: ../src/DocumentProperties.C:204
 msgid "_Type:"
-msgstr ""
+msgstr "_Тип:"
 
 #: ../src/DocumentProperties.C:405 ../src/RefWindow.C:2142
 msgid "Converting clipboard text to latin1"
@@ -276,7 +284,7 @@ msgstr "Никаких ссылок в буфере обмена найдено 
 
 #: ../src/DocumentProperties.C:436
 msgid "Multiple references found on clipboard.\n"
-msgstr ""
+msgstr "Множество ссылок найдено в буфере обмена.\n"
 
 #: ../src/DocumentTypes.C:31 ../src/DocumentView.C:1080
 msgid "Title"
@@ -288,31 +296,31 @@ msgstr "Авторы"
 
 #: ../src/DocumentTypes.C:33
 msgid "Journal"
-msgstr ""
+msgstr "Журнал"
 
 #: ../src/DocumentTypes.C:34 ../src/DocumentView.C:1082
 msgid "Year"
-msgstr ""
+msgstr "Год"
 
 #: ../src/DocumentTypes.C:36
 msgid "Volume"
-msgstr ""
+msgstr "Том"
 
 #: ../src/DocumentTypes.C:37
 msgid "Issue"
-msgstr ""
+msgstr "Выпуск"
 
 #: ../src/DocumentTypes.C:38
 msgid "Pages"
-msgstr ""
+msgstr "Страницы"
 
 #: ../src/DocumentTypes.C:39
 msgid "Month"
-msgstr ""
+msgstr "Месяц"
 
 #: ../src/DocumentTypes.C:40
 msgid "Note"
-msgstr ""
+msgstr "Заметка"
 
 #: ../src/DocumentTypes.C:41 ../src/DocumentView.C:1079
 msgid "Key"
@@ -320,107 +328,107 @@ msgstr "Ключ"
 
 #: ../src/DocumentTypes.C:43
 msgid "Editor"
-msgstr ""
+msgstr "Редактор"
 
 #: ../src/DocumentTypes.C:44
 msgid "Publisher"
-msgstr ""
+msgstr "Издатель"
 
 #: ../src/DocumentTypes.C:45
 msgid "Series"
-msgstr ""
+msgstr "Серия"
 
 #: ../src/DocumentTypes.C:46
 msgid "Address"
-msgstr ""
+msgstr "Адрес"
 
 #: ../src/DocumentTypes.C:47
 msgid "Edition"
-msgstr ""
+msgstr "Издание"
 
 #: ../src/DocumentTypes.C:49
 msgid "Book title"
-msgstr ""
+msgstr "Название книги"
 
 #: ../src/DocumentTypes.C:50
 msgid "Organisation"
-msgstr ""
+msgstr "Организация"
 
 #: ../src/DocumentTypes.C:52
 msgid "How published"
-msgstr ""
+msgstr "Опубликовано как"
 
 #: ../src/DocumentTypes.C:54
 msgid "School"
-msgstr ""
+msgstr "Школа"
 
 #: ../src/DocumentTypes.C:55
 msgid "Institution"
-msgstr ""
+msgstr "Учреждение"
 
 #: ../src/DocumentTypes.C:56
 msgid "Chapter"
-msgstr ""
+msgstr "Глава"
 
 #: ../src/DocumentTypes.C:57
 msgid "Type"
-msgstr ""
+msgstr "Тип"
 
 #: ../src/DocumentTypes.C:60
 msgid "Article"
-msgstr ""
+msgstr "Статья"
 
 #: ../src/DocumentTypes.C:76
 msgid "Book"
-msgstr ""
+msgstr "Книга"
 
 #: ../src/DocumentTypes.C:94
 msgid "In Proceedings"
-msgstr ""
+msgstr "В известиях"
 
 #: ../src/DocumentTypes.C:111
 msgid "Misc"
-msgstr ""
+msgstr "Разное"
 
 #: ../src/DocumentTypes.C:121
 msgid "Unpublished"
-msgstr ""
+msgstr "Не опубликовано"
 
 #: ../src/DocumentTypes.C:130
 msgid "Master's thesis"
-msgstr ""
+msgstr "Магистерская диссертация"
 
 #: ../src/DocumentTypes.C:141
 msgid "PhD thesis"
-msgstr ""
+msgstr "Диссертация"
 
 #: ../src/DocumentTypes.C:152
 msgid "Proceedings"
-msgstr ""
+msgstr "Известия"
 
 #: ../src/DocumentTypes.C:164
 msgid "Conference"
-msgstr ""
+msgstr "Конференция"
 
 #: ../src/DocumentTypes.C:175
 msgid "In Book"
-msgstr ""
+msgstr "В книге"
 
 #: ../src/DocumentTypes.C:192
 msgid "Booklet"
-msgstr ""
+msgstr "Буклет"
 
 #: ../src/DocumentTypes.C:203
 msgid "In Collection"
-msgstr ""
+msgstr "В коллекции"
 
 #: ../src/DocumentTypes.C:218
 msgid "Manual"
-msgstr ""
+msgstr "Руководство"
 
 #: ../src/DocumentTypes.C:230
 msgid "Technical Report"
-msgstr ""
+msgstr "Технический отчет"
 
 #. Translators: this is the format for the document tooltips
 #: ../src/DocumentView.C:261 ../src/DocumentView.C:703
@@ -435,7 +443,7 @@ msgstr ""
 
 #: ../src/DocumentView.C:328
 msgid "Downloaded Documents"
-msgstr ""
+msgstr "Загруженные документы"
 
 #: ../src/DocumentView.C:353
 msgid "Getting info for file '%1'"
@@ -450,6 +458,11 @@ msgid ""
 "%3\n"
 "<i>%4</i>"
 msgstr ""
+"<span size='xx-small'> </span>\n"
+"<small>%1</small>\n"
+"<b>%2</b>\n"
+"%3\n"
+"<i>%4</i>"
 
 #: ../src/Library.C:80
 msgid "Parsing Library XML"
@@ -479,7 +492,7 @@ msgstr ""
 
 #: ../src/Library.C:228
 msgid "Apply choice to all ambiguous locations"
-msgstr ""
+msgstr "Применить выбор ко всем документам с неоднозначным положением"
 
 #: ../src/Library.C:232
 msgid "Keep _Original"
@@ -496,23 +509,23 @@ msgstr "'%s' не является логическим значением"
 
 #: ../src/Linker.C:35
 msgid "DOI Link"
-msgstr ""
+msgstr "DOI ссылка"
 
 #: ../src/Linker.C:56
 msgid "arXiv Link"
-msgstr ""
+msgstr "arXiv ссылка"
 
 #: ../src/Linker.C:75
 msgid "URL Link"
-msgstr ""
+msgstr "URL"
 
 #: ../src/Linker.C:95
 msgid "PubMed Link"
-msgstr ""
+msgstr "PubMed ссылка"
 
 #: ../src/Linker.C:139
 msgid "Google Scholar"
-msgstr ""
+msgstr "Google Scholar"
 
 #: ../src/main.C:91
 msgid "Terminating due to unhandled exception"
@@ -520,15 +533,15 @@ msgstr "Завершение из-за необработанного исклю
 
 #: ../src/Preferences.C:179
 msgid "Enabled"
-msgstr ""
+msgstr "Включен"
 
 #: ../src/Preferences.C:183 ../src/PythonPlugin.C:184
 msgid "Module"
-msgstr ""
+msgstr "Модуль"
 
 #: ../src/Preferences.C:185
 msgid "Description"
-msgstr ""
+msgstr "Описание"
 
 #: ../src/PythonPlugin.C:181
 msgid ""
@@ -537,6 +550,10 @@ msgid ""
 "%3: %4\n"
 "%5: %6"
 msgstr ""
+"<big><b>%1: %2</b></big>\n"
+"\n"
+"%3: %4\n"
+"%5: %6"
 
 #: ../src/PythonPlugin.C:182 ../src/Utility.C:267
 msgid "Exception"
@@ -544,7 +561,7 @@ msgstr "Исключение"
 
 #: ../src/PythonPlugin.C:186
 msgid "Explanation"
-msgstr ""
+msgstr "Пояснение"
 
 #: ../src/RefWindow.C:188
 msgid "Tags"
@@ -560,11 +577,11 @@ msgstr "_Библиотека"
 
 #: ../src/RefWindow.C:291 ../src/RefWindow.C:365
 msgid "_Open..."
-msgstr "Открыть..."
+msgstr "_Открыть..."
 
 #: ../src/RefWindow.C:297
 msgid "Save _As..."
-msgstr ""
+msgstr "Сохранить _как..."
 
 #: ../src/RefWindow.C:300
 msgid "E_xport as BibTeX..."
@@ -580,7 +597,7 @@ msgstr "_Импорт..."
 
 #: ../src/RefWindow.C:309
 msgid "_Work Offline"
-msgstr "_Работать автономно"
+msgstr "Работать _автономно"
 
 #: ../src/RefWindow.C:313
 msgid "_Edit"
@@ -596,12 +613,11 @@ msgstr "Импортировать ссылки в формате BibTeX из б
 
 #: ../src/RefWindow.C:321
 msgid "_Copy LaTeX citation"
-msgstr "_Скопировать цитирование в LaTeX"
+msgstr "_Скопировать LaTeX цитирование"
 
 #: ../src/RefWindow.C:322
 msgid "Copy currently selected keys to the clipboard as a LaTeX citation"
-msgstr ""
-"Скопировать выделенные записи в буфер обмена как цитирование в формате LaTeX"
+msgstr "Скопировать выделенные записи в буфер обмена как LaTeX цитирование"
 
 #: ../src/RefWindow.C:330
 msgid "Use _List View"
@@ -629,7 +645,7 @@ msgstr "_Удалить метку"
 
 #: ../src/RefWindow.C:344
 msgid "_Rename Tag"
-msgstr "П_ереименовать метку"
+msgstr "_Переименовать метку"
 
 #: ../src/RefWindow.C:347
 msgid "_Documents"
@@ -637,19 +653,19 @@ msgstr "_Документы"
 
 #: ../src/RefWindow.C:349
 msgid "_Add File..."
-msgstr "_Добавить файл"
+msgstr "Добавить _файл"
 
 #: ../src/RefWindow.C:352
 msgid "Add _Folder..."
-msgstr ""
+msgstr "Добавить _директорию"
 
 #: ../src/RefWindow.C:355
 msgid "Add E_mpty Reference..."
-msgstr ""
+msgstr "Добавить _пустую запись..."
 
 #: ../src/RefWindow.C:358
 msgid "Add Refere_nce with ID..."
-msgstr ""
+msgstr "Добавить _запись с ID..."
 
 #: ../src/RefWindow.C:361
 msgid "_Remove"
@@ -661,11 +677,11 @@ msgstr "_Извлечь метаданные"
 
 #: ../src/RefWindow.C:375
 msgid "_Delete File from drive"
-msgstr "_Удалить файл с диска"
+msgstr "Уд_алить файл с диска"
 
 #: ../src/RefWindow.C:379
 msgid "R_ename File from Key"
-msgstr ""
+msgstr "П_ереименовать файл по ключу"
 
 #: ../src/RefWindow.C:382
 msgid "_Help"
@@ -697,7 +713,7 @@ msgstr "Сохранить изменения в библиотеке перед
 
 #: ../src/RefWindow.C:862
 msgid "Close _without Saving"
-msgstr "Закрыть _без сохранения"
+msgstr "_Закрыть без сохранения"
 
 #: ../src/RefWindow.C:895
 msgid "Type a tag"
@@ -705,9 +721,7 @@ msgstr "Введите метку"
 
 #: ../src/RefWindow.C:940
 msgid "Are you sure you want to delete \"%1\"?"
-msgstr ""
-"Copy text   \t\n"
-"Вы действительно хотите удалить \"%1\"?"
+msgstr "Вы действительно хотите удалить \"%1\"?"
 
 #: ../src/RefWindow.C:947
 msgid ""
@@ -770,11 +784,11 @@ msgstr ""
 
 #: ../src/RefWindow.C:1137
 msgid "BibTeX file:"
-msgstr "Файл BibTeX"
+msgstr "Файл BibTeX:"
 
 #: ../src/RefWindow.C:1158
 msgid "_Browse..."
-msgstr "П_росмотр..."
+msgstr "_Просмотреть..."
 
 #: ../src/RefWindow.C:1232
 msgid "Open Library"
@@ -802,7 +816,7 @@ msgstr "Показать '%1'"
 
 #: ../src/RefWindow.C:1381
 msgid "Cancelling"
-msgstr ""
+msgstr "Отмена"
 
 #: ../src/RefWindow.C:1389
 msgid "Add Document Files"
@@ -810,7 +824,7 @@ msgstr "Добавить файлы документов"
 
 #: ../src/RefWindow.C:1396
 msgid "Adding document files"
-msgstr ""
+msgstr "Добавить файлы документов"
 
 #: ../src/RefWindow.C:1397
 msgid ""
@@ -818,27 +832,27 @@ msgid ""
 "document is looked up."
 msgstr ""
 "Процесс может занять некоторое время, поскольку просматривается "
-"библлиографическая информация для всех документов."
+"библиографическая информация для всех документов."
 
 #: ../src/RefWindow.C:1422
 msgid "Document"
-msgstr ""
+msgstr "Документ"
 
 #: ../src/RefWindow.C:1423
 msgid "Got text"
-msgstr ""
+msgstr "Получен текст"
 
 #: ../src/RefWindow.C:1424
 msgid "Got ID"
-msgstr ""
+msgstr "Получен ID"
 
 #: ../src/RefWindow.C:1425
 msgid "Got metadata"
-msgstr ""
+msgstr "Получены метаданные"
 
 #: ../src/RefWindow.C:1426
 msgid "Outcome"
-msgstr ""
+msgstr "Итоги"
 
 #: ../src/RefWindow.C:1460
 msgid "%1 of %2 documents"
@@ -846,15 +860,15 @@ msgstr "%1 из %2 документов"
 
 #: ../src/RefWindow.C:1543 ../src/RefWindow.C:1545
 msgid "Cancelled"
-msgstr ""
+msgstr "Отменено"
 
 #: ../src/RefWindow.C:1549
 msgid "Finished"
-msgstr ""
+msgstr "Готово"
 
 #: ../src/RefWindow.C:1585
 msgid "Add Reference with ID"
-msgstr ""
+msgstr "Добавить запись с ID"
 
 #: ../src/RefWindow.C:1653
 msgid "Add Document"
@@ -887,23 +901,23 @@ msgstr ""
 
 #: ../src/RefWindow.C:1758
 msgid "Fetching metadata"
-msgstr ""
+msgstr "Получение метаданных"
 
 #: ../src/RefWindow.C:1788
 msgid "Really rename this file to '%1'?"
-msgstr "Поправде переименовать этот файл в '%1'?"
+msgstr "Действительно переименовать этот файл в '%1'?"
 
 #: ../src/RefWindow.C:1791
 msgid "Really rename these %1 files to their keys?"
-msgstr "Действительно переименовать файлы %1 как из записи?"
+msgstr "Действительно переименовать файлы %1 как их ключи?"
 
 #: ../src/RefWindow.C:1799
 msgid "This action <b>cannot be undone</b>."
-msgstr "Это действие <b>не может быть отменено</b>"
+msgstr "Это действие <b>не может быть отменено</b>."
 
 #: ../src/RefWindow.C:1802
 msgid "Rename from Key"
-msgstr "Переименовать как запись"
+msgstr "Переименовать как ключ"
 
 #: ../src/RefWindow.C:1833
 msgid "Are you sure you want to delete the files of these %1 documents?"
@@ -939,11 +953,11 @@ msgstr "Попытка открыть файл '%1'"
 
 #: ../src/RefWindow.C:1954
 msgid "Working offline"
-msgstr ""
+msgstr "Работать автономно"
 
 #: ../src/RefWindow.C:1955
 msgid "Working online"
-msgstr ""
+msgstr "Работать online"
 
 #: ../src/RefWindow.C:1990
 msgid "Unnamed Library"
@@ -967,7 +981,7 @@ msgstr "импортировано %1 BibTeX ссылок"
 
 #: ../src/Transfer.C:47
 msgid "Work offline?"
-msgstr ""
+msgstr "Работать автономно?"
 
 #: ../src/Transfer.C:48
 msgid ""
@@ -976,18 +990,22 @@ msgid ""
 "operations will be attempted until you choose to work online again in the "
 "Preferences dialog."
 msgstr ""
+"Была проблема при получении метаданных.  Вы хотите\n"
+"работать автономно?  Если Вы выберете этот вариант, никаких\n"
+"сетевых операций более не будет производиться, пока Вы не возобновите\n"
+"подключение в диалоге Настроек."
 
 #: ../src/Transfer.C:59
 msgid "_Stay Online"
-msgstr ""
+msgstr "_Оставаться online"
 
 #: ../src/Transfer.C:61
 msgid "_Go Offline"
-msgstr ""
+msgstr "_Автономная работа"
 
 #: ../src/Transfer.C:101
 msgid "Downloading %1"
-msgstr ""
+msgstr "Загрузка %1"
 
 #: ../src/Transfer.C:286
 msgid "Opening URI '%1' on server"
@@ -1013,4 +1031,4 @@ msgstr ""
 
 #: ../src/Utility.C:270
 msgid "The operation underway was: \"%1\""
-msgstr ""
+msgstr "Прерванная операция: \"%1\""

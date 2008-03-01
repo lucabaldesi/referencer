@@ -1,16 +1,16 @@
-# Danish translation for referencer
-# Copyright (c) 2007 Rosetta Contributors and Canonical Ltd 2007
+# Serbian translation for referencer
+# Copyright (c) 2008 Rosetta Contributors and Canonical Ltd 2008
 # This file is distributed under the same license as the referencer package.
-# FIRST AUTHOR <EMAIL@ADDRESS>, 2007.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2008.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: referencer\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
 "POT-Creation-Date: 2008-02-03 00:06+0000\n"
-"PO-Revision-Date: 2008-03-01 09:18+0000\n"
-"Last-Translator: Andreas Dalsgaard <andreas.dalsgaard@gmail.com>\n"
-"Language-Team: Danish <da@li.org>\n"
+"PO-Revision-Date: 2008-02-07 22:25+0000\n"
+"Last-Translator: Vladimir Lazic <vlazic@gmail.com>\n"
+"Language-Team: Serbian <sr@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -19,78 +19,78 @@ msgstr ""
 
 #: ../data/documentproperties.glade.h:1
 msgid "<b>Document</b>"
-msgstr "<b>Dokument</b>"
+msgstr "<b>Документ</b>"
 
 #: ../data/documentproperties.glade.h:2
 msgid "<b>E_xtra Fields</b>"
-msgstr "<b>E_kstra Felter</b>"
+msgstr "<b>Д_одатна поља</b>"
 
 #: ../data/documentproperties.glade.h:3
 msgid "<b>Metadata</b>"
-msgstr "<b>Metadata</b>"
+msgstr "<b>Подаци</b>"
 
 #: ../data/documentproperties.glade.h:4
 msgid "Add a field"
-msgstr "Tilføj et felt"
+msgstr "Додај поље"
 
 #: ../data/documentproperties.glade.h:5
 msgid "Attempt to look up metadata for this document online"
-msgstr "Forsøg at finde metadata for dette dokument online"
+msgstr "Покушавам да добавим податке о овом документу са интернета"
 
 #: ../data/documentproperties.glade.h:6
 msgid "Clear metadata"
-msgstr "Fjern metadata"
+msgstr "Очисти податке"
 
 #: ../data/documentproperties.glade.h:7
 msgid "Delete this field"
-msgstr "Slet dette felt"
+msgstr "Обриши ово поље"
 
 #: ../data/documentproperties.glade.h:8
 msgid "Document Properties"
-msgstr "Dokument egenskaber"
+msgstr "Својства документа"
 
 #: ../data/documentproperties.glade.h:9
 msgid "File:"
-msgstr "Fil"
+msgstr "Датотека:"
 
 #: ../data/documentproperties.glade.h:10
 msgid "Fill out metadata from BibTeX on clipboard"
-msgstr "Udfyld metadata fra BibTex i udklipsholderen"
+msgstr "Kopiraj податке из BibTeX у клипборд"
 
 #: ../data/documentproperties.glade.h:11
 msgid "Rename this field"
-msgstr "Omdøb dette felt"
+msgstr "Преименуј ово поље"
 
 #: ../data/documentproperties.glade.h:12
 msgid "Select A File"
-msgstr "Vælge en Fil"
+msgstr "Изаберите датотеку"
 
 #: ../data/documentproperties.glade.h:13
 msgid "_Key:"
-msgstr "_Nøgle"
+msgstr "_Тастер:"
 
 #: ../data/documentproperties.glade.h:14
 msgid "_Look Up"
-msgstr "_Slå op"
+msgstr "_Пронађи"
 
 #: ../data/documentproperties.glade.h:15 ../src/RefWindow.C:317
 msgid "_Paste BibTeX"
-msgstr "_Indsæt BibTex"
+msgstr "_Убаци BibTeX"
 
 #: ../data/preferences.glade.h:1
 msgid "<b>CrossRef Plugin</b>"
-msgstr "<b>CrossRef udvidelsesmodul</b>"
+msgstr "<b>CrossRef додатак</b>"
 
 #: ../data/preferences.glade.h:2
 msgid "<b>Proxy</b>"
-msgstr "<b>Proxy</b>"
+msgstr "<b>Прокси</b>"
 
 #: ../data/preferences.glade.h:3
 msgid ""
 "<i>Plugins at the top of the list are tried first when looking up "
 "metadata.</i>"
 msgstr ""
-"<i>Udvidelsesmoduler øverst i listen prøves først når metadata slåes op.</i>"
+"<i>Додаци са врха листе имају предност у току потраге за подацима.</i>"
 
 #: ../data/preferences.glade.h:4
 msgid ""
@@ -98,340 +98,326 @@ msgid ""
 "to all Gnome applications.  Auto-configuration\n"
 " URLs are not supported.</i>"
 msgstr ""
-"<i>Disse proxy indstillinger virker for alle gnome \n"
-"programmer. Auto-konfigurering af \n"
-"hjemmesideadresser er ikke understøttet.</i>"
 
 #: ../data/preferences.glade.h:7
 msgid "Host:"
-msgstr "Vært:"
+msgstr "Домаћин:"
 
 #: ../data/preferences.glade.h:8
 msgid "Move _down"
-msgstr "Flyt _ned"
+msgstr ""
 
 #: ../data/preferences.glade.h:9
 msgid "Move _up"
-msgstr "Flyt _op"
+msgstr ""
 
 #: ../data/preferences.glade.h:10
 msgid "Network"
-msgstr "Netværk"
+msgstr ""
 
 #: ../data/preferences.glade.h:11
 msgid "Password:"
-msgstr "Adgangskode"
+msgstr ""
 
 #: ../data/preferences.glade.h:12
 msgid "Plugins"
-msgstr "Udvidelsesmoduler"
+msgstr ""
 
 #: ../data/preferences.glade.h:13
 msgid "Port:"
-msgstr "Port:"
+msgstr ""
 
 #: ../data/preferences.glade.h:14
 msgid "Preferences"
-msgstr "Præferencer"
+msgstr ""
 
 #: ../data/preferences.glade.h:15
 msgid ""
 "The CrossRef OpenURL interface requires a username and password.\n"
 "http://www.crossref.org/requestaccount/"
 msgstr ""
-"CrossRef OpenURL interfacet kræver et brugernavn og password.\n"
-"http://www.crossref.org/requestaccount/"
 
 #: ../data/preferences.glade.h:17
 msgid "Use authentication"
-msgstr "Brug identifikation"
+msgstr ""
 
 #: ../data/preferences.glade.h:18
 msgid "Use web proxy"
-msgstr "Brug web proxy"
+msgstr ""
 
 #: ../data/preferences.glade.h:19
 msgid "Username:"
-msgstr "Brugernavn"
+msgstr ""
 
 #: ../plugins/pubmed.py:16
 msgid "PubMed DOI resolver"
-msgstr "PubMed DOI finder"
+msgstr ""
 
 #: ../plugins/pubmed.py:34
 msgid "Resolving DOI"
-msgstr "Finder DOI"
+msgstr ""
 
 #: ../plugins/pubmed.py:34
 #, python-format
 msgid "Finding PubMed ID from DOI %s"
 msgstr ""
-"Copy text   \t\n"
-"Finder PubMed ID fra DOI %s"
 
 #: ../plugins/pubmed.py:62
 msgid "Resolving PubMed ID"
-msgstr "Finder PubMed ID"
+msgstr ""
 
 #: ../plugins/pubmed.py:62
 #, python-format
 msgid "Fetching metadata from NCBI for PubMed ID %s"
-msgstr "Henter metadata fra NCBI for PubMed ID %s"
+msgstr ""
 
 #: ../plugins/lyx.py:10 ../plugins/lyx.py:11
 msgid "Cite in LyX"
-msgstr "Citeer i LyX"
+msgstr ""
 
 #: ../plugins/lyx.py:12
 msgid "Cite the selected documents in LyX"
-msgstr "Citeer den markerede tekst i LyX"
+msgstr ""
 
 #: ../src/ArxivPlugin.C:46
 msgid "Retrieving metadata"
-msgstr "Modtager metadata"
+msgstr ""
 
 #: ../src/ArxivPlugin.C:48
 msgid "Contacting citebase.org to retrieve metadata for '%1'"
-msgstr "Kontakter citebase.org for at hente metadata for '%1'"
+msgstr ""
 
 #: ../src/ArxivPlugin.C:55 ../src/CrossRefPlugin.C:184
 msgid "Downloading Metadata"
-msgstr "Downloader Metadata"
+msgstr ""
 
 #: ../src/ArxivPlugin.C:59 ../src/CrossRefPlugin.C:159
 #: ../src/CrossRefPlugin.C:201 ../src/PluginManager.C:44
 msgid "Downloading metadata"
-msgstr "Downloader metadata"
+msgstr ""
 
 #: ../src/ArxivPlugin.C:90
 msgid "Parsing BibTeX"
-msgstr "Parser BibTex"
+msgstr ""
 
 #: ../src/ArxivPlugin.C:106
 msgid "Arxiv.org ArXiv-ID resolver"
 msgstr ""
-"Copy text   \t\n"
-"Arxiv.org ArXiv-ID finder"
 
 #: ../src/CrossRefPlugin.C:123
 msgid "CrossRef credentials not found"
-msgstr "CrossRef anbefalinger blev ikke fundet"
+msgstr ""
 
 #: ../src/CrossRefPlugin.C:124
 msgid ""
 "To use the CrossRef service, a free account is needed.  Login information "
 "may be set in Preferences, or the CrossRef plugin may be disabled."
 msgstr ""
-"For at bruge CrossRef servicen skal der bruges en gratis brugerkonto. Login "
-"informationer kan sættes i Præferencer, eller CrossRef plugin'et kan "
-"deaktiveres."
 
 #: ../src/CrossRefPlugin.C:133
 msgid "_Preferences"
-msgstr "_Præferencer"
+msgstr ""
 
 #: ../src/CrossRefPlugin.C:134
 msgid "_Disable CrossRef"
-msgstr "Slå CrossRef _fra"
+msgstr ""
 
 #: ../src/CrossRefPlugin.C:161
 msgid "Contacting crossref.org to retrieve metadata for '%1'"
-msgstr "Kontakter crossref.org for at hente metadata for '%1'"
+msgstr ""
 
 #: ../src/CrossRefPlugin.C:196
 msgid ""
 "Parsing CrossRef XML.  The DOI could be invalid, or not known to crossref.org"
 msgstr ""
-"Parser CrossRef XML.  DOI'en kan være ugyldig, eller være ukendt for "
-"crossref.org"
 
 #: ../src/CrossRefPlugin.C:217
 msgid "Crossref.org OpenURL DOI resolver"
-msgstr "Crossref.org OpenURL DOI finder"
+msgstr ""
 
 #: ../src/Document.C:37
 msgid "Unnamed"
-msgstr "Unavngivet"
+msgstr ""
 
 #: ../src/Document.C:557
 msgid "Moving '%1' to '%2'"
-msgstr "Flytter '%1' til '%2'"
+msgstr ""
 
 #: ../src/DocumentList.C:177
 msgid "Opening file '%1'"
-msgstr "Åbner filen '%1'"
+msgstr ""
 
 #: ../src/DocumentList.C:196
 msgid "Reading file '%1'"
-msgstr "Læser filen '%1'"
+msgstr ""
 
 #: ../src/DocumentList.C:242
 msgid "Parsing import"
-msgstr "Parser import"
+msgstr ""
 
 #: ../src/DocumentList.C:255
 msgid "Extracting document %1 from bibutils structure"
-msgstr "Udtrækker dokument %1 fra bibutils strukturen"
+msgstr ""
 
 #: ../src/DocumentProperties.C:204
 msgid "_Type:"
-msgstr "_Type:"
+msgstr ""
 
 #: ../src/DocumentProperties.C:405 ../src/RefWindow.C:2142
 msgid "Converting clipboard text to latin1"
-msgstr "Konvertere udklipsholderens tekst til latin1"
+msgstr ""
 
 #: ../src/DocumentProperties.C:432 ../src/RefWindow.C:2169
 msgid "No references found on clipboard.\n"
-msgstr "Ingen referencer fundet i udklipsholderen.\n"
+msgstr ""
 
 #: ../src/DocumentProperties.C:436
 msgid "Multiple references found on clipboard.\n"
-msgstr "Mere end en referance blev fundet i udklipsholderen\n"
+msgstr ""
 
 #: ../src/DocumentTypes.C:31 ../src/DocumentView.C:1080
 msgid "Title"
-msgstr "Titel:"
+msgstr ""
 
 #: ../src/DocumentTypes.C:32 ../src/DocumentView.C:1081
 msgid "Authors"
-msgstr "Forfattere"
+msgstr ""
 
 #: ../src/DocumentTypes.C:33
 msgid "Journal"
-msgstr "Journal"
+msgstr ""
 
 #: ../src/DocumentTypes.C:34 ../src/DocumentView.C:1082
 msgid "Year"
-msgstr "År"
+msgstr ""
 
 #: ../src/DocumentTypes.C:36
 msgid "Volume"
-msgstr "Volume"
+msgstr ""
 
 #: ../src/DocumentTypes.C:37
 msgid "Issue"
-msgstr "Issue"
+msgstr ""
 
 #: ../src/DocumentTypes.C:38
 msgid "Pages"
-msgstr "Sider"
+msgstr ""
 
 #: ../src/DocumentTypes.C:39
 msgid "Month"
-msgstr "Måned"
+msgstr ""
 
 #: ../src/DocumentTypes.C:40
 msgid "Note"
-msgstr "Note"
+msgstr ""
 
 #: ../src/DocumentTypes.C:41 ../src/DocumentView.C:1079
 msgid "Key"
-msgstr "Nøgle"
+msgstr ""
 
 #: ../src/DocumentTypes.C:43
 msgid "Editor"
-msgstr "Redaktør"
+msgstr ""
 
 #: ../src/DocumentTypes.C:44
 msgid "Publisher"
-msgstr "Udgiver"
+msgstr ""
 
 #: ../src/DocumentTypes.C:45
 msgid "Series"
-msgstr "Serie"
+msgstr ""
 
 #: ../src/DocumentTypes.C:46
 msgid "Address"
-msgstr "Adresse"
+msgstr ""
 
 #: ../src/DocumentTypes.C:47
 msgid "Edition"
-msgstr "Udgave"
+msgstr ""
 
 #: ../src/DocumentTypes.C:49
 msgid "Book title"
-msgstr "Bogtitel"
+msgstr ""
 
 #: ../src/DocumentTypes.C:50
 msgid "Organisation"
-msgstr "Organisation"
+msgstr ""
 
 #: ../src/DocumentTypes.C:52
 msgid "How published"
-msgstr "Udgivet hvordan"
+msgstr ""
 
 #: ../src/DocumentTypes.C:54
 msgid "School"
-msgstr "Skole"
+msgstr ""
 
 #: ../src/DocumentTypes.C:55
 msgid "Institution"
-msgstr "Institution"
+msgstr ""
 
 #: ../src/DocumentTypes.C:56
 msgid "Chapter"
-msgstr "Kapitel"
+msgstr ""
 
 #: ../src/DocumentTypes.C:57
 msgid "Type"
-msgstr "Type"
+msgstr ""
 
 #: ../src/DocumentTypes.C:60
 msgid "Article"
-msgstr "Artikel"
+msgstr ""
 
 #: ../src/DocumentTypes.C:76
 msgid "Book"
-msgstr "Bog"
+msgstr ""
 
 #: ../src/DocumentTypes.C:94
 msgid "In Proceedings"
-msgstr "I referat"
+msgstr ""
 
 #: ../src/DocumentTypes.C:111
 msgid "Misc"
-msgstr "Diverse"
+msgstr ""
 
 #: ../src/DocumentTypes.C:121
 msgid "Unpublished"
-msgstr "Ikke udgivet"
+msgstr ""
 
 #: ../src/DocumentTypes.C:130
 msgid "Master's thesis"
-msgstr "Master afhandling"
+msgstr ""
 
 #: ../src/DocumentTypes.C:141
 msgid "PhD thesis"
-msgstr "PhD afhandling"
+msgstr ""
 
 #: ../src/DocumentTypes.C:152
 msgid "Proceedings"
-msgstr "Referater"
+msgstr ""
 
 #: ../src/DocumentTypes.C:164
 msgid "Conference"
-msgstr "Konference"
+msgstr ""
 
 #: ../src/DocumentTypes.C:175
 msgid "In Book"
-msgstr "I Bog"
+msgstr ""
 
 #: ../src/DocumentTypes.C:192
 msgid "Booklet"
-msgstr "Brochure"
+msgstr ""
 
 #: ../src/DocumentTypes.C:203
 msgid "In Collection"
-msgstr "I Samling"
+msgstr ""
 
 #: ../src/DocumentTypes.C:218
 msgid "Manual"
-msgstr "Manual"
+msgstr ""
 
 #: ../src/DocumentTypes.C:230
 msgid "Technical Report"
-msgstr "Teknisk Rapport"
+msgstr ""
 
 #. Translators: this is the format for the document tooltips
 #: ../src/DocumentView.C:261 ../src/DocumentView.C:703
@@ -440,17 +426,14 @@ msgid ""
 "%2\n"
 "<i>%3</i>"
 msgstr ""
-"<b>%1</b>\n"
-"%2\n"
-"<i>%3</i>"
 
 #: ../src/DocumentView.C:328
 msgid "Downloaded Documents"
-msgstr "Downloadede Dokumenter"
+msgstr ""
 
 #: ../src/DocumentView.C:353
 msgid "Getting info for file '%1'"
-msgstr "Henter infor for filen '%1'"
+msgstr ""
 
 #. Translators: this is the format for the document captions
 #: ../src/DocumentView.C:728
@@ -461,24 +444,18 @@ msgid ""
 "%3\n"
 "<i>%4</i>"
 msgstr ""
-"Copy text   \t\n"
-"<span size='xx-small'> </span>\n"
-"<small>%1</small>\n"
-"<b>%2</b>\n"
-"%3\n"
-"<i>%4</i>"
 
 #: ../src/Library.C:80
 msgid "Parsing Library XML"
-msgstr "Parser Biblioteks XML"
+msgstr ""
 
 #: ../src/Library.C:120
 msgid "Opening %1"
-msgstr "Åbner %1"
+msgstr ""
 
 #: ../src/Library.C:210
 msgid "Document location ambiguity"
-msgstr "Dokument placering er tvetydig"
+msgstr ""
 
 #: ../src/Library.C:212
 msgid ""
@@ -488,64 +465,59 @@ msgid ""
 "\n"
 "Do you want to keep the original location, or update it to the new one?"
 msgstr ""
-"Filen '%1' eksistere to forskellige steder:\n"
-"\tOriginal: <b>%2</b>\n"
-"\tNy: <b>%3</b>\n"
-"\n"
-"Vil du beholde den orginaleplacering eller opdatere den til den nye?"
 
 #: ../src/Library.C:228
 msgid "Apply choice to all ambiguous locations"
-msgstr "Udfør valg til alle tvetydige placeringer"
+msgstr ""
 
 #: ../src/Library.C:232
 msgid "Keep _Original"
-msgstr "Behold _Orginalen"
+msgstr ""
 
 #: ../src/Library.C:233
 msgid "Use _New"
-msgstr "Brug Den _Nye"
+msgstr ""
 
 #: ../src/LibraryParser.h:85
 #, c-format
 msgid "'%s' is not a valid boolean value"
-msgstr "'%s' er ikke en gyldig boolsk værdi"
+msgstr ""
 
 #: ../src/Linker.C:35
 msgid "DOI Link"
-msgstr "DOI Link"
+msgstr ""
 
 #: ../src/Linker.C:56
 msgid "arXiv Link"
-msgstr "arXiv Link"
+msgstr ""
 
 #: ../src/Linker.C:75
 msgid "URL Link"
-msgstr "URL Link"
+msgstr ""
 
 #: ../src/Linker.C:95
 msgid "PubMed Link"
-msgstr "PubMed Link"
+msgstr ""
 
 #: ../src/Linker.C:139
 msgid "Google Scholar"
-msgstr "Google Scholar"
+msgstr ""
 
 #: ../src/main.C:91
 msgid "Terminating due to unhandled exception"
-msgstr "Afsluter pga. en uventet handling"
+msgstr ""
 
 #: ../src/Preferences.C:179
 msgid "Enabled"
-msgstr "Aktiveret"
+msgstr ""
 
 #: ../src/Preferences.C:183 ../src/PythonPlugin.C:184
 msgid "Module"
-msgstr "Modul"
+msgstr ""
 
 #: ../src/Preferences.C:185
 msgid "Description"
-msgstr "Beskrivelse"
+msgstr ""
 
 #: ../src/PythonPlugin.C:181
 msgid ""
@@ -554,439 +526,421 @@ msgid ""
 "%3: %4\n"
 "%5: %6"
 msgstr ""
-"<big><b>%1: %2</b></big>\n"
-"\n"
-"%3: %4\n"
-"%5: %6"
 
 #: ../src/PythonPlugin.C:182 ../src/Utility.C:267
 msgid "Exception"
-msgstr "Undtagelse"
+msgstr ""
 
 #: ../src/PythonPlugin.C:186
 msgid "Explanation"
-msgstr "Forklaring"
+msgstr ""
 
 #: ../src/RefWindow.C:188
 msgid "Tags"
-msgstr "Tags"
+msgstr ""
 
 #: ../src/RefWindow.C:216
 msgid "This Document"
-msgstr "Dette Dokument"
+msgstr ""
 
 #: ../src/RefWindow.C:286
 msgid "_Library"
-msgstr "_Bibliotek"
+msgstr ""
 
 #: ../src/RefWindow.C:291 ../src/RefWindow.C:365
 msgid "_Open..."
-msgstr "_Åben"
+msgstr ""
 
 #: ../src/RefWindow.C:297
 msgid "Save _As..."
-msgstr "Gem _som..."
+msgstr ""
 
 #: ../src/RefWindow.C:300
 msgid "E_xport as BibTeX..."
-msgstr "_Eksporter af BibTex"
+msgstr ""
 
 #: ../src/RefWindow.C:303
 msgid "_Manage BibTeX File..."
-msgstr "_Administre BibTex Fil..."
+msgstr ""
 
 #: ../src/RefWindow.C:306
 msgid "_Import..."
-msgstr "Importér"
+msgstr ""
 
 #: ../src/RefWindow.C:309
 msgid "_Work Offline"
-msgstr "_Arbejd frakoblet"
+msgstr ""
 
 #: ../src/RefWindow.C:313
 msgid "_Edit"
-msgstr "_Redigér"
+msgstr ""
 
 #: ../src/RefWindow.C:315
 msgid "_View"
-msgstr "_Vis"
+msgstr ""
 
 #: ../src/RefWindow.C:318
 msgid "Import references from BibTeX on the clipboard"
-msgstr "Importer referencer fra BibTex i udklipsholderen"
+msgstr ""
 
 #: ../src/RefWindow.C:321
 msgid "_Copy LaTeX citation"
-msgstr "_Kopier LaTex citering"
+msgstr ""
 
 #: ../src/RefWindow.C:322
 msgid "Copy currently selected keys to the clipboard as a LaTeX citation"
-msgstr "Kopier de markerede nøgler til udklipsholderen som Latex citering"
+msgstr ""
 
 #: ../src/RefWindow.C:330
 msgid "Use _List View"
-msgstr "Brug _Liste oversigt"
+msgstr ""
 
 #: ../src/RefWindow.C:332
 msgid "Use _Icon View"
-msgstr "Brug _Ikon oversigt"
+msgstr ""
 
 #: ../src/RefWindow.C:334
 msgid "_Show Tag Pane"
-msgstr "_Vis Tag Vindue"
+msgstr ""
 
 #: ../src/RefWindow.C:336
 msgid "_Tags"
-msgstr "_Tags"
+msgstr ""
 
 #: ../src/RefWindow.C:338
 msgid "_Create Tag..."
-msgstr "_Lav Tag..."
+msgstr ""
 
 #: ../src/RefWindow.C:341
 msgid "_Delete Tag"
-msgstr "_Slet Tag"
+msgstr ""
 
 #: ../src/RefWindow.C:344
 msgid "_Rename Tag"
-msgstr "_Omdøb Tag"
+msgstr ""
 
 #: ../src/RefWindow.C:347
 msgid "_Documents"
-msgstr "_Dokumenter"
+msgstr ""
 
 #: ../src/RefWindow.C:349
 msgid "_Add File..."
-msgstr "_Tilføj File..."
+msgstr ""
 
 #: ../src/RefWindow.C:352
 msgid "Add _Folder..."
-msgstr "Tilføj _mappe"
+msgstr ""
 
 #: ../src/RefWindow.C:355
 msgid "Add E_mpty Reference..."
-msgstr "Tilføj Tom Referance..."
+msgstr ""
 
 #: ../src/RefWindow.C:358
 msgid "Add Refere_nce with ID..."
-msgstr "Tilføj Refere_nce med ID..."
+msgstr ""
 
 #: ../src/RefWindow.C:361
 msgid "_Remove"
-msgstr "_Fjern"
+msgstr ""
 
 #: ../src/RefWindow.C:372
 msgid "_Get Metadata"
-msgstr "_Hent Metadata"
+msgstr ""
 
 #: ../src/RefWindow.C:375
 msgid "_Delete File from drive"
-msgstr "_Slet Fil fra disk"
+msgstr ""
 
 #: ../src/RefWindow.C:379
 msgid "R_ename File from Key"
-msgstr "_Omdøb File fra Nøgle"
+msgstr ""
 
 #: ../src/RefWindow.C:382
 msgid "_Help"
-msgstr "_Hjælp"
+msgstr ""
 
 #: ../src/RefWindow.C:384
 msgid "Introduction"
-msgstr "Introduktion"
+msgstr ""
 
 #: ../src/RefWindow.C:588
 msgid "All"
-msgstr "Alt"
+msgstr ""
 
 #: ../src/RefWindow.C:593
 msgid "Untagged"
-msgstr "Uden Tags"
+msgstr ""
 
 #: ../src/RefWindow.C:811
 msgid "%1 documents (%2 selected)"
-msgstr "%1 dokumenter (% markeret)"
+msgstr ""
 
 #: ../src/RefWindow.C:815
 msgid "%1 documents"
-msgstr "%1 dokumenter"
+msgstr ""
 
 #: ../src/RefWindow.C:856
 msgid "Save changes to library before closing?"
-msgstr "Gem ændringer til biblioteket før afslutning?"
+msgstr ""
 
 #: ../src/RefWindow.C:862
 msgid "Close _without Saving"
-msgstr "Luk _uden at gemme"
+msgstr ""
 
 #: ../src/RefWindow.C:895
 msgid "Type a tag"
-msgstr "Indtast et tag"
+msgstr ""
 
 #: ../src/RefWindow.C:940
 msgid "Are you sure you want to delete \"%1\"?"
-msgstr "Er du sikker du ønsker at slette \"%1\"?"
+msgstr ""
 
 #: ../src/RefWindow.C:947
 msgid ""
 "When a tag is deleted it is also permanently removed from all documents it "
 "is currently associated with."
 msgstr ""
-"Når et tag slettes bliver det også permanent fjernet fra alle de dokumenter "
-"det er associeret med."
 
 #: ../src/RefWindow.C:1000
 msgid "Export BibTeX"
-msgstr "Eksporter BibTex"
+msgstr ""
 
 #: ../src/RefWindow.C:1009 ../src/RefWindow.C:1087 ../src/RefWindow.C:2052
 msgid "BibTeX Files"
-msgstr "BibTex Filer"
+msgstr ""
 
 #: ../src/RefWindow.C:1014 ../src/RefWindow.C:1092 ../src/RefWindow.C:1254
 #: ../src/RefWindow.C:1312 ../src/RefWindow.C:2039
 msgid "All Files"
-msgstr "Alle Filer"
+msgstr ""
 
 #: ../src/RefWindow.C:1025
 msgid "Selection:"
-msgstr "Markering:"
+msgstr ""
 
 #: ../src/RefWindow.C:1028
 msgid "All Documents"
-msgstr "Alle dokumenter"
+msgstr ""
 
 #: ../src/RefWindow.C:1029
 msgid "Selected Documents"
-msgstr "Markeret Dokument"
+msgstr ""
 
 #. Any options here should be replicated in onManageBibtex
 #. Any options here should be replicated in onExportBibtex
 #: ../src/RefWindow.C:1035 ../src/RefWindow.C:1174
 msgid "Protect capitalization (surround values with {})"
-msgstr "Beskyt kapitalisering (Omring værdier med {})"
+msgstr ""
 
 #: ../src/RefWindow.C:1037 ../src/RefWindow.C:1177
 msgid "Use Unicode (UTF-8) encoding"
-msgstr "Brug Unicode (UTF-8) enkodning"
+msgstr ""
 
 #: ../src/RefWindow.C:1080
 msgid "Browse"
-msgstr "Gennemse..."
+msgstr ""
 
 #: ../src/RefWindow.C:1114 ../src/RefWindow.C:1129
 msgid "Manage BibTeX File"
-msgstr "Administre BibTex Fil"
+msgstr ""
 
 #: ../src/RefWindow.C:1130
 msgid ""
 "If you choose a file here, it will be overwritten whenever this library is "
 "saved."
 msgstr ""
-"Hvis du vælger en fil her, så vil den blive overskrevet hver gang "
-"biblioteket gemmes."
 
 #: ../src/RefWindow.C:1137
 msgid "BibTeX file:"
-msgstr "BibTex Fil:"
+msgstr ""
 
 #: ../src/RefWindow.C:1158
 msgid "_Browse..."
-msgstr "_Gennemse"
+msgstr ""
 
 #: ../src/RefWindow.C:1232
 msgid "Open Library"
-msgstr "Åben Bibliotek"
+msgstr ""
 
 #: ../src/RefWindow.C:1249 ../src/RefWindow.C:1307
 msgid "Referencer Libraries"
-msgstr "Referencer Biblioteker"
+msgstr ""
 
 #: ../src/RefWindow.C:1298
 msgid "Save Library As"
-msgstr "Gem Bibliotek Som"
+msgstr ""
 
 #. Translators: your name here!
 #: ../src/RefWindow.C:1352
 msgid "translator-credits"
 msgstr ""
 "Launchpad Contributions:\n"
-"  Andreas Dalsgaard https://launchpad.net/~andreas-dalsgaard"
+"  Vladimir Lazic https://launchpad.net/~vlazic"
 
 #: ../src/RefWindow.C:1372
 msgid "Showing '%1'"
-msgstr "Visning %1"
+msgstr ""
 
 #: ../src/RefWindow.C:1381
 msgid "Cancelling"
-msgstr "Anullere"
+msgstr ""
 
 #: ../src/RefWindow.C:1389
 msgid "Add Document Files"
-msgstr "Tilføj Dokument Filer"
+msgstr ""
 
 #: ../src/RefWindow.C:1396
 msgid "Adding document files"
-msgstr "Tilføjer dokument filer"
+msgstr ""
 
 #: ../src/RefWindow.C:1397
 msgid ""
 "This process may take some time as the bibliographic information for each "
 "document is looked up."
 msgstr ""
-"Denne proces kan tage nogle minutter mens de bibliografisk informationer for "
-"hvert dokument hentes"
 
 #: ../src/RefWindow.C:1422
 msgid "Document"
-msgstr "Dokument"
+msgstr ""
 
 #: ../src/RefWindow.C:1423
 msgid "Got text"
-msgstr "Har tekst"
+msgstr ""
 
 #: ../src/RefWindow.C:1424
 msgid "Got ID"
-msgstr "Har ID"
+msgstr ""
 
 #: ../src/RefWindow.C:1425
 msgid "Got metadata"
-msgstr "Har metadata"
+msgstr ""
 
 #: ../src/RefWindow.C:1426
 msgid "Outcome"
-msgstr "Resultat"
+msgstr ""
 
 #: ../src/RefWindow.C:1460
 msgid "%1 of %2 documents"
-msgstr "%1 af %2 dokumenter"
+msgstr ""
 
 #: ../src/RefWindow.C:1543 ../src/RefWindow.C:1545
 msgid "Cancelled"
-msgstr "Annulleret"
+msgstr ""
 
 #: ../src/RefWindow.C:1549
 msgid "Finished"
-msgstr "Fuldført"
+msgstr ""
 
 #: ../src/RefWindow.C:1585
 msgid "Add Reference with ID"
-msgstr "Tilføj reference med ID"
+msgstr ""
 
 #: ../src/RefWindow.C:1653
 msgid "Add Document"
-msgstr "Tilføj Dokument"
+msgstr ""
 
 #: ../src/RefWindow.C:1684
 msgid "Add Folder"
-msgstr "Tilføj mappe"
+msgstr ""
 
 #: ../src/RefWindow.C:1721
 msgid "Are you sure you want to remove these %1 documents?"
-msgstr "Er du sikker på du vil fjerne disse %1 dokumenter?"
+msgstr ""
 
 #: ../src/RefWindow.C:1723
 msgid ""
 "All tag associations and metadata for these documents will be permanently "
 "lost."
 msgstr ""
-"Alle tags tilknytninger og metadata  for disse dokumenter vil blive slettet "
-"permanent."
 
 #: ../src/RefWindow.C:1726
 msgid "Are you sure you want to remove '%1'?"
-msgstr "Er du sikker på du vil fjerne '%1'?"
+msgstr ""
 
 #: ../src/RefWindow.C:1728
 msgid ""
 "All tag associations and metadata for the document will be permanently lost."
 msgstr ""
-"Alle tags tilknytninger og metadata for dette dokument vil blive slettet "
-"permanent."
 
 #: ../src/RefWindow.C:1758
 msgid "Fetching metadata"
-msgstr "Henter metadata"
+msgstr ""
 
 #: ../src/RefWindow.C:1788
 msgid "Really rename this file to '%1'?"
-msgstr "Ønsker du virkelig at omdøbe denne fil til '%1'?"
+msgstr ""
 
 #: ../src/RefWindow.C:1791
 msgid "Really rename these %1 files to their keys?"
-msgstr "Ønsker du virkelig at disse filer skal navngives efter deres nøgler?"
+msgstr ""
 
 #: ../src/RefWindow.C:1799
 msgid "This action <b>cannot be undone</b>."
-msgstr "Denne handling kan <b>ikke fortrydes</b>."
+msgstr ""
 
 #: ../src/RefWindow.C:1802
 msgid "Rename from Key"
-msgstr "Omdøb udfra nøglen"
+msgstr ""
 
 #: ../src/RefWindow.C:1833
 msgid "Are you sure you want to delete the files of these %1 documents?"
-msgstr "Er du sikker på du vil slette filerne fra disse %1 dokumenter?"
+msgstr ""
 
 #: ../src/RefWindow.C:1835
 msgid ""
 "All tag associations and metadata for these documents will be permanently "
 "lost, and the files they refer to will be irretrievably deleted."
 msgstr ""
-"Alle tags tilknytninger og metadata for disse dokumenter vil blive slettet "
-"permanent og de filer de henviser til vil blive uafhjælpeligt slettet."
 
 #: ../src/RefWindow.C:1841
 msgid "Are you sure you want to delete the file of '%1'?"
-msgstr "Er du sikker på du vil slette filen med '%1'?"
+msgstr ""
 
 #: ../src/RefWindow.C:1843
 msgid ""
 "All tag associations and metadata for the document will be permanently lost, "
 "and the file it refers to will be irretrievably deleted."
 msgstr ""
-"Alle tags tilknytninger og metadata for dette dokument vil blive permanent "
-"slettet og filen som den henviser til vil blive hjælpeløst slettet."
 
 #: ../src/RefWindow.C:1871
 msgid "Deleting '%1'"
-msgstr "Sletter '%1'"
+msgstr ""
 
 #: ../src/RefWindow.C:1893
 msgid "Trying to open file '%1'"
-msgstr "Prøver at åbne filen '%1'"
+msgstr ""
 
 #: ../src/RefWindow.C:1954
 msgid "Working offline"
-msgstr "Arbejder offline"
+msgstr ""
 
 #: ../src/RefWindow.C:1955
 msgid "Working online"
-msgstr "Arbejder online"
+msgstr ""
 
 #: ../src/RefWindow.C:1990
 msgid "Unnamed Library"
-msgstr "Unavngivet Bibliotek"
+msgstr ""
 
 #: ../src/RefWindow.C:2024
 msgid "Import References"
-msgstr "Importer Referencer"
+msgstr ""
 
 #: ../src/RefWindow.C:2047
 msgid "Bibliography Files"
-msgstr "Bibliografi Filer"
+msgstr ""
 
 #: ../src/RefWindow.C:2058
 msgid "Format:"
-msgstr "Format:"
+msgstr ""
 
 #: ../src/RefWindow.C:2163
 msgid "Imported %1 BibTeX references"
-msgstr "Importer %1 BibTex referencer"
+msgstr ""
 
 #: ../src/Transfer.C:47
 msgid "Work offline?"
-msgstr "Arbejde offline?"
+msgstr ""
 
 #: ../src/Transfer.C:48
 msgid ""
@@ -995,34 +949,30 @@ msgid ""
 "operations will be attempted until you choose to work online again in the "
 "Preferences dialog."
 msgstr ""
-"Der opstod et problem ved modtagelse af metadata, vil du arbejde offline? "
-"Hvis du vælger at arbejde offline, vil efterfølgende netværks operationer "
-"ikke blive udført før du vælger at arbejde online igen i Præference dialog "
-"vinduet."
 
 #: ../src/Transfer.C:59
 msgid "_Stay Online"
-msgstr "_Forbliv Online"
+msgstr ""
 
 #: ../src/Transfer.C:61
 msgid "_Go Offline"
-msgstr "_Gå Offline"
+msgstr ""
 
 #: ../src/Transfer.C:101
 msgid "Downloading %1"
-msgstr "Henter %1"
+msgstr ""
 
 #: ../src/Transfer.C:286
 msgid "Opening URI '%1' on server"
-msgstr "Åbner URI '%1' på server"
+msgstr ""
 
 #: ../src/Transfer.C:311
 msgid "Reading URI '%1' on server"
-msgstr "Læser URI '%1' fra server"
+msgstr ""
 
 #: ../src/Transfer.C:330
 msgid "Closing URI '%1' on server"
-msgstr "Lukker URI '%1' fra server"
+msgstr ""
 
 #: ../src/Utility.C:266
 msgid ""
@@ -1030,10 +980,7 @@ msgid ""
 "\n"
 "%3"
 msgstr ""
-"<big><b>%1: %2</b></big>\n"
-"\n"
-"%3"
 
 #: ../src/Utility.C:270
 msgid "The operation underway was: \"%1\""
-msgstr "Den operation der var underudførelse var: \"%1\""
+msgstr ""

@@ -8,13 +8,13 @@ msgstr ""
 "Project-Id-Version: referencer\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
 "POT-Creation-Date: 2008-02-03 00:06+0000\n"
-"PO-Revision-Date: 2008-02-04 09:24+0000\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"PO-Revision-Date: 2008-02-23 00:14+0000\n"
+"Last-Translator: Mortimer <mortimer.pa@free.fr>\n"
 "Language-Team: French <fr@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2008-02-04 19:08+0000\n"
+"X-Launchpad-Export-Date: 2008-03-01 10:48+0000\n"
 "X-Generator: Launchpad (build Unknown)\n"
 
 #: ../data/documentproperties.glade.h:1
@@ -129,7 +129,7 @@ msgstr "Modules"
 
 #: ../data/preferences.glade.h:13
 msgid "Port:"
-msgstr "Port :"
+msgstr "Port:"
 
 #: ../data/preferences.glade.h:14
 msgid "Preferences"
@@ -812,7 +812,8 @@ msgid "translator-credits"
 msgstr ""
 "Launchpad Contributions:\n"
 "  David Coeurjolly https://launchpad.net/~dcoeurjo\n"
-"  Jérôme Rousselot https://launchpad.net/~jerome-rousselot"
+"  Jérôme Rousselot https://launchpad.net/~jerome-rousselot\n"
+"  Mortimer https://launchpad.net/~mortimer-pa"
 
 #: ../src/RefWindow.C:1372
 msgid "Showing '%1'"

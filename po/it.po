@@ -10,13 +10,13 @@ msgstr ""
 "Project-Id-Version: referencer\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2008-02-03 00:06+0000\n"
-"PO-Revision-Date: 2007-06-02 00:53+0000\n"
-"Last-Translator: Michele Mattioni <mattions@gmail.com>\n"
+"PO-Revision-Date: 2008-02-15 17:32+0000\n"
+"Last-Translator: Michele Mattioni <Unknown>\n"
 "Language-Team: Italian <tp@lists.linux.it>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2008-02-04 19:08+0000\n"
+"X-Launchpad-Export-Date: 2008-03-01 10:48+0000\n"
 "X-Generator: Launchpad (build Unknown)\n"
 
 #~ msgid "   "
@@ -156,7 +156,7 @@ msgstr "Tentativo di ricercare i metadati di questo documento online"
 
 #: ../data/documentproperties.glade.h:6
 msgid "Clear metadata"
-msgstr ""
+msgstr "Resetta i metadati"
 
 #: ../data/documentproperties.glade.h:7
 msgid "Delete this field"
@@ -164,15 +164,16 @@ msgstr "Cancella questo campo"
 
 #: ../data/documentproperties.glade.h:8
 msgid "Document Properties"
-msgstr "Proprietà Documento"
+msgstr "Proprietà del documento"
 
 #: ../data/documentproperties.glade.h:9
 msgid "File:"
 msgstr "File:"
 
 #: ../data/documentproperties.glade.h:10
+#, fuzzy
 msgid "Fill out metadata from BibTeX on clipboard"
-msgstr ""
+msgstr "Estrai i metadati da BibTex e copiali sugli appunti"
 
 #: ../data/documentproperties.glade.h:11
 msgid "Rename this field"
@@ -180,7 +181,7 @@ msgstr "Rinomina questo campo"
 
 #: ../data/documentproperties.glade.h:12
 msgid "Select A File"
-msgstr "Seleziona Un File"
+msgstr "Selezionare un file"
 
 #: ../data/documentproperties.glade.h:13
 msgid "_Key:"
@@ -188,7 +189,7 @@ msgstr "_Chiave"
 
 #: ../data/documentproperties.glade.h:14
 msgid "_Look Up"
-msgstr ""
+msgstr "Consu_lta"
 
 #: ../data/documentproperties.glade.h:15 ../src/RefWindow.C:317
 msgid "_Paste BibTeX"
@@ -196,7 +197,7 @@ msgstr "_Incolla BibTex"
 
 #: ../data/preferences.glade.h:1
 msgid "<b>CrossRef Plugin</b>"
-msgstr ""
+msgstr "<b>CrossRef Plugin</b>"
 
 #: ../data/preferences.glade.h:2
 msgid "<b>Proxy</b>"
@@ -207,6 +208,8 @@ msgid ""
 "<i>Plugins at the top of the list are tried first when looking up "
 "metadata.</i>"
 msgstr ""
+"<i>I Plugins all'inizio della lista vengono provati per primi per ottenere i "
+"metadati</i>"
 
 #: ../data/preferences.glade.h:4
 msgid ""
@@ -224,15 +227,15 @@ msgstr "Host:"
 
 #: ../data/preferences.glade.h:8
 msgid "Move _down"
-msgstr ""
+msgstr "Sposta in _basso"
 
 #: ../data/preferences.glade.h:9
 msgid "Move _up"
-msgstr ""
+msgstr "Sposta in _alto"
 
 #: ../data/preferences.glade.h:10
 msgid "Network"
-msgstr ""
+msgstr "Rete"
 
 #: ../data/preferences.glade.h:11
 msgid "Password:"
@@ -240,7 +243,7 @@ msgstr "Password:"
 
 #: ../data/preferences.glade.h:12
 msgid "Plugins"
-msgstr ""
+msgstr "Plugins"
 
 #: ../data/preferences.glade.h:13
 msgid "Port:"
@@ -255,6 +258,9 @@ msgid ""
 "The CrossRef OpenURL interface requires a username and password.\n"
 "http://www.crossref.org/requestaccount/"
 msgstr ""
+"L'interfaccia del sito CrossRef OpenURL richiede un nome utente ed una "
+"parola chiave\n"
+"http://www.crossref.org/requestaccount/"
 
 #: ../data/preferences.glade.h:17
 msgid "Use authentication"
@@ -269,34 +275,37 @@ msgid "Username:"
 msgstr "Nome Utente:"
 
 #: ../plugins/pubmed.py:16
+#, fuzzy
 msgid "PubMed DOI resolver"
-msgstr ""
+msgstr "PubMed DOI Risolutore"
 
 #: ../plugins/pubmed.py:34
+#, fuzzy
 msgid "Resolving DOI"
-msgstr ""
+msgstr "Risolvendo il DOI"
 
 #: ../plugins/pubmed.py:34
 #, python-format
 msgid "Finding PubMed ID from DOI %s"
-msgstr ""
+msgstr "Trovando l'ID PubMed dal DOI %s"
 
 #: ../plugins/pubmed.py:62
+#, fuzzy
 msgid "Resolving PubMed ID"
-msgstr ""
+msgstr "Risolvendo PubMed ID"
 
 #: ../plugins/pubmed.py:62
 #, python-format
 msgid "Fetching metadata from NCBI for PubMed ID %s"
-msgstr ""
+msgstr "Ottengo i metadati dall NCBI per PubMed ID %s"
 
 #: ../plugins/lyx.py:10 ../plugins/lyx.py:11
 msgid "Cite in LyX"
-msgstr ""
+msgstr "Citalo in LyX"
 
 #: ../plugins/lyx.py:12
 msgid "Cite the selected documents in LyX"
-msgstr ""
+msgstr "Cita i documenti selezionati in LyX"
 
 #: ../src/ArxivPlugin.C:46
 msgid "Retrieving metadata"
@@ -321,25 +330,28 @@ msgstr "Leggendo BibTex"
 
 #: ../src/ArxivPlugin.C:106
 msgid "Arxiv.org ArXiv-ID resolver"
-msgstr ""
+msgstr "Arxiv.org ArXiv-ID resolver"
 
 #: ../src/CrossRefPlugin.C:123
 msgid "CrossRef credentials not found"
-msgstr ""
+msgstr "Dati CrossRef non trovati"
 
 #: ../src/CrossRefPlugin.C:124
 msgid ""
 "To use the CrossRef service, a free account is needed.  Login information "
 "may be set in Preferences, or the CrossRef plugin may be disabled."
 msgstr ""
+"Per utilizzare il servizio CrossRef è necessario un nome utente gratuito. Le "
+"informazione per il login possono essere impostate in Preferenze, o il "
+"plugin per CrossRef puó essere disabilitato"
 
 #: ../src/CrossRefPlugin.C:133
 msgid "_Preferences"
-msgstr ""
+msgstr "_Preferenze"
 
 #: ../src/CrossRefPlugin.C:134
 msgid "_Disable CrossRef"
-msgstr ""
+msgstr "_Disabilita CrossRef"
 
 #: ../src/CrossRefPlugin.C:161
 msgid "Contacting crossref.org to retrieve metadata for '%1'"
@@ -354,7 +366,7 @@ msgstr ""
 
 #: ../src/CrossRefPlugin.C:217
 msgid "Crossref.org OpenURL DOI resolver"
-msgstr ""
+msgstr "CrossRef.org OpenURL DOI resolver"
 
 #: ../src/Document.C:37
 msgid "Unnamed"
@@ -378,7 +390,7 @@ msgstr "Importando"
 
 #: ../src/DocumentList.C:255
 msgid "Extracting document %1 from bibutils structure"
-msgstr ""
+msgstr "Estraendo il documento %1 dalla struttura bibutils"
 
 #: ../src/DocumentProperties.C:204
 msgid "_Type:"
@@ -1101,11 +1113,11 @@ msgstr ""
 
 #: ../src/Transfer.C:61
 msgid "_Go Offline"
-msgstr ""
+msgstr "_Vai Offline"
 
 #: ../src/Transfer.C:101
 msgid "Downloading %1"
-msgstr ""
+msgstr "Scaricamento di %1"
 
 #: ../src/Transfer.C:286
 msgid "Opening URI '%1' on server"
