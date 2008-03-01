@@ -1,4 +1,7 @@
 1.1.1:
+	- Updated Russian translation (Sergey Kirpichev)
+	- Updated simplified Chinese translation (Zhi-Wei Huang)
+	- Updated Danish translation (Andreas Dalsgaard)
 	- Fix parsing data-less elements in pubmed plugin (Bug 196174)
 	- Fix paste in document properties (Bug 195819)
 	- Fix add doc with ID dialog
