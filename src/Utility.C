@@ -494,8 +494,7 @@ Glib::RefPtr<Gdk::Pixbuf> getThemeIcon(Glib::ustring const &iconname)
 			if (!pixbuf)
 				std::cerr << "Utility::getThemeIcon: icon '"
 					<< iconname << "' failed to load\n";
-				
-			return pixbuf;
+				return pixbuf;
 		} else {
 			std::cerr << "Utility::getThemeIcon: icon '"
 				<< iconname << "' not found\n";
@@ -508,8 +507,11 @@ Glib::RefPtr<Gdk::Pixbuf> getThemeIcon(Glib::ustring const &iconname)
 
 
 Glib::RefPtr<Gdk::Pixbuf> getThemeMenuIcon(Glib::ustring const &iconname) {
-	Glib::RefPtr<Gdk::Pixbuf> icon = getThemeIcon (iconname);
+    Glib::RefPtr<Gdk::Pixbuf> icon = getThemeIcon (iconname);
+    if (icon)
 	return icon->scale_simple (16, 16, Gdk::INTERP_BILINEAR);
+    else
+	return icon;
 }
 
 
