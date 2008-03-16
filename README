@@ -23,7 +23,7 @@ The build dependencies are:
 	poppler-glib
 	gtkmm-2.4 (incl. svg support for GDK eg. librsvg2-common)
 	libgnomeuimm-2.6 
-	gnome-vfsmm-2.6
+	gnome-vfsmm-2.6 (incl. http support, eg. libgnomevfs2-extra)
 	libglademm-2.4
 	gconfmm-2.6
 	boost_regex
@@ -33,7 +33,7 @@ The build dependencies are:
 	python API
 
 On Ubuntu 6.10 (or 6.06 LTS), all of these may be obtained by running the following command:
-	sudo apt-get install build-essential libpoppler-glib-dev libgtkmm-2.4-dev libgnomeuimm-2.6-dev libgnome-vfsmm-2.6-dev libglademm-2.4-dev libgconfmm-2.6-dev libboost-dev intltool python-dev python-xml gnome-icon-theme librsvg2-common
+	sudo apt-get install build-essential libpoppler-glib-dev libgtkmm-2.4-dev libgnomeuimm-2.6-dev libgnome-vfsmm-2.6-dev libglademm-2.4-dev libgconfmm-2.6-dev libboost-dev intltool python-dev python-xml gnome-icon-theme librsvg2-common libgnomevfs2-extra
 
 (note that libboost-regex-dev is in the 'universe' repository, which is not enabled in a default Ubuntu install.  See https://help.ubuntu.com/ubuntu/desktopguide/C/extra-repositories.html)
 
