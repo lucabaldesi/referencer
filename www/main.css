@@ -6,6 +6,11 @@ div#main {
 	margin: 0 auto;
 }
 
+div#logo {
+	float:left;
+	margin-right:15px;
+}
+
 body {
 	background-color:white;
 	color:black;
