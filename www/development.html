@@ -38,9 +38,10 @@ urchinTracker();
 	<h3>Mailing list</h3>
 	<p>Please send questions and suggestions to the <a href="contact.html">mailing list</a>.</p>
 	<p>For anything which you'd prefer not to discuss in public, you can also contact the main author directly: jcspray at icculus.org</p>
-		<h3>Subversion</h3>
-	<p>To check out the source code:<br><code>svn co svn://svn.icculus.org/referencer/trunk referencer</code></p>
-	<p>Web view of the subversion repository:<a href="http://svn.icculus.org/referencer/">http://svn.icculus.org/referencer/</a></p>
+	<h3>Mercurial</h3>
+	<p>To get the source code:<br><code>hg clone http://hg.icculus.org/hgspace/jcspray/referencer/</code></p>
+	<p>Mercurial is used for referencer development.  It's a distributed revision control system.  If you've used git, it's a lot like that.  Debian/Ubuntu users can <tt>apt-get install mercurial</tt>.  There's some good <a href="http://hgbook.red-bean.com/hgbook.pdf" alt="Distributed Revision Control with Mercurial">documentation</a>.</p>
+	<p>Web view of the repository:<a href="http://hg.icculus.org/jcspray/referencer/">http://hg.icculus.org/jcspray/referencer/</a></p>
 	<h3>Building</h3>
 	<p>The build dependencies on ubuntu are: <code>build-essential libpoppler-glib-dev libgtkmm-2.4-dev libgnomeuimm-2.6-dev libgnome-vfsmm-2.6-dev libglademm-2.4-dev libgconfmm-2.6-dev libboost-regex-dev intltool python2.5-dev python-xml</code>.</p>
 	<p>To work from subversion you'll also need: <code>subversion gnome-common automake1.9</code>.  Note that when building from subversion ./autogen.sh needs to be run before ./configure.</p>
