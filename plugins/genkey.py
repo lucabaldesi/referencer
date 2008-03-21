@@ -9,15 +9,6 @@ from referencer import _
 import gobject
 import gtk
 
-bob = """
-			<toolbar name='ToolBar'>
-				<toolitem action='_plugin_genkey_genkey'/>
-			</toolbar>
-			<popup name='DocPopup'>
-				<menuitem action='_plugin_genkey_genkey'/>
-			</popup>
-"""
-
 referencer_plugin_info = []
 referencer_plugin_info.append (["longname", _("Generate keys from metadata")])
 referencer_plugin_info.append (["ui",
@@ -30,6 +21,12 @@ referencer_plugin_info.append (["ui",
 			</menu>
 			</placeholder>
 			</menubar>
+			<toolbar name='ToolBar'>
+				<toolitem action='_plugin_genkey_genkey'/>
+			</toolbar>
+			<popup name='DocPopup'>
+				<menuitem action='_plugin_genkey_genkey'/>
+			</popup>
 		</ui>
 		"""])
 
@@ -39,22 +36,22 @@ action = {
 	"name":"_plugin_genkey_genkey",
 	"label":_("Generate Key"),
 	"tooltip":_("Generate keys for the selected documents from their metadata"),
-	"icon":"lyx.png"
+	"icon":"lyx.png",
+	"callback":"do_genkey",
+	"accelerator":"<control>g"
 }
 referencer_plugin_actions.append (action)
 
 action = {
 	"name":"_plugin_genkey_toolsmenu",
 	"label":_("Tools"),
-	"tooltip":_("Generate keys for the selected documents from their metadata"),
-	"icon":""
+	"tooltip":_("Generate keys for the selected documents from their metadata")
 }
 referencer_plugin_actions.append (action)
 
 # library is always Nil, it's only there for future proofing
 # documents is a list of referencer.document
-def _plugin_genkey_genkey (library, documents):
-
+def do_genkey (library, documents):
 	win = gtk.Dialog()
 	win.add_button (gtk.STOCK_OK, 0)
 	win.run ()
@@ -96,3 +93,8 @@ def _plugin_genkey_genkey (library, documents):
 	return True
 
 
+def _plugin_genkey_genkey_sensitivity (library, documents):
+	if len(documents) > 0:
+		return True
+	else:
+		return False

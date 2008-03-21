@@ -5,10 +5,12 @@
 
 #include "Plugin.h"
 
+class PluginManager;
+
 class PythonPlugin : public Plugin
 {
 	public:
-		PythonPlugin ();
+		PythonPlugin (PluginManager *owner);
 		~PythonPlugin ();
 		virtual void load (std::string const &moduleName);
 
@@ -35,6 +37,8 @@ class PythonPlugin : public Plugin
 		PyObject *pMod_;
 
 		ActionList actions_;
+
+		PluginManager *owner_;
 
 };
 

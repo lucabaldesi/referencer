@@ -79,6 +79,34 @@ static PyMethodDef ReferencerMethods[] = {
 
 PluginManager::PluginManager ()
 {
+	Glib::ustring pythonPath = "";
+	/* Pick up existing python path */
+	if (getenv("PYTHONPATH")) {
+		pythonPath += ":";
+		pythonPath += getenv("PYTHONPATH");
+	}
+
+	/* Locate user plugins */
+	Glib::ustring homePlugins;
+	if (getenv("HOME"))
+		homePlugins = Glib::ustring(getenv("HOME")) + Glib::ustring("/.referencer/plugins");
+
+	/* Development directory */
+	Glib::ustring localPlugins = "./plugins";
+	/* Systemwide */
+	Glib::ustring installedPlugins = PLUGINDIR;
+
+	/* Order is important, defines precedence */
+	pythonPath += localPlugins;
+	pythonPath += ":";
+	pythonPath += homePlugins;
+	pythonPath += ":";
+	pythonPath += installedPlugins;
+	pythonPath += ":";
+	/* Export the path */
+	std::cerr << "main: setting PYTHONPATH to '" << pythonPath << "'\n";
+	setenv ("PYTHONPATH", pythonPath.c_str(), 1);
+
 	PyObject *module = Py_InitModule ("referencer", ReferencerMethods);
 
 	PyType_Ready (&t_referencer_document);
@@ -94,9 +122,11 @@ void PluginManager::scan (std::string const &pluginDir)
 	DIR *dir = opendir (pluginDir.c_str());
 	if (!dir) {
 		// Fail silently, allow the caller to call this
-		// spuriously on directorys that only might exist
+		// spuriously on directories that only might exist
 		return;
 	}
+
+	pythonPaths_.push_back (pluginDir);
 
 	struct dirent *ent;
 	while ((ent = readdir(dir))) {
@@ -124,7 +154,7 @@ void PluginManager::scan (std::string const &pluginDir)
 				continue;
 
 
-			PythonPlugin newPlugin;
+			PythonPlugin newPlugin(this);
 			pythonPlugins_.push_front (newPlugin);
 
 			std::list<PythonPlugin>::iterator newbie = pythonPlugins_.begin();
@@ -134,6 +164,28 @@ void PluginManager::scan (std::string const &pluginDir)
 	closedir (dir);
 }
 
+
+Glib::ustring PluginManager::findDataFile (Glib::ustring const file)
+{
+	std::vector<Glib::ustring>::iterator it = pythonPaths_.begin ();
+	std::vector<Glib::ustring>::iterator const end = pythonPaths_.end ();
+	for (; it != end; ++it) {
+		Glib::ustring filename = Glib::build_filename (*it, file);
+
+		if (filename.substr(0,2) == Glib::ustring ("./")) {
+			filename = Glib::get_current_dir () + filename.substr (1, filename.length());
+		}
+
+		Glib::RefPtr<Gnome::Vfs::Uri> uri = Gnome::Vfs::Uri::create (filename);
+
+		std::cerr << "Trying " << filename << "\n";
+
+		if (uri->uri_exists ())
+			return filename;
+	}
+
+	return Glib::ustring ();
+}
 
 std::list<Plugin*> PluginManager::getPlugins ()
 {

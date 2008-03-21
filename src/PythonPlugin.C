@@ -9,6 +9,7 @@
 #include "ucompose.hpp"
 
 #include "Document.h"
+#include "PluginManager.h"
 #include "Utility.h"
 #include "PythonDocument.h"
 
@@ -17,11 +18,12 @@
 
 
 
-PythonPlugin::PythonPlugin()
+PythonPlugin::PythonPlugin(PluginManager *owner)
 {
 	pGetFunc_ = NULL;
 	pActionFunc_ = NULL;
 	pMod_ = NULL;
+	owner_ = owner;
 }
 
 PythonPlugin::~PythonPlugin()
@@ -37,10 +39,29 @@ PythonPlugin::~PythonPlugin()
 	}
 }
 
+void freeData (void *data)
+{
+	delete (Glib::ustring*)data;
+}
+
+/* Convenience function for sometimes-present items */
+Glib::ustring safePyDictGetItem (PyObject *dict, Glib::ustring const &key)
+{
+	PyObject *keyStr = PyString_FromString (key.c_str());
+	if (PyDict_Contains (dict, keyStr)) {
+		Py_DECREF (keyStr);
+		return PyString_AsString (PyDict_GetItemString (dict, key.c_str()));
+	} else {
+		Py_DECREF (keyStr);
+		return Glib::ustring ();
+	}
+}
 
 
 void PythonPlugin::load (std::string const &moduleName)
 {
+	/* XXX this gets called before we're in the main event loop, so we can't use 
+	 * displayException in the error cases here */
 	moduleName_ = moduleName;
 	PyObject *pName = PyString_FromString(moduleName.c_str());
 	if (!pName) {
@@ -103,30 +124,43 @@ void PythonPlugin::load (std::string const &moduleName)
 			PyObject *pActionDict = PyList_GetItem (pActions, i);
 			
 			/* FIXME: don't require all fields */
-			const char *name     = PyString_AsString (PyDict_GetItemString (pActionDict, "name"));
-			const char *label    = PyString_AsString (PyDict_GetItemString (pActionDict, "label"));
-			const char *tooltip  = PyString_AsString (PyDict_GetItemString (pActionDict, "tooltip"));
-			const char *icon     = PyString_AsString (PyDict_GetItemString (pActionDict, "icon"));
+			const Glib::ustring name        = safePyDictGetItem (pActionDict, "name");
+			const Glib::ustring label       = safePyDictGetItem (pActionDict, "label");
+			const Glib::ustring tooltip     = safePyDictGetItem (pActionDict, "tooltip");
+			const Glib::ustring icon        = safePyDictGetItem (pActionDict, "icon");
+			const Glib::ustring accelerator = safePyDictGetItem (pActionDict, "accelerator");
+			const Glib::ustring callback    = safePyDictGetItem (pActionDict, "callback");
+
+			Glib::ustring stockStr = "_stock:";
 
 			Gtk::StockID stockId;
-			try {
-				Glib::ustring const iconFile = Utility::findDataFile (icon);
-				Gtk::IconSource iconSource;
-				iconSource.set_pixbuf( Gdk::Pixbuf::create_from_file(iconFile) );
-				iconSource.set_size(Gtk::ICON_SIZE_SMALL_TOOLBAR);
-				iconSource.set_size_wildcarded(); //Icon may be scaled.
-				Gtk::IconSet iconSet;
-				iconSet.add_source (iconSource);
-				stockId = Gtk::StockID (Glib::ustring("referencer") + Glib::ustring (name));
-				iconFactory->add (stockId, iconSet);
-			} catch(const Glib::Exception& ex) {
-				std::cerr << "PythonPlugin::load: exception " << ex.what() << "\n";
-				stockId	= Gtk::StockID (Gtk::Stock::EXECUTE);
+			if (icon.substr(0, stockStr.length()) == stockStr) {
+				/* Stock icon */
+				stockId = Gtk::StockID (icon.substr(stockStr.length(), icon.length()));
+			} else if (icon.length()) {
+				/* Icon from file */
+				try {
+					Glib::ustring const iconFile = owner_->findDataFile (icon);
+					Gtk::IconSource iconSource;
+					iconSource.set_pixbuf( Gdk::Pixbuf::create_from_file(iconFile) );
+					iconSource.set_size(Gtk::ICON_SIZE_SMALL_TOOLBAR);
+					iconSource.set_size_wildcarded(); //Icon may be scaled.
+					Gtk::IconSet iconSet;
+					iconSet.add_source (iconSource);
+					stockId = Gtk::StockID (Glib::ustring("referencer") + Glib::ustring (name));
+					iconFactory->add (stockId, iconSet);
+				} catch(const Glib::Exception& ex) {
+					/* File not found, show error icon */
+					std::cerr << "PythonPlugin::load: exception " << ex.what() << "\n";
+					stockId = Gtk::StockID (Gtk::Stock::DIALOG_ERROR);
+				}
 			}
-
 
 			Glib::RefPtr<Gtk::Action> action = Gtk::Action::create(
 				name, stockId, label, tooltip);
+
+			action->set_data ("accelerator", new Glib::ustring (accelerator), freeData);
+			action->set_data ("callback",    new Glib::ustring (callback), freeData);
 
 			actions_.push_back (action);
 		}

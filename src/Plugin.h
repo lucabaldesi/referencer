@@ -63,7 +63,7 @@ class Document;
 class Plugin
 {
 	public:
-		Plugin () {enabled_ = false; loaded_ = false;};
+		Plugin () {enabled_ = false; loaded_ = false;}
 		virtual ~Plugin () {};
 
 		virtual void load (std::string const &moduleName) {};

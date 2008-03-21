@@ -409,6 +409,7 @@ void RefWindow::constructMenu ()
 	window_->add_accel_group (uimanager_->get_accel_group ());
 }
 
+
 void RefWindow::onEnabledPluginsPrefChanged ()
 {
 	std::list<Plugin*> plugins = _global_plugins->getPlugins();
@@ -421,10 +422,20 @@ void RefWindow::onEnabledPluginsPrefChanged ()
 			Plugin::ActionList::iterator it = actions.begin ();
 			Plugin::ActionList::iterator const end = actions.end ();
 			for (; it != end; ++it) {
-				actiongroup_->add (*it,
-					sigc::bind<Glib::ustring const, Plugin*>(
-						sigc::mem_fun(*this, &RefWindow::onPluginRun),
-						(*it)->get_name(), (*pit)));
+				Glib::ustring callback = *((Glib::ustring*)(*it)->get_data("callback"));
+				Glib::ustring accelerator = *((Glib::ustring*)(*it)->get_data("accelerator"));
+				if (callback.empty()) {
+					actiongroup_->add (
+						*it,
+						Gtk::AccelKey (accelerator));
+				} else {
+					actiongroup_->add (
+						*it,
+						*((Glib::ustring*)(*it)->get_data("accelerator")),
+						sigc::bind<Glib::ustring const, Plugin*>(
+							sigc::mem_fun(*this, &RefWindow::onPluginRun),
+							*((Glib::ustring*)(*it)->get_data("callback")), (*pit)));
+				}
 
 				/* Sensitivity policy duplicated here and in docSelectionChanged */
 				(*it)->set_sensitive (

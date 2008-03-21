@@ -6,15 +6,32 @@ import os
 import referencer
 from referencer import _
 
-referencer_plugin_info = []
-referencer_plugin_info.append (["longname", _("Cite in LyX")])
-referencer_plugin_info.append (["action", _("Cite in LyX")])
-referencer_plugin_info.append (["tooltip", _("Cite the selected documents in LyX")])
-referencer_plugin_info.append (["icon", "lyx.png"])
-referencer_plugin_capabilities = []
-referencer_plugin_capabilities.append ("document_action")
+referencer_plugin_info = [
+	["longname", _("Cite in LyX")]
+]
 
-print "lyx module loaded"
+referencer_plugin_info.append (["ui",
+		"""
+		<ui>
+			<toolbar name='ToolBar'>
+			<placeholder name='ToolBarPluginActions'>
+				<toolitem action='_plugin_lyx_cite'/>
+			</placeholder>
+			</toolbar>
+		</ui>
+		"""])
+
+
+referencer_plugin_actions = [
+	{
+	"name":"_plugin_lyx_cite",
+	"label":_("Cite in LyX"),
+	"tooltip":_("Cite the selected documents in LyX"),
+	"icon":"lyx.png",
+	"callback":"do_cite",
+	"accelerator":"<control><shift>d"
+	}
+]
 
 LYXPIPE = None
 HOME = os.environ.get("HOME")
@@ -47,7 +64,7 @@ for dir in os.environ['PATH'].split (os.pathsep):
 		break
 
 
-def do_action (documents):
+def do_cite (library, documents):
 	empty = True
 	keys = ""
 	for document in documents:
