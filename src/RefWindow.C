@@ -499,72 +499,34 @@ void RefWindow::onEnabledPluginsPrefChanged ()
 	std::list<Plugin*>::iterator pit = plugins.begin();
 	std::list<Plugin*>::iterator const pend = plugins.end();
 	for (; pit != pend; pit++) {
-		if ((*pit)->cap_.has(PluginCapability::DOCUMENT_ACTION)) {
-			Glib::ustring actionName = "_plugin_" + (*pit)->getShortName();
-			Gtk::UIManager::ui_merge_id mergeid = pluginUI_[actionName];
+		Gtk::UIManager::ui_merge_id mergeId = pluginUI_[(*pit)->getShortName()];
+		if ((*pit)->isEnabled() && !mergeId) {
+			Plugin::ActionList actions = (*pit)->getActions ();
+			Plugin::ActionList::iterator it = actions.begin ();
+			Plugin::ActionList::iterator const end = actions.end ();
+			for (; it != end; ++it) {
+				actiongroup_->add (*it,
+					sigc::bind<Glib::ustring const, Plugin*>(
+						sigc::mem_fun(*this, &RefWindow::onPluginRun),
+						(*it)->get_name(), (*pit)));
 
-			if ((*pit)->isEnabled() && !mergeid) {
-				// plugin UI needs to be added
-				Glib::ustring icon = (*pit)->getActionIcon ();
-				if (icon != "") {
-					// messy to add stock item, is it REALLY necessary ?
-					icon = Utility::findDataFile (icon);
-					Glib::RefPtr<Gtk::IconFactory> factory = Gtk::IconFactory::create();
-					Gtk::IconSource source;
-					try {
-						//This throws an exception if the file is not found:
-						source.set_pixbuf( Gdk::Pixbuf::create_from_file(icon) );
-
-						source.set_size(Gtk::ICON_SIZE_SMALL_TOOLBAR);
-						source.set_size_wildcarded(); //Icon may be scaled.
-
-						Gtk::IconSet icon_set;
-						icon_set.add_source(source); //More than one source per set is allowed.
-
-						const Gtk::StockID stock_id("referencer"+actionName);
-						factory->add(stock_id, icon_set);
-						Gtk::Stock::add(Gtk::StockItem(stock_id, (*pit)->getActionText ()));
-					
-						factory->add_default(); //Add factory to list of factories.
-
-						std::cerr << "using custom icon: " + icon << std::endl;
-						actiongroup_->add( Gtk::Action::create(
-							actionName, stock_id,
-							(*pit)->getActionText(), (*pit)->getActionTooltip()),
-							sigc::bind<Plugin*>( sigc::mem_fun(*this, &RefWindow::onPluginRun), (*pit)));
-					} catch(const Glib::Exception& ex) {
-						icon = "";
-						std::cout << "failed to use a custom icon" << std::endl;
-					}
-				}
-				if (icon == "") {
-					actiongroup_->add( Gtk::Action::create(
-						actionName, Gtk::Stock::EXECUTE,
-						(*pit)->getActionText(), (*pit)->getActionTooltip()),
-						sigc::bind<Plugin*>( sigc::mem_fun(*this, &RefWindow::onPluginRun), (*pit)));
-				}
 				/* Sensitivity policy duplicated here and in docSelectionChanged */
-				actiongroup_->get_action (actionName)->set_sensitive (
+				(*it)->set_sensitive (
 					docview_->getSelectedDocCount () > 0);
-
-				Glib::ustring ui =  
-					"<ui>"
-					"  <toolbar name='ToolBar'>"
-					"	<toolitem action='" + actionName + "'/>"
-					"  </toolbar>"
-					"  <menubar name='MenuBar'>"
-					"    <menu action='DocMenu'>"
-					"      <menuitem action='" + actionName + "'/>"
-					"    </menu>"
-					"  </menubar>"
-					"</ui>";
-				pluginUI_[actionName] = uimanager_->add_ui_from_string (ui);
-			} else if (!(*pit)->isEnabled() && mergeid) {
-				// plugin UI need to be removed
-				uimanager_->remove_ui (mergeid);
-				actiongroup_->remove (actiongroup_->get_action (actionName));
-				pluginUI_.erase (actionName);
 			}
+
+			Glib::ustring ui = (*pit)->getUI (); 
+			pluginUI_[(*pit)->getShortName()] = uimanager_->add_ui_from_string (ui);
+		} else if (!(*pit)->isEnabled() && mergeId) {
+			/* Remove plugin actions and UI */
+			uimanager_->remove_ui (mergeId);
+			Plugin::ActionList actions = (*pit)->getActions ();
+			Plugin::ActionList::iterator it = actions.begin ();
+			Plugin::ActionList::iterator const end = actions.end ();
+			for (; it != end; ++it) {
+				actiongroup_->remove (*it);
+			}
+			pluginUI_.erase ((*pit)->getShortName());
 		}
 	}
 }
@@ -2330,13 +2292,19 @@ void RefWindow::docSelectionChanged ()
 	std::list<Plugin*>::iterator pit = plugins.begin();
 	std::list<Plugin*>::iterator const pend = plugins.end();
 	for (; pit != pend; pit++) {
-		if ((*pit)->isEnabled() && (*pit)->cap_.has(PluginCapability::DOCUMENT_ACTION))
+		if ((*pit)->isEnabled())
 		{
 			// TODO: allow plugins to control their sensitivity
 			Glib::RefPtr<Gtk::Action> action = actiongroup_->
 				get_action("_plugin_"+(*pit)->getShortName());
-			if (action)
-				action->set_sensitive (somethingselected);
+
+			Plugin::ActionList actions = (*pit)->getActions ();
+			Plugin::ActionList::iterator it = actions.begin ();
+			Plugin::ActionList::iterator const end = actions.end ();
+			for (; it != end; ++it) {
+				(*it)->set_sensitive (somethingselected);
+			}
+
 		}
 	}
 
@@ -2390,10 +2358,10 @@ void RefWindow::onUseListViewPrefChanged ()
 }
 
 
-void RefWindow::onPluginRun (Plugin* plugin)
+void RefWindow::onPluginRun (Glib::ustring const action, Plugin* plugin)
 {
 	std::vector<Document*> docs = docview_->getSelectedDocs();
-	plugin->doAction(docs);
+	plugin->doAction(action, docs);
 
 	/*
 	 * Update the docs in the view since the plugin could 

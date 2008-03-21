@@ -6,14 +6,48 @@ import os
 import referencer
 from referencer import _
 
+import gobject
+import gtk
+
 referencer_plugin_info = []
 referencer_plugin_info.append (["longname", _("Generate keys from metadata")])
-referencer_plugin_info.append (["action", _("Generate Key")])
-referencer_plugin_info.append (["tooltip", _("Generate keys for the selected documents from their metadata")])
-referencer_plugin_capabilities = []
-referencer_plugin_capabilities.append ("document_action")
+referencer_plugin_info.append (["ui",
+		"""
+		<ui>
+		<toolbar name='ToolBar'>
+		<toolitem action='_plugin_genkey_genkey'/>
+		<toolitem action='_plugin_genkey_genkey2'/>
+		</toolbar>
+		</ui>
+		"""])
 
-def do_action (documents):
+referencer_plugin_actions = []
+
+action = {
+	"name":"_plugin_genkey_genkey",
+	"label":_("Generate Key"),
+	"tooltip":_("Generate keys for the selected documents from their metadata"),
+	"icon":"lyx.png"
+}
+referencer_plugin_actions.append (action)
+
+action = {
+	"name":"_plugin_genkey_genkey2",
+	"label":_("Generate Key"),
+	"tooltip":_("Generate keys for the selected documents from their metadata"),
+	"icon":"unknown-document.png"
+}
+referencer_plugin_actions.append (action)
+
+# library is always Nil, it's only there for future proofing
+# documents is a list of referencer.document
+def _plugin_genkey_genkey (library, documents):
+
+	win = gtk.Dialog()
+	win.add_button (gtk.STOCK_OK, 0)
+	win.run ()
+	win.hide ()
+
 	empty = True
 	s = ""
 	assigned_keys = {}

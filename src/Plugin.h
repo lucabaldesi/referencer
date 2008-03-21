@@ -68,14 +68,17 @@ class Plugin
 
 		virtual void load (std::string const &moduleName) {};
 		virtual bool resolve (Document &doc) = 0;
-		virtual bool doAction (std::vector<Document*>) {return false;}
 
 		virtual Glib::ustring const getShortName () = 0;
 		virtual Glib::ustring const getLongName () = 0;
 
-		virtual Glib::ustring const getActionText () {return Glib::ustring();}
-		virtual Glib::ustring const getActionTooltip () {return Glib::ustring();}
-		virtual Glib::ustring const getActionIcon () {return Glib::ustring();}
+		virtual Glib::ustring const getUI () {return Glib::ustring();}
+		typedef std::vector<Glib::RefPtr<Gtk::Action> > ActionList;
+		virtual ActionList getActions ()
+		{
+			return ActionList ();
+		};
+		virtual bool doAction (Glib::ustring const action, std::vector<Document*>) {return false;}
 
 		bool isEnabled () {return enabled_;}
 		bool isLoaded () {return loaded_;}

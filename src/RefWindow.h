@@ -165,7 +165,7 @@ class RefWindow {
 		void onImport ();
 		void onPreferences ();
 		void onFind ();
-		void onPluginRun (Plugin* plugin);
+		void onPluginRun (Glib::ustring const action, Plugin* plugin);
 
 		/* WM events */
 		bool onDelete (GdkEventAny *ev);

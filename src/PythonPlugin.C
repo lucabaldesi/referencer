@@ -9,8 +9,9 @@
 #include "ucompose.hpp"
 
 #include "Document.h"
-
+#include "Utility.h"
 #include "PythonDocument.h"
+
 #include "PythonPlugin.h"
 
 
@@ -62,45 +63,79 @@ void PythonPlugin::load (std::string const &moduleName)
 	}
 
 
-	PyObject *pCaps = PyObject_GetAttrString (pMod_, "referencer_plugin_capabilities");
-	if (!pCaps) {
-		std::cerr << "Plugin::load: Couldn't find plugin capabilities\n";
-		Py_DECREF (pMod_);
-		return;
-	}
+	/* Extract metadata capabilities */
+	if (PyObject_HasAttrString (pMod_, "referencer_plugin_capabilities")) {
+		PyObject *pCaps = PyObject_GetAttrString (pMod_, "referencer_plugin_capabilities");
+		int const N = PyList_Size (pCaps);
+		for (int i = 0; i < N; ++i) {
+			PyObject *pCapabilityString = PyList_GetItem (pCaps, i);
+			char *const cstr = PyString_AsString (pCapabilityString);
+			Glib::ustring str;
 
-	int const N = PyList_Size (pCaps);
-	for (int i = 0; i < N; ++i) {
-		PyObject *pCapabilityString = PyList_GetItem (pCaps, i);
-		char *const cstr = PyString_AsString (pCapabilityString);
-		Glib::ustring str;
+			if (cstr)
+				str = cstr;
 
-		if (cstr)
-			str = cstr;
+			if (str.empty ())
+				continue;
 
-		if (str.empty ())
-			continue;
-
-		if (str == "doi")
-			cap_.add(PluginCapability::DOI);
-		else if (str == "arxiv")
-			cap_.add(PluginCapability::ARXIV);
-		else if (str == "pubmed")
-			cap_.add(PluginCapability::PUBMED);
-		else if (str == "document_action")
-			cap_.add(PluginCapability::DOCUMENT_ACTION);
-	}
-	Py_DECREF (pCaps);
-
-	if (cap_.has(PluginCapability::DOCUMENT_ACTION)) { 
-		pActionFunc_ = PyObject_GetAttrString (pMod_, "do_action");
-		if (!pActionFunc_) {
-			std::cerr << "Plugin::load: Couldn't find action callback\n";
-			Py_DECREF (pMod_);
-			return;
+			if (str == "doi")
+				cap_.add(PluginCapability::DOI);
+			else if (str == "arxiv")
+				cap_.add(PluginCapability::ARXIV);
+			else if (str == "pubmed")
+				cap_.add(PluginCapability::PUBMED);
 		}
+		Py_DECREF (pCaps);
+	} else {
+		std::cerr << "Plugin::load: No metadata capabilities in " << moduleName_ << "\n";
 	}
 
+	/* Extract actions */
+	if (PyObject_HasAttrString (pMod_, "referencer_plugin_actions")) {
+		PyObject *pActions = PyObject_GetAttrString (pMod_, "referencer_plugin_actions");
+		int const nActions = PyList_Size (pActions);
+
+		/* Factory for creating stock icons */
+		Glib::RefPtr<Gtk::IconFactory> iconFactory = Gtk::IconFactory::create();
+		iconFactory->add_default ();
+
+		for (int i = 0; i < nActions; ++i) {
+			PyObject *pActionDict = PyList_GetItem (pActions, i);
+			
+			/* FIXME: don't require all fields */
+			const char *name     = PyString_AsString (PyDict_GetItemString (pActionDict, "name"));
+			const char *label    = PyString_AsString (PyDict_GetItemString (pActionDict, "label"));
+			const char *tooltip  = PyString_AsString (PyDict_GetItemString (pActionDict, "tooltip"));
+			const char *icon     = PyString_AsString (PyDict_GetItemString (pActionDict, "icon"));
+
+			Gtk::StockID stockId;
+			try {
+				Glib::ustring const iconFile = Utility::findDataFile (icon);
+				Gtk::IconSource iconSource;
+				iconSource.set_pixbuf( Gdk::Pixbuf::create_from_file(iconFile) );
+				iconSource.set_size(Gtk::ICON_SIZE_SMALL_TOOLBAR);
+				iconSource.set_size_wildcarded(); //Icon may be scaled.
+				Gtk::IconSet iconSet;
+				iconSet.add_source (iconSource);
+				stockId = Gtk::StockID (Glib::ustring("referencer") + Glib::ustring (name));
+				iconFactory->add (stockId, iconSet);
+			} catch(const Glib::Exception& ex) {
+				std::cerr << "PythonPlugin::load: exception " << ex.what() << "\n";
+				stockId	= Gtk::StockID (Gtk::Stock::EXECUTE);
+			}
+
+
+			Glib::RefPtr<Gtk::Action> action = Gtk::Action::create(
+				name, stockId, label, tooltip);
+
+			actions_.push_back (action);
+		}
+		Py_DECREF (pActions);
+	} else {
+		std::cerr << "Plugin::load: No actions in " << moduleName_ << "\n";
+	}
+
+	/* Extract metadata lookup function */
 	if (cap_.has(PluginCapability::DOI) || cap_.has(PluginCapability::ARXIV) || 
 		cap_.has(PluginCapability::PUBMED)) { 
 		pGetFunc_ = PyObject_GetAttrString (pMod_, "resolve_metadata");
@@ -135,8 +170,18 @@ bool PythonPlugin::resolve (Document &doc)
 	return success;
 }
 
-bool PythonPlugin::doAction (std::vector<Document*> docs)
+bool PythonPlugin::doAction (Glib::ustring const action, std::vector<Document*> docs)
 {
+	/* Check the callback exists */
+	if (!PyObject_HasAttrString (pMod_, action.c_str())) {
+		std::cerr << "PythonPlugin::doAction: function '" << action << "' not found\n";
+		return false;
+	}
+
+	/* Look up the callback function */
+	PyObject *pActionFunc = PyObject_GetAttrString (pMod_, action.c_str());
+
+	/* Construct the 'documents' argument */
 	PyObject *pDocList = PyList_New (docs.size());
 	std::vector<Document*>::iterator it = docs.begin ();
 	std::vector<Document*>::iterator const end = docs.end ();
@@ -147,8 +192,12 @@ bool PythonPlugin::doAction (std::vector<Document*> docs)
 		PyList_SetItem (pDocList, i, (PyObject*)pDoc);
 	}
 	
-	PyObject *pArgs = Py_BuildValue ("(O)", pDocList);
-	PyObject *pReturn = PyObject_CallObject(pActionFunc_, pArgs);
+	/* Build the argument tuple: (library, documents) */
+	/* Library is nil for now */
+	PyObject *pArgs = Py_BuildValue ("(i,O)", 0, pDocList);
+
+	/* Invoke the python */
+	PyObject *pReturn = PyObject_CallObject(pActionFunc, pArgs);
 	Py_DECREF (pArgs);
 
 	if (pReturn == NULL) {
@@ -251,20 +300,9 @@ Glib::ustring const PythonPlugin::getLongName ()
 }
 
 
-Glib::ustring const PythonPlugin::getActionTooltip ()
+Glib::ustring const PythonPlugin::getUI ()
 {
-	return getPluginInfoField ("tooltip");
-}
-
-
-Glib::ustring const PythonPlugin::getActionText ()
-{
-	return getPluginInfoField ("action");
-}
-
-Glib::ustring const PythonPlugin::getActionIcon ()
-{
-	return getPluginInfoField ("icon");
+	return getPluginInfoField ("ui");
 }
 
 
