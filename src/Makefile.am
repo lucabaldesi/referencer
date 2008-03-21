@@ -70,6 +70,7 @@ referencer_SOURCES =	\
 	TagList.h	\
 	ThumbnailGenerator.C \
 	ThumbnailGenerator.h \
+	referencer_ui.h \
 	RefWindow.C	\
 	RefWindow.h	\
 	Transfer.C	\

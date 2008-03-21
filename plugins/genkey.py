@@ -9,15 +9,27 @@ from referencer import _
 import gobject
 import gtk
 
+bob = """
+			<toolbar name='ToolBar'>
+				<toolitem action='_plugin_genkey_genkey'/>
+			</toolbar>
+			<popup name='DocPopup'>
+				<menuitem action='_plugin_genkey_genkey'/>
+			</popup>
+"""
+
 referencer_plugin_info = []
 referencer_plugin_info.append (["longname", _("Generate keys from metadata")])
 referencer_plugin_info.append (["ui",
 		"""
 		<ui>
-		<toolbar name='ToolBar'>
-		<toolitem action='_plugin_genkey_genkey'/>
-		<toolitem action='_plugin_genkey_genkey2'/>
-		</toolbar>
+			<menubar name='MenuBar'>
+			<placeholder name='PluginMenus'>
+			<menu action='_plugin_genkey_toolsmenu'>
+				<menuitem action='_plugin_genkey_genkey'/>
+			</menu>
+			</placeholder>
+			</menubar>
 		</ui>
 		"""])
 
@@ -32,10 +44,10 @@ action = {
 referencer_plugin_actions.append (action)
 
 action = {
-	"name":"_plugin_genkey_genkey2",
-	"label":_("Generate Key"),
+	"name":"_plugin_genkey_toolsmenu",
+	"label":_("Tools"),
 	"tooltip":_("Generate keys for the selected documents from their metadata"),
-	"icon":"unknown-document.png"
+	"icon":""
 }
 referencer_plugin_actions.append (action)
 

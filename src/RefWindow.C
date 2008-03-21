@@ -25,13 +25,14 @@
 #include "DocumentView.h"
 #include "Library.h"
 #include "LibraryParser.h"
+#include "Plugin.h"
 #include "Preferences.h"
 #include "Progress.h"
 #include "TagList.h"
 
 #include "config.h"
 #include "RefWindow.h"
-#include "Plugin.h"
+#include "referencer_ui.h"
 
 
 RefWindow::RefWindow ()
@@ -401,95 +402,10 @@ void RefWindow::constructMenu ()
 
 	uimanager_ = Gtk::UIManager::create ();
 	uimanager_->insert_action_group (actiongroup_);
-	Glib::ustring ui =
-		"<ui>"
-		"  <menubar name='MenuBar'>"
-		"    <menu action='LibraryMenu'>"
-		"      <menuitem action='NewLibrary'/>"
-		"      <menuitem action='OpenLibrary'/>"
-		"      <separator/>"
-		"      <menuitem action='SaveLibrary'/>"
-		"      <menuitem action='SaveAsLibrary'/>"
-		"      <separator/>"
-		"      <menuitem action='ExportBibtex'/>"
-		"      <menuitem action='ManageBibtex'/>"
-		"      <menuitem action='Import'/>"
-		"      <separator/>"
-		"      <menuitem action='WorkOffline'/>"
-		"      <separator/>"
-		"      <menuitem action='Quit'/>"
-		"    </menu>"
-		"    <menu action='EditMenu'>"
-		"      <menuitem action='PasteBibtex'/>"
-		"      <menuitem action='CopyCite'/>"
-		"      <separator/>"
-		"      <menuitem action='Preferences'/>"
-		"    </menu>"
-		"    <menu action='ViewMenu'>"
-		"      <menuitem action='UseIconView'/>"
-		"      <menuitem action='UseListView'/>"
-		"      <separator/>"
-		"      <menuitem action='ShowTagPane'/>"
-		"    </menu>"
-		"    <menu action='TagMenu'>"
-		"      <menuitem action='CreateTag'/>"
-		"      <separator/>"
-		"      <menuitem action='DeleteTag'/>"
-		"      <menuitem action='RenameTag'/>"
-		"    </menu>"
-		"    <menu action='DocMenu'>"
-		"      <menuitem action='AddDocFile'/>"
-		"      <menuitem action='AddDocFolder'/>"
-		"      <menuitem action='AddDocDoi'/>"
-		"      <menuitem action='AddDocUnnamed'/>"
-		"      <separator/>"
-		"      <menuitem action='OpenDoc'/>"
-		"      <menuitem action='DocProperties'/>"
-		"      <separator/>"
-		"      <menuitem action='RemoveDoc'/>"
-		"      <menuitem action='GetMetadataDoc'/>"
-		"      <menuitem action='RenameDoc'/>"
-		"      <menuitem action='DeleteDoc'/>"
-		"      <separator/>"
-		"    </menu>"
-		"    <menu action='HelpMenu'>"
-		"      <menuitem action='Introduction'/>"
-		"      <menuitem action='About'/>"
-		"    </menu>"
-		"  </menubar>"
-		"  <toolbar name='ToolBar'>"
-		"    <toolitem action='NewLibrary'/>"
-		"    <toolitem action='OpenLibrary'/>"
-		"    <toolitem action='SaveLibrary'/>"
-		"    <separator/>"
-		"    <toolitem action='CopyCite'/>"
-		"    <toolitem action='PasteBibtex'/>"
-		"    <separator/>"
-		"  </toolbar>"
-		"  <toolbar name='TagBar'>"
-		"    <toolitem action='CreateTag'/>"
-		"    <toolitem action='DeleteTag'/>"
-		"  </toolbar>"
-		"  <toolbar name='DocBar'>"
-		"    <toolitem action='AddDocFile'/>"
-		"    <toolitem action='RemoveDoc'/>"
-		"  </toolbar>"
-		"  <popup name='DocPopup'>"
-		"    <menuitem action='RemoveDoc'/>"
-		"    <menuitem action='GetMetadataDoc'/>"
-		"    <menuitem action='OpenDoc'/>"
-		"    <menuitem action='DocProperties'/>"
-		"  </popup>"
-		"  <popup name='TagPopup'>"
-		"    <menuitem action='CreateTag'/>"
-		"    <separator/>"
-		"    <menuitem action='DeleteTag'/>"
-		"    <menuitem action='RenameTag'/>"
-		"  </popup>"
-		"  <accelerator action='Find'/>"
-		"</ui>";
 
-	uimanager_->add_ui_from_string (ui);
+	/* From referencer_ui.h */
+	uimanager_->add_ui_from_string (referencer_ui);
+
 	window_->add_accel_group (uimanager_->get_accel_group ());
 }
 
@@ -516,7 +432,11 @@ void RefWindow::onEnabledPluginsPrefChanged ()
 			}
 
 			Glib::ustring ui = (*pit)->getUI (); 
-			pluginUI_[(*pit)->getShortName()] = uimanager_->add_ui_from_string (ui);
+			try {
+				pluginUI_[(*pit)->getShortName()] = uimanager_->add_ui_from_string (ui);
+			} catch (Glib::MarkupError &ex) {
+				std::cerr << "Error merging UI for plugin " << (*pit)->getShortName() << ", exception " << ex.what() << "\n";
+			}
 		} else if (!(*pit)->isEnabled() && mergeId) {
 			/* Remove plugin actions and UI */
 			uimanager_->remove_ui (mergeId);
