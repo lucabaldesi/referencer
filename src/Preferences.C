@@ -98,13 +98,6 @@ Preferences::Preferences ()
 
 	dialog_ = (Gtk::Dialog *) xml_->get_widget ("Preferences");
 
-	crossRefUsernameEntry_ = (Gtk::Entry *) xml_->get_widget ("CrossRefUsername");
-	crossRefPasswordEntry_ = (Gtk::Entry *) xml_->get_widget ("CrossRefPassword");
-	crossRefUsernameEntry_->signal_changed().connect (
-		sigc::mem_fun (*this, &Preferences::onCrossRefChanged));
-	crossRefPasswordEntry_->signal_changed().connect (
-		sigc::mem_fun (*this, &Preferences::onCrossRefChanged));
-
 	xml_->get_widget ("ProxyHost", proxyhostentry_);
 	xml_->get_widget ("ProxyPort", proxyportspin_);
 	xml_->get_widget ("ProxyUsername", proxyusernameentry_);
@@ -227,14 +220,6 @@ void Preferences::onConfChange (int number, Gnome::Conf::Entry entry)
 	} else if (key == CONF_PATH "/showtagpane") {
 		showtagpanesignal_.emit ();
 
-	// CrossRef plugin settings
-	} else if (key == CONF_PATH "/crossrefusername") {
-		crossRefUsernameEntry_->set_text (
-			entry.get_value ().get_string ());
-	} else if (key == CONF_PATH "/crossrefpassword") {
-		crossRefPasswordEntry_->set_text (
-			entry.get_value ().get_string ());
-
 	// Proxy settings
 	} else if (key == HTTP_PROXY_HOST_KEY) {
 		proxyhostentry_->set_text (
@@ -283,11 +268,6 @@ void Preferences::showDialog ()
 	 * and should remain in a consistent state thereafter
 	 */
 
-	crossRefUsernameEntry_->set_text (
-		confclient_->get_string (crossRefUsername_.get_key()));
-	crossRefPasswordEntry_->set_text (
-		confclient_->get_string (crossRefPassword_.get_key()));
-
 	proxyhostentry_->set_text (
 		confclient_->get_string (HTTP_PROXY_HOST_KEY));
 	proxyportspin_->get_adjustment ()->set_value (
@@ -307,17 +287,6 @@ void Preferences::showDialog ()
 
 	dialog_->run ();
 	dialog_->hide ();
-}
-
-
-using Utility::DOIURLValid;
-
-void Preferences::onCrossRefChanged ()
-{
-	if (ignoreChanges_) return;
-
-	confclient_->set (crossRefUsername_.get_key(), crossRefUsernameEntry_->get_text());
-	confclient_->set (crossRefPassword_.get_key(), crossRefPasswordEntry_->get_text());
 }
 
 
@@ -445,6 +414,18 @@ Glib::ustring Preferences::getCrossRefUsername ()
 Glib::ustring Preferences::getCrossRefPassword ()
 {
 	return confclient_->get_string (crossRefPassword_.get_key());
+}
+
+
+void Preferences::setCrossRefUsername (Glib::ustring const &username)
+{
+	confclient_->set (crossRefUsername_.get_key(), username);
+}
+
+
+void Preferences::setCrossRefPassword (Glib::ustring const &password)
+{
+	confclient_->set (crossRefPassword_.get_key(), password);
 }
 
 
@@ -617,4 +598,7 @@ void Preferences::onPluginAbout ()
  */
 void Preferences::onPluginConfigure ()
 {
+	Gtk::ListStore::iterator it = pluginSel_->get_selected();
+	Plugin *plugin = (*it)[colPlugin_];
+	plugin->doConfigure ();
 }

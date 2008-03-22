@@ -132,6 +132,23 @@ class CrossRefParser : public Glib::Markup::Parser {
 };
 
 
+CrossRefPlugin::CrossRefPlugin () {
+	loaded_ = true;
+	cap_.add(PluginCapability::DOI);
+
+	xml_ = Gnome::Glade::Xml::create (Utility::findDataFile ("crossref.glade"));
+
+	xml_->get_widget ("Crossref", dialog_);
+	xml_->get_widget ("Username", usernameEntry_);
+	xml_->get_widget ("Password", passwordEntry_);
+
+	usernameEntry_->signal_changed().connect (
+		sigc::mem_fun (*this, &CrossRefPlugin::onPrefsChanged));
+	passwordEntry_->signal_changed().connect (
+		sigc::mem_fun (*this, &CrossRefPlugin::onPrefsChanged));
+}
+
+
 bool CrossRefPlugin::resolve (Document &doc)
 {
 	/*
@@ -255,3 +272,22 @@ Glib::ustring const CrossRefPlugin::getVersion ()
 	return Glib::ustring (VERSION);
 }
 
+void CrossRefPlugin::onPrefsChanged ()
+{
+	if (ignoreChanges_)
+		return;
+
+	_global_prefs->setCrossRefUsername (usernameEntry_->get_text ());
+	_global_prefs->setCrossRefPassword (passwordEntry_->get_text ());
+}
+
+void CrossRefPlugin::doConfigure ()
+{
+	ignoreChanges_ = true;
+	usernameEntry_->set_text (_global_prefs->getCrossRefUsername ());
+	passwordEntry_->set_text (_global_prefs->getCrossRefPassword ());
+	ignoreChanges_ = false;
+
+	dialog_->run ();
+	dialog_->hide ();
+}

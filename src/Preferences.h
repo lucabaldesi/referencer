@@ -64,10 +64,11 @@ private:
 	Gnome::Conf::Entry crossRefPassword_;
 	Gtk::Entry *crossRefUsernameEntry_;
 	Gtk::Entry *crossRefPasswordEntry_;
-	void onCrossRefChanged ();
 public:
 	Glib::ustring getCrossRefUsername ();
 	Glib::ustring getCrossRefPassword ();
+	void setCrossRefUsername (Glib::ustring const &username);
+	void setCrossRefPassword (Glib::ustring const &password);
 
 	/*
 	 * End of conf for crossref plugin

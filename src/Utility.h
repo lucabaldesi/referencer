@@ -41,9 +41,6 @@ namespace Utility {
 	bool uriIsFast (
 		Glib::RefPtr<Gnome::Vfs::Uri> uri);
 
-	bool DOIURLValid (
-		Glib::ustring const &url);
-
 	StringPair twoWaySplit (
 		Glib::ustring const &str,
 		Glib::ustring const &divider);
