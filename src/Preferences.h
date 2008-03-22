@@ -32,6 +32,8 @@ private:
 	Gtk::TreeView *pluginView_;
 	Gtk::Button *moveUpButton_;
 	Gtk::Button *moveDownButton_;
+	Gtk::Button *configureButton_;
+	Gtk::Button *aboutButton_;
 	Glib::RefPtr<Gtk::ListStore> pluginStore_;
 
 	Gtk::TreeModelColumn<unsigned int> colPriority_;

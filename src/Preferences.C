@@ -132,6 +132,9 @@ Preferences::Preferences ()
 	Gnome::Conf::SListHandle_ValueString disable =
 		confclient_->get_string_list (disabledPlugins_.get_key ());
 
+	configureButton_ = (Gtk::Button*) xml_->get_widget ("PluginsConfigure");
+	aboutButton_ =     (Gtk::Button*) xml_->get_widget ("PluginsAbout");
+
 	
 	// Iterate over all plugins
 	std::list<Plugin*> plugins = _global_plugins->getPlugins();

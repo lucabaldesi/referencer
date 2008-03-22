@@ -2289,10 +2289,10 @@ void RefWindow::onUseListViewPrefChanged ()
 }
 
 
-void RefWindow::onPluginRun (Glib::ustring const action, Plugin* plugin)
+void RefWindow::onPluginRun (Glib::ustring const function, Plugin* plugin)
 {
 	std::vector<Document*> docs = docview_->getSelectedDocs();
-	plugin->doAction(action, docs);
+	plugin->doAction(function, docs);
 
 	/*
 	 * Update the docs in the view since the plugin could 
@@ -2303,5 +2303,15 @@ void RefWindow::onPluginRun (Glib::ustring const action, Plugin* plugin)
 	for (; it != end; ++it) {
 		docview_->updateDoc (*it);
 	}
+}
+
+
+void RefWindow::pluginActionSensitivity (Glib::ustring const action, Plugin* plugin)
+{
+	std::vector<Document*> docs = docview_->getSelectedDocs();
+
+	bool enable = plugin->updateSensitivity(action, docs);
+
+	actiongroup_->get_action (action)->set_sensitive (enable);
 }
 

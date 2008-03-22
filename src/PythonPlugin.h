@@ -22,6 +22,7 @@ class PythonPlugin : public Plugin
 		virtual Glib::ustring const getUI ();
 		virtual ActionList getActions () {return actions_;};
 		virtual bool doAction (Glib::ustring const action, std::vector<Document*>);
+		virtual bool updateSensitivity (Glib::ustring const action, std::vector<Document*>);
 		
 		/* Metadata lookup */
 		virtual bool resolve (Document &doc);

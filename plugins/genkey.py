@@ -49,6 +49,13 @@ action = {
 }
 referencer_plugin_actions.append (action)
 
+
+def sensitivity_genkey (library, documents):
+	if (len(documents) > 0):
+		return True
+	else:
+	 	return False
+
 # library is always Nil, it's only there for future proofing
 # documents is a list of referencer.document
 def do_genkey (library, documents):
@@ -92,9 +99,3 @@ def do_genkey (library, documents):
 	
 	return True
 
-
-def _plugin_genkey_genkey_sensitivity (library, documents):
-	if len(documents) > 0:
-		return True
-	else:
-		return False

@@ -244,6 +244,46 @@ bool PythonPlugin::doAction (Glib::ustring const action, std::vector<Document*> 
 }
 
 
+bool PythonPlugin::updateSensitivity (Glib::ustring const action, std::vector<Document*> docs)
+{
+	/* Check the callback exists */
+	if (!PyObject_HasAttrString (pMod_, action.c_str())) {
+		std::cerr << "PythonPlugin::updateSensitivity function '" << action << "' not found\n";
+		return false;
+	}
+
+	/* Look up the callback function */
+	PyObject *pActionFunc = PyObject_GetAttrString (pMod_, action.c_str());
+
+	/* Construct the 'documents' argument */
+	PyObject *pDocList = PyList_New (docs.size());
+	std::vector<Document*>::iterator it = docs.begin ();
+	std::vector<Document*>::iterator const end = docs.end ();
+	for (int i = 0; it != end; ++it, ++i) {
+		referencer_document *pDoc =
+			PyObject_New (referencer_document, &t_referencer_document);
+		pDoc->doc_ = (*it);
+		PyList_SetItem (pDocList, i, (PyObject*)pDoc);
+	}
+	
+	/* Build the argument tuple: (library, documents) */
+	/* Library is nil for now */
+	PyObject *pArgs = Py_BuildValue ("(i,O)", 0, pDocList);
+
+	/* Invoke the python */
+	PyObject *pReturn = PyObject_CallObject(pActionFunc, pArgs);
+	Py_DECREF (pArgs);
+
+	if (pReturn == NULL) {
+		std::cerr << "PythonPlugin::doAction: NULL return value\n";
+		displayException ();
+		return false;
+	} else {
+		return pReturn == Py_True;
+	}
+}
+
+
 void PythonPlugin::displayException ()
 {
 	PyObject *pErr = PyErr_Occurred ();

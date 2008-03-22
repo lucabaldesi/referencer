@@ -78,7 +78,8 @@ class Plugin
 		{
 			return ActionList ();
 		};
-		virtual bool doAction (Glib::ustring const action, std::vector<Document*>) {return false;}
+		virtual bool doAction          (Glib::ustring const action, std::vector<Document*>) {return false;}
+		virtual bool updateSensitivity (Glib::ustring const action, std::vector<Document*>) {return true;}
 
 		bool isEnabled () {return enabled_;}
 		bool isLoaded () {return loaded_;}
