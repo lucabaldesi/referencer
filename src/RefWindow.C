@@ -426,18 +426,16 @@ void RefWindow::onEnabledPluginsPrefChanged ()
 			for (; it != end; ++it) {
 				Glib::ustring callback = *((Glib::ustring*)(*it)->get_data("callback"));
 				Glib::ustring accelerator = *((Glib::ustring*)(*it)->get_data("accelerator"));
-				if (callback.empty()) {
-					actiongroup_->add (
-						*it,
-						Gtk::AccelKey (accelerator));
-				} else {
-					actiongroup_->add (
-						*it,
-						*((Glib::ustring*)(*it)->get_data("accelerator")),
+				if (!callback.empty()) {
+					/* Connect the callback and stash the connection cookie */
+					sigc::connection *connection = new sigc::connection;
+					*connection = (*it)->signal_activate().connect (
 						sigc::bind<Glib::ustring const, Plugin*>(
-							sigc::mem_fun(*this, &RefWindow::onPluginRun),
-							*((Glib::ustring*)(*it)->get_data("callback")), (*pit)));
+						sigc::mem_fun(*this, &RefWindow::onPluginRun),
+						*((Glib::ustring*)(*it)->get_data("callback")), (*pit)));
+					(*it)->set_data("connection", (void*)connection);
 				}
+				actiongroup_->add (*it,	Gtk::AccelKey (accelerator));
 			}
 
 			Glib::ustring ui = (*pit)->getUI (); 
@@ -453,6 +451,9 @@ void RefWindow::onEnabledPluginsPrefChanged ()
 			Plugin::ActionList::iterator it = actions.begin ();
 			Plugin::ActionList::iterator const end = actions.end ();
 			for (; it != end; ++it) {
+				(*it)->disconnect_accelerator();
+				sigc::connection *connection = (sigc::connection*)((*it)->get_data ("connection"));
+				connection->disconnect ();
 				actiongroup_->remove (*it);
 			}
 			pluginUI_.erase ((*pit)->getShortName());

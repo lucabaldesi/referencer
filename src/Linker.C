@@ -8,10 +8,38 @@
 
 
 #include "Document.h"
+#include "DocumentView.h"
+#include "RefWindow.h"
 #include "Utility.h"
 
 #include "Linker.h"
 
+
+void Linker::createUI (RefWindow *window, DocumentView *view)
+{
+//	linkerIcon = Utility::getThemeMenuIcon("web-browser");
+	static Gtk::Widget *image = NULL;
+
+	Glib::ustring action = Glib::ustring("linker_") + getName();
+	std::cerr << "Linker::createUI: creating action " << action << "\n";
+	window->actiongroup_->add (
+		Gtk::Action::create (action, getLabel()),
+		sigc::bind(
+			sigc::mem_fun (view, &DocumentView::invokeLinker),
+			this));
+
+	Glib::ustring ui = 
+                "<ui>"
+                "<popup name='DocPopup'>"
+                "  <placeholder name='WebLinkDocPopupActions'>"
+		"    <menuitem action='";
+	ui += action;
+	ui += "'/>"
+                "  </placeholder>"
+                "</popup>"
+                "</ui>";
+	window->uimanager_->add_ui_from_string (ui);
+}
 
 void Linker::doLink (Document *doc)
 {

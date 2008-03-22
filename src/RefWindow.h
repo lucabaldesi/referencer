@@ -66,7 +66,7 @@ class RefWindow {
 		Gtk::Window *window_;
 		// DocumentView needs this for popup menu
 		Glib::RefPtr<Gtk::UIManager> uimanager_;
-		// DocumentView needs this for sensitibity
+		// DocumentView needs this for sensitivity
 		Glib::RefPtr<Gtk::ActionGroup> actiongroup_;
 		// DocumentView needs this for populateDocStore
 		std::vector<int> filtertags_;

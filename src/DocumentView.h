@@ -14,6 +14,7 @@
 
 class Document;
 class Library;
+class Linker;
 class RefWindow;
 
 class DocumentView : public Gtk::VBox
@@ -66,6 +67,8 @@ class DocumentView : public Gtk::VBox
 		{return *searchentry_;}	
 
 
+	/* Called by linker actions */
+	void invokeLinker (Linker *linker);
 
 	private:
 	RefWindow &win_;

@@ -467,9 +467,24 @@ int DocumentView::getVisibleDocCount ()
 	return docstoresort_->children().size();
 }
 
+void DocumentView::invokeLinker (Linker *linker)
+{
+	std::vector<Document*> docs = getSelectedDocs ();
+
+	std::vector<Document*>::iterator it = docs.begin ();
+	std::vector<Document*>::iterator const end = docs.end ();
+	for (; it != end; it++) {
+		if (linker->canLink (*it))
+			linker->doLink(*it);
+	}
+}
 
 bool DocumentView::docClicked (GdkEventButton* event)
 {
+	/*
+	 * Linkers are local to here for now, in the future they might
+	 * be plugin-extensible and thus moved elsewhere
+	 */
 	static std::vector<Linker*> linkers;
 	static DoiLinker doi;
 	static ArxivLinker arxiv;
@@ -477,6 +492,9 @@ bool DocumentView::docClicked (GdkEventButton* event)
 	static PubmedLinker pubmed;
 	static GoogleLinker google;
 
+	/*
+	 * Initialise linkers
+	 */
 	static Glib::RefPtr<Gdk::Pixbuf> linkerIcon;
 	if (linkers.size() == 0) {
 		linkers.push_back(&doi);
@@ -485,7 +503,10 @@ bool DocumentView::docClicked (GdkEventButton* event)
 		linkers.push_back(&pubmed);
 		linkers.push_back(&google);
 
-		linkerIcon = Utility::getThemeMenuIcon("web-browser");
+		std::vector<Linker*>::iterator it = linkers.begin ();
+		std::vector<Linker*>::iterator const end = linkers.end ();
+		for (; it != end; ++it)
+			(*it)->createUI (&win_, this);
 	}
 
 	if((event->type == GDK_BUTTON_PRESS) && (event->button == 3)) {
@@ -525,69 +546,30 @@ bool DocumentView::docClicked (GdkEventButton* event)
 		Gtk::Menu *popupmenu =
 			(Gtk::Menu*)win_.uimanager_->get_widget("/DocPopup");
 
-		/*
-		 * Remember how many items in the popup menu
-		 * were supplied by GtkUIManager
-		 */
-		static int baseSize = -1;
-		if (baseSize == -1) {
-			baseSize = popupmenu->items().size();
-		}
+		/* Work out which linkers are applicable */
+		std::vector<Document *> docs = getSelectedDocs ();
+			
+		std::vector<Linker*>::iterator it = linkers.begin();
+		std::vector<Linker*>::iterator const end = linkers.end();
+		for (; it != end; ++it) {
+			Linker *linker = (*it);
+			Glib::RefPtr<Gtk::Action> action = win_.actiongroup_->get_action (Glib::ustring("linker_") + linker->getName());
 
-		/*
-		 * Remove any extra from last time we were called
-		 */
-		Gtk::Menu::MenuList::iterator it = popupmenu->items().begin();
-		Gtk::Menu::MenuList::iterator const end = popupmenu->items().end();
-		for (int count = 0; it != end; ++it, ++count) {
-			if (count == baseSize)
-				break;
-		}
-
-		if (it != end)
-			popupmenu->items().erase(it, end);
-
-		/*
-		 * Append Linker entries
-		 */
-		bool firstLinker = true;
-		if (getSelectedDocCount () == 1) {
-			Document *doc = getSelectedDoc ();
-				
-			std::vector<Linker*>::iterator it = linkers.begin();
-			std::vector<Linker*>::iterator const end = linkers.end();
-			for (; it != end; ++it) {
-				Linker *linker = (*it);
-				if (linker->canLink (doc)) {
-					
-					if (firstLinker) {
-						Gtk::SeparatorMenuItem *sep = Gtk::manage(new Gtk::SeparatorMenuItem());
-						popupmenu->append(*(sep));
-						firstLinker = false;
-					}
-
-					Gtk::MenuItem *item;
-					if (linkerIcon) { 
-						Gtk::Widget *image = Gtk::manage (new Gtk::Image(linkerIcon));
-						item = Gtk::manage(new Gtk::ImageMenuItem(*image, linker->getLabel(), false));
-					} else {
-						item = Gtk::manage(new Gtk::ImageMenuItem(linker->getLabel(), false));
-					}
-
-					item->signal_activate().connect(
-							sigc::bind(
-								sigc::mem_fun (linker, &Linker::doLink),
-								doc));
-					popupmenu->append (*(item));
-				}
+			bool enable = false;
+			std::vector<Document*>::iterator docIt = docs.begin ();
+			std::vector<Document*>::iterator const docEnd = docs.end ();
+			for (; docIt != docEnd; ++docIt) {
+				if (linker->canLink(*docIt))
+					enable = true;
 			}
 
+			action->set_visible(enable);
 		}
 
 		/*
 		 * Display the menu
 		 */
-		popupmenu->show_all ();
+		//popupmenu->show_all ();
 		popupmenu->popup (event->button, event->time);
 
 		return true;
