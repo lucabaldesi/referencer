@@ -58,22 +58,38 @@ referencer_gettext(PyObject *self, PyObject *args)
 	return PyString_FromString (_(PyString_AsString(str)));
 }
 
+
 static PyObject*
-referencer_get_selected(PyObject *self, PyObject *args)
+referencer_pref_set (PyObject *self, PyObject *args)
 {
-	PyObject *ret = PyString_FromString ("C++ string");
-	// TODO
-	return ret;
+	PyObject *key = PyTuple_GetItem (args, 0);
+	PyObject *value = PyTuple_GetItem (args, 1);
+
+	_global_prefs->setPluginPref (PyString_AsString(key), PyString_AsString(value));
+
+	return Py_True;
 }
 
+
+static PyObject*
+referencer_pref_get (PyObject *self, PyObject *args)
+{
+	PyObject *key = PyTuple_GetItem (args, 0);
+	Glib::ustring value = _global_prefs->getPluginPref (PyString_AsString(key));
+	return PyString_FromString (value.c_str());
+}
+
+
 static PyMethodDef ReferencerMethods[] = {
-    {"download", referencer_download, METH_VARARGS,
-     "Retrieve a remote file"},
-	{"get_selected", referencer_get_selected, METH_VARARGS,
-	 "Get selected Documents"},
-    {"_", referencer_gettext, METH_VARARGS,
-     "Translate a string"},
-    {NULL, NULL, 0, NULL}
+	{"download", referencer_download, METH_VARARGS,
+		"Retrieve a remote file"},
+	{"pref_get", referencer_pref_get, METH_VARARGS,
+		 "Get configuration item"},
+	{"pref_set", referencer_pref_set, METH_VARARGS,
+		 "Set configuration item"},
+	{"_", referencer_gettext, METH_VARARGS,
+		"Translate a string"},
+	{NULL, NULL, 0, NULL}
 };
 
 

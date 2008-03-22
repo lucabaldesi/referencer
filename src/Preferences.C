@@ -602,3 +602,20 @@ void Preferences::onPluginConfigure ()
 	Plugin *plugin = (*it)[colPlugin_];
 	plugin->doConfigure ();
 }
+
+/**
+ * Store a setting on behalf of a plugin
+ */
+void Preferences::setPluginPref (Glib::ustring const &key, Glib::ustring const &value)
+{
+	confclient_->set (Glib::ustring(CONF_PATH) + "/plugin/" + key, value); 
+}
+
+
+/**
+ * Retrieve a setting on behalf of a plugin
+ */
+Glib::ustring Preferences::getPluginPref (Glib::ustring const &key)
+{
+	return confclient_->get_string (Glib::ustring(CONF_PATH) + "/plugin/" + key);
+}

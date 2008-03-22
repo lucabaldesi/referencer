@@ -51,10 +51,14 @@ private:
 	Gnome::Conf::Entry disabledPlugins_;
 	public:
 	void disablePlugin (Plugin *plugin);
-	private:
+
+	void setPluginPref (Glib::ustring const &key, Glib::ustring const &value);
+	Glib::ustring getPluginPref (Glib::ustring const &key);
+
 	/*
 	 * End of Plugins
 	 */
+	
 
 	/*
 	 * Conf for crossref plugin
@@ -62,8 +66,6 @@ private:
 private:
 	Gnome::Conf::Entry crossRefUsername_;
 	Gnome::Conf::Entry crossRefPassword_;
-	Gtk::Entry *crossRefUsernameEntry_;
-	Gtk::Entry *crossRefPasswordEntry_;
 public:
 	Glib::ustring getCrossRefUsername ();
 	Glib::ustring getCrossRefPassword ();
