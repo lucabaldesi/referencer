@@ -14,6 +14,7 @@ from xml.dom import minidom
 
 referencer_plugin_info = []
 referencer_plugin_info.append (["longname", _("PubMed DOI resolver")])
+referencer_plugin_info.append (["author", "Simon Greenhill, John Spray"])
 referencer_plugin_capabilities = []
 referencer_plugin_capabilities.append ("doi")
 referencer_plugin_capabilities.append ("pubmed")

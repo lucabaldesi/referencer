@@ -10,6 +10,10 @@ import gobject
 import gtk
 
 referencer_plugin_info = []
+referencer_plugin_info.append (["author", "John Spray"])
+referencer_plugin_info.append (["version", "1.1.2"])
+referencer_plugin_info.append (["configure", "configure"])
+referencer_plugin_info.append (["longname", _("Generate keys from metadata")])
 referencer_plugin_info.append (["longname", _("Generate keys from metadata")])
 referencer_plugin_info.append (["ui",
 		"""
@@ -60,11 +64,6 @@ def sensitivity_genkey (library, documents):
 # library is always Nil, it's only there for future proofing
 # documents is a list of referencer.document
 def do_genkey (library, documents):
-	win = gtk.Dialog()
-	win.add_button (gtk.STOCK_OK, 0)
-	win.run ()
-	win.hide ()
-
 	empty = True
 	s = ""
 	assigned_keys = {}
@@ -100,3 +99,5 @@ def do_genkey (library, documents):
 	
 	return True
 
+def configure():
+	pass

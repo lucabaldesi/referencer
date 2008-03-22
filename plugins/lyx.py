@@ -8,6 +8,7 @@ from referencer import _
 
 referencer_plugin_info = [
 	["longname", _("Cite in LyX")]
+	["author", "Aurélien Naldi"]
 ]
 
 referencer_plugin_info.append (["ui",
