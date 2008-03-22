@@ -386,6 +386,8 @@ void RefWindow::constructMenu ()
 		"RenameDoc", Gtk::Stock::EDIT, _("R_ename File from Key")),
   	sigc::mem_fun(*this, &RefWindow::onRenameDoc));
 
+	actiongroup_->add ( Gtk::Action::create("ToolsMenu", _("_Tools")) );
+
 	actiongroup_->add ( Gtk::Action::create("HelpMenu", _("_Help")) );
 	actiongroup_->add( Gtk::Action::create(
 		"Introduction", Gtk::Stock::HELP, _("Introduction")),
@@ -436,10 +438,6 @@ void RefWindow::onEnabledPluginsPrefChanged ()
 							sigc::mem_fun(*this, &RefWindow::onPluginRun),
 							*((Glib::ustring*)(*it)->get_data("callback")), (*pit)));
 				}
-
-				/* Sensitivity policy duplicated here and in docSelectionChanged */
-				(*it)->set_sensitive (
-					docview_->getSelectedDocCount () > 0);
 			}
 
 			Glib::ustring ui = (*pit)->getUI (); 
@@ -460,6 +458,9 @@ void RefWindow::onEnabledPluginsPrefChanged ()
 			pluginUI_.erase ((*pit)->getShortName());
 		}
 	}
+
+	/* Set up sensitivities */
+	docSelectionChanged ();
 }
 
 void RefWindow::clearTagList ()

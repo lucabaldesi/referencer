@@ -18,15 +18,13 @@ referencer_plugin_info.append (["ui",
 		"""
 		<ui>
 			<menubar name='MenuBar'>
-			<placeholder name='PluginMenus'>
-			<menu action='_plugin_genkey_toolsmenu'>
-				<menuitem action='_plugin_genkey_genkey'/>
-			</menu>
-			</placeholder>
+				<menu action='ToolsMenu'>
+					<placeholder name ='PluginToolsActions'>
+						<menuitem action='_plugin_genkey_genkey'/>
+					</placeholder>
+				</menu>
 			</menubar>
-			<toolbar name='ToolBar'>
-				<toolitem action='_plugin_genkey_genkey'/>
-			</toolbar>
+
 			<popup name='DocPopup'>
 				<menuitem action='_plugin_genkey_genkey'/>
 			</popup>
@@ -45,14 +43,6 @@ action = {
 	"accelerator":"<control>g"
 }
 referencer_plugin_actions.append (action)
-
-action = {
-	"name":"_plugin_genkey_toolsmenu",
-	"label":_("Tools"),
-	"tooltip":_("Generate keys for the selected documents from their metadata")
-}
-referencer_plugin_actions.append (action)
-
 
 def sensitivity_genkey (library, documents):
 	if (len(documents) > 0):

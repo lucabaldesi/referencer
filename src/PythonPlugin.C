@@ -415,12 +415,10 @@ Glib::ustring const PythonPlugin::getPluginInfoField (Glib::ustring const &targe
 			value = Glib::ustring (cValue);
 
 		if (key == targetKey) {
-			std::cerr << "Got info field " << targetKey << ":" << value << "\n";
 			return value;
 		}
 	}
 
-	std::cerr << "Couldn't find key " << targetKey << "\n";
 	return Glib::ustring ();
 }
 
