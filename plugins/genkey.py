@@ -38,6 +38,7 @@ action = {
 	"tooltip":_("Generate keys for the selected documents from their metadata"),
 	"icon":"lyx.png",
 	"callback":"do_genkey",
+	"sensitivity":"sensitivity_genkey",
 	"accelerator":"<control>g"
 }
 referencer_plugin_actions.append (action)

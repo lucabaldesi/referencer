@@ -39,7 +39,7 @@ PythonPlugin::~PythonPlugin()
 	}
 }
 
-void freeData (void *data)
+void freeString (void *data)
 {
 	delete (Glib::ustring*)data;
 }
@@ -130,6 +130,7 @@ void PythonPlugin::load (std::string const &moduleName)
 			const Glib::ustring icon        = safePyDictGetItem (pActionDict, "icon");
 			const Glib::ustring accelerator = safePyDictGetItem (pActionDict, "accelerator");
 			const Glib::ustring callback    = safePyDictGetItem (pActionDict, "callback");
+			const Glib::ustring sensitivity = safePyDictGetItem (pActionDict, "sensitivity");
 
 			Glib::ustring stockStr = "_stock:";
 
@@ -159,8 +160,9 @@ void PythonPlugin::load (std::string const &moduleName)
 			Glib::RefPtr<Gtk::Action> action = Gtk::Action::create(
 				name, stockId, label, tooltip);
 
-			action->set_data ("accelerator", new Glib::ustring (accelerator), freeData);
-			action->set_data ("callback",    new Glib::ustring (callback), freeData);
+			action->set_data ("accelerator",    new Glib::ustring (accelerator), freeString);
+			action->set_data ("callback",       new Glib::ustring (callback),    freeString);
+			action->set_data ("sensitivity",    new Glib::ustring (sensitivity), freeString);
 
 			actions_.push_back (action);
 		}
@@ -204,16 +206,16 @@ bool PythonPlugin::resolve (Document &doc)
 	return success;
 }
 
-bool PythonPlugin::doAction (Glib::ustring const action, std::vector<Document*> docs)
+bool PythonPlugin::doAction (Glib::ustring const function, std::vector<Document*> docs)
 {
 	/* Check the callback exists */
-	if (!PyObject_HasAttrString (pMod_, action.c_str())) {
-		std::cerr << "PythonPlugin::doAction: function '" << action << "' not found\n";
+	if (!PyObject_HasAttrString (pMod_, function.c_str())) {
+		std::cerr << "PythonPlugin::doAction: function '" << function << "' not found\n";
 		return false;
 	}
 
 	/* Look up the callback function */
-	PyObject *pActionFunc = PyObject_GetAttrString (pMod_, action.c_str());
+	PyObject *pActionFunc = PyObject_GetAttrString (pMod_, function.c_str());
 
 	/* Construct the 'documents' argument */
 	PyObject *pDocList = PyList_New (docs.size());
@@ -244,16 +246,16 @@ bool PythonPlugin::doAction (Glib::ustring const action, std::vector<Document*> 
 }
 
 
-bool PythonPlugin::updateSensitivity (Glib::ustring const action, std::vector<Document*> docs)
+bool PythonPlugin::updateSensitivity (Glib::ustring const function, std::vector<Document*> docs)
 {
 	/* Check the callback exists */
-	if (!PyObject_HasAttrString (pMod_, action.c_str())) {
-		std::cerr << "PythonPlugin::updateSensitivity function '" << action << "' not found\n";
-		return false;
+	if (!PyObject_HasAttrString (pMod_, function.c_str())) {
+		/* No sensitivity function: always enable */
+		return true;
 	}
 
 	/* Look up the callback function */
-	PyObject *pActionFunc = PyObject_GetAttrString (pMod_, action.c_str());
+	PyObject *pActionFunc = PyObject_GetAttrString (pMod_, function.c_str());
 
 	/* Construct the 'documents' argument */
 	PyObject *pDocList = PyList_New (docs.size());

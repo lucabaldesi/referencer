@@ -2225,15 +2225,13 @@ void RefWindow::docSelectionChanged ()
 	for (; pit != pend; pit++) {
 		if ((*pit)->isEnabled())
 		{
-			// TODO: allow plugins to control their sensitivity
-			Glib::RefPtr<Gtk::Action> action = actiongroup_->
-				get_action("_plugin_"+(*pit)->getShortName());
-
 			Plugin::ActionList actions = (*pit)->getActions ();
 			Plugin::ActionList::iterator it = actions.begin ();
 			Plugin::ActionList::iterator const end = actions.end ();
 			for (; it != end; ++it) {
-				(*it)->set_sensitive (somethingselected);
+				Glib::ustring *callback = (Glib::ustring*) (*it)->get_data("sensitivity");
+				bool enable = (*pit)->updateSensitivity (*callback, docview_->getSelectedDocs());
+				(*it)->set_sensitive (enable);
 			}
 
 		}
@@ -2303,15 +2301,5 @@ void RefWindow::onPluginRun (Glib::ustring const function, Plugin* plugin)
 	for (; it != end; ++it) {
 		docview_->updateDoc (*it);
 	}
-}
-
-
-void RefWindow::pluginActionSensitivity (Glib::ustring const action, Plugin* plugin)
-{
-	std::vector<Document*> docs = docview_->getSelectedDocs();
-
-	bool enable = plugin->updateSensitivity(action, docs);
-
-	actiongroup_->get_action (action)->set_sensitive (enable);
 }
 
