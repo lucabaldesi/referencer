@@ -56,19 +56,53 @@ def do_genkey (library, documents):
 	empty = True
 	s = ""
 	assigned_keys = {}
+
+	format = referencer.pref_get ("genkey_format")
+	if (len(format)==0):
+		format = "%a%y"
+
+	# Prompt the user for the key format
+	dialog = gtk.Dialog (buttons=(gtk.STOCK_CANCEL, gtk.RESPONSE_REJECT, gtk.STOCK_OK, gtk.RESPONSE_ACCEPT))
+	dialog.set_has_separator (False)
+	dialog.vbox.set_spacing (6)
+	hbox = gtk.HBox (spacing=6)
+	label = gtk.Label ("Key format:")
+	entry = gtk.Entry ()
+	entry.set_text (format)
+	dialog.vbox.pack_start (hbox)
+	hbox.pack_start (label)
+	hbox.pack_start (entry)
+	
+	label = gtk.Label ("Markers:\n\t%y = two-digit year\n\t%Y = four-digit year\n\t%a = first author's surname")
+	dialog.vbox.pack_start (label)
+
+	dialog.show_all ()
+	response = dialog.run ()
+	dialog.hide ()
+
+	if (response == gtk.RESPONSE_REJECT):
+		return False
+	
+	format = entry.get_text ()
+
 	for document in documents:
 		author = document.get_field ("author")
 		author = author.split("and")[0].split(",")[0].split(" ")[0]
 		year = document.get_field ("year")
-		if len(year) == 4:
-			year = year[2:4]
 
-		if len(author) > 0 and len(year) > 0:
-			key = author + year
-		elif len(author) > 0:
-			key = author
+		if len(year) == 4:
+			shortYear = year[2:4]
+
+		if (len(author) > 0):
+			# replace %y with shortYear
+			# replace %Y with year
+			# replace %a with first author's last name
+			key = format
+			key = key.replace ("%y", shortYear)
+			key = key.replace ("%Y", shortYear)
+			key = key.replace ("%a", author)
 		else:
-		 	key = document.get_key ()
+			key = document.get_key ()
 
 		# Make the key unique within this document set
 		append = "b"
@@ -86,6 +120,9 @@ def do_genkey (library, documents):
 			
 		document.set_key (key)
 	
+
+	referencer.pref_set ("genkey_format", format)
+
 	return True
 
 def configure():
