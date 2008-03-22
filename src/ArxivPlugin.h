@@ -18,6 +18,8 @@ class ArxivPlugin : public Plugin
 		virtual bool resolve (Document &doc);
 		virtual Glib::ustring const getShortName ();
 		virtual Glib::ustring const getLongName ();
+		virtual Glib::ustring const getAuthor ();
+		virtual Glib::ustring const getVersion ();
 };
 
 #endif

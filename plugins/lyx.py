@@ -7,8 +7,9 @@ import referencer
 from referencer import _
 
 referencer_plugin_info = [
-	["longname", _("Cite in LyX")]
-	["author", "Aurélien Naldi"]
+	["longname", _("Cite in LyX")],
+	["author", "Aurelien Naldi"]
+	#["author", "Aurélien Naldi"]
 ]
 
 referencer_plugin_info.append (["ui",

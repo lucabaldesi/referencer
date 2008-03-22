@@ -1282,7 +1282,7 @@ void RefWindow::onAbout ()
 	dialog.set_name (DISPLAY_PROGRAM);
 	dialog.set_version (VERSION);
 	dialog.set_comments ("A document organiser and bibliography manager");
-	dialog.set_copyright ("Copyright © 2007 John Spray");
+	dialog.set_copyright ("Copyright © 2008 John Spray");
 	dialog.set_website ("http://icculus.org/referencer/");
 	// Translators: your name here!
 	dialog.set_translator_credits (_("translator-credits"));

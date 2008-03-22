@@ -22,6 +22,7 @@
 #include "Transfer.h"
 #include "Utility.h"
 
+#include "config.h"
 #include "ArxivPlugin.h"
 
 bool ArxivPlugin::resolve (Document &doc)
@@ -113,6 +114,18 @@ Glib::ustring const ArxivPlugin::getShortName ()
 Glib::ustring const ArxivPlugin::getLongName ()
 {
 	return Glib::ustring (_("Arxiv.org ArXiv-ID resolver"));
+}
+
+
+Glib::ustring const ArxivPlugin::getAuthor ()
+{
+	return Glib::ustring ("John Spray");
+}
+
+
+Glib::ustring const ArxivPlugin::getVersion ()
+{
+	return Glib::ustring (VERSION);
 }
 
 

@@ -35,6 +35,7 @@ private:
 	Gtk::Button *configureButton_;
 	Gtk::Button *aboutButton_;
 	Glib::RefPtr<Gtk::ListStore> pluginStore_;
+	Glib::RefPtr<Gtk::TreeView::Selection> pluginSel_;
 
 	Gtk::TreeModelColumn<unsigned int> colPriority_;
 	Gtk::TreeModelColumn<Plugin*> colPlugin_;
@@ -43,6 +44,9 @@ private:
 	Gtk::TreeModelColumn<bool> colEnabled_;
 
 	void onPluginToggled (Glib::ustring const &str);
+	void onPluginSelect ();
+	void onPluginAbout ();
+	void onPluginConfigure ();
 
 	Gnome::Conf::Entry disabledPlugins_;
 	public:

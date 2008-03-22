@@ -376,6 +376,18 @@ Glib::ustring const PythonPlugin::getLongName ()
 }
 
 
+Glib::ustring const PythonPlugin::getAuthor ()
+{
+	return getPluginInfoField ("author");
+}
+
+
+Glib::ustring const PythonPlugin::getVersion ()
+{
+	return getPluginInfoField ("version");
+}
+
+
 Glib::ustring const PythonPlugin::getUI ()
 {
 	return getPluginInfoField ("ui");
@@ -402,10 +414,13 @@ Glib::ustring const PythonPlugin::getPluginInfoField (Glib::ustring const &targe
 		if (cValue)
 			value = Glib::ustring (cValue);
 
-		if (key == targetKey)
+		if (key == targetKey) {
+			std::cerr << "Got info field " << targetKey << ":" << value << "\n";
 			return value;
+		}
 	}
 
+	std::cerr << "Couldn't find key " << targetKey << "\n";
 	return Glib::ustring ();
 }
 

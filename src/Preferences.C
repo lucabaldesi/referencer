@@ -132,8 +132,12 @@ Preferences::Preferences ()
 	Gnome::Conf::SListHandle_ValueString disable =
 		confclient_->get_string_list (disabledPlugins_.get_key ());
 
-	configureButton_ = (Gtk::Button*) xml_->get_widget ("PluginsConfigure");
-	aboutButton_ =     (Gtk::Button*) xml_->get_widget ("PluginsAbout");
+	configureButton_ = (Gtk::Button*) xml_->get_widget ("PluginConfigure");
+	configureButton_->signal_clicked().connect (
+		sigc::mem_fun (*this, &Preferences::onPluginConfigure));
+	aboutButton_ =     (Gtk::Button*) xml_->get_widget ("PluginAbout");
+	aboutButton_->signal_clicked().connect (
+		sigc::mem_fun (*this, &Preferences::onPluginAbout));
 
 	
 	// Iterate over all plugins
@@ -189,6 +193,10 @@ Preferences::Preferences ()
 	pluginView_->append_column (*longName);
 
 	pluginView_->set_model (pluginStore_);
+	pluginSel_ = pluginView_->get_selection ();
+	pluginSel_->signal_changed().connect(
+		sigc::mem_fun (*this, &Preferences::onPluginSelect));
+	onPluginSelect ();
 
 
 	/*
@@ -560,4 +568,53 @@ void Preferences::disablePlugin (Plugin *plugin)
 		disable.push_back(plugin->getShortName());
 
 	confclient_->set_string_list (disabledPlugins_.get_key(), disable);
+}
+
+
+/**
+ * Update sensitivities on plugin selection changed
+ */
+void Preferences::onPluginSelect ()
+{
+	if (pluginSel_->count_selected_rows () == 0) {
+		aboutButton_->set_sensitive(false);	
+		configureButton_->set_sensitive(false);	
+	} else {
+		Gtk::ListStore::iterator it = pluginSel_->get_selected();
+		Plugin *plugin = (*it)[colPlugin_];
+		aboutButton_->set_sensitive(true);
+		configureButton_->set_sensitive(plugin->canConfigure());
+	}
+}
+
+
+/**
+ * Display a Gtk::AboutDialog for the selected plugin
+ */
+void Preferences::onPluginAbout ()
+{
+	Gtk::ListStore::iterator it = pluginSel_->get_selected();
+	Plugin *plugin = (*it)[colPlugin_];
+
+	Gtk::AboutDialog dialog;
+	dialog.set_name (plugin->getShortName());
+	dialog.set_version (plugin->getVersion());
+	dialog.set_comments (plugin->getLongName());
+	if (!plugin->getAuthor().empty()) {
+	    dialog.set_copyright ("Copyright " + plugin->getAuthor());
+	}
+//	dialog.set_website ("http://icculus.org/referencer/");
+/*	dialog.set_logo (
+		Gdk::Pixbuf::create_from_file (
+			Utility::findDataFile ("referencer.svg"),
+			128, 128));*/
+	dialog.run ();
+}
+
+
+/**
+ * Call the selected plugin's configuration hook if it has one
+ */
+void Preferences::onPluginConfigure ()
+{
 }

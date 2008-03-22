@@ -14,7 +14,6 @@ referencer_plugin_info.append (["author", "John Spray"])
 referencer_plugin_info.append (["version", "1.1.2"])
 referencer_plugin_info.append (["configure", "configure"])
 referencer_plugin_info.append (["longname", _("Generate keys from metadata")])
-referencer_plugin_info.append (["longname", _("Generate keys from metadata")])
 referencer_plugin_info.append (["ui",
 		"""
 		<ui>

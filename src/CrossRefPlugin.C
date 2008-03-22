@@ -21,6 +21,7 @@
 #include "Transfer.h"
 #include "Utility.h"
 
+#include "config.h"
 #include "CrossRefPlugin.h"
 
 class CrossRefParser : public Glib::Markup::Parser {
@@ -242,4 +243,15 @@ Glib::ustring const CrossRefPlugin::getLongName ()
 	return Glib::ustring (_("Crossref.org OpenURL DOI resolver"));
 }
 
+
+Glib::ustring const CrossRefPlugin::getAuthor ()
+{
+	return Glib::ustring ("John Spray");
+}
+
+
+Glib::ustring const CrossRefPlugin::getVersion ()
+{
+	return Glib::ustring (VERSION);
+}
 

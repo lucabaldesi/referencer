@@ -17,6 +17,8 @@ class PythonPlugin : public Plugin
 		/* General properties */
 		virtual Glib::ustring const getShortName () {return moduleName_;}
 		virtual Glib::ustring const getLongName ();
+		virtual Glib::ustring const getAuthor ();
+		virtual Glib::ustring const getVersion ();
 
 		/* Actions */
 		virtual Glib::ustring const getUI ();

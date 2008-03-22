@@ -71,6 +71,8 @@ class Plugin
 
 		virtual Glib::ustring const getShortName () = 0;
 		virtual Glib::ustring const getLongName () = 0;
+		virtual Glib::ustring const getAuthor () = 0;
+		virtual Glib::ustring const getVersion () = 0;
 
 		virtual Glib::ustring const getUI () {return Glib::ustring();}
 		typedef std::vector<Glib::RefPtr<Gtk::Action> > ActionList;
@@ -80,6 +82,10 @@ class Plugin
 		};
 		virtual bool doAction          (Glib::ustring const action, std::vector<Document*>) {return false;}
 		virtual bool updateSensitivity (Glib::ustring const action, std::vector<Document*>) {return true;}
+
+		/* Configuration hook */
+		virtual bool canConfigure () {return false;}
+		virtual void doConfigure  () {};
 
 		bool isEnabled () {return enabled_;}
 		bool isLoaded () {return loaded_;}
