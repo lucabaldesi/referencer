@@ -175,7 +175,7 @@ bool CrossRefPlugin::resolve (Document &doc)
 			int response = dialog.run ();
 			if (response == 1) {
 				// Preferences
-				_global_prefs->showDialog ();
+				doConfigure ();
 				if (!_global_prefs->getCrossRefUsername ().empty ())
 					break;
 				// if they didn't give us one then we loop around
