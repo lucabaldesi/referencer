@@ -450,14 +450,13 @@ bool Document::canGetMetadata ()
 
 bool Document::matchesSearch (Glib::ustring const &search)
 {
-	if (bib_.getTitle().uppercase().find(search.uppercase()) != Glib::ustring::npos)
-		return true;
-
-	if (bib_.getAuthors().uppercase().find(search.uppercase()) != Glib::ustring::npos)
-		return true;
-
-	if (key_.uppercase().find(search.uppercase()) != Glib::ustring::npos)
-		return true;
+	std::map <Glib::ustring, Glib::ustring> fields = getFields ();
+	std::map <Glib::ustring, Glib::ustring>::iterator fieldIter = fields.begin ();
+	std::map <Glib::ustring, Glib::ustring>::iterator const fieldEnd = fields.end ();
+	for (; fieldIter != fieldEnd; ++fieldIter) {
+		if (fieldIter->second.uppercase().find(search.uppercase()) != Glib::ustring::npos)
+			return true;
+	}
 
 	return false;
 }
