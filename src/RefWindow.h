@@ -77,8 +77,12 @@ class RefWindow {
 		bool ignoreDocSelectionChanged_;
 		void clearTagList ();
 		void populateTagList ();
+		/* Construct main window */
 		void constructUI ();
+		/* Construct uimanager stuff */
 		void constructMenu ();
+		/* Debugging: print UI tree and action list */
+		void printUI ();
 
 		Library *library_;
 

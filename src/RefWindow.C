@@ -582,8 +582,12 @@ void RefWindow::populateTagList ()
 
 	// To update tag actions
 	docSelectionChanged ();
+}
 
-	/*
+
+void RefWindow::printUI ()
+{
+	std::cerr << "UI:\n";
 	std::cerr << uimanager_->get_ui();
 	std::cerr << "Actions:\n";
 	std::vector<Glib::RefPtr<Gtk::Action> > actions = actiongroup_->get_actions ();
@@ -592,7 +596,6 @@ void RefWindow::populateTagList ()
 	for (; actionIt != actionEnd; ++actionIt) {
 		std::cerr << (*actionIt)->get_name () << "\n";
 	}
-	*/
 }
 
 
