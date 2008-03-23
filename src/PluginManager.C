@@ -95,34 +95,6 @@ static PyMethodDef ReferencerMethods[] = {
 
 PluginManager::PluginManager ()
 {
-	Glib::ustring pythonPath = "";
-	/* Pick up existing python path */
-	if (getenv("PYTHONPATH")) {
-		pythonPath += ":";
-		pythonPath += getenv("PYTHONPATH");
-	}
-
-	/* Locate user plugins */
-	Glib::ustring homePlugins;
-	if (getenv("HOME"))
-		homePlugins = Glib::ustring(getenv("HOME")) + Glib::ustring("/.referencer/plugins");
-
-	/* Development directory */
-	Glib::ustring localPlugins = "./plugins";
-	/* Systemwide */
-	Glib::ustring installedPlugins = PLUGINDIR;
-
-	/* Order is important, defines precedence */
-	pythonPath += localPlugins;
-	pythonPath += ":";
-	pythonPath += homePlugins;
-	pythonPath += ":";
-	pythonPath += installedPlugins;
-	pythonPath += ":";
-	/* Export the path */
-	std::cerr << "main: setting PYTHONPATH to '" << pythonPath << "'\n";
-	setenv ("PYTHONPATH", pythonPath.c_str(), 1);
-
 	PyObject *module = Py_InitModule ("referencer", ReferencerMethods);
 
 	PyType_Ready (&t_referencer_document);
