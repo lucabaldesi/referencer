@@ -105,14 +105,22 @@ class RefWindow {
 			const Gtk::TreeModel::iterator& a,
 			const Gtk::TreeModel::iterator& b);
 		Gtk::Widget *tagpane_;
-		Gtk::VBox *taggerbox_;
 		Glib::RefPtr<Gtk::TreeSelection> tagselection_;
 		Gtk::TreeView *tagview_;
 		bool ignoreTagSelectionChanged_;
-		std::map<int, Gtk::ToggleButton*> taggerchecks_;
-		bool ignoretaggerchecktoggled_;
-		void taggerCheckToggled (Gtk::ToggleButton *check, int taguid);
+
+		class TagUI {
+			public:
+			Glib::RefPtr<Gtk::ToggleAction> action;
+			Gtk::UIManager::ui_merge_id merge;
+		};
+		typedef std::map<int, TagUI> TaggerUIMap;
+		TaggerUIMap taggerUI_;
+
+		bool ignoreTaggerActionToggled_;
+		void taggerActionToggled (Glib::RefPtr<Gtk::ToggleAction> action, int taguid);
 		void tagSelectionChanged ();
+
 		void tagClicked (GdkEventButton* event);
 		void tagNameEdited (Glib::ustring const &text1, Glib::ustring const &text2);
 		void tagNameEditingStarted (Gtk::CellEditable *, Glib::ustring const &path);

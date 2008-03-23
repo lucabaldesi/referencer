@@ -38,7 +38,7 @@
 RefWindow::RefWindow ()
 {
 	ignoreTagSelectionChanged_ = false;
-	ignoretaggerchecktoggled_ = false;
+	ignoreTaggerActionToggled_ = false;
 	ignoreDocSelectionChanged_ = false;
 
 	dirty_ = false;
@@ -219,24 +219,6 @@ void RefWindow::constructUI ()
 	tagbar.set_show_arrow (false);
 	filtervbox->pack_start (tagbar, false, false, 0);
 
-	Gtk::Label *taggerlabel = Gtk::manage (new Gtk::Label (""));
-	taggerlabel->set_markup (Glib::ustring("<b> ") + _("This Document") + " </b>");
-	taggerlabel->set_alignment (0.0, 0.0);
-	vbox->pack_start (*taggerlabel, false, true, 3);
-
-	// The tagger box
-	Gtk::VBox *taggervbox = Gtk::manage (new Gtk::VBox);
-	taggervbox->set_border_width(6);
-
-	Gtk::ScrolledWindow *taggerscroll = Gtk::manage(new Gtk::ScrolledWindow());
-	taggerscroll->set_policy (Gtk::POLICY_NEVER, Gtk::POLICY_AUTOMATIC);
-	taggerscroll->set_shadow_type (Gtk::SHADOW_NONE);
-	taggerscroll->add (*taggervbox);
-	((Gtk::Viewport *)(taggerscroll->get_child()))->set_shadow_type (Gtk::SHADOW_NONE);
-	vbox->pack_start (*taggerscroll, true, true, 0);
-
-	taggerbox_ = taggervbox;
-	
 	window_->show_all ();
 	// Update visibilities
 	docview_->setUseListView (!docview_->getUseListView());
@@ -375,6 +357,9 @@ void RefWindow::constructMenu ()
 		"DocProperties", Gtk::Stock::PROPERTIES), Gtk::AccelKey ("<control>e"),
   	sigc::mem_fun(*this, &RefWindow::onDocProperties));
 
+	actiongroup_->add ( Gtk::Action::create("TaggerMenuAction", _("_Tags")) );
+	//actiongroup_->get_action("TaggerMenuAction")->set_property("hide_if_empty", false);
+
 	actiongroup_->add( Gtk::Action::create(
 		"GetMetadataDoc", Gtk::Stock::CONNECT, _("_Get Metadata")),
   	sigc::mem_fun(*this, &RefWindow::onGetMetadataDoc));
@@ -497,8 +482,16 @@ void RefWindow::populateTagList ()
 	Gtk::TreeModel::iterator sep = tagstore_->append();
 	(*sep)[taguidcol_] = SEPARATOR_UID;
 
-	taggerbox_->children().clear();
-	taggerchecks_.clear();
+	/* Clear out tag actions and UI */
+	TaggerUIMap::iterator taggerIter = taggerUI_.begin ();
+	TaggerUIMap::iterator const taggerEnd  = taggerUI_.end ();
+	for (; taggerIter != taggerEnd; ++taggerIter) {
+		std::cerr << "Removing action " << actiongroup_->get_name() << "\n";
+		actiongroup_->remove ((*taggerIter).second.action);
+		uimanager_->remove_ui ((*taggerIter).second.merge);
+	}
+	taggerUI_.clear ();
+
 
 	std::map <int, int> tagusecounts;
 
@@ -533,7 +526,6 @@ void RefWindow::populateTagList ()
 			factor = 1.5;
 		if (factor > maxfactor)
 			factor = maxfactor;
-		//std::cerr << "factor for " << (*it).name_ << " = " << factor << "\n";
 
 		int basesize = window_->get_style ()->get_font().get_size ();
 		int size = (int) (factor * (float)basesize);
@@ -542,18 +534,41 @@ void RefWindow::populateTagList ()
 		font.set_weight (Pango::WEIGHT_SEMIBOLD);
 		(*item)[tagfontcol_] = font;
 
-		Gtk::ToggleButton *check =
-			Gtk::manage (new Gtk::CheckButton ((*it).name_));
-		check->signal_toggled().connect(
-			sigc::bind(
-				sigc::mem_fun (*this, &RefWindow::taggerCheckToggled),
-				check,
-				(*it).uid_));
-		taggerbox_->pack_start (*check, false, false, 1);
-		taggerchecks_[(*it).uid_] = check;
-	}
+		/* Create tag actions */
+		TagUI t;
+		Glib::ustring actionName = String::ucompose ("tagger_%1", (*it).uid_);
+		std::cerr << "Created action with name " << actionName << "\n";
+		Glib::RefPtr<Gtk::ToggleAction> action = Gtk::ToggleAction::create (
+				actionName, (*it).name_);
 
-	taggerbox_->show_all ();
+		action->set_visible(true);
+		action->signal_toggled().connect(
+			sigc::bind(
+				sigc::mem_fun (*this, &RefWindow::taggerActionToggled),
+				action,
+				(*it).uid_));
+
+		/* Add it to the action group */
+		actiongroup_->add (action);
+		t.action = action;
+		/* Merge it into the UI */
+		Glib::ustring ui = 
+			"<ui>"
+			"<popup name='DocPopup'>"
+			"<menu action='TaggerMenuAction' name='TaggerMenu'>"
+			"    <menuitem action='";
+		ui += actionName;
+		ui += "'/>"
+			"</menu>"
+			"</popup>"
+			"</ui>";
+
+		t.merge = uimanager_->add_ui_from_string (ui); 
+		std::cerr << "Merged with id " << t.merge << "\n";
+
+		/* Stash the info */
+		taggerUI_[(*it).uid_] = t;
+	}
 
 	// Restore initial selection or selected first row
 	ignoreTagSelectionChanged_ = ignore;
@@ -565,22 +580,32 @@ void RefWindow::populateTagList ()
 		tagselection_->select (tagstore_->children().begin());
 
 
-	// To update taggerbox
+	// To update tag actions
 	docSelectionChanged ();
+
+	/*
+	std::cerr << uimanager_->get_ui();
+	std::cerr << "Actions:\n";
+	std::vector<Glib::RefPtr<Gtk::Action> > actions = actiongroup_->get_actions ();
+	std::vector<Glib::RefPtr<Gtk::Action> >::iterator actionIt = actions.begin ();
+	std::vector<Glib::RefPtr<Gtk::Action> >::iterator const actionEnd = actions.end ();
+	for (; actionIt != actionEnd; ++actionIt) {
+		std::cerr << (*actionIt)->get_name () << "\n";
+	}
+	*/
 }
 
 
-void RefWindow::taggerCheckToggled (Gtk::ToggleButton *check, int taguid)
+void RefWindow::taggerActionToggled (Glib::RefPtr<Gtk::ToggleAction> action, int taguid)
 {
-	if (ignoretaggerchecktoggled_)
+	if (ignoreTaggerActionToggled_)
 		return;
 
 	setDirty (true);
 
 	std::vector<Document*> selecteddocs = docview_->getSelectedDocs ();
 
-	bool active = check->get_active ();
-	check->set_inconsistent (false);
+	bool active = action->get_active ();
 
 	bool tagsremoved = false;
 	bool tagsadded = false;
@@ -663,9 +688,13 @@ void RefWindow::tagNameEdited (
 
 	setDirty (true);
 
+	/* Update name in tag bar */
 	(*iter)[tagnamecol_] = newname;
+	/* Update name in tag store */
 	library_->taglist_->renameTag ((*iter)[taguidcol_], newname);
-	taggerchecks_[(*iter)[taguidcol_]]->set_label (newname);
+
+	/* FIXME: Update name in tag action */
+//	taggerAction_[(*iter)[taguidcol_] 
 }
 
 
@@ -2218,7 +2247,6 @@ void RefWindow::docSelectionChanged ()
 	actiongroup_->get_action("DeleteDoc")->set_sensitive (somethingselected);
 	actiongroup_->get_action("RenameDoc")->set_sensitive (somethingselected);
 	actiongroup_->get_action("DocProperties")->set_sensitive (onlyoneselected);
-	taggerbox_->set_sensitive (somethingselected);
 
 	// plugin's action
 	std::list<Plugin*> plugins = _global_plugins->getPlugins();
@@ -2244,23 +2272,28 @@ void RefWindow::docSelectionChanged ()
 	actiongroup_->get_action("OpenDoc")->set_sensitive (cap.open);
 	actiongroup_->get_action("GetMetadataDoc")->set_sensitive (cap.getmetadata);
 
-	ignoretaggerchecktoggled_ = true;
+	/* Update tagger Actions */
+	ignoreTaggerActionToggled_ = true;
 	for (std::vector<Tag>::iterator tagit = library_->taglist_->getTags().begin();
 	     tagit != library_->taglist_->getTags().end(); ++tagit) {
-		Gtk::ToggleButton *check = taggerchecks_[(*tagit).uid_];
+		Glib::RefPtr<Gtk::ToggleAction> action = taggerUI_[(*tagit).uid_].action;
 		DocumentView::SubSet state = docview_->selectedDocsHaveTag ((*tagit).uid_);
+
+		/* God fucking damn it, why doesn't Gtk::ToggleAction
+		 * support inconsistent state?  Oh great Lord of irony,
+		 * that is so inconsistent!  My eyes! */
 		if (state == DocumentView::ALL) {
-			check->set_active (true);
-			check->set_inconsistent (false);
+			action->set_active (true);
+			//action->set_inconsistent (false);
 		} else if (state == DocumentView::SOME) {
-			check->set_active (false);
-			check->set_inconsistent (true);
+			action->set_active (false);
+			//action->set_inconsistent (true);
 		} else {
-			check->set_active (false);
-			check->set_inconsistent (false);
+			action->set_active (false);
+			//action->set_inconsistent (false);
 		}
 	}
-	ignoretaggerchecktoggled_ = false;
+	ignoreTaggerActionToggled_ = false;
 
 	updateStatusBar ();
 }
