@@ -9,12 +9,11 @@ from referencer import _
 import gobject
 import gtk
 
-referencer_plugin_info = []
-referencer_plugin_info.append (["author", "John Spray"])
-referencer_plugin_info.append (["version", "1.1.2"])
-referencer_plugin_info.append (["configure", "configure"])
-referencer_plugin_info.append (["longname", _("Generate keys from metadata")])
-referencer_plugin_info.append (["ui",
+referencer_plugin_info = {
+	"author":    "John Spray",  
+	"version":   "1.1.2",
+	"longname":  _("Generate keys from metadata"),
+	"ui":
 		"""
 		<ui>
 			<menubar name='MenuBar'>
@@ -29,7 +28,8 @@ referencer_plugin_info.append (["ui",
 				<menuitem action='_plugin_genkey_genkey'/>
 			</popup>
 		</ui>
-		"""])
+		"""
+	}
 
 referencer_plugin_actions = []
 
@@ -124,6 +124,3 @@ def do_genkey (library, documents):
 	referencer.pref_set ("genkey_format", format)
 
 	return True
-
-def configure():
-	pass

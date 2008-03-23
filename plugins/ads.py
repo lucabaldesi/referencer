@@ -8,11 +8,11 @@ from referencer import _
 
 from xml.dom import minidom
 
-referencer_plugin_info = []
-referencer_plugin_info.append (["author", "John Spray"])
-referencer_plugin_info.append (["longname", _("NASA Astrophysics Data System DOI resolver")])
-referencer_plugin_capabilities = []
-referencer_plugin_capabilities.append ("doi")
+referencer_plugin_info = {
+	"author":   "John Spray",
+	"longname": _("NASA Astrophysics Data System DOI resolver")
+	}
+referencer_plugin_capabilities = ["doi"]
 
 # Encoding: every PyUnicode that minidom gives us gets
 # encoded as utf-8 into a PyString, this is what PyString_AsString on the C++

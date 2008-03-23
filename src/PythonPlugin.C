@@ -16,8 +16,6 @@
 #include "PythonPlugin.h"
 
 
-
-
 PythonPlugin::PythonPlugin(PluginManager *owner)
 {
 	pGetFunc_ = NULL;
@@ -25,6 +23,7 @@ PythonPlugin::PythonPlugin(PluginManager *owner)
 	pMod_ = NULL;
 	owner_ = owner;
 }
+
 
 PythonPlugin::~PythonPlugin()
 {
@@ -79,6 +78,13 @@ void PythonPlugin::load (std::string const &moduleName)
 	pPluginInfo_ = PyObject_GetAttrString (pMod_, "referencer_plugin_info");
 	if (!pPluginInfo_) {
 		std::cerr << "Plugin::load: Couldn't find plugin info\n";
+		Py_DECREF (pMod_);
+		return;
+	}
+
+	if (!PyDict_Check (pPluginInfo_)) {
+		std::cerr << "Plugin::load: Info dict isn't a dict!  Old plugin?\n";
+
 		Py_DECREF (pMod_);
 		return;
 	}
@@ -399,27 +405,18 @@ Glib::ustring const PythonPlugin::getPluginInfoField (Glib::ustring const &targe
 	if (!loaded_)
 		return Glib::ustring ();
 
-	int const N = PyList_Size (pPluginInfo_);
-
-	for (int i = 0; i < N; ++i) {
-		PyObject *pItem = PyList_GetItem (pPluginInfo_, i);
-		// Need decrefs on these getitems?
-		const char *cKey = PyString_AsString(PyList_GetItem (pItem, 0));
-		const char *cValue = PyString_AsString(PyList_GetItem (pItem, 1));
-
-		Glib::ustring key;
-		Glib::ustring value;
-		if (cKey)
-			key = Glib::ustring (cKey);
-		if (cValue)
-			value = Glib::ustring (cValue);
-
-		if (key == targetKey) {
-			return value;
-		}
+	PyObject *keyStr = PyString_FromString (targetKey.c_str());
+	if (PyDict_Contains (pPluginInfo_, keyStr)) {
+		Py_DECREF (keyStr);
+		return Glib::ustring (
+			PyString_AsString (
+				PyDict_GetItemString(
+					pPluginInfo_,
+					targetKey.c_str())));
+	} else {
+		Py_DECREF (keyStr);
+		return Glib::ustring ();
 	}
-
-	return Glib::ustring ();
 }
 
 

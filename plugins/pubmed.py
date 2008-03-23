@@ -12,12 +12,12 @@ from referencer import _
 
 from xml.dom import minidom
 
-referencer_plugin_info = []
-referencer_plugin_info.append (["longname", _("PubMed DOI resolver")])
-referencer_plugin_info.append (["author", "Simon Greenhill, John Spray"])
-referencer_plugin_capabilities = []
-referencer_plugin_capabilities.append ("doi")
-referencer_plugin_capabilities.append ("pubmed")
+referencer_plugin_info = {
+	"longname":  _("PubMed DOI resolver"),
+	"author":      "Simon Greenhill, John Spray"
+	}
+
+referencer_plugin_capabilities = ["doi", "pubmed"]
 
 
 def get_citation_from_doi(query, email='referencer@icculus.org', tool='Referencer', database='pubmed'):

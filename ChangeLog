@@ -1,4 +1,5 @@
 1.1.2:
+	- Search searches all fields (Bug 198671)
 	- Revised tagging UI
 	- Expand plugin API
 	- Unbreak sorting in list view (Bug 202188)

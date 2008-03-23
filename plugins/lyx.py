@@ -7,12 +7,10 @@ import os
 import referencer
 from referencer import _
 
-referencer_plugin_info = [
-	["longname", _("Cite in LyX")],
-	["author", "Aurélien Naldi"]
-]
-
-referencer_plugin_info.append (["ui",
+referencer_plugin_info = {
+	"longname": _("Cite in LyX"),
+	"author": "Aurélien Naldi",
+	"ui":
 		"""
 		<ui>
 			<toolbar name='ToolBar'>
@@ -21,17 +19,17 @@ referencer_plugin_info.append (["ui",
 			</placeholder>
 			</toolbar>
 		</ui>
-		"""])
-
+		"""
+}
 
 referencer_plugin_actions = [
 	{
-	"name":"_plugin_lyx_cite",
-	"label":_("Cite in LyX"),
-	"tooltip":_("Cite the selected documents in LyX"),
-	"icon":"lyx.png",
-	"callback":"do_cite",
-	"accelerator":"<control><shift>d"
+	"name":        "_plugin_lyx_cite",
+	"label":     _("Cite in LyX"),
+	"tooltip":   _("Cite the selected documents in LyX"),
+	"icon":        "lyx.png",
+	"callback":    "do_cite",
+	"accelerator": "<control><shift>d"
 	}
 ]
 
