@@ -160,7 +160,7 @@ class LibraryParser : public Glib::Markup::Parser {
 		if (element_name == "tag") {
 			inTag_ = false;
 			// Hardcoded for ATTACH tags only
-			taglist_.loadTag (newTagName_, Tag::ATTACH, atoi(newTagUid_.c_str()));
+			taglist_.loadTag (newTagName_, atoi(newTagUid_.c_str()));
 		} else if (inTag_ && element_name == "uid") {
 			inUid_ = false;
 		} else if (inTag_ && element_name == "name") {

@@ -14,41 +14,38 @@
 #define TAGLIST_H
 
 #include <string>
-#include <vector>
+#include <map>
 #include <sstream>
 #include <gtkmm.h>
 
 
 class Tag {
 	public:
-	typedef enum {ATTACH = 0, SEARCH_ALL, SEARCH_AUTHOR,
-		SEARCH_ABSTRACT, SEARCH_TITLE} Action;
-	Tag (int const uid, std::string const name, Tag::Action const action);
+	Tag (int const uid, std::string const name);
+	Tag () {};
 	int uid_;
 	std::string name_;
-
-	Action action_;
 };
 
 class TagList {
-	int uidCounter_;
-	private:
-	std::vector<Tag> tags_;
-
 	public:
+	typedef std::map<int, Tag> TagMap;
 	TagList() {
 		uidCounter_ = 0;
 	}
 	void print ();
-	std::vector<Tag>& getTags ();
-	int newTag (std::string const name, Tag::Action const action);
-	void loadTag (std::string const name, Tag::Action const action, int uid);
+	TagMap& getTags ();
+	int newTag (std::string const name);
+	void loadTag (std::string const name, int uid);
 	void renameTag (int uid, Glib::ustring newname);
 	void deleteTag (int uid);
 	Glib::ustring getName (int const &uid);
 	void writeXML (std::ostringstream& out);
 	void clear () {tags_.clear (); uidCounter_ = 0;}
 
+	private:
+	TagMap tags_;
+	int uidCounter_;
 };
 
 #endif

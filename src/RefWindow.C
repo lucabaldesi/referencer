@@ -503,25 +503,40 @@ void RefWindow::populateTagList ()
 		std::vector<int>& tags = (*docit).getTags ();
 		std::vector<int>::iterator tagit = tags.begin ();
 		std::vector<int>::iterator const tagend = tags.end ();
-		for (; tagit != tagend; ++tagit) {
+		for (; tagit != tagend; ++tagit)
 			tagusecounts[*tagit]++;
-		}
 	}
 
-	// Populate from library_->taglist_
-	std::vector<Tag> tagvec = library_->taglist_->getTags();
-	std::vector<Tag>::iterator it = tagvec.begin();
-	std::vector<Tag>::iterator const end = tagvec.end();
-	for (; it != end; ++it) {
-		Gtk::TreeModel::iterator item = tagstore_->append();
-		(*item)[taguidcol_] = (*it).uid_;
-		(*item)[tagnamecol_] = (*it).name_;
+	/* What was I smoking when I wrote TagList? */
+	typedef std::map<Glib::ustring, std::pair<int, int> > SensibleMap;
+	std::map<Glib::ustring, std::pair<int, int> > sensibleTags;
+	TagList::TagMap allTags = library_->taglist_->getTags();
+	TagList::TagMap::iterator sensibleIter = allTags.begin();
+	TagList::TagMap::iterator const sensibleEnd = allTags.end();
+	for (; sensibleIter != sensibleEnd; ++sensibleIter) {
+		sensibleTags[(*sensibleIter).second.name_] =
+			std::pair<int, int> (
+				(*sensibleIter).second.uid_,
+				tagusecounts[(*sensibleIter).second.uid_]);
+	}
 
-		int timesused = tagusecounts[(*it).uid_];
+
+	// Populate from library_->taglist_
+	SensibleMap::iterator it = sensibleTags.begin();
+	SensibleMap::iterator const end = sensibleTags.end();
+	for (; it != end; ++it) {
+		int uid = (*it).second.first;
+		int useCount = (*it).second.second;
+		Glib::ustring name = (*it).first;
+
+		Gtk::TreeModel::iterator item = tagstore_->append();
+		(*item)[taguidcol_] = uid;
+		(*item)[tagnamecol_] = name;
+
 		float factor;
 		float maxfactor = 1.55;
 		if (doccount > 0)
-			factor = 0.75 + (logf((float)timesused / (float)doccount + 0.1) - logf(0.1)) * 0.4;
+			factor = 0.75 + (logf((float)useCount / (float)doccount + 0.1) - logf(0.1)) * 0.4;
 		else
 			factor = 1.5;
 		if (factor > maxfactor)
@@ -536,16 +551,16 @@ void RefWindow::populateTagList ()
 
 		/* Create tag actions */
 		TagUI t;
-		Glib::ustring actionName = String::ucompose ("tagger_%1", (*it).uid_);
+		Glib::ustring actionName = String::ucompose ("tagger_%1", uid);
 		Glib::RefPtr<Gtk::ToggleAction> action = Gtk::ToggleAction::create (
-				actionName, (*it).name_);
+				actionName, name);
 
 		action->set_visible(true);
 		action->signal_toggled().connect(
 			sigc::bind(
 				sigc::mem_fun (*this, &RefWindow::taggerActionToggled),
 				action,
-				(*it).uid_));
+				uid));
 
 		/* Add it to the action group */
 		actiongroup_->add (action);
@@ -567,7 +582,7 @@ void RefWindow::populateTagList ()
 		t.merge = uimanager_->add_ui_from_string (ui); 
 
 		/* Stash the info */
-		taggerUI_[(*it).uid_] = t;
+		taggerUI_[uid] = t;
 	}
 
 	// Restore initial selection or selected first row
@@ -864,7 +879,7 @@ void RefWindow::onCreateTag  ()
 {
 	Glib::ustring newname = (_("Type a tag"));
 
-	int newuid = library_->taglist_->newTag (newname, Tag::ATTACH);
+	int newuid = library_->taglist_->newTag (newname);
 
 	populateTagList();
 
@@ -2277,10 +2292,10 @@ void RefWindow::docSelectionChanged ()
 
 	/* Update tagger Actions */
 	ignoreTaggerActionToggled_ = true;
-	for (std::vector<Tag>::iterator tagit = library_->taglist_->getTags().begin();
+	for (TagList::TagMap::iterator tagit = library_->taglist_->getTags().begin();
 	     tagit != library_->taglist_->getTags().end(); ++tagit) {
-		Glib::RefPtr<Gtk::ToggleAction> action = taggerUI_[(*tagit).uid_].action;
-		DocumentView::SubSet state = docview_->selectedDocsHaveTag ((*tagit).uid_);
+		Glib::RefPtr<Gtk::ToggleAction> action = taggerUI_[(*tagit).second.uid_].action;
+		DocumentView::SubSet state = docview_->selectedDocsHaveTag ((*tagit).second.uid_);
 
 		/* God fucking damn it, why doesn't Gtk::ToggleAction
 		 * support inconsistent state?  Oh great Lord of irony,

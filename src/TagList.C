@@ -15,30 +15,29 @@
 
 #include "TagList.h"
 
-Tag::Tag (int const uid, std::string const name, Tag::Action const action)
+Tag::Tag (int const uid, std::string const name)
 {
 	uid_ = uid;
 	name_ = name;
-	action_ = action;
 }
 
-std::vector<Tag>& TagList::getTags ()
+TagList::TagMap& TagList::getTags ()
 {
 	return tags_;
 }
 
-int TagList::newTag (std::string const name, Tag::Action const action)
+int TagList::newTag (std::string const name)
 {
-	Tag newtag (uidCounter_, name, action);
-	tags_.push_back(newtag);
+	Tag newtag (uidCounter_, name);
+	tags_[newtag.uid_] = newtag;
 	return uidCounter_++;
 }
 
 
-void TagList::loadTag (std::string const name, Tag::Action const action, int uid)
+void TagList::loadTag (std::string const name, int uid)
 {
-	Tag newtag (uid, name, action);
-	tags_.push_back(newtag);
+	Tag newtag (uid, name);
+	tags_[uid] = newtag;
 	if (uid >= uidCounter_)
 		uidCounter_ = uid + 1;
 }
@@ -46,27 +45,17 @@ void TagList::loadTag (std::string const name, Tag::Action const action, int uid
 
 void TagList::renameTag (int uid, Glib::ustring newname)
 {
-	std::vector<Tag>::iterator it = tags_.begin();
-	std::vector<Tag>::iterator const end = tags_.end();
-	for (; it != end; it++) {
-		if ((*it).uid_ == uid) {
-			(*it).name_ = newname;
-			return;
-		}
-	}
-
-	std::cerr << "Warning: TagList::renameTag: uid " << uid << "not found\n";
+	tags_[uid].name_ = newname;
 }
 
 
 void TagList::print ()
 {
-	std::vector<Tag>::iterator it = tags_.begin();
-	std::vector<Tag>::iterator const end = tags_.end();
+	TagMap::iterator it = tags_.begin();
+	TagMap::iterator const end = tags_.end();
 	for (; it != end; it++) {
-		std::cerr << (*it).uid_ << " ";
-		std::cerr << (*it).name_ << " ";
-		std::cerr << (*it).action_ << " ";
+		std::cerr << (*it).second.uid_ << " ";
+		std::cerr << (*it).second.name_ << " ";
 		std::cerr << std::endl;
 	}
 }
@@ -74,30 +63,19 @@ void TagList::print ()
 
 void TagList::deleteTag (int uid)
 {
-	std::vector<Tag>::iterator it = tags_.begin();
-	std::vector<Tag>::iterator const end = tags_.end();
-	for (; it != end; it++) {
-		if ((*it).uid_ == uid) {
-			tags_.erase(it);
-			return;
-		}
+	TagMap::iterator found = tags_.find (uid);
+	if (found == tags_.end()) {
+		std::cerr << "TagList::deleteTag: tried to delete non-existent "
+			"tag " << uid << "\n";
+	} else {
+		tags_.erase (tags_.find (uid));
 	}
-
-	std::cerr << "Warning:: TagList::deleteTag: tag uid "
-		<< uid << "not found\n";
 }
 
 
 Glib::ustring TagList::getName (int const &uid)
 {
-	std::vector<Tag>::iterator it = tags_.begin();
-	std::vector<Tag>::iterator const end = tags_.end();
-	for (; it != end; it++) {
-		if ((*it).uid_ == uid) {
-			return (*it).name_;
-		}
-	}
-	return Glib::ustring();
+	return tags_[uid].name_;
 }
 
 
@@ -107,15 +85,16 @@ using Glib::Markup::escape_text;
 void TagList::writeXML (std::ostringstream& out)
 {
 	out << "<taglist>\n";
-	std::vector<Tag>::iterator it = tags_.begin();
-	std::vector<Tag>::iterator const end = tags_.end();
+	TagMap::iterator it = tags_.begin();
+	TagMap::iterator const end = tags_.end();
+
 	for (; it != end; it++) {
 		out << "  <tag>\n";
-		out << "    <uid>" << (*it).uid_ << "</uid>\n";
-		out << "    <name>" << escape_text((*it).name_) << "</name>\n";
-		// For now assume all tags are ATTACH, when they're not we need
-		// to put some more information here
+		out << "    <uid>" << (*it).second.uid_ << "</uid>\n";
+		out << "    <name>" << escape_text((*it).second.name_) << "</name>\n";
 		out << "  </tag>\n";
 	}
 	out << "</taglist>\n";
 }
+
+
