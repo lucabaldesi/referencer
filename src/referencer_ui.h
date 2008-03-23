@@ -103,6 +103,8 @@ Glib::ustring referencer_ui =
 		"    <placeholder name='WebLinkDocPopupActions'/>"
 		"    <separator/>"
 		"    <menu name='TaggerMenu' action='TaggerMenuAction'>"
+		"      <placeholder name='TaggerMenuTags'/>"
+		"      <separator/>"
 		"      <menuitem action='CreateTag'/>"
 		"    </menu>"
 		"    <separator/>"

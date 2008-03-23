@@ -1,4 +1,5 @@
 1.1.2:
+	- Revised tagging UI
 	- Expand plugin API
 	- Unbreak sorting in list view (Bug 202188)
 1.1.1:

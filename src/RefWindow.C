@@ -537,7 +537,6 @@ void RefWindow::populateTagList ()
 		/* Create tag actions */
 		TagUI t;
 		Glib::ustring actionName = String::ucompose ("tagger_%1", (*it).uid_);
-		std::cerr << "Created action with name " << actionName << "\n";
 		Glib::RefPtr<Gtk::ToggleAction> action = Gtk::ToggleAction::create (
 				actionName, (*it).name_);
 
@@ -556,15 +555,16 @@ void RefWindow::populateTagList ()
 			"<ui>"
 			"<popup name='DocPopup'>"
 			"<menu action='TaggerMenuAction' name='TaggerMenu'>"
+			"  <placeholder name='TaggerMenuTags'>"
 			"    <menuitem action='";
 		ui += actionName;
 		ui += "'/>"
+			"  </placeholder>"
 			"</menu>"
 			"</popup>"
 			"</ui>";
 
 		t.merge = uimanager_->add_ui_from_string (ui); 
-		std::cerr << "Merged with id " << t.merge << "\n";
 
 		/* Stash the info */
 		taggerUI_[(*it).uid_] = t;

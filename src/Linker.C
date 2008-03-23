@@ -21,7 +21,7 @@ void Linker::createUI (RefWindow *window, DocumentView *view)
 	static Gtk::Widget *image = NULL;
 
 	Glib::ustring action = Glib::ustring("linker_") + getName();
-	std::cerr << "Linker::createUI: creating action " << action << "\n";
+//	std::cerr << "Linker::createUI: creating action " << action << "\n";
 	window->actiongroup_->add (
 		Gtk::Action::create (action, getLabel()),
 		sigc::bind(
