@@ -55,6 +55,7 @@ int main (int argc, char **argv)
 	Glib::ustring installedPlugins = PLUGINDIR;
 
 	/* Order is important, defines precedence */
+	pythonPath += ":";
 	pythonPath += localPlugins;
 	pythonPath += ":";
 	pythonPath += homePlugins;

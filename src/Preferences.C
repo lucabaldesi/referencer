@@ -582,7 +582,7 @@ void Preferences::onPluginAbout ()
 	dialog.set_version (plugin->getVersion());
 	dialog.set_comments (plugin->getLongName());
 	if (!plugin->getAuthor().empty()) {
-	    dialog.set_copyright ("Copyright " + plugin->getAuthor());
+	    dialog.set_copyright ("Authors: " + plugin->getAuthor());
 	}
 //	dialog.set_website ("http://icculus.org/referencer/");
 /*	dialog.set_logo (

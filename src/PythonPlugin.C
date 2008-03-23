@@ -64,6 +64,7 @@ void PythonPlugin::load (std::string const &moduleName)
 	moduleName_ = moduleName;
 	PyObject *pName = PyString_FromString(moduleName.c_str());
 	if (!pName) {
+		printException ();
 		std::cerr << "Plugin::load: Couldn't construct module name\n";
 		return;
 	}
@@ -71,6 +72,7 @@ void PythonPlugin::load (std::string const &moduleName)
 	Py_DECREF(pName);
 
 	if (!pMod_) {
+		printException ();
 		std::cerr << "Plugin::load: Couldn't import module\n";
 		return;
 	}
@@ -83,7 +85,7 @@ void PythonPlugin::load (std::string const &moduleName)
 	}
 
 	if (!PyDict_Check (pPluginInfo_)) {
-		std::cerr << "Plugin::load: Info dict isn't a dict!  Old plugin?\n";
+		std::cerr << "Plugin::load: " << moduleName << ":" << "Info dict isn't a dict!  Old plugin?\n";
 
 		Py_DECREF (pMod_);
 		return;
@@ -291,6 +293,36 @@ bool PythonPlugin::updateSensitivity (Glib::ustring const function, std::vector<
 	}
 }
 
+
+void PythonPlugin::printException ()
+{
+	PyObject *pErr = PyErr_Occurred ();
+	if (pErr) {
+		PyObject *ptype;
+		PyObject *pvalue;
+		PyObject *ptraceback;
+
+		PyErr_Fetch(&ptype, &pvalue, &ptraceback);
+
+		PyObject *pStr;
+		pStr = PyObject_Str (ptype);
+		Glib::ustring const exType = PyString_AsString (pStr);
+		pStr = PyObject_Str (pvalue);
+		Glib::ustring const exValue = PyString_AsString (pStr);
+
+		Glib::ustring message = String::ucompose (
+			_("%1: %2\n\n%3: %4\n%5: %6\n"),
+			_("Exception"),
+			 (exType),
+			_("Module"),
+			 (getShortName()),
+			_("Explanation"),
+			 (exValue)
+			);
+
+		std::cerr << message;
+	}
+}
 
 void PythonPlugin::displayException ()
 {
