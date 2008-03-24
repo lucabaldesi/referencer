@@ -13,11 +13,24 @@ referencer_plugin_info = {
 	"ui":
 		"""
 		<ui>
+			<menubar name='MenuBar'>
+				<menu action='DocMenu'>
+				<placeholder name='PluginDocMenuActions'>
+					<menuitem action='_plugin_lyx_cite'/>
+				</placeholder>
+				</menu>
+			</menubar>
 			<toolbar name='ToolBar'>
-			<placeholder name='ToolBarPluginActions'>
+			<placeholder name='PluginToolBarActions'>
 				<toolitem action='_plugin_lyx_cite'/>
 			</placeholder>
 			</toolbar>
+			<popup name='DocPopup'>
+			<placeholder name='PluginDocPopupActions'>
+				<menuitem action='_plugin_lyx_cite'/>
+			</placeholder>
+			</popup>
+
 		</ui>
 		"""
 }

@@ -25,7 +25,7 @@ def get_citation_from_doi(query, email='referencer@icculus.org', tool='Reference
 		'db':database,
 		'tool':tool,
 		'email':email,
-		'term':query,
+		'term':query + "[doi]",
 		'usehistory':'y',
 		'retmax':1
 	}

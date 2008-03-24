@@ -361,7 +361,7 @@ void RefWindow::constructMenu ()
 		"GetMetadataDoc", Gtk::Stock::CONNECT, _("_Get Metadata")),
   	sigc::mem_fun(*this, &RefWindow::onGetMetadataDoc));
 	actiongroup_->add( Gtk::Action::create(
-		"DeleteDoc", Gtk::Stock::DELETE, _("_Delete File from drive")),
+		"DeleteDoc", Gtk::Stock::DELETE, _("_Delete File from Drive")),
 		Gtk::AccelKey ("<control><shift>Delete"),
   	sigc::mem_fun(*this, &RefWindow::onDeleteDoc));
 	actiongroup_->add( Gtk::Action::create(
@@ -433,7 +433,6 @@ void RefWindow::onEnabledPluginsPrefChanged ()
 			Plugin::ActionList::iterator it = actions.begin ();
 			Plugin::ActionList::iterator const end = actions.end ();
 			for (; it != end; ++it) {
-				(*it)->disconnect_accelerator();
 				sigc::connection *connection = (sigc::connection*)((*it)->get_data ("connection"));
 				connection->disconnect ();
 				actiongroup_->remove (*it);
