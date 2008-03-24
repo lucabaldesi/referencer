@@ -1,4 +1,5 @@
 1.1.2:
+	- Pubmed: don't accept mismatched DOIs (Bug 202476)
 	- Pubmed: fill out DOI field, use full first names (Aurélien Naldi)
 	- Search searches all fields (Bug 198671)
 	- Revised tagging UI

@@ -170,6 +170,21 @@ def resolve_metadata (doc, method):
 		# Couldn't parse XML
 		return False
 
+	# FIXME: prompt the user to ask them if this was the droid they were looking for
+	#        and store a setting for the policy on dodgy-looking results
+	if method == "doi":
+		doiOkay = False
+		for item in items:
+			if item[0] == "doi":
+				if item[1].lower() != doc.get_field("doi").lower():
+					print "pubmed.resolve_metadata: got doi %s, expecting doi %s: aborting" % (item[1], doc.get_field("doi"))
+				else:
+					doiOkay = True
+		if (doiOkay == False):
+			return False
+		else:
+			print "pubmed.resolve_metadata: doi checks out, proceeding"
+		
 	itemCount = 0
 	for item in items:
 		print "pubmed.resolve_metadata: Setting %s:%s\n" % (item[0], item[1])
