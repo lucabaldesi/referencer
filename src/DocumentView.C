@@ -1015,12 +1015,15 @@ void DocumentView::onColumnEdited (
 
 	Gtk::TreeModel::iterator iter = docstore_->get_iter (realPath);
 	Gtk::TreeModelColumn<Glib::ustring> col = listViewColumns_[columnName];
-	(*iter)[col] = newText;
+	if ((*iter)[col] != newText) {
+		(*iter)[col] = newText;
+		
+		Document *doc = (*iter)[docpointercol_];
+		doc->setField (columnName, newText);
 
-	Document *doc = (*iter)[docpointercol_];
-	doc->setField (columnName, newText);
+		win_.setDirty (true);
+	}
 
-	win_.setDirty (true);
 }
 
 
