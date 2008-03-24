@@ -25,7 +25,9 @@ referencer_plugin_info = {
 			</menubar>
 
 			<popup name='DocPopup'>
-				<menuitem action='_plugin_genkey_genkey'/>
+				<placeholder name='PluginDocPopupActions'>
+					<menuitem action='_plugin_genkey_genkey'/>
+				</placeholder>
 			</popup>
 		</ui>
 		"""
@@ -37,7 +39,7 @@ action = {
 	"name":"_plugin_genkey_genkey",
 	"label":_("Generate Key"),
 	"tooltip":_("Generate keys for the selected documents from their metadata"),
-	"icon":"lyx.png",
+	"icon":"_stock:gtk-edit",
 	"callback":"do_genkey",
 	"sensitivity":"sensitivity_genkey",
 	"accelerator":"<control>g"

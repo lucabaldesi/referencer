@@ -361,7 +361,7 @@ void RefWindow::constructMenu ()
 		"GetMetadataDoc", Gtk::Stock::CONNECT, _("_Get Metadata")),
   	sigc::mem_fun(*this, &RefWindow::onGetMetadataDoc));
 	actiongroup_->add( Gtk::Action::create(
-		"DeleteDoc", Gtk::Stock::DELETE, _("_Delete File from drive")),
+		"DeleteDoc", Gtk::Stock::DELETE, _("_Delete File from Drive")),
 		Gtk::AccelKey ("<control><shift>Delete"),
   	sigc::mem_fun(*this, &RefWindow::onDeleteDoc));
 	actiongroup_->add( Gtk::Action::create(
