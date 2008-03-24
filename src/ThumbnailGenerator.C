@@ -14,6 +14,11 @@ Glib::RefPtr<Gnome::UI::ThumbnailFactory> ThumbnailGenerator::thumbfac_;
 
 ThumbnailGenerator::ThumbnailGenerator ()
 {
+}
+
+
+void ThumbnailGenerator::run ()
+{
 	Glib::Thread::create(
 		sigc::mem_fun (*this, &ThumbnailGenerator::mainLoop), false);
 }
@@ -117,7 +122,6 @@ Glib::RefPtr<Gdk::Pixbuf> ThumbnailGenerator::lookupThumb (Glib::ustring const &
 	if (!thumbnail || thumbnail->get_width() < minimumDimension || thumbnail->get_height() < minimumDimension) {
 		if (defaultthumb_) {
 			thumbnail = defaultthumb_;
-			std::cerr << "Set thumbnail to default\n";
 		} else {
 			thumbnail = Gdk::Pixbuf::create_from_file
 				(Utility::findDataFile ("unknown-document.png"));

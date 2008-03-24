@@ -182,8 +182,6 @@ DocumentView::DocumentView (
 	docslistselection_->signal_changed ().connect (
 		sigc::mem_fun (*this, &DocumentView::docSelectionChanged));
 
-
-
 	docslistview_ = table;
 
 	Gtk::ScrolledWindow *tablescroll = Gtk::manage(new Gtk::ScrolledWindow());

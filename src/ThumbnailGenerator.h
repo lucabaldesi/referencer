@@ -23,6 +23,7 @@ class ThumbnailGenerator
 
 	public:
 	ThumbnailGenerator ();
+	void run ();
 	void registerRequest (Glib::ustring const &file, Document *doc);
 	void deregisterRequest (Document *doc);
 };

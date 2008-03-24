@@ -183,8 +183,13 @@ void Document::setupThumbnail ()
 
 	}
 	thumbnail_ = loadingthumb_;
-	if (!thumbnailGenerator)
+
+
+	if (!thumbnailGenerator) {
 		thumbnailGenerator = new ThumbnailGenerator ();
+		Glib::signal_idle().connect(
+			sigc::bind_return (sigc::mem_fun (thumbnailGenerator, &ThumbnailGenerator::run), false));
+	}
  
 	thumbnailGenerator->registerRequest (filename_, this);
 

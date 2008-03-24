@@ -43,8 +43,6 @@ RefWindow::RefWindow ()
 
 	dirty_ = false;
 
-	gdk_threads_enter ();
-
 	library_ = new Library (*this);
 
 	docpropertiesdialog_ = new DocumentProperties ();
@@ -64,8 +62,6 @@ RefWindow::RefWindow ()
 	}
 
 	updateStatusBar ();
-
-	gdk_threads_leave ();
 }
 
 
@@ -81,6 +77,7 @@ RefWindow::~RefWindow ()
 
 void RefWindow::run ()
 {
+	std::cerr << "RefWindow::run: entering main loop\n";
 	Gnome::Main::run (*window_);
 }
 

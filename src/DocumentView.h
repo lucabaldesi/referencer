@@ -89,7 +89,7 @@ class DocumentView : public Gtk::VBox
 	Glib::RefPtr<Gtk::ListStore> docstore_;
 	/* It's a ListStore-TreeModelFilter-TreeModelSort sandwich! */
 	Glib::RefPtr<Gtk::TreeModelFilter> docstorefilter_;
-	/* Things converting treeview paths into iters need to use this */
+	/* Because treeview expects something descended from a sortable, and filter is not */
 	Glib::RefPtr<Gtk::TreeModelSort> docstoresort_;
 
 	/* The columns, a columnrecord is made in the constructor */
