@@ -506,7 +506,8 @@ void RefWindow::populateTagList ()
 			tagusecounts[*tagit]++;
 	}
 
-	/* What was I smoking when I wrote TagList? */
+	/* What was I smoking when I wrote TagList?  Mung it into a more
+	 * useful data structure. */
 	typedef std::map<Glib::ustring, std::pair<int, int> > SensibleMap;
 	std::map<Glib::ustring, std::pair<int, int> > sensibleTags;
 	TagList::TagMap allTags = library_->taglist_->getTags();
@@ -532,17 +533,21 @@ void RefWindow::populateTagList ()
 		(*item)[taguidcol_] = uid;
 		(*item)[tagnamecol_] = name;
 
-		float factor;
-		float maxfactor = 1.55;
-		if (doccount > 0)
-			factor = 0.75 + (logf((float)useCount / (float)doccount + 0.1) - logf(0.1)) * 0.4;
-		else
-			factor = 1.5;
-		if (factor > maxfactor)
-			factor = maxfactor;
+		int size = window_->get_style ()->get_font().get_size ();
 
-		int basesize = window_->get_style ()->get_font().get_size ();
-		int size = (int) (factor * (float)basesize);
+		if (useCount > 0) {
+			float factor;
+			float const maxfactor = 1.55;
+			if (doccount > 0)
+				factor = 0.75 + (logf((float)useCount / (float)doccount + 0.1) - logf(0.1)) * 0.4;
+			else
+				factor = 1.5;
+			if (factor > maxfactor)
+				factor = maxfactor;
+
+			size = (int) (factor * (float)size);
+		}
+
 		Pango::FontDescription font;
 		font.set_size (size);
 		font.set_weight (Pango::WEIGHT_SEMIBOLD);
