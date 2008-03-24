@@ -40,12 +40,12 @@ def get_citation_from_doi(query, email='referencer@icculus.org', tool='Reference
 
 	# nothing found, exit
 	if len(ids) == 0:
-		raise "DOI not found"
+		raise "pubmed.get_citation_from_doi: DOI not found"
 
 	# get ID
 	id = ids[0].childNodes[0].data
 
-	print "DOI ", query, " has PubMed ID ", id
+	print "pubmed.get_citation_from_doi: DOI ", query, " has PubMed ID ", id
 
 	return get_citation_from_pmid (id)
  
@@ -70,7 +70,6 @@ def get_citation_from_pmid (pmid, email='referencer@icculus.org', tool='Referenc
 # side will expect
 def get_field (doc, field):
 	value = doc.getElementsByTagName(field)
-	print "get_field: value = ", value
 	if len(value) == 0:
 		return ""
 	else:
@@ -83,18 +82,26 @@ def get_field (doc, field):
 def text_output(xml):
 	"""Makes a simple text output from the XML returned from efetch"""
 	 
-	print "calling parseString on ", len(xml) , " characters"
-	print "calling parseString on ", xml
+	print "pubmed.text_output: calling parseString on ", len(xml) , " characters"
+	print "pubmed.text_output: calling parseString on ", xml
 	xmldoc = minidom.parseString(xml)
-	print "made it out of parseString"
+	print "pubmed.text_output: made it out of parseString"
 
 	if len(xmldoc.getElementsByTagName("PubmedArticle")) == 0:
-		raise "PubmedArticle not found"
+		raise "pubmed.text_output: PubmedArticle not found"
 
 	output = []
 
 	pmid = get_field (xmldoc, "PMID")
 	output.append (["pmid", pmid])
+	articleidlist = xmldoc.getElementsByTagName('ArticleIdList')
+	if (len(articleidlist) > 0):
+		articleids = articleidlist[0].getElementsByTagName('ArticleId')
+	for articleid in articleids:
+		idtype = articleid.attributes.get("IdType").value
+		if "doi" == idtype and len(articleid.childNodes) != 0:
+			output.append (["doi", articleid.childNodes[0].data.encode("utf-8")])
+	 
 	title = get_field (xmldoc, "ArticleTitle")
 	output.append (["title", title])
 	abstract = get_field (xmldoc, "AbstractText")
@@ -104,8 +111,11 @@ def text_output(xml):
 	authorlist = []
 	for author in authors:
 		LastName = get_field (author, "LastName")
-		Initials = get_field (author, "Initials")
-		author = '%s, %s' % (LastName, Initials)
+		ForeName = get_field (author, "ForeName")
+		if ForeName == None or ForeName == "":
+			print "pubmed.text_output: Fallback on initials"
+			ForeName = get_field (author, "Initials")
+		author = '%s, %s' % (LastName, ForeName)
 		authorlist.append(author)
 	 
 	authorstring = ""
@@ -149,20 +159,20 @@ def resolve_metadata (doc, method):
 		elif (method == "pubmed"):
 			xml = get_citation_from_pmid (doc.get_field ("pmid"))
 	except:
-		print "pubmed.py:resolve_metadata: Got no metadata"
+		print "pubmed.resolve_metadata: Got no metadata"
 		# Couldn't get any metadata
 		return False
 
 	try:
 		items = text_output (xml)
 	except:
-		print "pubmed.py:resolve_metadata: Couldn't parse metadata"
+		print "pubmed.resolve_metadata: Couldn't parse metadata"
 		# Couldn't parse XML
 		return False
 
 	itemCount = 0
 	for item in items:
-		print "pubmed: Setting %s:%s\n" % (item[0], item[1])
+		print "pubmed.resolve_metadata: Setting %s:%s\n" % (item[0], item[1])
 		if (len(item[1]) > 0):
 			doc.set_field (item[0], item[1])
 			itemCount = itemCount + 1
