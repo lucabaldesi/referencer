@@ -17,13 +17,28 @@
 
 void Linker::createUI (RefWindow *window, DocumentView *view)
 {
-//	linkerIcon = Utility::getThemeMenuIcon("web-browser");
-	static Gtk::Widget *image = NULL;
+
+	static bool iconCreated = false;
+	if (!iconCreated) {
+		/* Factory for creating stock icons */
+		Glib::RefPtr<Gtk::IconFactory> iconFactory = Gtk::IconFactory::create();
+		iconFactory->add_default ();
+
+		Gtk::IconSource iconSource;
+		iconSource.set_pixbuf( Utility::getThemeIcon ("web-browser") );
+		iconSource.set_size(Gtk::ICON_SIZE_SMALL_TOOLBAR);
+		iconSource.set_size_wildcarded(); //Icon may be scaled.
+		Gtk::IconSet iconSet;
+		iconSet.add_source (iconSource);
+		Gtk::StockID stockId = Gtk::StockID ("web-browser");
+		iconFactory->add (stockId, iconSet);
+
+		iconCreated = true;
+	}
 
 	Glib::ustring action = Glib::ustring("linker_") + getName();
-//	std::cerr << "Linker::createUI: creating action " << action << "\n";
 	window->actiongroup_->add (
-		Gtk::Action::create (action, getLabel()),
+		Gtk::Action::create (action, Gtk::StockID("web-browser"), getLabel()),
 		sigc::bind(
 			sigc::mem_fun (view, &DocumentView::invokeLinker),
 			this));
