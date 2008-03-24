@@ -25,7 +25,7 @@ def get_citation_from_doi(query, email='referencer@icculus.org', tool='Reference
 		'db':database,
 		'tool':tool,
 		'email':email,
-		'term':query,
+		'term':query + "[doi]",
 		'usehistory':'y',
 		'retmax':1
 	}
@@ -172,18 +172,19 @@ def resolve_metadata (doc, method):
 
 	# FIXME: prompt the user to ask them if this was the droid they were looking for
 	#        and store a setting for the policy on dodgy-looking results
-	if method == "doi":
-		doiOkay = False
-		for item in items:
-			if item[0] == "doi":
-				if item[1].lower() != doc.get_field("doi").lower():
-					print "pubmed.resolve_metadata: got doi %s, expecting doi %s: aborting" % (item[1], doc.get_field("doi"))
-				else:
-					doiOkay = True
-		if (doiOkay == False):
-			return False
-		else:
-			print "pubmed.resolve_metadata: doi checks out, proceeding"
+	if False:
+		if method == "doi":
+			doiOkay = False
+			for item in items:
+				if item[0] == "doi":
+					if item[1].lower() != doc.get_field("doi").lower():
+						print "pubmed.resolve_metadata: got doi %s, expecting doi %s: aborting" % (item[1], doc.get_field("doi"))
+					else:
+						doiOkay = True
+			if (doiOkay == False):
+				return False
+			else:
+				print "pubmed.resolve_metadata: doi checks out, proceeding"
 		
 	itemCount = 0
 	for item in items:
