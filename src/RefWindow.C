@@ -322,13 +322,16 @@ void RefWindow::constructMenu ()
 	actiongroup_->add ( Gtk::Action::create("TagMenu", _("_Tags")) );
 	actiongroup_->add( Gtk::Action::create(
 		"CreateTag", Gtk::Stock::NEW, _("_Create Tag...")), Gtk::AccelKey ("<control>t"),
-  	sigc::mem_fun(*this, &RefWindow::onCreateTag));
+		sigc::mem_fun(*this, &RefWindow::onCreateTag));
+	actiongroup_->add( Gtk::Action::create(
+		"CreateAndAttachTag", Gtk::Stock::NEW, _("_Attach New Tag...")), Gtk::AccelKey ("<control>t"),
+		sigc::mem_fun(*this, &RefWindow::onCreateAndAttachTag));
 	actiongroup_->add( Gtk::Action::create(
 		"DeleteTag", Gtk::Stock::DELETE, _("_Delete Tag")),
-  	sigc::mem_fun(*this, &RefWindow::onDeleteTag));
+		sigc::mem_fun(*this, &RefWindow::onDeleteTag));
 	actiongroup_->add( Gtk::Action::create(
 		"RenameTag", Gtk::Stock::EDIT, _("_Rename Tag")),
-  	sigc::mem_fun(*this, &RefWindow::onRenameTag));
+		sigc::mem_fun(*this, &RefWindow::onRenameTag));
 
 	actiongroup_->add ( Gtk::Action::create("DocMenu", _("_Documents")) );
 	actiongroup_->add( Gtk::Action::create(
@@ -871,25 +874,74 @@ bool RefWindow::ensureSaved ()
 }
 
 
-void RefWindow::onCreateTag  ()
+/**
+ * Helper for onCreateTag and onCreateAndAttachTag
+ */
+int RefWindow::createTag ()
 {
 	Glib::ustring newname = (_("Type a tag"));
 
-	int newuid = library_->taglist_->newTag (newname);
-
-	populateTagList();
-
-	Gtk::TreeModel::iterator it = tagstore_->children().begin();
-	Gtk::TreeModel::iterator const end = tagstore_->children().end();
-	for (; it != end; ++it) {
-		if ((*it)[taguidcol_] == newuid) {
-			// Assume tagview's first column is the name field
-			tagview_->set_cursor (Gtk::TreePath(it), *tagview_->get_column (0), true);
-			break;
+	Glib::ustring message = String::ucompose(
+		"<b><big>%1</big></b>\n\n%2",
+		_("Create tag"),
+		_("Short memorable tag names help you organise your documents"));
+	Gtk::MessageDialog dialog(message, true, Gtk::MESSAGE_QUESTION,
+		Gtk::BUTTONS_NONE, true);
+	
+	dialog.add_button (Gtk::Stock::CANCEL, 0);
+	dialog.add_button (Gtk::Stock::OK, 1);
+	dialog.set_default_response (1);
+	
+	Gtk::Entry nameentry;
+	Gtk::HBox hbox;
+	hbox.set_spacing (6);
+	Gtk::Label label (_("Name:"));
+	hbox.pack_start (label, false, false, 0);
+	hbox.pack_start (nameentry, true, true, 0);
+	nameentry.set_activates_default (true);
+	dialog.get_vbox()->pack_start (hbox, false, false, 0);
+	hbox.show_all ();
+	
+	bool invalid = true;
+	int newtag = -1;
+	
+	while (invalid && dialog.run()) {
+		Glib::ustring newname = nameentry.get_text ();
+		if (newname.empty()) {
+			invalid = true;
+		} else {
+			invalid = false;
+			newtag = library_->taglist_->newTag (newname);
+			populateTagList();
 		}
+
 	}
 
+	return newtag;
+}
+
+void RefWindow::onCreateTag  ()
+{
+	createTag ();
 	setDirty (true);
+}
+
+
+void RefWindow::onCreateAndAttachTag ()
+{
+	/* Create a tag */
+	int newtag = createTag ();
+	if (newtag < 0)
+		return;
+
+	/* Apply newtag to all selected documents */
+	std::vector<Document*> docs = docview_->getSelectedDocs ();
+	std::vector<Document*>::iterator docIter = docs.begin ();
+	std::vector<Document*>::iterator const docEnd = docs.end ();
+	for (; docIter != docEnd; ++docIter) {
+		(*docIter)->setTag (newtag);
+	}
+
 }
 
 

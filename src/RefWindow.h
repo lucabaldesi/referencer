@@ -141,7 +141,11 @@ class RefWindow {
 		void onQuit ();
 		void onUseListViewToggled ();
 		void onShowTagPaneToggled ();
+	private:
+		int  createTag ();
+	public:
 		void onCreateTag ();
+		void onCreateAndAttachTag ();
 		void onDeleteTag ();
 		void onRenameTag ();
 		void onAddDocUnnamed ();

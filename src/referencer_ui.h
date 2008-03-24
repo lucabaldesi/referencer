@@ -105,7 +105,7 @@ Glib::ustring referencer_ui =
 		"    <menu name='TaggerMenu' action='TaggerMenuAction'>"
 		"      <placeholder name='TaggerMenuTags'/>"
 		"      <separator/>"
-		"      <menuitem action='CreateTag'/>"
+		"      <menuitem action='CreateAndAttachTag'/>"
 		"    </menu>"
 		"    <separator/>"
 		"    <menuitem action='DocProperties'/>"
