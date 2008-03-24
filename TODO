@@ -1,35 +1,32 @@
 
 
-fix paste from gecko not working
-- be more general than wait_for_text
-
-
-Plugins:
-	allow plugins to prompt for username+password
-	allow plugins to save conf
-	allow plugins to provide conf ui
-	ADS metadata
-
+Plugin ideas:
 	mangle/demangle Doe, J vs Doe, J.
 
 	Browse/search:
 		Z39.50
-		PubMed (inc. "Add by Medline ID")
+		PubMed
 
 	"More by this author" on pubmed and google
 
 
 There is no release schedule.
+	Fix the document properties and storage
+		- Merge BibData and Document
+		- Add protect flag for user edits
+		- Revise file format (dublin core?)
+		- Properties pane in RefWindow
+
+	Simplify tagging internals
+		- Do away with magic UIDs and pass strings around
 
 	ListView users are people too:
 		- Sort out the column sizing
-		- (Maybe) Look into adding/removing columns
+		- Adding/removing columns
+
 	Getting text from .ps files (a la ps2ascii)
 	Refine tagging UI:
-		Add/remove tags in document context menu
 		Text entry view of tags
-		AND vs OR when selecting multiple tags
-		Tag toggling with double click in cloud
 	Deal with external added URIs
 		UI for setting "library directory"
 		Offer to move files not in subdir of reflib location
@@ -50,6 +47,8 @@ In TagWindow::onIconsDragData, we do get_file_info on remote URIs synchronously
 	in order to support directory recursion on remote filesystems -- this is a 
 	bad thing when adding stuff from really remote things like websites
 
+Paste from gecko doesn't seem to work
+
 When importing endnote, %Y is series editor, but this is lost by bibutils for refs of inappropriate type.  %Y is used in pablo's file as generic author. - that was with endnote 3, try with more recent endnote	
 
 
@@ -58,12 +57,11 @@ Unscheduled items
 
 Import of reflib files (merge in documents, resolve tag IDs)
 
-LyX citation via lyxserver (pybliographic, lyx/src/client)
-
 Verify that UTF-8 export works as per user expectations
 
 Improve BibTeX export robustness
 	What about underscores?  Need an "escape everything" mode?
+	Insert \url bits
 	Document requirements/exceptions
 
 Support new endxmlin, isiout and wordout from bibutils >= 3.31
@@ -87,8 +85,6 @@ Functionality wishlist:
 	When generating keys from authorYEAR, should get rid of LaTeX unfriendly accented characters
 	Where we use ".tmp" in writing files, we should use something more unique
 	Do something with PDF-embedded metadata if there is any
-	Make search bar match more fields
-	Tell the user somehow in addDocFiles when we don't add files b/c they're already in the documentlist.
 	Assign a color to a tag and highlight refs with it
 	Use installed libsexy if available, a la rhythmbox
 	Resolve symlinks before doing relative filename magic
