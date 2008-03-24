@@ -433,7 +433,6 @@ void RefWindow::onEnabledPluginsPrefChanged ()
 			Plugin::ActionList::iterator it = actions.begin ();
 			Plugin::ActionList::iterator const end = actions.end ();
 			for (; it != end; ++it) {
-				(*it)->disconnect_accelerator();
 				sigc::connection *connection = (sigc::connection*)((*it)->get_data ("connection"));
 				connection->disconnect ();
 				actiongroup_->remove (*it);
