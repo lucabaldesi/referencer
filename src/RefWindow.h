@@ -141,9 +141,7 @@ class RefWindow {
 		void onQuit ();
 		void onUseListViewToggled ();
 		void onShowTagPaneToggled ();
-	private:
 		int  createTag ();
-	public:
 		void onCreateTag ();
 		void onCreateAndAttachTag ();
 		void onDeleteTag ();
@@ -154,8 +152,35 @@ class RefWindow {
 		void onAddDocFolder ();
 
 		/* Helpers for addDocFiles */
-		void onCancelAddDocFiles (Gtk::Button *button, Gtk::ProgressBar *progress);
+		void onAddDocFilesCancel       (Gtk::Button *button, Gtk::ProgressBar *progress);
 		bool cancelAddDocFiles_;
+		void onAddDocFilesTag          (std::vector<Document*> &docs);
+
+		class TaggerDialog : public Gtk::Dialog {
+			Gtk::TreeModelColumn<Glib::ustring> nameColumn_;
+			Gtk::TreeModelColumn<int>           uidColumn_;
+			Gtk::TreeModelColumn<bool>          selectedColumn_;
+			Glib::RefPtr<Gtk::ListStore>        model_;
+
+			Gtk::Dialog *dialog_;
+			Gtk::TreeView *view_;
+			Gtk::ScrolledWindow *scroll_;
+			Gtk::CellRendererToggle *toggle_;
+
+			std::map<int, bool> selections_;
+
+			void toggled (Glib::ustring const &path);
+			void populate ();
+			void onCreateTag ();
+
+			RefWindow *parent_;
+			TagList *taglist_;
+			public:
+			TaggerDialog (RefWindow *window, TagList *taglist);
+			std::vector<int> tagPrompt ();
+			
+		};
+
 		public:
 		void onPasteBibtex (GdkAtom selection);
 		private:

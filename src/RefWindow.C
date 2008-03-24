@@ -1407,7 +1407,7 @@ void RefWindow::onIntroduction ()
 }
 
 
-void RefWindow::onCancelAddDocFiles (Gtk::Button *button, Gtk::ProgressBar *progress)
+void RefWindow::onAddDocFilesCancel (Gtk::Button *button, Gtk::ProgressBar *progress)
 {
 	cancelAddDocFiles_ = true;
 
@@ -1415,9 +1415,142 @@ void RefWindow::onCancelAddDocFiles (Gtk::Button *button, Gtk::ProgressBar *prog
 	button->set_sensitive (false);
 }
 
+
+void RefWindow::TaggerDialog::onCreateTag ()
+{
+	parent_->createTag ();
+
+	populate ();
+}
+
+
+void RefWindow::TaggerDialog::populate ()
+{
+	model_->clear ();
+
+	TagList::TagMap allTags = taglist_->getTags();
+	TagList::TagMap::iterator tagIter = allTags.begin();
+	TagList::TagMap::iterator const tagEnd = allTags.end();
+	for (; tagIter != tagEnd; ++tagIter) {
+		Gtk::ListStore::iterator row = model_->append();
+		(*row)[nameColumn_] = tagIter->second.name_;
+		(*row)[uidColumn_] = tagIter->second.uid_;
+		(*row)[selectedColumn_] = selections_[tagIter->second.uid_];
+	}
+}
+
+
+void RefWindow::TaggerDialog::toggled (Glib::ustring const &path)
+{
+	Gtk::ListStore::iterator row = model_->get_iter (path);
+	int uid = (*row)[uidColumn_]; 
+	bool selected = !(*row)[selectedColumn_];
+	(*row)[selectedColumn_] = selected;
+	selections_[uid] = selected;
+}
+
+RefWindow::TaggerDialog::TaggerDialog (RefWindow *window, TagList *taglist)
+	: parent_(window), taglist_ (taglist)
+{
+	/* Show a dialog containing a treeview of checkboxes for
+	 * tags, and a button for creating tags */
+	set_title (_("Tag Added Files"));
+	set_has_separator (false);
+
+	Gtk::VBox *vbox = get_vbox ();
+	vbox->set_spacing (12);
+	vbox->set_border_width (12);
+
+	/* Map of selected tags */
+	std::map<int, bool> selections;
+
+	/* Create the model */
+	Gtk::TreeModelColumnRecord columns;
+	columns.add (nameColumn_);
+	columns.add (uidColumn_);
+	columns.add (selectedColumn_);
+	model_ = Gtk::ListStore::create(columns);
+
+	/* Create the view */
+	view_ = Gtk::manage (new Gtk::TreeView (model_));
+	view_->set_headers_visible (false);
+	scroll_ = Gtk::manage (new Gtk::ScrolledWindow ());
+	scroll_->set_policy (Gtk::POLICY_NEVER, Gtk::POLICY_AUTOMATIC);
+	scroll_->set_size_request (-1, 200);
+	scroll_->add (*view_);
+	vbox->pack_start (*scroll_);
+
+	toggle_ = Gtk::manage (new Gtk::CellRendererToggle);
+	toggle_->property_activatable() = true;
+	toggle_->signal_toggled().connect (
+			sigc::mem_fun (*this, &RefWindow::TaggerDialog::toggled));
+	Gtk::TreeViewColumn *selected = Gtk::manage (new Gtk::TreeViewColumn ("", *toggle_));
+	selected->add_attribute (toggle_->property_active(), selectedColumn_);
+
+	view_->append_column (*selected);
+	view_->append_column (*(Gtk::manage (new Gtk::TreeViewColumn ("", nameColumn_))));
+
+	/* "Create tag" button */
+	Gtk::Button *button = Gtk::manage (new Gtk::Button (_("C_reate Tag..."), true));
+	button->signal_clicked().connect(
+			sigc::mem_fun (*this, &RefWindow::TaggerDialog::onCreateTag));
+	vbox->pack_start (*button, Gtk::PACK_SHRINK);
+
+
+	/* Response buttons */
+	add_button (Gtk::Stock::CANCEL, Gtk::RESPONSE_CANCEL);
+	add_button (Gtk::Stock::OK, Gtk::RESPONSE_ACCEPT);
+}
+
+std::vector<int> RefWindow::TaggerDialog::tagPrompt ()
+{
+	/* Populate the model */
+	populate ();
+
+	show_all ();
+	int response = run ();
+	hide ();
+
+	std::vector<int> tags;
+	if (response == Gtk::RESPONSE_ACCEPT) {
+		/* append to tags for each selected tag */
+		std::map<int, bool>::iterator selIter = selections_.begin ();
+		std::map<int, bool>::iterator const selEnd = selections_.end ();
+		for (; selIter != selEnd; ++selIter) {
+			if (selIter->second == true) {
+				tags.push_back (selIter->first);
+			}
+		}
+	}
+
+	return tags;
+}
+
+
+void RefWindow::onAddDocFilesTag (std::vector<Document*> &docs)
+{
+	TaggerDialog dialog (this, library_->taglist_);
+	std::vector<int> tags = dialog.tagPrompt ();
+
+	std::vector<int>::iterator tagIter = tags.begin ();
+	std::vector<int>::iterator const tagEnd = tags.end ();
+	for (; tagIter != tagEnd; ++tagIter) {
+		std::vector<Document *>::iterator docIter = docs.begin ();
+		std::vector<Document *>::iterator const docEnd = docs.end ();
+		for (; docIter != docEnd; ++docIter) {
+			(*docIter)->setTag (*tagIter);
+		}
+	}
+
+	/* He might have added or removed tags */
+	populateTagList ();
+}
+
 void RefWindow::addDocFiles (std::vector<Glib::ustring> const &filenames)
 {
 	bool const singular = (filenames.size() == 1);
+	/* List of documents we add */
+	std::vector<Document*> addedDocs;
 
 	Gtk::Dialog dialog (_("Add Document Files"), true, false);
 	dialog.set_icon (window_->get_icon());
@@ -1469,20 +1602,29 @@ void RefWindow::addDocFiles (std::vector<Glib::ustring> const &filenames)
 	if (!singular)
 		vbox->pack_start (reportFrame, true, true, 0);
 
+	/* Create buttons */
 	Gtk::Button *cancelButton = dialog.add_button (Gtk::Stock::CANCEL, Gtk::RESPONSE_ACCEPT);
-	Gtk::Button *closeButton = dialog.add_button (Gtk::Stock::CLOSE, Gtk::RESPONSE_ACCEPT);
-	closeButton->set_sensitive (false);
+	Gtk::Button *tagButton = dialog.add_button (_("_Attach tags..."), Gtk::RESPONSE_ACCEPT);
+	Gtk::Button *closeButton = dialog.add_button (Gtk::Stock::CLOSE, Gtk::RESPONSE_CLOSE);
+	tagButton->set_sensitive    (false);
+	closeButton->set_sensitive  (false);
 	cancelButton->set_sensitive (true);
 	cancelButton->signal_clicked().connect(
 		sigc::bind (
-			sigc::mem_fun (*this, &RefWindow::onCancelAddDocFiles),
+			sigc::mem_fun (*this, &RefWindow::onAddDocFilesCancel),
 			cancelButton,
 			&progress));
+	tagButton->signal_clicked().connect(
+		sigc::bind (
+			sigc::mem_fun (*this, &RefWindow::onAddDocFilesTag),
+			sigc::ref(addedDocs)));
+
 
 	dialog.show_all ();
 	vbox->set_border_width (12);
 
 	Glib::ustring progresstext;
+
 
 	cancelAddDocFiles_ = false;
 	int n = 0;
@@ -1534,7 +1676,13 @@ void RefWindow::addDocFiles (std::vector<Glib::ustring> const &filenames)
 				newdoc->getBibData().setTitle (filename);
 			}
 			
+			/* Add the document to the view */
 			docview_->addDoc (newdoc);
+
+			/* Remember it for the end */
+			addedDocs.push_back (newdoc);
+
+			/* Add-dialog UI fields */
 			added = true;
 			gotId = newdoc->hasField ("doi") || newdoc->hasField ("eprint") || newdoc->hasField ("pmid");
 			key = newdoc->getKey ();
@@ -1583,10 +1731,15 @@ void RefWindow::addDocFiles (std::vector<Glib::ustring> const &filenames)
 	}
 
 	closeButton->set_sensitive (true);
+	tagButton->set_sensitive (true);
 	cancelButton->set_sensitive (false);
 	dialog.set_urgency_hint (true);
-	if (!singular)
-		dialog.run ();
+	if (!singular) {
+		int response = Gtk::RESPONSE_ACCEPT;
+		while (response != Gtk::RESPONSE_CLOSE) {
+			response = dialog.run ();
+		}
+	}
 
 	if (!filenames.empty()) {
 		// We added something
