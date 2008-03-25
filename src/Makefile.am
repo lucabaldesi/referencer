@@ -14,8 +14,7 @@ if ENABLE_PYTHON
 INCLUDES += \
         $(NO_STRICT_ALIASING_CFLAGS)    \
         $(PYGTK_CFLAGS)                 \
-        $(PYTHON_CFLAGS)                \
-        $(AM_CFLAGS)
+        $(PYTHON_CFLAGS)                
 
 LDADD += $(PYTHON_LIBS)
 endif
