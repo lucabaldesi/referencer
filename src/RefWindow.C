@@ -1464,7 +1464,6 @@ RefWindow::TaggerDialog::TaggerDialog (RefWindow *window, TagList *taglist)
 
 	Gtk::VBox *vbox = get_vbox ();
 	vbox->set_spacing (12);
-	vbox->set_border_width (12);
 
 	/* Map of selected tags */
 	std::map<int, bool> selections;
@@ -1475,6 +1474,7 @@ RefWindow::TaggerDialog::TaggerDialog (RefWindow *window, TagList *taglist)
 	columns.add (uidColumn_);
 	columns.add (selectedColumn_);
 	model_ = Gtk::ListStore::create(columns);
+	model_->set_sort_column (nameColumn_, Gtk::SORT_ASCENDING);
 
 	/* Create the view */
 	view_ = Gtk::manage (new Gtk::TreeView (model_));
@@ -1482,6 +1482,7 @@ RefWindow::TaggerDialog::TaggerDialog (RefWindow *window, TagList *taglist)
 	scroll_ = Gtk::manage (new Gtk::ScrolledWindow ());
 	scroll_->set_policy (Gtk::POLICY_NEVER, Gtk::POLICY_AUTOMATIC);
 	scroll_->set_size_request (-1, 200);
+	scroll_->set_shadow_type (Gtk::SHADOW_IN);
 	scroll_->add (*view_);
 	vbox->pack_start (*scroll_);
 
@@ -1497,6 +1498,7 @@ RefWindow::TaggerDialog::TaggerDialog (RefWindow *window, TagList *taglist)
 
 	/* "Create tag" button */
 	Gtk::Button *button = Gtk::manage (new Gtk::Button (_("C_reate Tag..."), true));
+	button->set_image (*(Gtk::manage(new Gtk::Image(Gtk::Stock::NEW, Gtk::ICON_SIZE_BUTTON))));
 	button->signal_clicked().connect(
 			sigc::mem_fun (*this, &RefWindow::TaggerDialog::onCreateTag));
 	vbox->pack_start (*button, Gtk::PACK_SHRINK);
@@ -1513,6 +1515,7 @@ std::vector<int> RefWindow::TaggerDialog::tagPrompt ()
 	populate ();
 
 	show_all ();
+	get_vbox()->set_border_width(12);
 	int response = run ();
 	hide ();
 
