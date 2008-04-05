@@ -220,7 +220,6 @@ void RefWindow::constructUI ()
 	std::vector<Gtk::Widget*>::iterator const buttonEnd = tagbarButtons.end ();
 	for (; buttonIter != buttonEnd; ++buttonIter) {
 		Gtk::ToolButton *toolbutton = (Gtk::ToolButton*)(*buttonIter);
-		std::cerr << toolbutton << "\n";
 		Gtk::Button *button = (Gtk::Button*)toolbutton->get_child ();
 		/* FIXME: should check the toolbutton is actually a toolbutton
 		 * rather than letting it fail on get_child for other types */
