@@ -212,8 +212,22 @@ void RefWindow::constructUI ()
 	tagselection_->set_mode (Gtk::SELECTION_MULTIPLE);
 
 	Gtk::Toolbar& tagbar = (Gtk::Toolbar&) *uimanager_->get_widget("/TagBar");
-	tagbar.set_toolbar_style (Gtk::TOOLBAR_ICONS);
+	tagbar.set_toolbar_style (Gtk::TOOLBAR_BOTH_HORIZ);
+	tagbar.set_orientation (Gtk::ORIENTATION_VERTICAL);
 	tagbar.set_show_arrow (false);
+	std::vector<Gtk::Widget*> tagbarButtons = tagbar.get_children ();
+	std::vector<Gtk::Widget*>::iterator buttonIter = tagbarButtons.begin ();
+	std::vector<Gtk::Widget*>::iterator const buttonEnd = tagbarButtons.end ();
+	for (; buttonIter != buttonEnd; ++buttonIter) {
+		Gtk::ToolButton *toolbutton = (Gtk::ToolButton*)(*buttonIter);
+		std::cerr << toolbutton << "\n";
+		Gtk::Button *button = (Gtk::Button*)toolbutton->get_child ();
+		/* FIXME: should check the toolbutton is actually a toolbutton
+		 * rather than letting it fail on get_child for other types */
+		if (!button)
+			break;
+		button->set_relief (Gtk::RELIEF_NORMAL);
+	}
 	filtervbox->pack_start (tagbar, false, false, 0);
 
 	window_->show_all ();
