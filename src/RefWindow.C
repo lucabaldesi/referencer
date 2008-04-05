@@ -547,7 +547,6 @@ void RefWindow::populateTagList ()
 
 			size = (int) (factor * (float)size);
 		}
-
 		Pango::FontDescription font;
 		font.set_size (size);
 		font.set_weight (Pango::WEIGHT_SEMIBOLD);
