@@ -73,6 +73,8 @@ class RefWindow {
 		
 		/* DocumentView needs this for inline edits */
 		void setDirty (bool const &dirty);
+
+		void openProperties (Document *doc);
 	private:
 		bool ignoreDocSelectionChanged_;
 		void clearTagList ();

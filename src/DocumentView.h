@@ -71,10 +71,15 @@ class DocumentView : public Gtk::VBox
 	/* Called by linker actions */
 	void invokeLinker (Linker *linker);
 
-	private:
+    void select (Document *document);
+
 	RefWindow &win_;
 	Library &lib_;
 
+	Document *hoverdoc_;
+	void popupContextMenu (GdkEventButton* event);
+
+	private:
 	bool ignoreSelectionChanged_;
 	
 	/* The search box */
@@ -95,16 +100,16 @@ class DocumentView : public Gtk::VBox
 
 	/* The columns, a columnrecord is made in the constructor */
 	Gtk::TreeModelColumn<Document*> docpointercol_;
-	Gtk::TreeModelColumn<Glib::ustring> dockeycol_;
-	Gtk::TreeModelColumn<Glib::ustring> doctitlecol_;
-	Gtk::TreeModelColumn<Glib::ustring> docauthorscol_;
-	Gtk::TreeModelColumn<Glib::ustring> docyearcol_;
+	Gtk::TreeModelColumn<Glib::ustring> doccaptioncol_;
 	Gtk::TreeModelColumn<Glib::RefPtr<Gdk::Pixbuf> > docthumbnailcol_;
 	#if GTK_VERSION_GE(2,12)
 	Gtk::TreeModelColumn<Glib::ustring> doctooltipcol_;
 	#endif
+	Gtk::TreeModelColumn<Glib::ustring> dockeycol_;
+	Gtk::TreeModelColumn<Glib::ustring> doctitlecol_;
+	Gtk::TreeModelColumn<Glib::ustring> docauthorscol_;
+	Gtk::TreeModelColumn<Glib::ustring> docyearcol_;
 	Gtk::TreeModelColumn<bool> docvisiblecol_;
-	Gtk::TreeModelColumn<Glib::ustring> doccaptioncol_;
 
 	/* Two oh-so-innocuous objects */
 	Gtk::IconView *docsiconview_;
@@ -121,10 +126,10 @@ class DocumentView : public Gtk::VBox
 	}
 	
 	/* ev-tooltip stuff from the bad old days */
+	void onDocMouseMotion (GdkEventMotion* event);
+	void redraw (Document *document);
 	#if GTK_VERSION_LT(2,12)
 	GtkWidget *doctooltip_;
-	Document *hoverdoc_;
-	void onDocMouseMotion (GdkEventMotion* event);
 	void onDocMouseLeave (GdkEventCrossing *event);
 	#endif
 	Gtk::Menu doccontextmenu_;
@@ -138,6 +143,7 @@ class DocumentView : public Gtk::VBox
 		Document * const doc);
 
 	bool docClicked (GdkEventButton* event);
+
 	void onIconsDragData (
 		const Glib::RefPtr <Gdk::DragContext> &context,
 		int n1, int n2, const Gtk::SelectionData &sel, guint n3, guint n4);

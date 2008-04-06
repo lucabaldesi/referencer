@@ -1,4 +1,5 @@
 1.1.2:
+	- Shortcut buttons on document icons
 	- Fix using old tooltip code even with recent GTK
 	- UI for attaching tags during adding files
 	- Pubmed: fill out DOI field, use full first names (Aurélien Naldi)

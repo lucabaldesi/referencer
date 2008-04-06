@@ -10,6 +10,8 @@
 
 #include <iostream>
 
+#include <gtk/gtk.h>
+#include <gtkmm.h>
 #include <glibmm/i18n.h>
 #include <libgnomevfsmm.h>
 
@@ -36,6 +38,266 @@
 #endif
 
 
+class DocumentCellRenderer : public Gtk::CellRendererPixbuf
+{
+private:
+    Glib::Property< void* > property_document_; 
+    static int const buttonHeight = 20;
+    static int const buttonWidth = 20;
+    static int const buttonPad = 2;
+    static int const maxHeight = 128 + buttonHeight / 2;
+    Glib::RefPtr<Gdk::Pixbuf> tagIcon_;
+    Glib::RefPtr<Gdk::Pixbuf> propertiesIcon_;
+    Glib::RefPtr<Gdk::Pixbuf> expanderIcon_;
+    DocumentView *docview_;
+
+/*
+ * Colorise function ripped from GTK+,
+ * Copyright (C) 2000  Red Hat, Inc.,  Jonathan Blandford <jrb@redhat.com>
+ */
+static Glib::RefPtr<Gdk::Pixbuf>
+colorizePixbuf (Glib::RefPtr<Gdk::Pixbuf> pixbuf, Gdk::Color color)
+{
+	gint i, j;
+	gint width, height, has_alpha, src_row_stride, dst_row_stride;
+	gint red_value, green_value, blue_value;
+	guchar *target_pixels;
+	guchar *original_pixels;
+	guchar *pixsrc;
+	guchar *pixdest;
+	Glib::RefPtr<Gdk::Pixbuf> dest = pixbuf->copy();
+
+	red_value = color.get_red() / 255.0;
+	green_value = color.get_green() / 255.0;
+	blue_value = color.get_blue() / 255.0;
+
+	has_alpha = pixbuf->get_has_alpha ();
+	width = pixbuf->get_width ();
+	height = pixbuf->get_height ();
+	src_row_stride = pixbuf->get_rowstride ();
+	dst_row_stride = dest->get_rowstride ();
+	target_pixels = dest->get_pixels ();
+	original_pixels = pixbuf->get_pixels ();
+
+	for (i = 0; i < height; i++) {
+		pixdest = target_pixels + i*dst_row_stride;
+		pixsrc = original_pixels + i*src_row_stride;
+		for (j = 0; j < width; j++) {		
+			*pixdest++ = (*pixsrc++ * red_value) >> 8;
+			*pixdest++ = (*pixsrc++ * green_value) >> 8;
+			*pixdest++ = (*pixsrc++ * blue_value) >> 8;
+			if (has_alpha) {
+				*pixdest++ = *pixsrc++;
+			}
+		}
+	}
+
+	return dest;
+}
+
+
+public:
+    DocumentCellRenderer(DocumentView *docview)
+    :
+    Glib::ObjectBase(typeid(DocumentCellRenderer)),
+    Gtk::CellRendererPixbuf(),
+    property_document_ (*this, "document"),
+    docview_(docview)
+    {
+        property_mode() = Gtk::CELL_RENDERER_MODE_ACTIVATABLE;
+        property_xpad() = 0;
+        property_ypad() = 0;
+    }   
+
+    Glib::PropertyProxy< void* > property_document() {return property_document_.get_proxy();}
+
+protected:
+    virtual void get_size_vfunc (
+        Gtk::Widget& widget,
+        Gdk::Rectangle const * cell_area,
+        int* x_offset,
+        int* y_offset,
+        int* width,
+        int* height) const
+    {
+        Document *doc = (Document *) property_document_.get_value ();
+        Glib::RefPtr<Gdk::Pixbuf> thumb = doc->getThumbnail ();
+        gint pixbuf_width  = thumb->get_width ();
+        gint pixbuf_height = thumb->get_height ();
+        gint calc_width;
+        gint calc_height;
+
+        calc_width  = pixbuf_width;
+        calc_height = pixbuf_height;
+        
+        if (x_offset) {
+            *x_offset = 0;
+        }
+        if (y_offset) {
+            *y_offset = 0;
+        }
+        
+        if (width)
+            *width = calc_width;
+        
+        if (height) {
+            if (calc_height < maxHeight)
+                *height = calc_height + buttonHeight / 2;
+            else
+                *height = maxHeight;
+        }
+        
+    }
+    
+    virtual void render_vfunc(
+        Glib::RefPtr<Gdk::Drawable> const & window,
+        Gtk::Widget& widget,
+        Gdk::Rectangle const & background_area,
+        Gdk::Rectangle const & cell_area,
+        Gdk::Rectangle const & expose_area,
+        Gtk::CellRendererState flags)
+    {
+        Document *doc = (Document *) property_document_.get_value ();
+        Glib::RefPtr<Gdk::Pixbuf> thumb = doc->getThumbnail ();
+        
+        Glib::RefPtr<Gdk::GC> gc = Gdk::GC::create (window);
+        
+
+        if (flags & (Gtk::CELL_RENDERER_SELECTED|Gtk::CELL_RENDERER_PRELIT) != 0) {
+            Gtk::StateType state;
+
+            if ((flags & Gtk::CELL_RENDERER_SELECTED) != 0) {
+                if (widget.has_focus())
+                    state = Gtk::STATE_SELECTED;
+                else
+                    state = Gtk::STATE_ACTIVE;
+            } else {
+	            state = Gtk::STATE_PRELIGHT;
+            }
+
+			Gdk::Color color = widget.get_style()->get_base (state);
+            thumb = colorizePixbuf (thumb, color);
+        }
+        
+        window->draw_pixbuf (
+            gc, thumb,
+            0, 0,
+            cell_area.get_x(), cell_area.get_y(),
+            thumb->get_width(),
+            thumb->get_height (),
+            Gdk::RGB_DITHER_NONE,
+            0, 0);   
+
+        if (doc == docview_->hoverdoc_) {
+            flags |= Gtk::CELL_RENDERER_PRELIT;
+        }
+
+        Glib::RefPtr<Gdk::Window> window_casted = Glib::RefPtr<Gdk::Window>::cast_dynamic<>(window);
+        Gtk::StateType state = Gtk::STATE_NORMAL;
+        Gtk::ShadowType shadow = Gtk::SHADOW_OUT;
+
+        if (flags & Gtk::CELL_RENDERER_PRELIT) {
+        
+            int buttonY = thumb->get_height () - buttonHeight / 2;
+            int iconHeight = buttonHeight - buttonPad * 2;
+			int iconWidth = buttonWidth - buttonPad * 2;
+        
+            for (int i = 0; i < 3; ++i) {
+                /* Draw the button frame */
+                widget.get_style()->paint_box (
+                    window_casted, state, shadow, cell_area, widget, "cellcheck",
+                    cell_area.get_x() + i * (buttonWidth + buttonPad * 2) + buttonPad,
+                    cell_area.get_y() + buttonY,
+                    buttonWidth, buttonHeight);
+                
+
+                    Glib::RefPtr<Gdk::Pixbuf> icon;
+                    
+                    if (i == 0) {
+                        if (!tagIcon_) {
+                            Glib::ustring tagIconFile = Utility::findDataFile ("tag.svg");
+                            tagIcon_ = Gdk::Pixbuf::create_from_file (tagIconFile);
+                            tagIcon_ = tagIcon_->scale_simple (
+                                iconWidth,
+                                iconHeight,
+                                Gdk::INTERP_HYPER);
+                        }
+                        icon = tagIcon_;
+                    } else if (i == 1) {
+                        if (!propertiesIcon_) {
+                            propertiesIcon_ = widget.render_icon (Gtk::Stock::PROPERTIES, Gtk::ICON_SIZE_MENU);
+                            /*
+                            propertiesIcon_ = Utility::getThemeIcon ("gtk-properties");*/
+                            propertiesIcon_ = propertiesIcon_->scale_simple (
+                                iconWidth,
+                                iconHeight,
+                                Gdk::INTERP_HYPER);
+                        }
+
+                        icon = propertiesIcon_;
+                    } else if (i == 2) {
+                        widget.get_style()->paint_expander (window_casted,
+                        	state, cell_area, widget, "expander",
+                        	cell_area.get_x() + i * (buttonWidth + buttonPad * 2) + buttonPad * 2 + iconWidth / 2,
+                        	cell_area.get_y() + buttonY + buttonPad + iconHeight / 2,
+                        	Gtk::EXPANDER_COLLAPSED);
+                    }
+
+					if (icon) {
+	                    window->draw_pixbuf (
+	                        gc, icon,
+	                        0, 0,
+	                        cell_area.get_x() + i * (buttonWidth + buttonPad * 2) + buttonPad * 2,
+	                        cell_area.get_y() + buttonY + buttonPad,
+	                        buttonWidth - buttonPad * 2, buttonHeight - buttonPad * 2,
+	                        Gdk::RGB_DITHER_NONE,
+	                        0, 0);   
+	                }
+
+            }
+        }
+    }
+    
+
+    virtual bool activate_vfunc (
+        GdkEvent* event,
+        Gtk::Widget& widget,
+        const Glib::ustring& path,
+        const Gdk::Rectangle& background_area,
+        const Gdk::Rectangle& cell_area,
+        Gtk::CellRendererState flags)
+    {
+        GdkEventButton *evButton = (GdkEventButton*)event;      
+        Document *doc = (Document *) property_document_.get_value ();
+        Glib::RefPtr<Gdk::Pixbuf> thumb = doc->getThumbnail ();
+        
+        int x = evButton->x - cell_area.get_x();
+        int y = evButton->y - cell_area.get_y();
+        
+        if (y > thumb->get_height() - buttonHeight / 2) {
+            if (x - buttonPad < buttonWidth) {
+                docview_->select (doc);
+        		Gtk::MenuItem *item =
+        			(Gtk::MenuItem*)docview_->win_.uimanager_->get_widget("/DocPopup/TaggerMenu");
+        		Gtk::Menu *popup = item->get_submenu ();
+				popup->popup (evButton->button, evButton->time);
+            } else if (
+                    x - buttonPad > buttonWidth + buttonPad * 2
+                    && x - buttonPad < buttonWidth * 2 + buttonPad * 2) {              
+                    
+                docview_->win_.openProperties (doc);
+            } else if (
+                    x - buttonPad > 2 * (buttonWidth + buttonPad * 2)
+                    && x - buttonPad < 2 * (buttonWidth + buttonPad * 2) + buttonWidth) {              
+                docview_->popupContextMenu ((GdkEventButton*)event);
+            }
+        }
+        
+        return true;
+    }
+};
+
+
 DocumentView::~DocumentView ()
 {
 #if GTK_VERSION_LT(2,12)
@@ -51,9 +313,7 @@ DocumentView::DocumentView (
 	
  : win_ (refwin), lib_(lib)
 {
-#if GTK_VERSION_LT(2,12)
 	hoverdoc_ = NULL;
-#endif
 	ignoreSelectionChanged_ = false;
 
 	/*
@@ -69,16 +329,16 @@ DocumentView::DocumentView (
 	 */
 	Gtk::TreeModel::ColumnRecord doccols;
 	doccols.add(docpointercol_);
+	doccols.add(doccaptioncol_);
+	doccols.add(docthumbnailcol_);
+	#if GTK_VERSION_GE(2,12)
+	doccols.add(doctooltipcol_);
+    #endif
 	doccols.add(dockeycol_);
 	doccols.add(doctitlecol_);
 	doccols.add(docauthorscol_);
 	doccols.add(docyearcol_);
-	doccols.add(docthumbnailcol_);
-#if GTK_VERSION_GE(2,12)
-	doccols.add(doctooltipcol_);
-#endif
-	doccols.add(docvisiblecol_);
-	doccols.add(doccaptioncol_);
+	doccols.add (docvisiblecol_);
 
 	docstore_ = Gtk::ListStore::create(doccols);
 	docstorefilter_ = Gtk::TreeModelFilter::create (docstore_);
@@ -94,14 +354,40 @@ DocumentView::DocumentView (
 	 * Icon View
 	 */
 	Gtk::IconView *icons = Gtk::manage(new Gtk::IconView(docstoresort_));
-	icons->set_markup_column (doccaptioncol_);
-	icons->set_pixbuf_column (docthumbnailcol_);
+	//icons->set_markup_column (doccaptioncol_);
+	//icons->set_pixbuf_column (docthumbnailcol_);
+
+/* FIXME: keep and eventually free these cellrenderer ptrs */
+	GtkCellLayout* cell_layout = GTK_CELL_LAYOUT(icons->gobj());
+	DocumentCellRenderer *doccell = new DocumentCellRenderer (this);
+
+	gtk_cell_layout_pack_start (cell_layout, GTK_CELL_RENDERER(doccell->gobj()), false);
+
+    std::cout << "setting document attribute\n";
+    gtk_cell_layout_set_attributes (GTK_CELL_LAYOUT (icons->gobj()),
+        GTK_CELL_RENDERER(doccell->gobj()),
+        "document", 0,
+        NULL);
+    std::cout << "set document attribute\n";
+
+    Gtk::CellRendererText *textcell = new Gtk::CellRendererText ();
+    //textcell->property_width_chars() = 32;
+    //textcell->property_wrap_width() = 32;
+    textcell->property_wrap_mode() = Pango::WRAP_WORD_CHAR;
+	gtk_cell_layout_pack_start (cell_layout, GTK_CELL_RENDERER (textcell->gobj()), true);
+    gtk_cell_layout_set_attributes (GTK_CELL_LAYOUT (icons->gobj()),
+        GTK_CELL_RENDERER (textcell->gobj()),
+        "markup", 1,
+        NULL);
+	
+	icons->add_events (Gdk::ALL_EVENTS_MASK);
 #if GTK_VERSION_GE(2,12)
 	// Nasty, gtkmm doesn't have a binding for passing the column object
-	icons->set_tooltip_column (6);
+	icons->set_tooltip_column (3);
 #endif
 	icons->signal_item_activated().connect (
 		sigc::mem_fun (*this, &DocumentView::docActivated));
+
 
 	icons->signal_button_press_event().connect(
 		sigc::mem_fun (*this, &DocumentView::docClicked), false);
@@ -113,7 +399,7 @@ DocumentView::DocumentView (
 	icons->set_columns (-1);
 
 	icons->set_orientation (Gtk::ORIENTATION_HORIZONTAL);
-	icons->set_item_width (256);
+	//icons->set_item_width (256);
 
 	std::vector<Gtk::TargetEntry> dragtypes;
 	Gtk::TargetEntry target;
@@ -131,10 +417,11 @@ DocumentView::DocumentView (
 	icons->signal_drag_data_received ().connect (
 		sigc::mem_fun (*this, &DocumentView::onIconsDragData));
 	
-	#if GTK_VERSION_LT(2,12)
+
 	icons->set_events (Gdk::POINTER_MOTION_MASK | Gdk::LEAVE_NOTIFY_MASK);
 	icons->signal_motion_notify_event ().connect_notify (
 		sigc::mem_fun (*this, &DocumentView::onDocMouseMotion));
+	#if GTK_VERSION_LT(2,12)
 	icons->signal_leave_notify_event ().connect_notify (
 		sigc::mem_fun (*this, &DocumentView::onDocMouseLeave));
 	#endif
@@ -222,22 +509,22 @@ void DocumentView::setUseListView (bool const &list)
 {
 	if (list != uselistview_) {
 		uselistview_ = list;
-		
-	if (uselistview_) {
-		docsiconscroll_->hide ();
-		docslistscroll_->show ();
-		docslistview_->grab_focus ();
-	} else {
-		docslistscroll_->hide ();
-		docsiconscroll_->show ();
-		docsiconview_->grab_focus ();
-	}
 
-	docSelectionChanged ();
+        if (uselistview_) {
+            docsiconscroll_->hide ();
+            docslistscroll_->show ();
+            docslistview_->grab_focus ();
+        } else {
+            docslistscroll_->hide ();
+            docsiconscroll_->show ();
+            docsiconview_->grab_focus ();
+        }
+
+        docSelectionChanged ();
 	}
 }
 
-#if GTK_VERSION_LT(2,12)
+
 void DocumentView::onDocMouseMotion (GdkEventMotion* event)
 {
 	int x = (int)event->x;
@@ -252,7 +539,9 @@ void DocumentView::onDocMouseMotion (GdkEventMotion* event)
 		doc = (*it)[docpointercol_];
 	}
 
+
 	if (doc != hoverdoc_) {
+#if GTK_VERSION_LT(2,12)
 		if (doc) {
 			BibData &bib = doc->getBibData ();
 			Glib::ustring tiptext = String::ucompose (
@@ -271,16 +560,26 @@ void DocumentView::onDocMouseMotion (GdkEventMotion* event)
 		} else {
 			ev_tooltip_deactivate (EV_TOOLTIP (doctooltip_));
 		}
+#endif
+
+        Document *oldHoverDoc = hoverdoc_;
 		hoverdoc_ = doc;
+
+        if (oldHoverDoc)
+            redraw (oldHoverDoc);
+        if (hoverdoc_)
+            redraw (hoverdoc_);
 	}
+
 }
 
-
+#if GTK_VERSION_LT(2,12)
 void DocumentView::onDocMouseLeave (GdkEventCrossing *event)
 {
 	ev_tooltip_deactivate (EV_TOOLTIP (doctooltip_));
 }
 #endif
+
 
 
 void DocumentView::onIconsDragData (
@@ -479,34 +778,6 @@ void DocumentView::invokeLinker (Linker *linker)
 
 bool DocumentView::docClicked (GdkEventButton* event)
 {
-	/*
-	 * Linkers are local to here for now, in the future they might
-	 * be plugin-extensible and thus moved elsewhere
-	 */
-	static std::vector<Linker*> linkers;
-	static DoiLinker doi;
-	static ArxivLinker arxiv;
-	static UrlLinker url;
-	static PubmedLinker pubmed;
-	static GoogleLinker google;
-
-	/*
-	 * Initialise linkers
-	 */
-	static Glib::RefPtr<Gdk::Pixbuf> linkerIcon;
-	if (linkers.size() == 0) {
-		linkers.push_back(&doi);
-		linkers.push_back(&arxiv);
-		linkers.push_back(&url);
-		linkers.push_back(&pubmed);
-		linkers.push_back(&google);
-
-		std::vector<Linker*>::iterator it = linkers.begin ();
-		std::vector<Linker*>::iterator const end = linkers.end ();
-		for (; it != end; ++it)
-			(*it)->createUI (&win_, this);
-	}
-
 	if((event->type == GDK_BUTTON_PRESS) && (event->button == 3)) {
 		/*
 		 * Select what's under the pointer if it isn't already
@@ -537,38 +808,8 @@ bool DocumentView::docClicked (GdkEventButton* event)
 				docsiconview_->select_path (clickedpath);
 			}
 		}
-
-		/*
-		 * Get the popup menu widget
-		 */
-		Gtk::Menu *popupmenu =
-			(Gtk::Menu*)win_.uimanager_->get_widget("/DocPopup");
-
-		/* Work out which linkers are applicable */
-		std::vector<Document *> docs = getSelectedDocs ();
-			
-		std::vector<Linker*>::iterator it = linkers.begin();
-		std::vector<Linker*>::iterator const end = linkers.end();
-		for (; it != end; ++it) {
-			Linker *linker = (*it);
-			Glib::RefPtr<Gtk::Action> action = win_.actiongroup_->get_action (Glib::ustring("linker_") + linker->getName());
-
-			bool enable = false;
-			std::vector<Document*>::iterator docIt = docs.begin ();
-			std::vector<Document*>::iterator const docEnd = docs.end ();
-			for (; docIt != docEnd; ++docIt) {
-				if (linker->canLink(*docIt))
-					enable = true;
-			}
-
-			action->set_visible(enable);
-		}
-
-		/*
-		 * Display the menu
-		 */
-		//popupmenu->show_all ();
-		popupmenu->popup (event->button, event->time);
+		
+		popupContextMenu (event);
 
 		return true;
 	} else if ((event->type == GDK_BUTTON_PRESS) && (event->button == 2)) {
@@ -578,6 +819,70 @@ bool DocumentView::docClicked (GdkEventButton* event)
 	} else {
 		return false;
 	}
+}
+
+
+void DocumentView::popupContextMenu (GdkEventButton* event)
+{
+	/*
+	 * Linkers are local to here for now, in the future they might
+	 * be plugin-extensible and thus moved elsewhere
+	 */
+	static std::vector<Linker*> linkers;
+	static DoiLinker doi;
+	static ArxivLinker arxiv;
+	static UrlLinker url;
+	static PubmedLinker pubmed;
+	static GoogleLinker google;
+
+	/*
+	 * Initialise linkers
+	 */
+	static Glib::RefPtr<Gdk::Pixbuf> linkerIcon;
+	if (linkers.size() == 0) {
+		linkers.push_back(&doi);
+		linkers.push_back(&arxiv);
+		linkers.push_back(&url);
+		linkers.push_back(&pubmed);
+		linkers.push_back(&google);
+
+		std::vector<Linker*>::iterator it = linkers.begin ();
+		std::vector<Linker*>::iterator const end = linkers.end ();
+		for (; it != end; ++it)
+			(*it)->createUI (&win_, this);
+	}
+
+	/*
+	 * Get the popup menu widget
+	 */
+	Gtk::Menu *popupmenu =
+		(Gtk::Menu*)win_.uimanager_->get_widget("/DocPopup");
+
+	/* Work out which linkers are applicable */
+	std::vector<Document *> docs = getSelectedDocs ();
+		
+	std::vector<Linker*>::iterator it = linkers.begin();
+	std::vector<Linker*>::iterator const end = linkers.end();
+	for (; it != end; ++it) {
+		Linker *linker = (*it);
+		Glib::RefPtr<Gtk::Action> action =
+		    win_.actiongroup_->get_action (Glib::ustring("linker_") + linker->getName());
+
+		bool enable = false;
+		std::vector<Document*>::iterator docIt = docs.begin ();
+		std::vector<Document*>::iterator const docEnd = docs.end ();
+		for (; docIt != docEnd; ++docIt) {
+			if (linker->canLink(*docIt))
+				enable = true;
+		}
+
+		action->set_visible(enable);
+	}
+
+	/*
+	 * Display the menu
+	 */
+	popupmenu->popup (event->button, event->time);
 }
 
 
@@ -672,15 +977,13 @@ void DocumentView::loadRow (
 	Gtk::TreeModel::iterator item,
 	Document * const doc)
 {
-	(*item)[dockeycol_] = doc->getKey();
-	// PROGRAM CRASHING THIS HOLIDAY SEASON?
-	// THIS LINE DID IT!
-	// WHEE!  LOOK AT THIS LINE OF CODE!
 	(*item)[docpointercol_] = doc;
+	(*item)[dockeycol_] = doc->getKey();
 	(*item)[docthumbnailcol_] = doc->getThumbnail();
 	(*item)[doctitlecol_] = doc->getBibData().getTitle ();
 	(*item)[docauthorscol_] = doc->getBibData().getAuthors ();
 	(*item)[docyearcol_] = doc->getBibData().getYear ();
+
 	#if GTK_VERSION_GE(2,12)
 	(*item)[doctooltipcol_] = String::ucompose (
 		// Translators: this is the format for the document tooltips
@@ -1064,4 +1367,58 @@ void DocumentView::populateColumns ()
 	addCol ("title", _("Title"), doctitlecol_, true, true);
 	addCol ("authors", _("Authors"), docauthorscol_, false, true);
 	addCol ("year", _("Year"), docyearcol_, false, false);
+}
+
+
+void DocumentView::select (Document *document)
+{
+    /* Look up the path to this document */
+    Gtk::TreeModel::iterator docIter = docstoresort_->children().begin();
+    Gtk::TreeModel::iterator const docEnd = docstoresort_->children().end();
+    for (; docIter != docEnd; ++docIter) {
+        if ((*docIter)[docpointercol_] == document)
+            break;
+    }
+
+    if (docIter == docEnd) {
+        std::cerr << "DocumentView::select: warning: document "
+            << document << " not found\n";
+    }
+
+    Gtk::TreeModel::Path path = docstoresort_->get_path (docIter);
+    
+    /* Select the path */
+	if (uselistview_) {
+		docslistselection_->unselect_all ();
+		docslistselection_->select (path);
+	} else {
+		docsiconview_->unselect_all ();
+		docsiconview_->select_path (path);
+	}
+}
+
+
+void DocumentView::redraw (Document *document)
+{
+#if 0
+    /* Look up the path to this document */
+    Gtk::TreeModel::iterator docIter = docstoresort_->children().begin();
+    Gtk::TreeModel::iterator const docEnd = docstoresort_->children().end();
+    for (; docIter != docEnd; ++docIter) {
+        if ((*docIter)[docpointercol_] == document)
+            break;
+    }
+
+    if (docIter == docEnd) {
+        std::cerr << "DocumentView::select: warning: document "
+            << document << " not found\n";
+    }
+
+    Gtk::TreeModel::Path path = docstoresort_->get_path (docIter);
+
+    docstoresort_->row_changed (path, docIter);
+
+#else
+    docsiconview_->get_window()->invalidate_rect (Gdk::Rectangle (0, 0, 1000, 1000),true);
+#endif
 }

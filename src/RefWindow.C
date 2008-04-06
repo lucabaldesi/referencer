@@ -498,7 +498,6 @@ void RefWindow::populateTagList ()
 	TaggerUIMap::iterator taggerIter = taggerUI_.begin ();
 	TaggerUIMap::iterator const taggerEnd  = taggerUI_.end ();
 	for (; taggerIter != taggerEnd; ++taggerIter) {
-		std::cerr << "Removing action " << actiongroup_->get_name() << "\n";
 		actiongroup_->remove ((*taggerIter).second.action);
 		uimanager_->remove_ui ((*taggerIter).second.merge);
 	}
@@ -641,43 +640,21 @@ void RefWindow::taggerActionToggled (Glib::RefPtr<Gtk::ToggleAction> action, int
 
 	bool active = action->get_active ();
 
-	bool tagsremoved = false;
-	bool tagsadded = false;
-
 	std::vector<Document*>::iterator it = selecteddocs.begin ();
 	std::vector<Document*>::iterator const end = selecteddocs.end ();
 	for (; it != end; it++) {
 		Document *doc = (*it);
-		if (active) {
+		if (active)
 			doc->setTag (taguid);
-			tagsadded = true;
-		} else {
+		else
 			doc->clearTag (taguid);
-			tagsremoved = true;
-		}
+
+		docview_->updateDoc (doc);
 	}
 
-	bool allselected = false;
-	bool taglessselected = false;
-
-	for (std::vector<int>::iterator tagit = filtertags_.begin();
-	     tagit != filtertags_.end ();
-	     ++tagit) {
-		if (*tagit == ALL_TAGS_UID)
-			allselected = true;
-		else if (*tagit == NO_TAGS_UID)
-			taglessselected = true;
-	}
-
-	if (
-	    // If we've untagged something it might no longer be visible
-	    (tagsremoved && !allselected)
-	    // Or if we've added a tag to something while viewing "untagged"
-	    || (tagsadded && taglessselected)
-	    ) {
-		docview_->updateVisible ();
-		updateStatusBar ();
-	}
+    // If we've untagged something it might no longer be visible
+    // Or if we've added a tag to something while viewing "untagged"
+	updateStatusBar ();
 	
 	// All tag changes influence the fonts in the tag list
 	populateTagList ();
@@ -2105,9 +2082,8 @@ void RefWindow::onOpenDoc ()
 }
 
 
-void RefWindow::onDocProperties ()
+void RefWindow::openProperties (Document *doc)
 {
-	Document *doc = docview_->getSelectedDoc ();
 	if (doc) {
 		if (docpropertiesdialog_->show (doc)) {
 			setDirty (true);
@@ -2115,6 +2091,13 @@ void RefWindow::onDocProperties ()
 			updateStatusBar ();
 		}
 	}
+}
+
+
+void RefWindow::onDocProperties ()
+{
+	Document *doc = docview_->getSelectedDoc ();
+	openProperties (doc);
 }
 
 

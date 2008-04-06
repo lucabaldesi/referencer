@@ -54,12 +54,13 @@ class Document {
 	void setFileName (Glib::ustring const &filename);
 	void updateRelFileName (Glib::ustring const &libfilename);
 	void setKey (Glib::ustring const &key);
-	Glib::RefPtr<Gdk::Pixbuf> getThumbnail () {return thumbnail_;}
+
 	std::vector<int>& getTags ();
 	void setTag (int uid);
 	void clearTag (int uid);
 	void clearTags ();
 
+	Glib::RefPtr<Gdk::Pixbuf> getThumbnail () {return thumbnail_;}
 	void setThumbnail (Glib::RefPtr<Gdk::Pixbuf> thumb);
 	void setView (DocumentView *view) {view_ = view;}
 
