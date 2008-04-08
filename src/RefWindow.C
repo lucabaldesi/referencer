@@ -466,6 +466,67 @@ void RefWindow::clearTagList ()
 	tagstore_->clear();
 }
 
+
+void RefWindow::updateTagSizes ()
+{
+	std::map <int, int> tagusecounts;
+
+	DocumentList::Container &docrefs = library_->doclist_->getDocs ();
+	int const doccount = docrefs.size ();
+	DocumentList::Container::iterator docit = docrefs.begin();
+	DocumentList::Container::iterator const docend = docrefs.end();
+	for (; docit != docend; docit++) {
+		std::vector<int>& tags = (*docit).getTags ();
+		std::vector<int>::iterator tagit = tags.begin ();
+		std::vector<int>::iterator const tagend = tags.end ();
+		for (; tagit != tagend; ++tagit)
+			tagusecounts[*tagit]++;
+	}
+
+	/* What was I smoking when I wrote TagList?  Mung it into a more
+	 * useful data structure. */
+	typedef std::map<Glib::ustring, std::pair<int, int> > SensibleMap;
+	std::map<Glib::ustring, std::pair<int, int> > sensibleTags;
+	TagList::TagMap allTags = library_->taglist_->getTags();
+	TagList::TagMap::iterator sensibleIter = allTags.begin();
+	TagList::TagMap::iterator const sensibleEnd = allTags.end();
+	for (; sensibleIter != sensibleEnd; ++sensibleIter) {
+		sensibleTags[(*sensibleIter).second.name_] =
+			std::pair<int, int> (
+				(*sensibleIter).second.uid_,
+				tagusecounts[(*sensibleIter).second.uid_]);
+	}
+
+	Gtk::TreeModel::iterator tagIter = tagstore_->children().begin();
+	Gtk::TreeModel::iterator const tagEnd = tagstore_->children().end();
+	for (; tagIter != tagEnd; ++tagIter) {
+		int uid = (*tagIter)[taguidcol_];
+		if (tagusecounts.find(uid) == tagusecounts.end())
+			continue;
+
+		int useCount = tagusecounts[(*tagIter)[taguidcol_]];
+		int size = window_->get_style ()->get_font().get_size ();
+
+		if (useCount > 0) {
+			float factor;
+			float const maxfactor = 1.55;
+			if (doccount > 0)
+				factor = 0.75 + (logf((float)useCount / (float)doccount + 0.1) - logf(0.1)) * 0.4;
+			else
+				factor = 1.5;
+			if (factor > maxfactor)
+				factor = maxfactor;
+
+			size = (int) (factor * (float)size);
+		}
+		Pango::FontDescription font;
+		font.set_size (size);
+		font.set_weight (Pango::WEIGHT_SEMIBOLD);
+		(*tagIter)[tagfontcol_] = font;
+	}
+}
+
+
 void RefWindow::populateTagList ()
 {
 	Gtk::TreeSelection::ListHandle_Path paths =
@@ -503,66 +564,27 @@ void RefWindow::populateTagList ()
 	}
 	taggerUI_.clear ();
 
-
-	std::map <int, int> tagusecounts;
-
-	DocumentList::Container &docrefs = library_->doclist_->getDocs ();
-	int const doccount = docrefs.size ();
-	DocumentList::Container::iterator docit = docrefs.begin();
-	DocumentList::Container::iterator const docend = docrefs.end();
-	for (; docit != docend; docit++) {
-		std::vector<int>& tags = (*docit).getTags ();
-		std::vector<int>::iterator tagit = tags.begin ();
-		std::vector<int>::iterator const tagend = tags.end ();
-		for (; tagit != tagend; ++tagit)
-			tagusecounts[*tagit]++;
-	}
-
 	/* What was I smoking when I wrote TagList?  Mung it into a more
 	 * useful data structure. */
-	typedef std::map<Glib::ustring, std::pair<int, int> > SensibleMap;
-	std::map<Glib::ustring, std::pair<int, int> > sensibleTags;
+	typedef std::map<Glib::ustring, int > SensibleMap;
+	SensibleMap sensibleTags;
 	TagList::TagMap allTags = library_->taglist_->getTags();
 	TagList::TagMap::iterator sensibleIter = allTags.begin();
 	TagList::TagMap::iterator const sensibleEnd = allTags.end();
-	for (; sensibleIter != sensibleEnd; ++sensibleIter) {
-		sensibleTags[(*sensibleIter).second.name_] =
-			std::pair<int, int> (
-				(*sensibleIter).second.uid_,
-				tagusecounts[(*sensibleIter).second.uid_]);
-	}
+	for (; sensibleIter != sensibleEnd; ++sensibleIter)
+		sensibleTags[(*sensibleIter).second.name_] = (*sensibleIter).second.uid_;
 
-
-	// Populate from library_->taglist_
-	SensibleMap::iterator it = sensibleTags.begin();
-	SensibleMap::iterator const end = sensibleTags.end();
-	for (; it != end; ++it) {
-		int uid = (*it).second.first;
-		int useCount = (*it).second.second;
-		Glib::ustring name = (*it).first;
+	// Populate from the sensibleTags structure
+	SensibleMap::iterator tagIter = sensibleTags.begin ();
+	SensibleMap::iterator const tagEnd = sensibleTags.end ();
+	for (; tagIter != tagEnd; ++tagIter) {
+		Glib::ustring name = (*tagIter).first;
+		int uid = (*tagIter).second;
 
 		Gtk::TreeModel::iterator item = tagstore_->append();
 		(*item)[taguidcol_] = uid;
 		(*item)[tagnamecol_] = name;
-
-		int size = window_->get_style ()->get_font().get_size ();
-
-		if (useCount > 0) {
-			float factor;
-			float const maxfactor = 1.55;
-			if (doccount > 0)
-				factor = 0.75 + (logf((float)useCount / (float)doccount + 0.1) - logf(0.1)) * 0.4;
-			else
-				factor = 1.5;
-			if (factor > maxfactor)
-				factor = maxfactor;
-
-			size = (int) (factor * (float)size);
-		}
-		Pango::FontDescription font;
-		font.set_size (size);
-		font.set_weight (Pango::WEIGHT_SEMIBOLD);
-		(*item)[tagfontcol_] = font;
+		(*item)[tagfontcol_] = Pango::FontDescription();
 
 		/* Create tag actions */
 		TagUI t;
@@ -600,6 +622,7 @@ void RefWindow::populateTagList ()
 		taggerUI_[uid] = t;
 	}
 
+
 	// Restore initial selection or selected first row
 	ignoreTagSelectionChanged_ = ignore;
 	if (!initialpath.empty())
@@ -610,7 +633,10 @@ void RefWindow::populateTagList ()
 		tagselection_->select (tagstore_->children().begin());
 
 
-	// To update tag actions
+	/* Give them tagcloud-style sizing */
+	updateTagSizes ();
+
+	/* Update tagger action checked-ness */
 	docSelectionChanged ();
 }
 
@@ -657,7 +683,7 @@ void RefWindow::taggerActionToggled (Glib::RefPtr<Gtk::ToggleAction> action, int
 	updateStatusBar ();
 	
 	// All tag changes influence the fonts in the tag list
-	populateTagList ();
+	updateTagSizes ();
 }
 
 
@@ -1540,7 +1566,7 @@ void RefWindow::onAddDocFilesTag (std::vector<Document*> &docs)
 	}
 
 	/* He might have added or removed tags */
-	populateTagList ();
+	updateTagSizes ();
 }
 
 void RefWindow::addDocFiles (std::vector<Glib::ustring> const &filenames)
