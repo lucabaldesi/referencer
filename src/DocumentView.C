@@ -158,8 +158,7 @@ protected:
         Gtk::CellRendererState flags)
     {
         Document *doc = (Document *) property_document_.get_value ();
-        Glib::RefPtr<Gdk::Pixbuf> thumb = doc->getThumbnail ();
-        
+	Glib::RefPtr<Gdk::Pixbuf> thumb = doc->getThumbnail ();
         Glib::RefPtr<Gdk::GC> gc = Gdk::GC::create (window);
         
 
@@ -175,7 +174,7 @@ protected:
 	            state = Gtk::STATE_PRELIGHT;
             }
 
-			Gdk::Color color = widget.get_style()->get_base (state);
+		Gdk::Color color = widget.get_style()->get_base (state);
             thumb = colorizePixbuf (thumb, color);
         }
         
@@ -1400,25 +1399,27 @@ void DocumentView::select (Document *document)
 
 void DocumentView::redraw (Document *document)
 {
+	/* Even if we bother poking a particular document IconView
+	 * seems to redraw the whole kaboodle */
 #if 0
-    /* Look up the path to this document */
-    Gtk::TreeModel::iterator docIter = docstoresort_->children().begin();
-    Gtk::TreeModel::iterator const docEnd = docstoresort_->children().end();
-    for (; docIter != docEnd; ++docIter) {
-        if ((*docIter)[docpointercol_] == document)
-            break;
-    }
+	/* Look up the path to this document */
+	Gtk::TreeModel::iterator docIter = docstoresort_->children().begin();
+	Gtk::TreeModel::iterator const docEnd = docstoresort_->children().end();
+	for (; docIter != docEnd; ++docIter) {
+		if ((*docIter)[docpointercol_] == document)
+			break;
+	}
 
-    if (docIter == docEnd) {
-        std::cerr << "DocumentView::select: warning: document "
-            << document << " not found\n";
-    }
+	if (docIter == docEnd) {
+		std::cerr << "DocumentView::select: warning: document "
+			<< document << " not found\n";
+	}
 
-    Gtk::TreeModel::Path path = docstoresort_->get_path (docIter);
+	Gtk::TreeModel::Path path = docstoresort_->get_path (docIter);
 
-    docstoresort_->row_changed (path, docIter);
+	docstoresort_->row_changed (path, docIter);
 
 #else
-    docsiconview_->get_window()->invalidate_rect (Gdk::Rectangle (0, 0, 1000, 1000),true);
+	docsiconview_->get_window()->invalidate_rect (Gdk::Rectangle (0, 0, 1000, 1000),true);
 #endif
 }
