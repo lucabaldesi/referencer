@@ -1,0 +1,129 @@
+#LyX 1.5.3 created this file. For more info see http://www.lyx.org/
+\lyxformat 276
+\begin_document
+\begin_header
+\textclass article
+\language english
+\inputencoding auto
+\font_roman default
+\font_sans default
+\font_typewriter default
+\font_default_family default
+\font_sc false
+\font_osf false
+\font_sf_scale 100
+\font_tt_scale 100
+\graphics default
+\paperfontsize default
+\papersize default
+\use_geometry false
+\use_amsmath 1
+\use_esint 1
+\cite_engine basic
+\use_bibtopic false
+\paperorientation portrait
+\secnumdepth 3
+\tocdepth 3
+\paragraph_separation indent
+\defskip medskip
+\quotes_language english
+\papercolumns 1
+\papersides 1
+\paperpagestyle default
+\tracking_changes false
+\output_changes false
+\author "" 
+\author "" 
+\end_header
+
+\begin_body
+
+\begin_layout Title
+Writing Plugins for Referencer
+\end_layout
+
+\begin_layout Author
+John Spray <jcspray at icculus.org>
+\end_layout
+
+\begin_layout Section
+Introduction
+\end_layout
+
+\begin_layout Standard
+The referencer plugin API provides a relatively painless way of adding functiona
+lity.
+ Plugins can either add user interface entries to menus and toolbars, or
+ provide hooks for downloading metadata for documents.
+\end_layout
+
+\begin_layout Subsection
+Installing plugins
+\end_layout
+
+\begin_layout Standard
+Plugins are python scripts.
+ They don't have to be executable, but they do have to have a filename ending
+ .py.
+ At startup, referencer searches several locations for plugins: ./plugins,
+ $PREFIX/lib/referencer, and ~/.referencer/plugins.
+\end_layout
+
+\begin_layout Section
+Common API
+\end_layout
+
+\begin_layout Standard
+referencer_plugin_info
+\end_layout
+
+\begin_layout Standard
+import referencer
+\end_layout
+
+\begin_layout Standard
+from referencer import _
+\end_layout
+
+\begin_layout Standard
+document class
+\end_layout
+
+\begin_layout Standard
+download function
+\end_layout
+
+\begin_layout Section
+Action plugins
+\end_layout
+
+\begin_layout Standard
+referencer_plugin_actions
+\end_layout
+
+\begin_layout Standard
+referencer_plugin_info{
+\begin_inset Quotes erd
+\end_inset
+
+ui
+\begin_inset Quotes erd
+\end_inset
+
+:
+\end_layout
+
+\begin_layout Standard
+Can use PyGTK
+\end_layout
+
+\begin_layout Section
+Metadata plugins
+\end_layout
+
+\begin_layout Standard
+referencer_plugin_capabilities
+\end_layout
+
+\end_body
+\end_document
