@@ -984,12 +984,26 @@ void DocumentView::loadRow (
 	(*item)[docyearcol_] = doc->getBibData().getYear ();
 
 	#if GTK_VERSION_GE(2,12)
-	(*item)[doctooltipcol_] = String::ucompose (
-		// Translators: this is the format for the document tooltips
-		_("<b>%1</b>\n%2\n<i>%3</i>"),
-		Glib::Markup::escape_text (doc->getKey()),
-		Glib::Markup::escape_text (doc->getBibData().getTitle()),
-		Glib::Markup::escape_text (doc->getBibData().getAuthors()));
+
+	Glib::ustring tooltipText =
+		String::ucompose(
+				"<b>%1</b>\n",
+				Glib::Markup::escape_text(doc->getKey()));
+
+	typedef std::map <Glib::ustring, Glib::ustring> StringMap;
+	StringMap fields = doc->getFields ();
+	StringMap::iterator fieldIter = fields.begin();
+	StringMap::iterator const fieldEnd = fields.end();
+	for (; fieldIter != fieldEnd; ++fieldIter) {
+		tooltipText += "\n";
+		tooltipText += Glib::Markup::escape_text (fieldIter->first);
+		tooltipText += ": ";
+		tooltipText += Glib::Markup::escape_text (fieldIter->second.substr(0,64));
+		if (fieldIter->second.size() > 64)
+			tooltipText += "...";
+	}
+
+	(*item)[doctooltipcol_] = tooltipText;
 	#endif
 	(*item)[docvisiblecol_] = isVisible (doc);
 
