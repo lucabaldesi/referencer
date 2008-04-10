@@ -356,28 +356,26 @@ DocumentView::DocumentView (
 	//icons->set_markup_column (doccaptioncol_);
 	//icons->set_pixbuf_column (docthumbnailcol_);
 
-/* FIXME: keep and eventually free these cellrenderer ptrs */
 	GtkCellLayout* cell_layout = GTK_CELL_LAYOUT(icons->gobj());
+	/* FIXME: these cellrenderers never get freed */
 	DocumentCellRenderer *doccell = new DocumentCellRenderer (this);
 
 	gtk_cell_layout_pack_start (cell_layout, GTK_CELL_RENDERER(doccell->gobj()), false);
 
-    std::cout << "setting document attribute\n";
-    gtk_cell_layout_set_attributes (GTK_CELL_LAYOUT (icons->gobj()),
-        GTK_CELL_RENDERER(doccell->gobj()),
-        "document", 0,
-        NULL);
-    std::cout << "set document attribute\n";
+	gtk_cell_layout_set_attributes (GTK_CELL_LAYOUT (icons->gobj()),
+		GTK_CELL_RENDERER(doccell->gobj()),
+		"document", 0,
+		NULL);
 
-    Gtk::CellRendererText *textcell = new Gtk::CellRendererText ();
-    //textcell->property_width_chars() = 32;
-    //textcell->property_wrap_width() = 32;
-    textcell->property_wrap_mode() = Pango::WRAP_WORD_CHAR;
+	Gtk::CellRendererText *textcell = new Gtk::CellRendererText ();
+	//textcell->property_width_chars() = 32;
+	//textcell->property_wrap_width() = 32;
+	textcell->property_wrap_mode() = Pango::WRAP_WORD_CHAR;
 	gtk_cell_layout_pack_start (cell_layout, GTK_CELL_RENDERER (textcell->gobj()), true);
-    gtk_cell_layout_set_attributes (GTK_CELL_LAYOUT (icons->gobj()),
-        GTK_CELL_RENDERER (textcell->gobj()),
-        "markup", 1,
-        NULL);
+	gtk_cell_layout_set_attributes (GTK_CELL_LAYOUT (icons->gobj()),
+		GTK_CELL_RENDERER (textcell->gobj()),
+		"markup", 1,
+		NULL);
 	
 	icons->add_events (Gdk::ALL_EVENTS_MASK);
 #if GTK_VERSION_GE(2,12)
