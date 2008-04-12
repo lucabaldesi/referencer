@@ -1,16 +1,16 @@
-# Norwegian Bokmal translation for referencer
-# Copyright (c) 2007 Rosetta Contributors and Canonical Ltd 2007
+# Persian translation for referencer
+# Copyright (c) 2008 Rosetta Contributors and Canonical Ltd 2008
 # This file is distributed under the same license as the referencer package.
-# FIRST AUTHOR <EMAIL@ADDRESS>, 2007.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2008.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: referencer\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
 "POT-Creation-Date: 2008-04-10 23:46+0100\n"
-"PO-Revision-Date: 2007-08-01 18:55+0000\n"
-"Last-Translator: Daniel Høyer Iversen <dahoiv2@gmail.com>\n"
-"Language-Team: Norwegian Bokmal <nb@li.org>\n"
+"PO-Revision-Date: 2008-03-20 17:20+0000\n"
+"Last-Translator: Artin <Unknown>\n"
+"Language-Team: Persian <fa@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -19,7 +19,7 @@ msgstr ""
 
 #: ../data/documentproperties.glade.h:1
 msgid "<b>Document</b>"
-msgstr ""
+msgstr "<b>سند</b>"
 
 #: ../data/documentproperties.glade.h:2
 msgid "<b>E_xtra Fields</b>"
@@ -27,7 +27,7 @@ msgstr ""
 
 #: ../data/documentproperties.glade.h:3
 msgid "<b>Metadata</b>"
-msgstr ""
+msgstr "<b>فوق داده</b>"
 
 #: ../data/documentproperties.glade.h:4
 msgid "Add a field"
@@ -47,11 +47,11 @@ msgstr ""
 
 #: ../data/documentproperties.glade.h:8
 msgid "Document Properties"
-msgstr ""
+msgstr "ویژگیهای سند"
 
 #: ../data/documentproperties.glade.h:9
 msgid "File:"
-msgstr ""
+msgstr "پرونده:"
 
 #: ../data/documentproperties.glade.h:10
 msgid "Fill out metadata from BibTeX on clipboard"
@@ -63,11 +63,11 @@ msgstr ""
 
 #: ../data/documentproperties.glade.h:12
 msgid "Select A File"
-msgstr "Velg en fil"
+msgstr "یک پرونده انتخاب کنید"
 
 #: ../data/documentproperties.glade.h:13
 msgid "_Key:"
-msgstr ""
+msgstr "_کلید:"
 
 #: ../data/documentproperties.glade.h:14
 msgid "_Look Up"
@@ -100,7 +100,7 @@ msgstr ""
 
 #: ../data/preferences.glade.h:7
 msgid "Host:"
-msgstr "Vert:"
+msgstr "میزبان:"
 
 #: ../data/preferences.glade.h:8
 msgid "Move _down"
@@ -112,27 +112,27 @@ msgstr ""
 
 #: ../data/preferences.glade.h:10
 msgid "Network"
-msgstr ""
+msgstr "شبکه"
 
 #: ../data/preferences.glade.h:11
 msgid "Password:"
-msgstr "Passord:"
+msgstr "رمز عبور:"
 
 #: ../data/preferences.glade.h:12
 msgid "Plugins"
-msgstr ""
+msgstr "افزونه‌ها"
 
 #: ../data/preferences.glade.h:13
 msgid "Port:"
-msgstr "Port:"
+msgstr ""
 
 #: ../data/preferences.glade.h:14
 msgid "Preferences"
-msgstr "Alternativer:"
+msgstr "تنظیمات‌"
 
 #: ../data/preferences.glade.h:15
 msgid "Use authentication"
-msgstr "Benytt autentisering"
+msgstr ""
 
 #: ../data/preferences.glade.h:16
 msgid "Use web proxy"
@@ -140,7 +140,7 @@ msgstr ""
 
 #: ../data/preferences.glade.h:17
 msgid "Username:"
-msgstr ""
+msgstr "نام کاربر:"
 
 #: ../data/preferences.glade.h:18
 msgid "_About..."
@@ -213,7 +213,7 @@ msgstr ""
 
 #: ../src/CrossRefPlugin.C:171
 msgid "_Preferences"
-msgstr ""
+msgstr "_ترجیحات"
 
 #: ../src/CrossRefPlugin.C:172
 msgid "_Disable CrossRef"
@@ -229,7 +229,7 @@ msgstr ""
 
 #: ../src/Document.C:38
 msgid "Unnamed"
-msgstr "Uten navn"
+msgstr "بدون نام"
 
 #: ../src/Document.C:562
 msgid "Moving '%1' to '%2'"
@@ -253,7 +253,7 @@ msgstr ""
 
 #: ../src/DocumentProperties.C:200
 msgid "_Type:"
-msgstr ""
+msgstr "_نوع:"
 
 #: ../src/DocumentProperties.C:401 ../src/RefWindow.C:2358
 msgid "Converting clipboard text to latin1"
@@ -269,19 +269,19 @@ msgstr ""
 
 #: ../src/DocumentTypes.C:31 ../src/DocumentView.C:1378
 msgid "Title"
-msgstr "Tittel"
+msgstr "عنوان"
 
 #: ../src/DocumentTypes.C:32 ../src/DocumentView.C:1379
 msgid "Authors"
-msgstr "Forfattere"
+msgstr "مؤلفان"
 
 #: ../src/DocumentTypes.C:33
 msgid "Journal"
-msgstr ""
+msgstr "یادداشت روزانه"
 
 #: ../src/DocumentTypes.C:34 ../src/DocumentView.C:1380
 msgid "Year"
-msgstr ""
+msgstr "سال"
 
 #: ../src/DocumentTypes.C:36
 msgid "Volume"
@@ -293,23 +293,23 @@ msgstr ""
 
 #: ../src/DocumentTypes.C:38
 msgid "Pages"
-msgstr ""
+msgstr "صفحه ها"
 
 #: ../src/DocumentTypes.C:39
 msgid "Month"
-msgstr ""
+msgstr "ماه‌"
 
 #: ../src/DocumentTypes.C:40
 msgid "Note"
-msgstr ""
+msgstr "یادداشت"
 
 #: ../src/DocumentTypes.C:41 ../src/DocumentView.C:1377
 msgid "Key"
-msgstr ""
+msgstr "کلید"
 
 #: ../src/DocumentTypes.C:43
 msgid "Editor"
-msgstr ""
+msgstr "ویرایشگر"
 
 #: ../src/DocumentTypes.C:44
 msgid "Publisher"
@@ -317,23 +317,23 @@ msgstr ""
 
 #: ../src/DocumentTypes.C:45
 msgid "Series"
-msgstr ""
+msgstr "مجموعه‌ها"
 
 #: ../src/DocumentTypes.C:46
 msgid "Address"
-msgstr ""
+msgstr "نشانی"
 
 #: ../src/DocumentTypes.C:47
 msgid "Edition"
-msgstr ""
+msgstr "ویرایش"
 
 #: ../src/DocumentTypes.C:49
 msgid "Book title"
-msgstr ""
+msgstr "عنوان کتاب"
 
 #: ../src/DocumentTypes.C:50
 msgid "Organisation"
-msgstr ""
+msgstr "سازمان"
 
 #: ../src/DocumentTypes.C:52
 msgid "How published"
@@ -341,27 +341,27 @@ msgstr ""
 
 #: ../src/DocumentTypes.C:54
 msgid "School"
-msgstr ""
+msgstr "مدرسه"
 
 #: ../src/DocumentTypes.C:55
 msgid "Institution"
-msgstr ""
+msgstr "مؤسسه"
 
 #: ../src/DocumentTypes.C:56
 msgid "Chapter"
-msgstr ""
+msgstr "فصل"
 
 #: ../src/DocumentTypes.C:57
 msgid "Type"
-msgstr ""
+msgstr "نوع‌"
 
 #: ../src/DocumentTypes.C:60
 msgid "Article"
-msgstr ""
+msgstr "مقاله"
 
 #: ../src/DocumentTypes.C:76
 msgid "Book"
-msgstr ""
+msgstr "کتاب‌"
 
 #: ../src/DocumentTypes.C:94
 msgid "In Proceedings"
@@ -369,11 +369,11 @@ msgstr ""
 
 #: ../src/DocumentTypes.C:111
 msgid "Misc"
-msgstr ""
+msgstr "متفرقه"
 
 #: ../src/DocumentTypes.C:121
 msgid "Unpublished"
-msgstr ""
+msgstr "منتشر نشده"
 
 #: ../src/DocumentTypes.C:130
 msgid "Master's thesis"
@@ -393,11 +393,11 @@ msgstr ""
 
 #: ../src/DocumentTypes.C:175
 msgid "In Book"
-msgstr ""
+msgstr "در کتاب"
 
 #: ../src/DocumentTypes.C:192
 msgid "Booklet"
-msgstr ""
+msgstr "کتابچه"
 
 #: ../src/DocumentTypes.C:203
 msgid "In Collection"
@@ -405,11 +405,11 @@ msgstr ""
 
 #: ../src/DocumentTypes.C:218
 msgid "Manual"
-msgstr ""
+msgstr "دستی"
 
 #: ../src/DocumentTypes.C:230
 msgid "Technical Report"
-msgstr ""
+msgstr "گزارش فنی"
 
 #. Translators: this is the format for the document tooltips
 #: ../src/DocumentView.C:546
@@ -418,6 +418,9 @@ msgid ""
 "%2\n"
 "<i>%3</i>"
 msgstr ""
+"<b>%1</b>\n"
+"%2\n"
+"<i>%3</i>"
 
 #: ../src/DocumentView.C:623
 msgid "Downloaded Documents"
@@ -425,7 +428,7 @@ msgstr ""
 
 #: ../src/DocumentView.C:648
 msgid "Getting info for file '%1'"
-msgstr ""
+msgstr "در حال گرفتن اطلاعات برای پرونده  '%1'"
 
 #. Translators: this is the format for the document captions
 #: ../src/DocumentView.C:1026
@@ -436,6 +439,11 @@ msgid ""
 "%3\n"
 "<i>%4</i>"
 msgstr ""
+"<span size='xx-small'> </span>\n"
+"<small>%1</small>\n"
+"<b>%2</b>\n"
+"%3\n"
+"<i>%4</i>"
 
 #: ../src/Library.C:81
 msgid "Parsing Library XML"
@@ -443,7 +451,7 @@ msgstr ""
 
 #: ../src/Library.C:121
 msgid "Opening %1"
-msgstr ""
+msgstr "در حال باز کردن %1"
 
 #: ../src/Library.C:211
 msgid "Document location ambiguity"
@@ -501,16 +509,16 @@ msgstr ""
 
 #: ../src/Preferences.C:179
 msgid "Enabled"
-msgstr ""
+msgstr "فعال"
 
 #: ../src/Preferences.C:183 ../src/PythonPlugin.C:317
 #: ../src/PythonPlugin.C:347
 msgid "Module"
-msgstr ""
+msgstr "مازول"
 
 #: ../src/Preferences.C:185
 msgid "Description"
-msgstr ""
+msgstr "شرح"
 
 #: ../src/PythonPlugin.C:314
 msgid ""
@@ -522,11 +530,11 @@ msgstr ""
 
 #: ../src/PythonPlugin.C:315 ../src/PythonPlugin.C:345 ../src/Utility.C:260
 msgid "Exception"
-msgstr "Unntak"
+msgstr "استثنا"
 
 #: ../src/PythonPlugin.C:319 ../src/PythonPlugin.C:349
 msgid "Explanation"
-msgstr ""
+msgstr "شرح"
 
 #: ../src/PythonPlugin.C:344
 msgid ""
@@ -535,10 +543,14 @@ msgid ""
 "%3: %4\n"
 "%5: %6"
 msgstr ""
+"<big><b>%1: %2</b></big>\n"
+"\n"
+"%3: %4\n"
+"%5: %6"
 
 #: ../src/RefWindow.C:188
 msgid "Tags"
-msgstr ""
+msgstr "برچسب‌ها"
 
 #: ../src/RefWindow.C:285
 msgid "_Library"
@@ -546,11 +558,11 @@ msgstr ""
 
 #: ../src/RefWindow.C:290 ../src/RefWindow.C:367
 msgid "_Open..."
-msgstr "_Åpne"
+msgstr "_باز کردن..."
 
 #: ../src/RefWindow.C:296
 msgid "Save _As..."
-msgstr ""
+msgstr "ذخیره به نام_..."
 
 #: ../src/RefWindow.C:299
 msgid "E_xport as BibTeX..."
@@ -562,19 +574,19 @@ msgstr ""
 
 #: ../src/RefWindow.C:305
 msgid "_Import..."
-msgstr "_Importer ..."
+msgstr "_وارد کردن..."
 
 #: ../src/RefWindow.C:308
 msgid "_Work Offline"
-msgstr "_Arbeid frakoblet"
+msgstr "_کار به صورت منفصل"
 
 #: ../src/RefWindow.C:312
 msgid "_Edit"
-msgstr "_Redigér"
+msgstr "_ویرایش"
 
 #: ../src/RefWindow.C:314
 msgid "_View"
-msgstr "_Visning"
+msgstr "_نما"
 
 #: ../src/RefWindow.C:317
 msgid "Import references from BibTeX on the clipboard"
@@ -602,11 +614,11 @@ msgstr ""
 
 #: ../src/RefWindow.C:335 ../src/RefWindow.C:373
 msgid "_Tags"
-msgstr "_Merker"
+msgstr "_برچسب‌ها"
 
 #: ../src/RefWindow.C:337
 msgid "_Create Tag..."
-msgstr ""
+msgstr "_ساخت برچسب..."
 
 #: ../src/RefWindow.C:340
 msgid "_Attach New Tag..."
@@ -622,7 +634,7 @@ msgstr ""
 
 #: ../src/RefWindow.C:349
 msgid "_Documents"
-msgstr "_Dokumenter"
+msgstr "_نوشتارها"
 
 #: ../src/RefWindow.C:351
 msgid "_Add File..."
@@ -642,7 +654,7 @@ msgstr ""
 
 #: ../src/RefWindow.C:363
 msgid "_Remove"
-msgstr ""
+msgstr "_حذف"
 
 #: ../src/RefWindow.C:377
 msgid "_Get Metadata"
@@ -662,15 +674,15 @@ msgstr ""
 
 #: ../src/RefWindow.C:389
 msgid "_Help"
-msgstr "_Hjelp"
+msgstr "_راهنما"
 
 #: ../src/RefWindow.C:391
 msgid "Introduction"
-msgstr "Introduksjon"
+msgstr "مقدمه"
 
 #: ../src/RefWindow.C:547
 msgid "All"
-msgstr "Alt"
+msgstr "همه‌‌"
 
 #: ../src/RefWindow.C:552
 msgid "Untagged"
@@ -690,11 +702,11 @@ msgstr ""
 
 #: ../src/RefWindow.C:866
 msgid "Close _without Saving"
-msgstr ""
+msgstr "بستن _بدون ذخیره کردن"
 
 #: ../src/RefWindow.C:902
 msgid "Type a tag"
-msgstr ""
+msgstr "یک برچسب تایپ کنید"
 
 #: ../src/RefWindow.C:906
 msgid "Create tag"
@@ -710,7 +722,7 @@ msgstr ""
 
 #: ../src/RefWindow.C:993
 msgid "Are you sure you want to delete \"%1\"?"
-msgstr ""
+msgstr "آیا مطمئن به حذف \"%1\" هستید ؟"
 
 #: ../src/RefWindow.C:1000
 msgid ""
@@ -729,19 +741,19 @@ msgstr ""
 #: ../src/RefWindow.C:1067 ../src/RefWindow.C:1145 ../src/RefWindow.C:1307
 #: ../src/RefWindow.C:1365 ../src/RefWindow.C:2254
 msgid "All Files"
-msgstr "Alle Filer"
+msgstr "همه‌ی پرونده‌ها"
 
 #: ../src/RefWindow.C:1078
 msgid "Selection:"
-msgstr "Merking:"
+msgstr "گزینش:"
 
 #: ../src/RefWindow.C:1081
 msgid "All Documents"
-msgstr "Alle dokumenter"
+msgstr "همهٔ نوشتارها"
 
 #: ../src/RefWindow.C:1082
 msgid "Selected Documents"
-msgstr ""
+msgstr "نوشتارهای انتخاب شده"
 
 #. Any options here should be replicated in onManageBibtex
 #. Any options here should be replicated in onExportBibtex
@@ -755,7 +767,7 @@ msgstr ""
 
 #: ../src/RefWindow.C:1133
 msgid "Browse"
-msgstr "Bla igjennom"
+msgstr "مرور"
 
 #: ../src/RefWindow.C:1167 ../src/RefWindow.C:1182
 msgid "Manage BibTeX File"
@@ -773,7 +785,7 @@ msgstr ""
 
 #: ../src/RefWindow.C:1211
 msgid "_Browse..."
-msgstr ""
+msgstr "_مرور..."
 
 #: ../src/RefWindow.C:1285
 msgid "Open Library"
@@ -792,11 +804,11 @@ msgstr ""
 msgid "translator-credits"
 msgstr ""
 "Launchpad Contributions:\n"
-"  Daniel Høyer Iversen https://launchpad.net/~dahoiv"
+"  Artin https://launchpad.net/~artin"
 
 #: ../src/RefWindow.C:1425
 msgid "Showing '%1'"
-msgstr ""
+msgstr "در حال نمایش  '%1'"
 
 #: ../src/RefWindow.C:1434
 msgid "Cancelling"
@@ -829,7 +841,7 @@ msgstr ""
 
 #: ../src/RefWindow.C:1611
 msgid "Document"
-msgstr ""
+msgstr "نوشتار"
 
 #: ../src/RefWindow.C:1612
 msgid "Got text"
@@ -857,11 +869,11 @@ msgstr ""
 
 #: ../src/RefWindow.C:1747 ../src/RefWindow.C:1749
 msgid "Cancelled"
-msgstr ""
+msgstr "صرف نظر شد"
 
 #: ../src/RefWindow.C:1753
 msgid "Finished"
-msgstr ""
+msgstr "تمام شد"
 
 #: ../src/RefWindow.C:1794
 msgid "Add Reference with ID"
@@ -869,11 +881,11 @@ msgstr ""
 
 #: ../src/RefWindow.C:1862
 msgid "Add Document"
-msgstr ""
+msgstr "افزودن نوشتار"
 
 #: ../src/RefWindow.C:1893
 msgid "Add Folder"
-msgstr "Legg til mappe"
+msgstr "افزودن پوشه"
 
 #: ../src/RefWindow.C:1930
 msgid "Are you sure you want to remove these %1 documents?"
@@ -936,7 +948,7 @@ msgstr ""
 
 #: ../src/RefWindow.C:2080
 msgid "Deleting '%1'"
-msgstr ""
+msgstr "در حال حذف '%1'"
 
 #: ../src/RefWindow.C:2102
 msgid "Trying to open file '%1'"
@@ -952,7 +964,7 @@ msgstr ""
 
 #: ../src/RefWindow.C:2205
 msgid "Unnamed Library"
-msgstr ""
+msgstr "کتابخانه نام گزاری نشده"
 
 #: ../src/RefWindow.C:2239
 msgid "Import References"
@@ -964,7 +976,7 @@ msgstr ""
 
 #: ../src/RefWindow.C:2273
 msgid "Format:"
-msgstr "Format:"
+msgstr "قالب:"
 
 #: ../src/RefWindow.C:2379
 msgid "Imported %1 BibTeX references"
@@ -992,7 +1004,7 @@ msgstr ""
 
 #: ../src/Transfer.C:101
 msgid "Downloading %1"
-msgstr ""
+msgstr "بارگیری %1"
 
 #: ../src/Transfer.C:286
 msgid "Opening URI '%1' on server"
@@ -1012,6 +1024,9 @@ msgid ""
 "\n"
 "%3"
 msgstr ""
+"<big><b>%1: %2</b></big>\n"
+"\n"
+"%3"
 
 #: ../src/Utility.C:263
 msgid "The operation underway was: \"%1\""
