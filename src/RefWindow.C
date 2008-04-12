@@ -915,7 +915,7 @@ int RefWindow::createTag ()
 	Gtk::Entry nameentry;
 	Gtk::HBox hbox;
 	hbox.set_spacing (6);
-	Gtk::Label label (_("Name:"));
+	Gtk::Label label (String::ucompose ("%1:", _("Name")));
 	hbox.pack_start (label, false, false, 0);
 	hbox.pack_start (nameentry, true, true, 0);
 	nameentry.set_activates_default (true);
@@ -2494,6 +2494,7 @@ void RefWindow::docSelectionChanged ()
 	actiongroup_->get_action("RemoveDoc")->set_sensitive (somethingselected);
 	actiongroup_->get_action("DeleteDoc")->set_sensitive (somethingselected);
 	actiongroup_->get_action("RenameDoc")->set_sensitive (somethingselected);
+	actiongroup_->get_action("TaggerMenuAction")->set_sensitive (somethingselected);
 	actiongroup_->get_action("DocProperties")->set_sensitive (onlyoneselected);
 
 	// plugin's action
