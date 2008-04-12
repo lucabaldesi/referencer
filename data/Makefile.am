@@ -7,7 +7,6 @@ resources_DATA = \
 		 thumbnail_frame.png \
 		 referencer.svg \
 		 tag.svg \
-		 tag-new.svg \
 		 unknown-document.png \
 		 crossref.glade
 
