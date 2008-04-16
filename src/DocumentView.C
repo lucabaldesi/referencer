@@ -370,7 +370,10 @@ DocumentView::DocumentView (
 	Gtk::CellRendererText *textcell = new Gtk::CellRendererText ();
 	//textcell->property_width_chars() = 32;
 	//textcell->property_wrap_width() = 32;
+/* FIXME: guesstimate of which version.  It's something >=2.10 */
+#if GTK_VERSION_GE(2,12)
 	textcell->property_wrap_mode() = Pango::WRAP_WORD_CHAR;
+#endif
 	gtk_cell_layout_pack_start (cell_layout, GTK_CELL_RENDERER (textcell->gobj()), true);
 	gtk_cell_layout_set_attributes (GTK_CELL_LAYOUT (icons->gobj()),
 		GTK_CELL_RENDERER (textcell->gobj()),
