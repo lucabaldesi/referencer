@@ -1438,7 +1438,9 @@ void RefWindow::onAddDocFilesCancel (Gtk::Button *button, Gtk::ProgressBar *prog
 
 void RefWindow::TaggerDialog::onCreateTag ()
 {
-	parent_->createTag ();
+	int uid = parent_->createTag ();
+
+	selections_[uid] = true;
 
 	populate ();
 }

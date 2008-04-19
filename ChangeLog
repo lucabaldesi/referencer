@@ -1,4 +1,6 @@
 1.1.2:
+	- Remove tooltips on old GTK versions
+	- Report errors when a plugin cannot be enabled
 	- Updated translations
 	- Shortcut buttons on document icons
 	- Fix using old tooltip code even with recent GTK
