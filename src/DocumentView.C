@@ -28,10 +28,6 @@
 
 #include "DocumentView.h"
 
-#if GTK_VERSION_LT(2,12)
-#include "ev-tooltip.h"
-#endif
-
 #undef USE_TRACKER
 #ifdef USE_TRACKER
 #include "tracker.h"
@@ -299,9 +295,6 @@ protected:
 
 DocumentView::~DocumentView ()
 {
-#if GTK_VERSION_LT(2,12)
-	gtk_widget_destroy (doctooltip_);
-#endif
 }
 
 
@@ -421,10 +414,6 @@ DocumentView::DocumentView (
 	icons->set_events (Gdk::POINTER_MOTION_MASK | Gdk::LEAVE_NOTIFY_MASK);
 	icons->signal_motion_notify_event ().connect_notify (
 		sigc::mem_fun (*this, &DocumentView::onDocMouseMotion));
-	#if GTK_VERSION_LT(2,12)
-	icons->signal_leave_notify_event ().connect_notify (
-		sigc::mem_fun (*this, &DocumentView::onDocMouseLeave));
-	#endif
 
 	docsiconview_ = icons;
 
@@ -435,9 +424,6 @@ DocumentView::DocumentView (
 
 	docsiconscroll_ = iconsscroll;
 
-	#if GTK_VERSION_LT(2,12)
-	doctooltip_ = ev_tooltip_new (GTK_WIDGET(win_.window_->gobj()));
-	#endif
 	/*
 	 * End of icon view stuff
 	 */
@@ -541,44 +527,15 @@ void DocumentView::onDocMouseMotion (GdkEventMotion* event)
 
 
 	if (doc != hoverdoc_) {
-#if GTK_VERSION_LT(2,12)
-		if (doc) {
-			BibData &bib = doc->getBibData ();
-			Glib::ustring tiptext = String::ucompose (
-				// Translators: this is the format for the document tooltips
-				_("<b>%1</b>\n%2\n<i>%3</i>"),
-				Glib::Markup::escape_text (doc->getKey()),
-				Glib::Markup::escape_text (bib.getTitle()),
-				Glib::Markup::escape_text (bib.getAuthors()));
-
-			int xoffset = (int) docsiconscroll_->get_hadjustment ()->get_value ();
-			int yoffset = (int) docsiconscroll_->get_vadjustment ()->get_value ();
-
-			ev_tooltip_set_position (EV_TOOLTIP (doctooltip_), x - xoffset, y - yoffset);
-			ev_tooltip_set_text (EV_TOOLTIP (doctooltip_), tiptext.c_str());
-			ev_tooltip_activate (EV_TOOLTIP (doctooltip_));
-		} else {
-			ev_tooltip_deactivate (EV_TOOLTIP (doctooltip_));
-		}
-#endif
-
-        Document *oldHoverDoc = hoverdoc_;
-		hoverdoc_ = doc;
-
-        if (oldHoverDoc)
-            redraw (oldHoverDoc);
-        if (hoverdoc_)
-            redraw (hoverdoc_);
+		Document *oldHoverDoc = hoverdoc_;
+			hoverdoc_ = doc;
+		if (oldHoverDoc)
+		    redraw (oldHoverDoc);
+		if (hoverdoc_)
+		    redraw (hoverdoc_);
 	}
 
 }
-
-#if GTK_VERSION_LT(2,12)
-void DocumentView::onDocMouseLeave (GdkEventCrossing *event)
-{
-	ev_tooltip_deactivate (EV_TOOLTIP (doctooltip_));
-}
-#endif
 
 
 
