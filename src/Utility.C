@@ -2118,3 +2118,28 @@ Glib::ustring mozUrlSelectionToUTF8 (
 
 
 }
+
+TextDialog::TextDialog (
+		Glib::ustring const &title,
+		Glib::ustring const &text)
+{
+	Gtk::Dialog (title, true, false);
+
+	Glib::RefPtr<Gtk::TextBuffer> buffer = Gtk::TextBuffer::create ();
+	buffer->set_text (text);
+
+	Gtk::TextView *view = Gtk::manage (new Gtk::TextView (buffer));
+	view->set_wrap_mode (Gtk::WRAP_WORD_CHAR);
+
+	Gtk::ScrolledWindow *scroll = Gtk::manage (new Gtk::ScrolledWindow ());
+	scroll->set_policy (Gtk::POLICY_NEVER, Gtk::POLICY_AUTOMATIC);
+	scroll->add (*view);
+
+	get_vbox()->pack_start (*scroll);
+	add_button (Gtk::Stock::CLOSE, 0);
+
+	set_size_request (400, 300);
+
+	show_all ();
+}
+
