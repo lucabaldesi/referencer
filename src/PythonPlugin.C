@@ -454,7 +454,10 @@ Glib::ustring const PythonPlugin::getPluginInfoField (Glib::ustring const &targe
 
 bool PythonPlugin::canConfigure ()
 {
-	return PyObject_HasAttrString (pMod_, "referencer_config");
+	if (pMod_)
+		return PyObject_HasAttrString (pMod_, "referencer_config");
+	else
+		return false;
 }
 
 
