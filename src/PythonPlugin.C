@@ -294,7 +294,7 @@ bool PythonPlugin::updateSensitivity (Glib::ustring const function, std::vector<
 }
 
 
-void PythonPlugin::printException ()
+Glib::ustring PythonPlugin::formatException ()
 {
 	PyObject *pErr = PyErr_Occurred ();
 	if (pErr) {
@@ -320,8 +320,18 @@ void PythonPlugin::printException ()
 			 (exValue)
 			);
 
-		std::cerr << message;
+		exceptionLog_ += message;
+
+		return message;
+	} else {
+		return Glib::ustring ();
 	}
+}
+
+
+void PythonPlugin::printException ()
+{
+	std::cerr << formatException ();
 }
 
 void PythonPlugin::displayException ()
@@ -476,4 +486,17 @@ void PythonPlugin::doConfigure ()
 	if (pReturn)
 		Py_DECREF (pReturn);
 }
+
+
+bool PythonPlugin::hasError ()
+{
+	return !exceptionLog_.empty();
+}
+
+
+Glib::ustring PythonPlugin::getError ()
+{
+	return exceptionLog_;
+}
+
 

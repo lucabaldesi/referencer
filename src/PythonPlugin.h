@@ -33,10 +33,18 @@ class PythonPlugin : public Plugin
 		virtual bool canConfigure ();
 		virtual void doConfigure ();
 
+		/* Report exceptions */
+		virtual bool hasError ();
+		virtual Glib::ustring getError ();
 	private:
 		bool resolveID (Document &doc, PluginCapability::Identifier id);
+
 		void displayException ();
 		void printException ();
+		Glib::ustring formatException ();
+		Glib::ustring exceptionLog_;
+
+
 		Glib::ustring const getPluginInfoField (Glib::ustring const &targetKey);
 		std::string moduleName_;
 		PyObject *pGetFunc_;
