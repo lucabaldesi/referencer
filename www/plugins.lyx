@@ -3,6 +3,9 @@
 \begin_document
 \begin_header
 \textclass article
+\begin_preamble
+\usepackage{url}
+\end_preamble
 \language english
 \inputencoding auto
 \font_roman default
@@ -15,6 +18,7 @@
 \font_tt_scale 100
 \graphics default
 \paperfontsize default
+\spacing single
 \papersize default
 \use_geometry false
 \use_amsmath 1
@@ -43,7 +47,7 @@ Writing Plugins for Referencer
 \end_layout
 
 \begin_layout Author
-John Spray <jcspray at icculus.org>
+John Spray
 \end_layout
 
 \begin_layout Section
@@ -62,6 +66,22 @@ plugins), or provide hooks for downloading metadata for documents (
 metadata 
 \emph default
 plugins).
+\end_layout
+
+\begin_layout Standard
+At the time of writing, the plugin interface is new and not widely tested.
+ Although it is not gratuitously broken there may be issues.
+ Questions to the mailing list: 
+\begin_inset LatexCommand url
+target "http://icculus.org/referencer/contact.html"
+
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+This document is written for referencer 1.1.2.
 \end_layout
 
 \begin_layout Subsection
@@ -629,7 +649,7 @@ icon
 \begin_layout Standard
 Filename
 \begin_inset Foot
-status open
+status collapsed
 
 \begin_layout Standard
 Icon filenames are searched for in the same directories as plugins themselves.
@@ -822,7 +842,13 @@ referencer_plugin_info
 status collapsed
 
 \begin_layout Standard
-Online at http://hg.icculus.org/jcspray/referencer/file/tip/src/referencer_ui.h
+Online at 
+\begin_inset LatexCommand url
+target "http://hg.icculus.org/jcspray/referencer/file/tip/src/referencer_ui.h"
+
+\end_inset
+
+
 \end_layout
 
 \end_inset
@@ -963,8 +989,19 @@ import gtk
 \end_layout
 
 \begin_layout LyX-Code
-dialog = gtk.Dialog (buttons=(gtk.STOCK_CANCEL, gtk.RESPONSE_REJECT, gtk.STOCK_OK,
- gtk.RESPONSE_ACCEPT))
+dialog = gtk.Dialog (buttons=(
+\end_layout
+
+\begin_layout LyX-Code
+    gtk.STOCK_CANCEL, gtk.RESPONSE_REJECT,
+\end_layout
+
+\begin_layout LyX-Code
+    gtk.STOCK_OK, gtk.RESPONSE_ACCEPT))
+\end_layout
+
+\begin_layout LyX-Code
+
 \end_layout
 
 \begin_layout LyX-Code
@@ -973,6 +1010,10 @@ label = gtk.Label ("Hello World")
 
 \begin_layout LyX-Code
 dialog.vbox.pack_start (label)
+\end_layout
+
+\begin_layout LyX-Code
+
 \end_layout
 
 \begin_layout LyX-Code
@@ -987,12 +1028,98 @@ response = dialog.run ()
 dialog.hide ()
 \end_layout
 
+\begin_layout Standard
+For an example of an action plugin, have a look at plugins/genkey.py in the
+ referencer source tree: 
+\begin_inset LatexCommand url
+target "http://hg.icculus.org/jcspray/referencer/file/tip/plugins/genkey.py"
+
+\end_inset
+
+.
+\end_layout
+
 \begin_layout Section
 Metadata plugins
 \end_layout
 
 \begin_layout Standard
+Metadata plugins provide a function to fill out a document's metadata fields
+ based on a document identifier.
+\end_layout
+
+\begin_layout Standard
+To describe which identifier formats are supported, the plugin should create
+ a list of strings called 
+\family typewriter
 referencer_plugin_capabilities
+\family default
+.
+ At time of writing, the possible capabilities are 
+\begin_inset Quotes eld
+\end_inset
+
+doi
+\begin_inset Quotes erd
+\end_inset
+
+, 
+\begin_inset Quotes eld
+\end_inset
+
+pubmed
+\begin_inset Quotes erd
+\end_inset
+
+ and 
+\begin_inset Quotes eld
+\end_inset
+
+arxiv
+\begin_inset Quotes erd
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+To do the lookup, a function 
+\family typewriter
+resolve_metadata(
+\emph on
+doc
+\emph default
+,
+\emph on
+ method
+\emph default
+)
+\family default
+ should be created.
+ 
+\emph on
+doc
+\emph default
+ is the referencer.document whose fields should be filled out, and 
+\emph on
+method
+\emph default
+ is one of the capability strings listed in 
+\family typewriter
+referencer_plugin_capabilities
+\family default
+.
+\end_layout
+
+\begin_layout Standard
+For an example of a metadata plugin, have a look at plugins/pubmed.py in
+ the referencer source code: 
+\begin_inset LatexCommand url
+target "http://hg.icculus.org/jcspray/referencer/file/tip/plugins/pubmed.py"
+
+\end_inset
+
+.
 \end_layout
 
 \end_body
