@@ -517,6 +517,21 @@ value
  as plain-text BibTex and set the document's fields accordingly.
 \end_layout
 
+\begin_layout Subsection
+Configuration dialog
+\end_layout
+
+\begin_layout Standard
+Plugins can provide a configuration user interface invoked from the preferences
+ dialog.
+ The configuration button in the preferences dialog is enabled if the plugin
+ includes a function 
+\family typewriter
+referencer_config()
+\family default
+.
+\end_layout
+
 \begin_layout Section
 Action plugins
 \end_layout
