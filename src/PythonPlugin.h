@@ -29,6 +29,10 @@ class PythonPlugin : public Plugin
 		/* Metadata lookup */
 		virtual bool resolve (Document &doc);
 
+		/* Config hook */
+		virtual bool canConfigure ();
+		virtual void doConfigure ();
+
 	private:
 		bool resolveID (Document &doc, PluginCapability::Identifier id);
 		void displayException ();

@@ -452,3 +452,25 @@ Glib::ustring const PythonPlugin::getPluginInfoField (Glib::ustring const &targe
 }
 
 
+bool PythonPlugin::canConfigure ()
+{
+	return PyObject_HasAttrString (pMod_, "referencer_config");
+}
+
+
+void PythonPlugin::doConfigure ()
+{
+	PyObject *confFunc = PyObject_GetAttrString (pMod_, "referencer_config");
+	if (!confFunc)
+		return;
+
+	PyObject *pArgs = Py_BuildValue ("()");
+	PyObject *pReturn = PyObject_CallObject(confFunc, pArgs);
+	if (pArgs)
+		Py_DECREF (pArgs);
+	if (confFunc)
+		Py_DECREF (confFunc);
+	if (pReturn)
+		Py_DECREF (pReturn);
+}
+
