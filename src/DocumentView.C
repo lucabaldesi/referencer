@@ -1336,7 +1336,7 @@ void DocumentView::populateColumns ()
 {
 	addCol ("key", _("Key"), dockeycol_, false, false);
 	addCol ("title", _("Title"), doctitlecol_, true, true);
-	addCol ("authors", _("Authors"), docauthorscol_, false, true);
+	addCol ("author", _("Author"), docauthorscol_, false, true);
 	addCol ("year", _("Year"), docyearcol_, false, false);
 }
 
