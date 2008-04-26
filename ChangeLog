@@ -1,4 +1,5 @@
 1.1.3:
+	- Fix detection of crossref query failure
 	- Fix crash in crossref parsing (Bug 222340)
 	- Fix crash in bibtex import (Bug 217866)
 	- Fix failing to set fields in list view (Bug 208184)

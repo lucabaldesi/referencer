@@ -53,6 +53,23 @@ class CrossRefParser : public Glib::Markup::Parser {
 				"Looks like a HTML document, not an XML document");
 			throw error;
 		}
+
+		if (element_name == "query") {
+			Glib::ustring statusString;
+			Glib::Markup::Parser::AttributeMap::const_iterator found = attributes.find ("status");
+			if (found != attributes.end())
+				statusString = found->second;
+
+
+			if (statusString == "unresolved") {
+				std::cerr << "CrossRefParser: query failed, throwing error\n";
+				Glib::MarkupError error (
+					Glib::MarkupError::INVALID_CONTENT,
+					"Looks like a HTML document, not an XML document");
+				throw error;
+			}
+		}
+
 		if (element_name == "doi") {
 			Glib::ustring typeString;
 			Glib::Markup::Parser::AttributeMap::const_iterator found = attributes.find ("type");
