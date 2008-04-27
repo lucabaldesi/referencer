@@ -1339,7 +1339,14 @@ void RefWindow::onSaveLibrary ()
 	if (openedlib_.empty()) {
 		onSaveAsLibrary ();
 	} else {
-		if (library_->save (openedlib_))
+		bool saveReturn;
+		try {
+			saveReturn = library_->save (openedlib_);
+		} catch (const Glib::Exception &ex) {
+			Utility::exceptionDialog (&ex, "Saving");
+		}
+
+		if (saveReturn)
 			setDirty (false);
 	}
 }
@@ -1379,7 +1386,14 @@ void RefWindow::onSaveAsLibrary ()
 		// existing file rather than typing in a name themselves.
 		libfilename = Utility::ensureExtension (libfilename, "reflib");
 
-		if (library_->save (libfilename)) {
+		bool saveReturn;
+		try {
+			saveReturn = library_->save (libfilename);
+		} catch (const Glib::Exception &ex) {
+			Utility::exceptionDialog (&ex, "Saving As");
+		}
+
+		if (saveReturn) {
 			setDirty (false);
 			setOpenedLib (libfilename);
 		} else {
