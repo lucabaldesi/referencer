@@ -259,6 +259,8 @@ bool Library::save (Glib::ustring const &libfilename)
 
 	Glib::ustring tmplibfilename = libfilename + ".save-tmp";
 
+	std::cerr << "Library::save: " << libfilename << " ~ " << tmplibfilename << "\n";
+
 	try {
 		libfile.create (tmplibfilename, Gnome::Vfs::OPEN_WRITE,
 			false, Gnome::Vfs::PERM_USER_READ | Gnome::Vfs::PERM_USER_WRITE);
@@ -306,7 +308,7 @@ bool Library::save (Glib::ustring const &libfilename)
 		return false;
 	}
 
-	std::cerr << "Writing bibtex...\n";
+	std::cerr << "Writing bibtex, manage_target_ = " << manage_target_ << "'\n";
 	// Having successfully saved the library, write the bibtex if needed
 	if (!manage_target_.empty ()) {
 		// manage_target_ is either an absolute URI or a relative URI
@@ -314,6 +316,7 @@ bool Library::save (Glib::ustring const &libfilename)
 			Gnome::Vfs::Uri::make_full_from_relative (
 				libfilename,
 				manage_target_);
+		std::cerr << "bibtextarget = " << bibtextarget << "\n";
 
 		std::vector<Document*> docs;
 		DocumentList::Container &docrefs = doclist_->getDocs ();
@@ -322,7 +325,12 @@ bool Library::save (Glib::ustring const &libfilename)
 		for (; it != end; it++) {
 			docs.push_back(&(*it));
 		}
-		writeBibtex (bibtextarget, docs, manage_braces_, manage_utf8_);
+		try {
+		    writeBibtex (bibtextarget, docs, manage_braces_, manage_utf8_);
+		} catch (Glib::Exception const &ex) {
+			Utility::exceptionDialog (&ex, "writing bibtex to " + bibtextarget);
+			return false;
+		}
 	}
 	std::cerr << "Done.\n";
 
@@ -337,6 +345,8 @@ void Library::writeBibtex (
 	bool const utf8)
 {
 	Glib::ustring tmpbibfilename = bibfilename + ".export-tmp";
+
+	std::cerr << "Library::writeBibtex: " << bibfilename << " ~ " << tmpbibfilename << "\n";
 
 	Gnome::Vfs::Handle bibfile;
 
@@ -368,8 +378,13 @@ void Library::writeBibtex (
 
 	bibfile.close ();
 
-	// Forcefully move our tmp file into its real position
-	Gnome::Vfs::Handle::move (tmpbibfilename, bibfilename, true);
+	try {
+	    // Forcefully move our tmp file into its real position
+	    Gnome::Vfs::Handle::move (tmpbibfilename, bibfilename, true);
+	} catch (Glib::Exception const &ex) {
+		Utility::exceptionDialog (&ex, "moving bibtex file from " + tmpbibfilename + " to " + bibfilename);
+		return;
+	}
 }
 
 
