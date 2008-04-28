@@ -44,7 +44,6 @@ class CrossRefParser : public Glib::Markup::Parser {
 		const Glib::ustring& element_name,
 		const Glib::Markup::Parser::AttributeMap& attributes)
 	{
-		//std::cerr << "CrossRefParser: Started element '" << element_name << "'\n";
 		text_ = "";
 		// Should use a more reliable check than this
 		if (element_name == "html" || element_name == "HTML") {
@@ -54,9 +53,30 @@ class CrossRefParser : public Glib::Markup::Parser {
 				"Looks like a HTML document, not an XML document");
 			throw error;
 		}
+
+		if (element_name == "query") {
+			Glib::ustring statusString;
+			Glib::Markup::Parser::AttributeMap::const_iterator found = attributes.find ("status");
+			if (found != attributes.end())
+				statusString = found->second;
+
+
+			if (statusString == "unresolved") {
+				std::cerr << "CrossRefParser: query failed, throwing error\n";
+				Glib::MarkupError error (
+					Glib::MarkupError::INVALID_CONTENT,
+					"Looks like a HTML document, not an XML document");
+				throw error;
+			}
+		}
+
 		if (element_name == "doi") {
-			Glib::ustring const typestring = (*(attributes.find ("type"))).second;
-			if (typestring == "conference_paper") {
+			Glib::ustring typeString;
+			Glib::Markup::Parser::AttributeMap::const_iterator found = attributes.find ("type");
+			if (found != attributes.end())
+				typeString = found->second;
+
+			if (typeString == "conference_paper") {
 				bib_.setType("InProceedings");
 			} else {
 				bib_.setType("Article");

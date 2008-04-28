@@ -581,6 +581,7 @@ bibtexin_convertf( fields *bibin, fields *info, int reftype, int verbose,
 				continue;
 			#endif
 			fields_add(info, t->data, d->data, LEVEL_MAIN );
+			continue;
 		}
 		process = ((all[reftype]).tags[n]).processingtype;
 		if ( process == ALWAYS ) continue; /* add these later */

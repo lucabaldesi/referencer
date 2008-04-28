@@ -495,6 +495,12 @@ void Preferences::onPluginToggled (Glib::ustring const &str)
 		// TODO: remove UI
 	}
 	(*it)[colEnabled_] = plugin->isEnabled ();
+	if (plugin->isEnabled() != enable) {
+		if (plugin->hasError()) {
+			TextDialog dialog (_("Plugin error"), plugin->getError());
+			dialog.run ();
+		}
+	}
 
 	std::vector<Glib::ustring> disable =
 		confclient_->get_string_list (disabledPlugins_.get_key ());

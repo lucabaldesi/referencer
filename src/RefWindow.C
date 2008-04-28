@@ -75,9 +75,28 @@ RefWindow::~RefWindow ()
 }
 
 
+void RefWindow::signalException ()
+{
+    try {
+        throw;
+    } catch (const Glib::Exception &ex) {
+        Utility::exceptionDialog (&ex, "executing UI action");
+    } catch (const std::exception &ex) {
+        std::cerr << "std::exception in signal handler, what=" << ex.what() << "\n";
+    } catch (...) {
+        std::cerr << "Unknown type of exception in signal handler";
+    }
+}
+
+
 void RefWindow::run ()
 {
 	std::cerr << "RefWindow::run: entering main loop\n";
+
+        /* Connect up exception handler for UI signals */
+        Glib::add_exception_handler (sigc::mem_fun (*this, &RefWindow::signalException));
+
+        /* Enter the main event loop */
 	Gnome::Main::run (*window_);
 }
 
@@ -915,7 +934,7 @@ int RefWindow::createTag ()
 	Gtk::Entry nameentry;
 	Gtk::HBox hbox;
 	hbox.set_spacing (6);
-	Gtk::Label label (_("Name:"));
+	Gtk::Label label (String::ucompose ("%1:", _("Name")));
 	hbox.pack_start (label, false, false, 0);
 	hbox.pack_start (nameentry, true, true, 0);
 	nameentry.set_activates_default (true);
@@ -1339,7 +1358,14 @@ void RefWindow::onSaveLibrary ()
 	if (openedlib_.empty()) {
 		onSaveAsLibrary ();
 	} else {
-		if (library_->save (openedlib_))
+		bool saveReturn;
+		try {
+			saveReturn = library_->save (openedlib_);
+		} catch (const Glib::Exception &ex) {
+			Utility::exceptionDialog (&ex, "Saving");
+		}
+
+		if (saveReturn)
 			setDirty (false);
 	}
 }
@@ -1379,7 +1405,14 @@ void RefWindow::onSaveAsLibrary ()
 		// existing file rather than typing in a name themselves.
 		libfilename = Utility::ensureExtension (libfilename, "reflib");
 
-		if (library_->save (libfilename)) {
+		bool saveReturn;
+		try {
+			saveReturn = library_->save (libfilename);
+		} catch (const Glib::Exception &ex) {
+			Utility::exceptionDialog (&ex, "Saving As");
+		}
+
+		if (saveReturn) {
 			setDirty (false);
 			setOpenedLib (libfilename);
 		} else {
@@ -1438,7 +1471,9 @@ void RefWindow::onAddDocFilesCancel (Gtk::Button *button, Gtk::ProgressBar *prog
 
 void RefWindow::TaggerDialog::onCreateTag ()
 {
-	parent_->createTag ();
+	int uid = parent_->createTag ();
+
+	selections_[uid] = true;
 
 	populate ();
 }
@@ -2494,6 +2529,7 @@ void RefWindow::docSelectionChanged ()
 	actiongroup_->get_action("RemoveDoc")->set_sensitive (somethingselected);
 	actiongroup_->get_action("DeleteDoc")->set_sensitive (somethingselected);
 	actiongroup_->get_action("RenameDoc")->set_sensitive (somethingselected);
+	actiongroup_->get_action("TaggerMenuAction")->set_sensitive (somethingselected);
 	actiongroup_->get_action("DocProperties")->set_sensitive (onlyoneselected);
 
 	// plugin's action

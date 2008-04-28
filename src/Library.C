@@ -290,7 +290,12 @@ bool Library::save (Glib::ustring const &libfilename)
 		return false;
 	}
 
-	libfile.close ();
+	try {
+	    libfile.close ();
+	} catch (const Gnome::Vfs::exception ex) {
+		Utility::exceptionDialog (&ex, "Closing file '" + tmplibfilename + "'");
+		return false;
+	}
 
 	// Forcefully move our tmp file into its real position
 	try {
@@ -301,6 +306,7 @@ bool Library::save (Glib::ustring const &libfilename)
 		return false;
 	}
 
+	std::cerr << "Writing bibtex...\n";
 	// Having successfully saved the library, write the bibtex if needed
 	if (!manage_target_.empty ()) {
 		// manage_target_ is either an absolute URI or a relative URI
@@ -318,6 +324,7 @@ bool Library::save (Glib::ustring const &libfilename)
 		}
 		writeBibtex (bibtextarget, docs, manage_braces_, manage_utf8_);
 	}
+	std::cerr << "Done.\n";
 
 	return true;
 }

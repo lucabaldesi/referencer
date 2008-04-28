@@ -41,8 +41,6 @@ referencer_SOURCES =	\
 	DocumentTypes.h \
 	DocumentView.C \
 	DocumentView.h \
-	ev-tooltip.c \
-	ev-tooltip.h \
 	icon-entry.cc \
 	icon-entry.h \
 	Library.C \

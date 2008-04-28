@@ -125,13 +125,8 @@ class DocumentView : public Gtk::VBox
 		docActivated (path);
 	}
 	
-	/* ev-tooltip stuff from the bad old days */
 	void onDocMouseMotion (GdkEventMotion* event);
 	void redraw (Document *document);
-	#if GTK_VERSION_LT(2,12)
-	GtkWidget *doctooltip_;
-	void onDocMouseLeave (GdkEventCrossing *event);
-	#endif
 	Gtk::Menu doccontextmenu_;
 	Gtk::ScrolledWindow *docsiconscroll_;
 	Gtk::ScrolledWindow *docslistscroll_;

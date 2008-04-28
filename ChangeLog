@@ -1,4 +1,13 @@
+1.1.3:
+	- Fix detection of crossref query failure
+	- Fix crash in crossref parsing (Bug 222340)
+	- Fix crash in bibtex import (Bug 217866)
+	- Fix failing to set fields in list view (Bug 208184)
+
 1.1.2:
+	- Remove tooltips on old GTK versions
+	- Report errors when a plugin cannot be enabled
+	- Updated translations
 	- Shortcut buttons on document icons
 	- Fix using old tooltip code even with recent GTK
 	- UI for attaching tags during adding files

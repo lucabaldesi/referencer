@@ -185,6 +185,7 @@ class RefWindow {
 		};
 
 		public:
+                void signalException ();
 		void onPasteBibtex (GdkAtom selection);
 		private:
 		void onCopyCite ();

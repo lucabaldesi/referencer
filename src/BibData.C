@@ -170,11 +170,11 @@ void BibData::guessYear (Glib::ustring const &raw_)
 /*
  * Try to guess the DOI of the paper from the raw text
  */
-void BibData::guessDoi (Glib::ustring const &raw_)
+void BibData::guessDoi (Glib::ustring const &graw)
 {
-	std::string const &raw = raw_;
-
+	std::string const &raw = graw;
 	boost::regex expression(
+		"\\(?"
 		"(?:"
 		"(?:[Dd][Oo][Ii]:? *)"
 		"|"
@@ -195,16 +195,26 @@ void BibData::guessDoi (Glib::ustring const &raw_)
 	boost::match_results<std::string::const_iterator> what;
 	boost::match_flag_type flags = boost::match_default;
 	while(regex_search(start, end, what, expression, flags)) {
+		Glib::ustring wholeMatch = std::string(what[0]);
 		Glib::ustring gstr = std::string(what[1]);
-		int len = gstr.size ();
+
 		// Special case to chop off trailing comma to deal with
 		// "doi: foo, available online" in JCompPhys
 		// Note that commas ARE legal suffix characters in Doi spec
 		// But there's nothing in the spec about regexing them
 		// out of PDFS :-) -jcs
-		if (gstr[len - 1] == ',') {
-			gstr = gstr.substr (0, len - 1);
+		if (gstr[gstr.size() - 1] == ',') {
+			gstr = gstr.substr (0, gstr.size() - 1);
 		};
+
+		/*
+		 * Special case to chop off trailing parenthesis
+		 * in (doi:foo.foo/bar) case
+		 */
+		if (wholeMatch[0] == '(' && wholeMatch[wholeMatch.size() - 1] == ')') {
+			gstr = gstr.substr (0, gstr.size() - 1);
+		}
+
 		setDoi (gstr);
 		return;
 	}

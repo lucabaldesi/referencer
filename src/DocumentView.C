@@ -28,10 +28,6 @@
 
 #include "DocumentView.h"
 
-#if GTK_VERSION_LT(2,12)
-#include "ev-tooltip.h"
-#endif
-
 #undef USE_TRACKER
 #ifdef USE_TRACKER
 #include "tracker.h"
@@ -299,9 +295,6 @@ protected:
 
 DocumentView::~DocumentView ()
 {
-#if GTK_VERSION_LT(2,12)
-	gtk_widget_destroy (doctooltip_);
-#endif
 }
 
 
@@ -356,28 +349,29 @@ DocumentView::DocumentView (
 	//icons->set_markup_column (doccaptioncol_);
 	//icons->set_pixbuf_column (docthumbnailcol_);
 
-/* FIXME: keep and eventually free these cellrenderer ptrs */
 	GtkCellLayout* cell_layout = GTK_CELL_LAYOUT(icons->gobj());
+	/* FIXME: these cellrenderers never get freed */
 	DocumentCellRenderer *doccell = new DocumentCellRenderer (this);
 
 	gtk_cell_layout_pack_start (cell_layout, GTK_CELL_RENDERER(doccell->gobj()), false);
 
-    std::cout << "setting document attribute\n";
-    gtk_cell_layout_set_attributes (GTK_CELL_LAYOUT (icons->gobj()),
-        GTK_CELL_RENDERER(doccell->gobj()),
-        "document", 0,
-        NULL);
-    std::cout << "set document attribute\n";
+	gtk_cell_layout_set_attributes (GTK_CELL_LAYOUT (icons->gobj()),
+		GTK_CELL_RENDERER(doccell->gobj()),
+		"document", 0,
+		NULL);
 
-    Gtk::CellRendererText *textcell = new Gtk::CellRendererText ();
-    //textcell->property_width_chars() = 32;
-    //textcell->property_wrap_width() = 32;
-    textcell->property_wrap_mode() = Pango::WRAP_WORD_CHAR;
+	Gtk::CellRendererText *textcell = new Gtk::CellRendererText ();
+	//textcell->property_width_chars() = 32;
+	//textcell->property_wrap_width() = 32;
+/* FIXME: guesstimate of which version.  It's something >=2.10 */
+#if GTK_VERSION_GE(2,12)
+	textcell->property_wrap_mode() = Pango::WRAP_WORD_CHAR;
+#endif
 	gtk_cell_layout_pack_start (cell_layout, GTK_CELL_RENDERER (textcell->gobj()), true);
-    gtk_cell_layout_set_attributes (GTK_CELL_LAYOUT (icons->gobj()),
-        GTK_CELL_RENDERER (textcell->gobj()),
-        "markup", 1,
-        NULL);
+	gtk_cell_layout_set_attributes (GTK_CELL_LAYOUT (icons->gobj()),
+		GTK_CELL_RENDERER (textcell->gobj()),
+		"markup", 1,
+		NULL);
 	
 	icons->add_events (Gdk::ALL_EVENTS_MASK);
 #if GTK_VERSION_GE(2,12)
@@ -420,10 +414,6 @@ DocumentView::DocumentView (
 	icons->set_events (Gdk::POINTER_MOTION_MASK | Gdk::LEAVE_NOTIFY_MASK);
 	icons->signal_motion_notify_event ().connect_notify (
 		sigc::mem_fun (*this, &DocumentView::onDocMouseMotion));
-	#if GTK_VERSION_LT(2,12)
-	icons->signal_leave_notify_event ().connect_notify (
-		sigc::mem_fun (*this, &DocumentView::onDocMouseLeave));
-	#endif
 
 	docsiconview_ = icons;
 
@@ -434,9 +424,6 @@ DocumentView::DocumentView (
 
 	docsiconscroll_ = iconsscroll;
 
-	#if GTK_VERSION_LT(2,12)
-	doctooltip_ = ev_tooltip_new (GTK_WIDGET(win_.window_->gobj()));
-	#endif
 	/*
 	 * End of icon view stuff
 	 */
@@ -540,44 +527,15 @@ void DocumentView::onDocMouseMotion (GdkEventMotion* event)
 
 
 	if (doc != hoverdoc_) {
-#if GTK_VERSION_LT(2,12)
-		if (doc) {
-			BibData &bib = doc->getBibData ();
-			Glib::ustring tiptext = String::ucompose (
-				// Translators: this is the format for the document tooltips
-				_("<b>%1</b>\n%2\n<i>%3</i>"),
-				Glib::Markup::escape_text (doc->getKey()),
-				Glib::Markup::escape_text (bib.getTitle()),
-				Glib::Markup::escape_text (bib.getAuthors()));
-
-			int xoffset = (int) docsiconscroll_->get_hadjustment ()->get_value ();
-			int yoffset = (int) docsiconscroll_->get_vadjustment ()->get_value ();
-
-			ev_tooltip_set_position (EV_TOOLTIP (doctooltip_), x - xoffset, y - yoffset);
-			ev_tooltip_set_text (EV_TOOLTIP (doctooltip_), tiptext.c_str());
-			ev_tooltip_activate (EV_TOOLTIP (doctooltip_));
-		} else {
-			ev_tooltip_deactivate (EV_TOOLTIP (doctooltip_));
-		}
-#endif
-
-        Document *oldHoverDoc = hoverdoc_;
-		hoverdoc_ = doc;
-
-        if (oldHoverDoc)
-            redraw (oldHoverDoc);
-        if (hoverdoc_)
-            redraw (hoverdoc_);
+		Document *oldHoverDoc = hoverdoc_;
+			hoverdoc_ = doc;
+		if (oldHoverDoc)
+		    redraw (oldHoverDoc);
+		if (hoverdoc_)
+		    redraw (hoverdoc_);
 	}
 
 }
-
-#if GTK_VERSION_LT(2,12)
-void DocumentView::onDocMouseLeave (GdkEventCrossing *event)
-{
-	ev_tooltip_deactivate (EV_TOOLTIP (doctooltip_));
-}
-#endif
 
 
 
@@ -1378,7 +1336,7 @@ void DocumentView::populateColumns ()
 {
 	addCol ("key", _("Key"), dockeycol_, false, false);
 	addCol ("title", _("Title"), doctitlecol_, true, true);
-	addCol ("authors", _("Authors"), docauthorscol_, false, true);
+	addCol ("author", _("Author"), docauthorscol_, false, true);
 	addCol ("year", _("Year"), docyearcol_, false, false);
 }
 

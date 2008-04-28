@@ -569,6 +569,7 @@ void Document::renameFromKey ()
 
 void Document::setField (Glib::ustring const &field, Glib::ustring const &value)
 {
+	std::cerr << "Document::setField: " << field << ":" << value << "\n";
 	if (field == "doi")
 		bib_.setDoi (value);
 	else if (field == "title")
@@ -585,6 +586,8 @@ void Document::setField (Glib::ustring const &field, Glib::ustring const &value)
 		bib_.setYear (value);
 	else if (field == "pages")
 		bib_.setPages (value);
+	else if (field == "key")
+		setKey (value);
 	else {
 		bib_.extras_[field] = value;
 	}

@@ -10,7 +10,7 @@ dnl Package name and version number (user defined)
 dnl -----------------------------------------------
 
 PACKAGE=referencer
-VERSION=1.1.1
+VERSION=1.1.3
 
 dnl -----------------------------------------------
 dnl Package name and version number (DO NOT MODIFY)
@@ -58,9 +58,6 @@ dnl I18n
 GETTEXT_PACKAGE=$PACKAGE
 AC_DEFINE_UNQUOTED(GETTEXT_PACKAGE,"$GETTEXT_PACKAGE",GETTEXT_PACKAGE)
 AC_SUBST(GETTEXT_PACKAGE)
-
-dnl List all available languages here
-ALL_LINGUAS="ca da de es fi fr it nb nl pt_BR pt ru"
 AM_GLIB_GNU_GETTEXT
 AC_PROG_INTLTOOL
 

@@ -107,4 +107,13 @@ namespace Utility {
 		Gtk::SelectionData const &sel);
 }
 
+class TextDialog : public Gtk::Dialog
+{
+	public:
+		TextDialog (
+				Glib::ustring const &title,
+				Glib::ustring const &text);
+
+};
+
 #endif

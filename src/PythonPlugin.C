@@ -217,13 +217,13 @@ bool PythonPlugin::resolve (Document &doc)
 bool PythonPlugin::doAction (Glib::ustring const function, std::vector<Document*> docs)
 {
 	/* Check the callback exists */
-	if (!PyObject_HasAttrString (pMod_, function.c_str())) {
+	if (!PyObject_HasAttrString (pMod_, (char*)function.c_str())) {
 		std::cerr << "PythonPlugin::doAction: function '" << function << "' not found\n";
 		return false;
 	}
 
 	/* Look up the callback function */
-	PyObject *pActionFunc = PyObject_GetAttrString (pMod_, function.c_str());
+	PyObject *pActionFunc = PyObject_GetAttrString (pMod_, (char*)function.c_str());
 
 	/* Construct the 'documents' argument */
 	PyObject *pDocList = PyList_New (docs.size());
@@ -257,13 +257,13 @@ bool PythonPlugin::doAction (Glib::ustring const function, std::vector<Document*
 bool PythonPlugin::updateSensitivity (Glib::ustring const function, std::vector<Document*> docs)
 {
 	/* Check the callback exists */
-	if (!PyObject_HasAttrString (pMod_, function.c_str())) {
+	if (!PyObject_HasAttrString (pMod_, (char*)function.c_str())) {
 		/* No sensitivity function: always enable */
 		return true;
 	}
 
 	/* Look up the callback function */
-	PyObject *pActionFunc = PyObject_GetAttrString (pMod_, function.c_str());
+	PyObject *pActionFunc = PyObject_GetAttrString (pMod_, (char*)function.c_str());
 
 	/* Construct the 'documents' argument */
 	PyObject *pDocList = PyList_New (docs.size());
@@ -294,7 +294,7 @@ bool PythonPlugin::updateSensitivity (Glib::ustring const function, std::vector<
 }
 
 
-void PythonPlugin::printException ()
+Glib::ustring PythonPlugin::formatException ()
 {
 	PyObject *pErr = PyErr_Occurred ();
 	if (pErr) {
@@ -320,8 +320,18 @@ void PythonPlugin::printException ()
 			 (exValue)
 			);
 
-		std::cerr << message;
+		exceptionLog_ += message;
+
+		return message;
+	} else {
+		return Glib::ustring ();
 	}
+}
+
+
+void PythonPlugin::printException ()
+{
+	std::cerr << formatException ();
 }
 
 void PythonPlugin::displayException ()
@@ -449,6 +459,44 @@ Glib::ustring const PythonPlugin::getPluginInfoField (Glib::ustring const &targe
 		Py_DECREF (keyStr);
 		return Glib::ustring ();
 	}
+}
+
+
+bool PythonPlugin::canConfigure ()
+{
+	if (pMod_)
+		return PyObject_HasAttrString (pMod_, "referencer_config");
+	else
+		return false;
+}
+
+
+void PythonPlugin::doConfigure ()
+{
+	PyObject *confFunc = PyObject_GetAttrString (pMod_, "referencer_config");
+	if (!confFunc)
+		return;
+
+	PyObject *pArgs = Py_BuildValue ("()");
+	PyObject *pReturn = PyObject_CallObject(confFunc, pArgs);
+	if (pArgs)
+		Py_DECREF (pArgs);
+	if (confFunc)
+		Py_DECREF (confFunc);
+	if (pReturn)
+		Py_DECREF (pReturn);
+}
+
+
+bool PythonPlugin::hasError ()
+{
+	return !exceptionLog_.empty();
+}
+
+
+Glib::ustring PythonPlugin::getError ()
+{
+	return exceptionLog_;
 }
 
 

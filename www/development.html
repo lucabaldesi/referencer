@@ -32,19 +32,25 @@ urchinTracker();
 </a>
 </div>
 
-<div class="left">
+<div class="textbox">
 	<div id="development">
 	<h2>Development</h2>
-	<h3>Mailing list</h3>
-	<p>Please send questions and suggestions to the <a href="contact.html">mailing list</a>.</p>
+	<h3>Contact</h3>
+	<p>Public discussion about referencer takes place on <a href="contact.html">mailing list</a>.  If you have a specific 
+	bug to report then please help your maintainer by filing it in <a href="https://bugs.launchpad.net/referencer/">launchpad</a></p>
 	<p>For anything which you'd prefer not to discuss in public, you can also contact the main author directly: jcspray at icculus.org</p>
+	<h3>Hacking</h3>
+	<h4>C++</h4>
+	<p>Most of Referencer is written in C++, using the <a href="http://www.gtkmm.org/">gtkmm</a> toolkit as well as a number of other libraries.</p>
+	<h4>Python</h4>
+	<p>Referencer may be readily extented by writing a plugin in python.  The plugin API is documented in <i>Writing plugins for Referencer</i> (<a href="plugins.pdf">PDF</a>).</p>
 	<h3>Mercurial</h3>
 	<p>To get the source code:<br><code>hg clone http://hg.icculus.org/jcspray/referencer/</code></p>
 	<p>Web view of the repository:<a href="http://hg.icculus.org/jcspray/referencer/">http://hg.icculus.org/jcspray/referencer/</a></p>
 	<p>Mercurial is used for referencer development.  It's a distributed revision control system.  If you've used git, it's a lot like that.  Debian/Ubuntu users can <tt>apt-get install mercurial</tt>.  There's some good <a href="http://hgbook.red-bean.com/hgbook.pdf" alt="Distributed Revision Control with Mercurial">documentation</a>.</p>
 	<p>You can still send in patches the old fashioned way with <tt>hg diff</tt> (having done <tt>hg pull; hg update</tt> recently, please).  Even better, if you're comfortable with <tt>hg serve</tt>ing your repository for me to pull from, then so am I.</p>
 	<h3>Building</h3>
-	<p>The build dependencies on ubuntu are: <code>build-essential libpoppler-glib-dev libgtkmm-2.4-dev libgnomeuimm-2.6-dev libgnome-vfsmm-2.6-dev libglademm-2.4-dev libgconfmm-2.6-dev libboost-regex-dev intltool python2.5-dev python-xml</code>.</p>
+	<p>The build dependencies on ubuntu are: <code>build-essential libpoppler-glib-dev libgtkmm-2.4-dev libgnomeuimm-2.6-dev libgnome-vfsmm-2.6-dev libglademm-2.4-dev libgconfmm-2.6-dev libboost-regex-dev intltool python2.5-dev</code>.</p>
 	<p>To work from mercurial you'll also need: <code>mercurial gnome-common automake1.9</code>.  Note that when building from mercurial ./autogen.sh needs to be run before ./configure.</p>
 	</div>
 	<h3>Translation</h3>

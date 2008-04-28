@@ -87,6 +87,10 @@ class Plugin
 		virtual bool canConfigure () {return false;}
 		virtual void doConfigure  () {};
 
+		/* Error reporting */
+		virtual bool hasError () {return false;}
+		virtual Glib::ustring getError () {return "";}
+
 		bool isEnabled () {return enabled_;}
 		bool isLoaded () {return loaded_;}
 		virtual void setEnabled (bool const enable)
