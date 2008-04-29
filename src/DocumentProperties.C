@@ -394,18 +394,8 @@ void DocumentProperties::onPasteBibtex ()
 
 	Glib::ustring clipboardtext = clipboard->wait_for_text ();
 
-	std::string latintext;
-	try {
-		latintext = Glib::convert (clipboardtext, "iso-8859-1", "UTF8");
-	} catch (Glib::ConvertError &ex) {
-		Utility::exceptionDialog (&ex, _("Converting clipboard text to latin1"));
-		// On conversion failure, try passing UTF-8 straight through
-		latintext = clipboardtext;
-	}
-
-
 	DocumentList doclist;
-	int const imported = doclist.import (latintext, BibUtils::FORMAT_BIBTEX);
+	int const imported = doclist.import (clipboardtext, BibUtils::FORMAT_BIBTEX);
 
 	std::cerr << "DocumentProperties::onPasteBibtex: Imported "
 		<< imported << " references\n";

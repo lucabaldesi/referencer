@@ -164,61 +164,71 @@ int DocumentList::importFromFile (
 	BibUtils::Format format)
 {
 	std::string rawtext;
-	{
-		Gnome::Vfs::Handle importfile;
+	Gnome::Vfs::Handle importfile;
 
-		Glib::RefPtr<Gnome::Vfs::Uri> liburi = Gnome::Vfs::Uri::create (filename);
+	Glib::RefPtr<Gnome::Vfs::Uri> liburi = Gnome::Vfs::Uri::create (filename);
 
-		try {
-			importfile.open (filename, Gnome::Vfs::OPEN_READ);
-		} catch (const Gnome::Vfs::exception ex) {
-			Utility::exceptionDialog (&ex,
-				String::ucompose (
-					_("Opening file '%1'"),
-					Glib::filename_to_utf8 (filename)));
-			return false;
-		}
-
-		Glib::RefPtr<Gnome::Vfs::FileInfo> fileinfo;
-		fileinfo = importfile.get_file_info ();
-
-		char *buffer = (char *) malloc (sizeof(char) * (fileinfo->get_size() + 1));
-		if (!buffer) {
-			std::cerr << "Warning: DocumentList::import: couldn't get buffer\n";
-			return false;
-		}
-
-		try {
-			importfile.read (buffer, fileinfo->get_size());
-		} catch (const Gnome::Vfs::exception ex) {
-			Utility::exceptionDialog (&ex,
-				String::ucompose (
-					_("Reading file '%1'"),
-					Glib::filename_to_utf8 (filename)));
-			free (buffer);
-			return false;
-		}
-		buffer[fileinfo->get_size()] = 0;
-
-		/*
-		 * Do no conversion -- assume the input file is what
-		 * bibutils expects (default latin1, not changed 
-		 * anywhere here)
-		 */
-		rawtext = buffer;
-		
-		free (buffer);
-		importfile.close ();
+	try {
+		importfile.open (filename, Gnome::Vfs::OPEN_READ);
+	} catch (const Gnome::Vfs::exception ex) {
+		Utility::exceptionDialog (&ex,
+			String::ucompose (
+				_("Opening file '%1'"),
+				Glib::filename_to_utf8 (filename)));
+		return false;
 	}
 
-	return import(rawtext, format);
+	Glib::RefPtr<Gnome::Vfs::FileInfo> fileinfo;
+	fileinfo = importfile.get_file_info ();
 
+	char *buffer = (char *) malloc (sizeof(char) * (fileinfo->get_size() + 1));
+	if (!buffer) {
+		std::cerr << "Warning: DocumentList::import: couldn't get buffer\n";
+		return false;
+	}
+
+	try {
+		importfile.read (buffer, fileinfo->get_size());
+	} catch (const Gnome::Vfs::exception ex) {
+		Utility::exceptionDialog (&ex,
+			String::ucompose (
+				_("Reading file '%1'"),
+				Glib::filename_to_utf8 (filename)));
+		free (buffer);
+		return false;
+	}
+	buffer[fileinfo->get_size()] = 0;
+
+	rawtext = buffer;
+	
+	free (buffer);
+	importfile.close ();
+
+	Glib::ustring utf8text = rawtext;
+	if (!utf8text.validate()) {
+		std::cerr << "DocumentList::importFromFile: input not utf-8, trying latin1\n";
+		/* Upps, it's not utf8, assume it's latin1 */
+		try {
+			utf8text = Glib::convert (rawtext, "UTF8", "iso-8859-1");
+		} catch (Glib::ConvertError const &ex) {
+			Utility::exceptionDialog (&ex,
+				String::ucompose (
+					_("converting file %1 to utf8 from (guessed) latin1"),
+					Glib::filename_to_utf8(filename)));
+
+			return false;
+		}
+	} else {
+		std::cerr << "DocumentList::importFromFile: validated input as utf-8\n";
+	}
+
+	return import(utf8text, format);
 }
 
 
 // Returns the number of references imported
 int DocumentList::import (
-	std::string const & rawtext,
+	Glib::ustring const & rawtext,
 	BibUtils::Format format)
 {
 	if (format == BibUtils::FORMAT_UNKNOWN)
@@ -230,11 +240,9 @@ int DocumentList::import (
 	BibUtils::bibl_init( &b );
 	// BIBL_* are #defines, so not in namespace
 	BibUtils::bibl_initparams( &p, format, BIBL_MODSOUT);
-	/** We are actually assuming iso-8859 at the minute, but
-	 *  if you wanted this fn to take utf8 this would be how.
+	p.charsetin = BIBL_CHARSET_UNICODE;
+	p.utf8in = 1;
 
-	    p.charsetin = BIBL_CHARSET_UNICODE;
-	*/
 	try {
 		BibUtils::biblFromString (b, rawtext, format, p);
 	} catch (Glib::Error ex) {
