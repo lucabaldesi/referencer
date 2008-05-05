@@ -25,6 +25,7 @@ class Document {
 	Glib::ustring filename_;
 	Glib::ustring relfilename_;
 	Glib::ustring key_;
+	Glib::ustring notes_;
 	std::vector<int> tagUids_;
 	Glib::RefPtr<Gdk::Pixbuf> thumbnail_;
 	static const Glib::ustring defaultKey_;
@@ -43,6 +44,7 @@ class Document {
 	Document (
 		Glib::ustring const &filename,
 		Glib::ustring const &relfilename,
+		Glib::ustring const &notes,
 		Glib::ustring const &key,
 		std::vector<int> const &tagUids,
 		BibData const &bib);
@@ -54,6 +56,10 @@ class Document {
 	void setFileName (Glib::ustring const &filename);
 	void updateRelFileName (Glib::ustring const &libfilename);
 	void setKey (Glib::ustring const &key);
+	
+	//Notes set and get
+	Glib::ustring const & getNotes() const;
+	void setNotes(Glib::ustring const &notes);
 
 	std::vector<int>& getTags ();
 	void setTag (int uid);

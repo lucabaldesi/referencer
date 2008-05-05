@@ -42,6 +42,7 @@ class DocumentList {
 	void loadDoc (
 		Glib::ustring const &filename,
 		Glib::ustring const &relfilename,
+		Glib::ustring const &notes,
 		Glib::ustring const &key,
 		std::vector<int> const &taguids,
 		BibData const &bib);

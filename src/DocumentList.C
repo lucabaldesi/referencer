@@ -94,11 +94,12 @@ Document* DocumentList::newDocWithName (Glib::ustring const &key)
 void DocumentList::loadDoc (
 	Glib::ustring const &filename,
 	Glib::ustring const &relfilename,
+	Glib::ustring const &notes,
 	Glib::ustring const &key,
 	std::vector<int> const &taguids,
 	BibData const &bib)
 {
-	Document newdoc (filename, relfilename, key, taguids, bib);
+	Document newdoc (filename, relfilename, notes, key, taguids, bib);
 	docs_.push_back(newdoc);
 }
 

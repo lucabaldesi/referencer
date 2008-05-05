@@ -111,6 +111,7 @@ private:
 	Gnome::Conf::Entry workoffline_;
 	Gnome::Conf::Entry uselistview_;
 	Gnome::Conf::Entry showtagpane_;
+	Gnome::Conf::Entry shownotespane_;
 	Gnome::Conf::Entry libraryfilename_;
 	Gnome::Conf::Entry width_;
 	Gnome::Conf::Entry height_;
@@ -126,6 +127,7 @@ private:
 	sigc::signal<void> workofflinesignal_;
 	sigc::signal<void> uselistviewsignal_;
 	sigc::signal<void> showtagpanesignal_;
+	sigc::signal<void> shownotespanesignal_;
 	sigc::signal<void> plugindisabledsignal_;
 
 	bool ignoreChanges_;
@@ -160,6 +162,10 @@ public:
 	bool getShowTagPane ();
 	void setShowTagPane (bool const &showtagpane);
 	sigc::signal<void>& getShowTagPaneSignal ();
+	
+	bool getShowNotesPane ();
+	void setShowNotesPane (bool const &shownotespane);
+	sigc::signal<void>& getShowNotesPaneSignal ();
 
 	typedef std::pair<Glib::ustring, Glib::ustring> StringPair;
 

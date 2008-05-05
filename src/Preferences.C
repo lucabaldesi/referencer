@@ -37,6 +37,7 @@ Preferences::Preferences ()
 	workoffline_ = confclient_->get_entry (CONF_PATH "/workoffline");
 	uselistview_ = confclient_->get_entry (CONF_PATH "/uselistview");
 	showtagpane_ = confclient_->get_entry (CONF_PATH "/showtagpane");
+	shownotespane_ = confclient_->get_entry (CONF_PATH "/shownotespane");
 	crossRefUsername_ = confclient_->get_entry (CONF_PATH "/crossrefusername");
 	crossRefPassword_ = confclient_->get_entry (CONF_PATH "/crossrefpassword");
 	width_ = confclient_->get_entry (CONF_PATH "/width");
@@ -64,6 +65,7 @@ Preferences::Preferences ()
 
 		setLibraryFilename ("");
 		setShowTagPane (true);
+		setShowNotesPane (true);
 		setUseListView (false);
 		setWorkOffline (false);
 		setWindowSize (std::pair<int,int>(700,500));
@@ -219,6 +221,8 @@ void Preferences::onConfChange (int number, Gnome::Conf::Entry entry)
 		uselistviewsignal_.emit ();
 	} else if (key == CONF_PATH "/showtagpane") {
 		showtagpanesignal_.emit ();
+	} else if (key == CONF_PATH "/shownotespane") {
+		shownotespanesignal_.emit ();
 
 	// Proxy settings
 	} else if (key == HTTP_PROXY_HOST_KEY) {
@@ -403,6 +407,24 @@ sigc::signal<void>& Preferences::getShowTagPaneSignal ()
 {
 	return showtagpanesignal_;
 }
+
+bool Preferences::getShowNotesPane ()
+{
+	return confclient_->get_bool (shownotespane_.get_key());
+}
+
+
+void Preferences::setShowNotesPane (bool const &shownotespane)
+{
+	confclient_->set (shownotespane_.get_key(), shownotespane);
+}
+
+
+sigc::signal<void>& Preferences::getShowNotesPaneSignal ()
+{
+	return shownotespanesignal_;
+}
+
 
 
 Glib::ustring Preferences::getCrossRefUsername ()

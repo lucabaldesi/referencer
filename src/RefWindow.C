@@ -12,6 +12,7 @@
 #include <map>
 #include <cmath>
 #include <iostream>
+#include <fstream>
 
 #include <gtkmm.h>
 #include <libgnomeuimm.h>
@@ -138,9 +139,13 @@ void RefWindow::constructUI ()
 	// In order to prevent search box falling off the edge.
 	toolbar->set_show_arrow (false);
 
-	/* Contains tags and document view */
+	/* Contains tags and document/notes view */
 	Gtk::HPaned *hpaned = Gtk::manage(new Gtk::HPaned());
 	vbox->pack_start (*hpaned, true, true, 0);
+	
+	/* Contains document and notes view */
+	Gtk::VPaned *vpaned = Gtk::manage(new Gtk::VPaned());
+	hpaned->pack2(*vpaned, Gtk::EXPAND);
 
 	/* The statusbar */
 	Gtk::HBox *statusbox = Gtk::manage (new Gtk::HBox());
@@ -165,7 +170,22 @@ void RefWindow::constructUI ()
 			_global_prefs->getUseListView ()));
 	docview_->getSelectionChangedSignal ().connect (
 		sigc::mem_fun (*this, &RefWindow::docSelectionChanged));
-	hpaned->pack2(*docview_, Gtk::EXPAND);
+	
+	/* The notes view */
+	notespane_ = Gtk::manage (new Gtk::Frame ());
+	Gtk::ScrolledWindow *notesscroll = new Gtk::ScrolledWindow();
+	notesscroll->set_policy (Gtk::POLICY_AUTOMATIC, Gtk::POLICY_AUTOMATIC);
+	notesscroll->set_shadow_type (Gtk::SHADOW_NONE);
+	notesview_ = new Gtk::TextView;
+	notesview_->set_wrap_mode(Gtk::WRAP_WORD);
+	notesbuffer_ = notesview_->get_buffer();
+	notespane_->add(*notesscroll);
+	notesscroll->add(*notesview_);
+	notespane_->set_label_align(0.0, 1.0);
+	
+	/* Pack the documents and notes view */
+	vpaned->pack1(*docview_, Gtk::EXPAND);
+	vpaned->pack2(*notespane_, Gtk::FILL);
 
 	/* Drop in the search box */
 	Gtk::ToolItem *searchitem = Gtk::manage (new Gtk::ToolItem);
@@ -264,6 +284,17 @@ void RefWindow::constructUI ()
 	Glib::RefPtr <Gtk::ToggleAction>::cast_static(
 			actiongroup_->get_action ("ShowTagPane"))->signal_toggled ().connect (
 				sigc::mem_fun(*this, &RefWindow::onShowTagPaneToggled));
+				
+	Glib::RefPtr <Gtk::ToggleAction>::cast_static(
+			actiongroup_->get_action ("ShowNotesPane"))->set_active(
+				_global_prefs->getShowNotesPane ());
+	onShowNotesPanePrefChanged ();
+	_global_prefs->getShowNotesPaneSignal ().connect (
+		sigc::mem_fun (*this, &RefWindow::onShowNotesPanePrefChanged));
+
+	Glib::RefPtr <Gtk::ToggleAction>::cast_static(
+			actiongroup_->get_action ("ShowNotesPane"))->signal_toggled ().connect (
+				sigc::mem_fun(*this, &RefWindow::onShowNotesPaneToggled));
 
 	Glib::RefPtr <Gtk::ToggleAction>::cast_static(
 			actiongroup_->get_action ("WorkOffline"))->set_active(
@@ -350,6 +381,8 @@ void RefWindow::constructMenu ()
 		_("Use _Icon View")));
 	actiongroup_->add( Gtk::ToggleAction::create("ShowTagPane",
 		_("_Show Tag Pane")), Gtk::AccelKey ("<control><shift>t"));
+	actiongroup_->add( Gtk::ToggleAction::create("ShowNotesPane",
+		_("Show _Notes Pane")), Gtk::AccelKey ("<control><shift>n"));
 
 	actiongroup_->add ( Gtk::Action::create("TagMenu", _("_Tags")) );
 	actiongroup_->add( Gtk::Action::create(
@@ -404,6 +437,9 @@ void RefWindow::constructMenu ()
   	sigc::mem_fun(*this, &RefWindow::onRenameDoc));
 
 	actiongroup_->add ( Gtk::Action::create("ToolsMenu", _("_Tools")) );
+	actiongroup_->add( Gtk::Action::create("ExportNotes",
+		Gtk::Stock::CONVERT, _("E_xport Notes as HTML")), Gtk::AccelKey ("<control><shift>s"),
+ 	sigc::mem_fun(*this, &RefWindow::onExportNotes));
 
 	actiongroup_->add ( Gtk::Action::create("HelpMenu", _("_Help")) );
 	actiongroup_->add( Gtk::Action::create(
@@ -841,6 +877,34 @@ void RefWindow::updateStatusBar ()
 	statusbar_->push (statustext, 0);
 }
 
+void RefWindow::updateNotesPane (int selectcount)
+{
+	// Update the notes for the old selected file first
+	static Document *doc = docview_->getSelectedDoc ();
+	if ( doc && notesbuffer_->get_modified ()) {
+		setDirty(true);
+		doc->setNotes( notesbuffer_->get_text() );
+	}
+	
+	if (selectcount == 1) {
+		// Now show the notes for the new one
+		doc = docview_->getSelectedDoc ();
+		notespane_->set_label("Notes for " + doc->getField("title"));
+		notesview_->set_cursor_visible(true);
+		notesview_->set_editable(true);
+		notesbuffer_->set_text( doc->getNotes() );
+		notesbuffer_->set_modified(false);
+		return;
+	} else if (selectcount > 1) {
+		notespane_->set_label("Multiple documents selected");
+	} else {
+		notespane_->set_label("Select a document to view and edit notes");
+	}
+	notesview_->set_cursor_visible(false);
+	notesview_->set_editable(false);
+	notesbuffer_->set_text("");
+	doc = NULL;
+}
 
 void RefWindow::tagClicked (GdkEventButton* event)
 {
@@ -1144,6 +1208,93 @@ void RefWindow::onExportBibtex ()
 	}
 }
 
+void RefWindow::onExportNotes ()
+{
+	if ( notesbuffer_->get_modified() )
+		docSelectionChanged ();
+		
+	Gtk::FileChooserDialog chooser (
+		_("Export Notes"),
+		Gtk::FILE_CHOOSER_ACTION_SAVE);
+	chooser.add_button (Gtk::Stock::CANCEL, Gtk::RESPONSE_REJECT);
+	chooser.add_button (Gtk::Stock::SAVE, Gtk::RESPONSE_ACCEPT);
+	chooser.set_default_response (Gtk::RESPONSE_ACCEPT);
+	chooser.set_do_overwrite_confirmation (true);
+
+	Gtk::FileFilter htmlfiles;
+	htmlfiles.add_pattern ("*.[Hh][Tt][Mm][Ll*]");
+	htmlfiles.set_name (_("HTML Files"));
+	chooser.add_filter (htmlfiles);
+
+	Gtk::FileFilter allfiles;
+	allfiles.add_pattern ("*");
+	allfiles.set_name (_("All Files"));
+	chooser.add_filter (allfiles);
+
+	Gtk::VBox extrabox;
+	extrabox.set_spacing (6);
+	chooser.set_extra_widget (extrabox);
+
+	Gtk::HBox selectionbox;
+	selectionbox.set_spacing (6);
+	extrabox.pack_start (selectionbox, false, false, 0);
+
+	Gtk::Label label (_("Selection:"));
+	selectionbox.pack_start (label, false, false, 0);
+	Gtk::ComboBoxText combo;
+	combo.append_text (_("All Documents"));
+	combo.append_text (_("Selected Documents"));
+	combo.set_active (0);
+	selectionbox.pack_start (combo, true, true, 0);
+	combo.set_sensitive (docview_->getSelectedDocCount ());
+
+	extrabox.show_all ();
+
+	// Browsing to remote hosts not working for some reason
+	//chooser.set_local_only (false);
+
+	if (!exportfolder_.empty())
+		chooser.set_current_folder (exportfolder_);
+
+	if (chooser.run() == Gtk::RESPONSE_ACCEPT) {
+		bool const selectedonly = combo.get_active_row_number () == 1;
+		exportfolder_ = Glib::path_get_dirname(chooser.get_filename());
+		chooser.hide ();
+
+		std::vector<Document*> docs;
+		if (selectedonly) {
+			docs = docview_->getSelectedDocs ();
+		} else {
+			DocumentList::Container &docrefs = library_->doclist_->getDocs ();
+			DocumentList::Container::iterator it = docrefs.begin();
+			DocumentList::Container::iterator const end = docrefs.end();
+			for (; it != end; it++) {
+				docs.push_back(&(*it));
+			}
+		}
+		
+		/* Extremely basic HTML writer, maybe move into a separate function
+		   if it gets more complicated */
+		std::ofstream notesfile(chooser.get_filename().c_str());
+		if (!notesfile) {
+			std::cerr << "Error opening " << chooser.get_filename() << std::endl;
+			notesfile.close ();
+			return;
+		}
+		
+		// Just a plain HTML page for now, styles and such could be added later
+		notesfile << "<html>\n<body>" << std::endl;
+		std::vector<Document*>::const_iterator it = docs.begin ();
+		std::vector<Document*>::const_iterator const end = docs.end ();
+		for (; it != end; ++it) {
+			notesfile << "<h1>" << (*it)->getField("title") << "</h1>" << std::endl;
+			notesfile << "<p>" << (*it)->getNotes() << "</p>" << std::endl;
+		}
+		notesfile << "</body>\n</html>";
+		notesfile.close();
+	}
+}
+
 
 void RefWindow::manageBrowseDialog (Gtk::Entry *entry)
 {
@@ -1359,6 +1510,10 @@ void RefWindow::onSaveLibrary ()
 		onSaveAsLibrary ();
 	} else {
 		bool saveReturn;
+		/* This is to make sure the notes get saved even if the user hasn't
+		   changed the selection for real (probably a better way, but this was
+		   quick and easy) */
+		docSelectionChanged ();
 		try {
 			saveReturn = library_->save (openedlib_);
 		} catch (const Glib::Exception &ex) {
@@ -2188,6 +2343,25 @@ void RefWindow::onShowTagPanePrefChanged ()
 	}
 }
 
+void RefWindow::onShowNotesPaneToggled ()
+{
+	_global_prefs->setShowNotesPane (
+		Glib::RefPtr <Gtk::ToggleAction>::cast_static(
+			actiongroup_->get_action ("ShowNotesPane"))->get_active ());
+}
+
+
+void RefWindow::onShowNotesPanePrefChanged ()
+{
+	bool const shownotespane = _global_prefs->getShowNotesPane ();
+	Glib::RefPtr <Gtk::ToggleAction>::cast_static(
+		actiongroup_->get_action ("ShowNotesPane"))->set_active (shownotespane);
+	if (shownotespane) {
+		notespane_->show ();
+	} else {
+		notespane_->hide ();
+	}
+}
 
 void RefWindow::updateOfflineIcon ()
 {
@@ -2578,6 +2752,9 @@ void RefWindow::docSelectionChanged ()
 		}
 	}
 	ignoreTaggerActionToggled_ = false;
+	
+	/* Update notes frame text */
+	updateNotesPane (selectcount);
 
 	updateStatusBar ();
 }

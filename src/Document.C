@@ -70,12 +70,14 @@ Document::Document ()
 Document::Document (
 	Glib::ustring const &filename,
 	Glib::ustring const &relfilename,
+	Glib::ustring const &notes,
 	Glib::ustring const &key,
 	std::vector<int> const &tagUids,
 	BibData const &bib)
 {
 	view_ = NULL;
 	setFileName (filename);
+	setNotes (notes);
 	key_ = key;
 	tagUids_ = tagUids;
 	bib_ = bib;
@@ -227,6 +229,17 @@ void Document::setFileName (Glib::ustring const &filename)
 	}
 }
 
+Glib::ustring const & Document::getNotes () const
+{
+	return notes_;
+}
+
+void Document::setNotes (Glib::ustring const &notes)
+{
+	if (notes != notes_)
+		notes_ = notes;
+}
+
 
 void Document::updateRelFileName (Glib::ustring const &libfilename)
 {
@@ -236,7 +249,6 @@ void Document::updateRelFileName (Glib::ustring const &libfilename)
 		relfilename_ = Utility::relPath (libfilename, getFileName ());
 	std::cerr << "Set relfilename_ = " << relfilename_ << "\n";
 }
-
 
 void Document::setKey (Glib::ustring const &key)
 {
@@ -349,6 +361,8 @@ void Document::writeXML (std::ostringstream &out)
 		<< "</relative_filename>\n";
 	out << "    <key>" << escape_text(getKey())
 		<< "</key>\n";
+	out << "    <notes>" << escape_text(getNotes())
+		<< "</notes>\n";
 
 	std::vector<int> docvec = getTags();
 	for (std::vector<int>::iterator it = docvec.begin();

@@ -115,6 +115,13 @@ class RefWindow {
 		Glib::RefPtr<Gtk::TreeSelection> tagselection_;
 		Gtk::TreeView *tagview_;
 		bool ignoreTagSelectionChanged_;
+		
+		/* Notes Stuff */
+		Gtk::Frame *notespane_;
+		Gtk::TextView *notesview_;
+		Glib::RefPtr<Gtk::TextBuffer> notesbuffer_;
+		void updateNotesPane (int selectcount);
+		void onExportNotes ();
 
 		class TagUI {
 			public:
@@ -144,6 +151,7 @@ class RefWindow {
 		void onQuit ();
 		void onUseListViewToggled ();
 		void onShowTagPaneToggled ();
+		void onShowNotesPaneToggled ();
 		int  createTag ();
 		void onCreateTag ();
 		void onCreateAndAttachTag ();
@@ -218,6 +226,7 @@ class RefWindow {
 
 		/* Pick up preference changes */
 		void onShowTagPanePrefChanged ();
+		void onShowNotesPanePrefChanged ();
 		void onUseListViewPrefChanged ();
 		void onWorkOfflinePrefChanged ();
 		void onEnabledPluginsPrefChanged ();
