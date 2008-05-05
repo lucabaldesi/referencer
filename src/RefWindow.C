@@ -438,7 +438,7 @@ void RefWindow::constructMenu ()
 
 	actiongroup_->add ( Gtk::Action::create("ToolsMenu", _("_Tools")) );
 	actiongroup_->add( Gtk::Action::create("ExportNotes",
-		Gtk::Stock::CONVERT, _("E_xport Notes as HTML")), Gtk::AccelKey ("<control><shift>s"),
+		Gtk::Stock::CONVERT, _("E_xport Notes as HTML")),
  	sigc::mem_fun(*this, &RefWindow::onExportNotes));
 
 	actiongroup_->add ( Gtk::Action::create("HelpMenu", _("_Help")) );
@@ -886,24 +886,32 @@ void RefWindow::updateNotesPane (int selectcount)
 		doc->setNotes( notesbuffer_->get_text() );
 	}
 	
+	bool enabled = false;
+
 	if (selectcount == 1) {
 		// Now show the notes for the new one
 		doc = docview_->getSelectedDoc ();
-		notespane_->set_label("Notes for " + doc->getField("title"));
+		notespane_->set_label(
+			String::ucompose (_("Notes for %1"), doc->getField("title")));
+
+		enabled = true;
+	} else if (selectcount > 1) {
+		notespane_->set_label(_("Multiple documents selected"));
+	} else {
+		notespane_->set_label(_("Select a document to view and edit notes"));
+	}
+
+	if (enabled) {
 		notesview_->set_cursor_visible(true);
 		notesview_->set_editable(true);
 		notesbuffer_->set_text( doc->getNotes() );
 		notesbuffer_->set_modified(false);
-		return;
-	} else if (selectcount > 1) {
-		notespane_->set_label("Multiple documents selected");
 	} else {
-		notespane_->set_label("Select a document to view and edit notes");
+		notesview_->set_cursor_visible(false);
+		notesview_->set_editable(false);
+		notesbuffer_->set_text("");
 	}
-	notesview_->set_cursor_visible(false);
-	notesview_->set_editable(false);
-	notesbuffer_->set_text("");
-	doc = NULL;
+
 }
 
 void RefWindow::tagClicked (GdkEventButton* event)
