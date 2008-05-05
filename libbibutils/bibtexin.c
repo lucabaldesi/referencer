@@ -580,6 +580,7 @@ bibtexin_convertf( fields *bibin, fields *info, int reftype, int verbose,
 				}
 				continue;
 			#endif
+			fprintf (stderr, "bibtexin_convertf: *would* have discarded %s\n", t->data);
 			fields_add(info, t->data, d->data, LEVEL_MAIN );
 			continue;
 		}

@@ -287,8 +287,6 @@ Document parseBibUtils (BibUtils::fields *ref)
 		newdoc.getBibData().addExtra ("Translator", translators);
 	}
 
-	bool someunused = false;
-
 	for (int j = 0; j < ref->nfields; ++j) {
 		std::string key = ref->tag[j].data;
 		std::string value = ref->data[j].data;
@@ -320,9 +318,6 @@ Document parseBibUtils (BibUtils::fields *ref)
 			ref->used[j] = 1;
 
 		if (!ref->used[j]) {
-			if (!someunused)
-				std::cerr << "\n";
-
 			// Special case: Chapters in InCollection get added as "Title" level 0
 			if (key == "TITLE" && type==TYPE_INCOLLECTION) {
 				key = "Chapter";
@@ -335,17 +330,13 @@ Document parseBibUtils (BibUtils::fields *ref)
 			}
 
 			int level = ref->level[j];
-			std::cerr << key << " = " << value << "(" << level << ")\n";
+			//std::cerr << key << " = " << value << "(" << level << ")\n";
 			if (!value.empty ()) {
 				newdoc.getBibData().addExtra (key, value);
 			}
-			someunused = true;
 		}
 	}
 
-	if (someunused) {
-		//std::cerr << "(" << newdoc.getKey () << ")\n";
-	}
 
 	return newdoc;
 }

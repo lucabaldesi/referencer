@@ -2568,17 +2568,8 @@ void RefWindow::onPasteBibtex (GdkAtom selection)
 		return;
 */
 
-	std::string latintext;
-	try {
-		latintext = Glib::convert (clipboardtext, "iso-8859-1", "UTF8");
-	} catch (Glib::ConvertError &ex) {
-		Utility::exceptionDialog (&ex, _("Converting clipboard text to latin1"));
-		// On conversion failure, try passing UTF-8 straight through
-		latintext = clipboardtext;
-	}
-
 	int imported =
-		library_->doclist_->import (latintext, BibUtils::FORMAT_BIBTEX);
+		library_->doclist_->import (clipboardtext, BibUtils::FORMAT_BIBTEX);
 
 	std::cerr << "Imported " << imported << " references\n";
 
