@@ -184,7 +184,7 @@ void RefWindow::constructUI ()
 	notesclosebutton->set_image(*tinycloseimage);
 	notesclosebutton->set_relief(Gtk::RELIEF_NONE);
 	notesclosebutton->signal_clicked ().connect_notify( 
-		sigc::mem_fun(*this, &RefWindow::onCloseNotesPane ) );
+		sigc::mem_fun(*this, &RefWindow::onNotesClose ) );
 	
 	// The note region itself
 	Gtk::ScrolledWindow *notesscroll = new Gtk::ScrolledWindow();
@@ -193,6 +193,9 @@ void RefWindow::constructUI ()
 	notesscroll->set_shadow_type (Gtk::SHADOW_NONE);
 	notesview_->set_wrap_mode(Gtk::WRAP_WORD);
 	notesbuffer_ = notesview_->get_buffer();
+	notesbuffer_->signal_changed().connect(
+		sigc::mem_fun (*this, &RefWindow::onNotesChanged));
+	notesbufferignore_ = false;
 
 	// Pack up the notes and document views
 	notesheader->pack_start(*noteslabel_, true, true, 0);
@@ -462,7 +465,7 @@ void RefWindow::constructMenu ()
 	actiongroup_->add ( Gtk::Action::create("ToolsMenu", _("_Tools")) );
 	actiongroup_->add( Gtk::Action::create("ExportNotes",
 		Gtk::Stock::CONVERT, _("Export Notes as HTML")),
- 	sigc::mem_fun(*this, &RefWindow::onExportNotes));
+ 	sigc::mem_fun(*this, &RefWindow::onNotesExport));
 
 	actiongroup_->add ( Gtk::Action::create("HelpMenu", _("_Help")) );
 	actiongroup_->add( Gtk::Action::create(
@@ -900,17 +903,20 @@ void RefWindow::updateStatusBar ()
 	statusbar_->push (statustext, 0);
 
 }
-void RefWindow::onCloseNotesPane () 
+
+
+void RefWindow::onNotesClose () 
 {
 	_global_prefs->setShowNotesPane(false);
 }
+
 
 void RefWindow::updateNotesPane ()
 {
 	int selectcount = docview_->getSelectedDocCount ();
 
 	// Update the notes for the old selected file first
-	static Document *doc = docview_->getSelectedDoc ();
+	static Document *doc = NULL;
 	if ( doc && notesbuffer_->get_modified () && notesview_->get_editable() ) {
 		setDirty(true);
 		doc->setNotes( notesbuffer_->get_text() );
@@ -939,15 +945,27 @@ void RefWindow::updateNotesPane ()
 	if (enabled) {
 		notesview_->set_cursor_visible(true);
 		notesview_->set_editable(true);
+		notesbufferignore_ = true;
 		notesbuffer_->set_text( doc->getNotes() );
+		notesbufferignore_ = false;
 		notesbuffer_->set_modified(false);
 	} else {
 		notesview_->set_cursor_visible(false);
 		notesview_->set_editable(false);
+		notesbufferignore_ = true;
 		notesbuffer_->set_text("");
+		notesbufferignore_ = false;
 	}
 
 }
+
+
+void RefWindow::onNotesChanged ()
+{
+	if (!notesbufferignore_)
+		setDirty (true);
+}
+
 
 void RefWindow::tagClicked (GdkEventButton* event)
 {
@@ -1251,7 +1269,7 @@ void RefWindow::onExportBibtex ()
 	}
 }
 
-void RefWindow::onExportNotes ()
+void RefWindow::onNotesExport ()
 {
 	if ( notesbuffer_->get_modified() )
 		updateNotesPane ();

@@ -120,10 +120,12 @@ class RefWindow {
 		Gtk::VBox *notespane_;
 		Gtk::Label *noteslabel_;
 		Gtk::TextView *notesview_;
+		bool notesbufferignore_;
 		Glib::RefPtr<Gtk::TextBuffer> notesbuffer_;
 		void updateNotesPane ();
-		void onExportNotes ();
-		void onCloseNotesPane ();
+		void onNotesExport ();
+		void onNotesChanged ();
+		void onNotesClose ();
 		void onNotesPaneResize (Gdk::Rectangle &allocation);
 
 		class TagUI {
