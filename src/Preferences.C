@@ -67,6 +67,7 @@ Preferences::Preferences ()
 		setLibraryFilename ("");
 		setShowTagPane (true);
 		setShowNotesPane (true);
+		setNotesPaneHeight (-1);
 		setUseListView (false);
 		setWorkOffline (false);
 		setWindowSize (std::pair<int,int>(700,500));
@@ -470,7 +471,7 @@ int Preferences::getNotesPaneHeight ()
 {
 	int height = confclient_->get_int (notesheight_.get_key ());
 	if (height == 0)
-		return 40;
+		return -1;
 	else
 		return height;
 }
