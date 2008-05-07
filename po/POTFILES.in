@@ -22,7 +22,6 @@ src/DocumentTypes.C
 src/DocumentTypes.h
 src/DocumentView.C
 src/DocumentView.h
-src/ev-tooltip.h
 src/icon-entry.h
 src/Library.C
 src/Library.h
