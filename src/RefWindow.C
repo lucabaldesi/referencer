@@ -176,7 +176,7 @@ void RefWindow::constructUI ()
 	Gtk::HBox *notesheader = new Gtk::HBox ();
 	noteslabel_ = new Gtk::Label ();
 	noteslabel_->set_ellipsize(Pango::ELLIPSIZE_END);
-	noteslabel_->set_max_width_chars((_global_prefs->getWindowSize().first)/10);
+	noteslabel_->set_alignment (0.0, 0.0);
 	
 	// The button to close the notes pane (seems like it could be simpler)
 	Gtk::Button *notesclosebutton = new Gtk::Button ();
@@ -195,20 +195,19 @@ void RefWindow::constructUI ()
 	notesbuffer_ = notesview_->get_buffer();
 
 	// Pack up the notes and document views
-	notesheader->pack_start(*noteslabel_, false, false, 0);
+	notesheader->pack_start(*noteslabel_, true, true, 0);
 	notesheader->pack_end(*notesclosebutton, false, false, 0);
 	notespane_->pack_start(*notesheader, false, false, 0);
 	notespane_->pack_start(*notesscroll);
 
-	docview_->signal_size_allocate().connect (
-		sigc::mem_fun (*this, &RefWindow::onNotesPaneResize));
-	
 	notesscroll->add(*notesview_);
 	notesscroll->set_shadow_type (Gtk::SHADOW_IN);
 
 	vpaned->pack1(*docview_, Gtk::EXPAND);
 	vpaned->pack2(*notespane_, Gtk::FILL);
 
+	docview_->signal_size_allocate().connect (
+		sigc::mem_fun (*this, &RefWindow::onNotesPaneResize));
 	vpaned->set_position (_global_prefs->getNotesPaneHeight() );
 
 	/* Drop in the search box */
