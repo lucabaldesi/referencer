@@ -171,21 +171,45 @@ void RefWindow::constructUI ()
 	docview_->getSelectionChangedSignal ().connect (
 		sigc::mem_fun (*this, &RefWindow::docSelectionChanged));
 	
-	/* The notes view */
-	notespane_ = Gtk::manage (new Gtk::Frame ());
+	// The header and wrapper for the notes view
+	notespane_ = Gtk::manage (new Gtk::VBox ());
+	Gtk::HBox *notesheader = new Gtk::HBox ();
+	noteslabel_ = new Gtk::Label ();
+	noteslabel_->set_ellipsize(Pango::ELLIPSIZE_END);
+	noteslabel_->set_max_width_chars((_global_prefs->getWindowSize().first)/10);
+	
+	// The button to close the notes pane (seems like it could be simpler)
+	Gtk::Button *notesclosebutton = new Gtk::Button ();
+	Gtk::Image *tinycloseimage = Gtk::manage(new Gtk::Image ( Gtk::Stock::CLOSE, Gtk::ICON_SIZE_MENU ));
+	notesclosebutton->set_image(*tinycloseimage);
+	notesclosebutton->set_relief(Gtk::RELIEF_NONE);
+	notesclosebutton->signal_clicked ().connect_notify( 
+		sigc::mem_fun(*this, &RefWindow::onCloseNotesPane ) );
+	
+	// The note region itself
 	Gtk::ScrolledWindow *notesscroll = new Gtk::ScrolledWindow();
+	notesview_ = new Gtk::TextView;
 	notesscroll->set_policy (Gtk::POLICY_AUTOMATIC, Gtk::POLICY_AUTOMATIC);
 	notesscroll->set_shadow_type (Gtk::SHADOW_NONE);
-	notesview_ = new Gtk::TextView;
 	notesview_->set_wrap_mode(Gtk::WRAP_WORD);
 	notesbuffer_ = notesview_->get_buffer();
-	notespane_->add(*notesscroll);
-	notesscroll->add(*notesview_);
-	notespane_->set_label_align(0.0, 1.0);
+
+	// Pack up the notes and document views
+	notesheader->pack_start(*noteslabel_, false, false, 0);
+	notesheader->pack_end(*notesclosebutton, false, false, 0);
+	notespane_->pack_start(*notesheader, false, false, 0);
+	notespane_->pack_start(*notesscroll);
+
+	docview_->signal_size_allocate().connect (
+		sigc::mem_fun (*this, &RefWindow::onNotesPaneResize));
 	
-	/* Pack the documents and notes view */
+	notesscroll->add(*notesview_);
+	notesscroll->set_shadow_type (Gtk::SHADOW_IN);
+
 	vpaned->pack1(*docview_, Gtk::EXPAND);
 	vpaned->pack2(*notespane_, Gtk::FILL);
+
+	vpaned->set_position (_global_prefs->getNotesPaneHeight() );
 
 	/* Drop in the search box */
 	Gtk::ToolItem *searchitem = Gtk::manage (new Gtk::ToolItem);
@@ -438,7 +462,7 @@ void RefWindow::constructMenu ()
 
 	actiongroup_->add ( Gtk::Action::create("ToolsMenu", _("_Tools")) );
 	actiongroup_->add( Gtk::Action::create("ExportNotes",
-		Gtk::Stock::CONVERT, _("E_xport Notes as HTML")),
+		Gtk::Stock::CONVERT, _("Export Notes as HTML")),
  	sigc::mem_fun(*this, &RefWindow::onExportNotes));
 
 	actiongroup_->add ( Gtk::Action::create("HelpMenu", _("_Help")) );
@@ -875,13 +899,20 @@ void RefWindow::updateStatusBar ()
 			visibledocs);
 	}
 	statusbar_->push (statustext, 0);
+
+}
+void RefWindow::onCloseNotesPane () 
+{
+	_global_prefs->setShowNotesPane(false);
 }
 
-void RefWindow::updateNotesPane (int selectcount)
+void RefWindow::updateNotesPane ()
 {
+	int selectcount = docview_->getSelectedDocCount ();
+
 	// Update the notes for the old selected file first
 	static Document *doc = docview_->getSelectedDoc ();
-	if ( doc && notesbuffer_->get_modified ()) {
+	if ( doc && notesbuffer_->get_modified () && notesview_->get_editable() ) {
 		setDirty(true);
 		doc->setNotes( notesbuffer_->get_text() );
 	}
@@ -891,14 +922,19 @@ void RefWindow::updateNotesPane (int selectcount)
 	if (selectcount == 1) {
 		// Now show the notes for the new one
 		doc = docview_->getSelectedDoc ();
-		notespane_->set_label(
-			String::ucompose (_("Notes for %1"), doc->getField("title")));
+		Glib::ustring labeltext;
+		if (doc->hasField("title"))
+			labeltext = doc->getField("title");
+		else
+			labeltext = doc->getKey ();
 
+		noteslabel_->set_markup(
+			String::ucompose (_("Notes: <i>%1</i>"), labeltext));
 		enabled = true;
 	} else if (selectcount > 1) {
-		notespane_->set_label(_("Multiple documents selected"));
+		noteslabel_->set_label(_("Multiple documents selected"));
 	} else {
-		notespane_->set_label(_("Select a document to view and edit notes"));
+		noteslabel_->set_label(_("Select a document to view and edit notes"));
 	}
 
 	if (enabled) {
@@ -1219,7 +1255,7 @@ void RefWindow::onExportBibtex ()
 void RefWindow::onExportNotes ()
 {
 	if ( notesbuffer_->get_modified() )
-		docSelectionChanged ();
+		updateNotesPane ();
 		
 	Gtk::FileChooserDialog chooser (
 		_("Export Notes"),
@@ -1277,7 +1313,9 @@ void RefWindow::onExportNotes ()
 			DocumentList::Container::iterator it = docrefs.begin();
 			DocumentList::Container::iterator const end = docrefs.end();
 			for (; it != end; it++) {
-				docs.push_back(&(*it));
+				// Don't export documents without notes
+				if ( !(*it).getNotes().empty() )
+					docs.push_back(&(*it));
 			}
 		}
 		
@@ -1289,9 +1327,25 @@ void RefWindow::onExportNotes ()
 			notesfile.close ();
 			return;
 		}
-		
-		// Just a plain HTML page for now, styles and such could be added later
-		notesfile << "<html>\n<body>" << std::endl;
+
+		Glib::ustring libname;
+		if (openedlib_.empty ()) {
+			libname = _("Unnamed Library");
+		} else {
+			libname = Gnome::Vfs::unescape_string_for_display (Glib::path_get_basename (openedlib_));
+			Glib::ustring::size_type pos = libname.find (".reflib");
+			if (pos != Glib::ustring::npos) {
+				libname = libname.substr (0, pos);
+			}
+		}
+
+		// Just a plain HTML page
+		// for now, styles and such could be added later
+		notesfile << "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01//EN\"\n";
+		notesfile << "\"http://www.w3.org/TR/html4/strict.dtd\">" << std::endl;
+		notesfile << "<html>\n<head>\n<meta http-equiv=\"Content-Type\"";
+		notesfile << "content=\"text/html; charset=UTF-8\">" << std::endl;
+		notesfile << "<title>Notes on "<< libname << "</title>\n</head>\n<body>" << std::endl;
 		std::vector<Document*>::const_iterator it = docs.begin ();
 		std::vector<Document*>::const_iterator const end = docs.end ();
 		for (; it != end; ++it) {
@@ -1518,10 +1572,7 @@ void RefWindow::onSaveLibrary ()
 		onSaveAsLibrary ();
 	} else {
 		bool saveReturn;
-		/* This is to make sure the notes get saved even if the user hasn't
-		   changed the selection for real (probably a better way, but this was
-		   quick and easy) */
-		docSelectionChanged ();
+		updateNotesPane ();
 		try {
 			saveReturn = library_->save (openedlib_);
 		} catch (const Glib::Exception &ex) {
@@ -2681,6 +2732,12 @@ void RefWindow::onResize (GdkEventConfigure *event)
 }
 
 
+void RefWindow::onNotesPaneResize (Gdk::Rectangle &allocation)
+{
+	_global_prefs->setNotesPaneHeight (allocation.get_height());
+}
+
+
 void RefWindow::onFind ()
 {
 	docview_->getSearchEntry().grab_focus ();
@@ -2753,7 +2810,7 @@ void RefWindow::docSelectionChanged ()
 	ignoreTaggerActionToggled_ = false;
 	
 	/* Update notes frame text */
-	updateNotesPane (selectcount);
+	updateNotesPane ();
 
 	updateStatusBar ();
 }

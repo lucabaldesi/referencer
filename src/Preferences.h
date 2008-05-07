@@ -115,6 +115,7 @@ private:
 	Gnome::Conf::Entry libraryfilename_;
 	Gnome::Conf::Entry width_;
 	Gnome::Conf::Entry height_;
+	Gnome::Conf::Entry notesheight_;
 
 	Gnome::Conf::Entry proxymode_;
 	Gnome::Conf::Entry proxyuseproxy_;
@@ -171,6 +172,9 @@ public:
 
 	std::pair<int, int> getWindowSize ();
 	void setWindowSize (std::pair<int, int> size);
+	
+	int getNotesPaneHeight ();
+	void setNotesPaneHeight (int height);
 
 	bool const getFirstTime () {return firsttime_;}
 };

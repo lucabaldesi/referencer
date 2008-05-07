@@ -117,11 +117,14 @@ class RefWindow {
 		bool ignoreTagSelectionChanged_;
 		
 		/* Notes Stuff */
-		Gtk::Frame *notespane_;
+		Gtk::VBox *notespane_;
+		Gtk::Label *noteslabel_;
 		Gtk::TextView *notesview_;
 		Glib::RefPtr<Gtk::TextBuffer> notesbuffer_;
-		void updateNotesPane (int selectcount);
+		void updateNotesPane ();
 		void onExportNotes ();
+		void onCloseNotesPane ();
+		void onNotesPaneResize (Gdk::Rectangle &allocation);
 
 		class TagUI {
 			public:

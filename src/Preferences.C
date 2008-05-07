@@ -42,6 +42,7 @@ Preferences::Preferences ()
 	crossRefPassword_ = confclient_->get_entry (CONF_PATH "/crossrefpassword");
 	width_ = confclient_->get_entry (CONF_PATH "/width");
 	height_ = confclient_->get_entry (CONF_PATH "/height");
+	notesheight_ = confclient_->get_entry (CONF_PATH "/notesheight");
 
 	proxymode_ = confclient_->get_entry (PROXY_MODE_KEY);
 	proxyuseproxy_ = confclient_->get_entry (USE_PROXY_KEY);
@@ -251,7 +252,8 @@ void Preferences::onConfChange (int number, Gnome::Conf::Entry entry)
 	/* keys to ignore */
 	} else if (
 	    key == CONF_PATH "/width"
-	    || key == CONF_PATH "/height") {
+	    || key == CONF_PATH "/height"
+		|| key == CONF_PATH "/notesheight") {
 		;
 	} else {
 		std::cerr << "Warning: Preferences::onConfChange: "
@@ -464,6 +466,19 @@ std::pair<int, int> Preferences::getWindowSize ()
 	return size;
 }
 
+int Preferences::getNotesPaneHeight ()
+{
+	int height = confclient_->get_int (notesheight_.get_key ());
+	if (height == 0)
+		return 40;
+	else
+		return height;
+}
+
+void Preferences::setNotesPaneHeight (int height)
+{
+	confclient_->set (notesheight_.get_key (), height);
+}
 
 void Preferences::setWindowSize (std::pair<int, int> size)
 {
