@@ -197,6 +197,8 @@ void RefWindow::constructUI ()
 		sigc::mem_fun (*this, &RefWindow::onNotesChanged));
 	notesbufferignore_ = false;
 
+        noteslabel_->set_mnemonic_widget (*notesview_);
+
 	// Pack up the notes and document views
 	notesheader->pack_start(*noteslabel_, true, true, 0);
 	notesheader->pack_end(*notesclosebutton, false, false, 0);
@@ -933,8 +935,8 @@ void RefWindow::updateNotesPane ()
 		else
 			labeltext = doc->getKey ();
 
-		noteslabel_->set_markup(
-			String::ucompose (_("Notes: <i>%1</i>"), labeltext));
+		noteslabel_->set_markup_with_mnemonic(
+			String::ucompose (_("_Notes: <i>%1</i>"), labeltext));
 		enabled = true;
 	} else if (selectcount > 1) {
 		noteslabel_->set_label(_("Multiple documents selected"));
