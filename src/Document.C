@@ -586,23 +586,24 @@ void Document::setField (Glib::ustring const &field, Glib::ustring const &value)
 	std::cerr << "Document::setField: " << field << ":" << value << "\n";
 	if (field == "doi")
 		bib_.setDoi (value);
-	else if (field == "title")
+	else if (field.lowercase() == "title")
 		bib_.setTitle (value);
-	else if (field == "volume")
+	else if (field.lowercase() == "volume")
 		bib_.setVolume (value);
-	else if (field == "number")
+	else if (field.lowercase() == "number")
 		bib_.setIssue (value);
-	else if (field == "journal")
+	else if (field.lowercase() == "journal")
 		bib_.setJournal (value);
-	else if (field == "author")
+	else if (field.lowercase() == "author")
 		bib_.setAuthors (value);
-	else if (field == "year")
+	else if (field.lowercase() == "year")
 		bib_.setYear (value);
-	else if (field == "pages")
+	else if (field.lowercase() == "pages")
 		bib_.setPages (value);
 	else if (field == "key")
 		setKey (value);
 	else {
+		/* The extras map uses a case-folding comparator */
 		bib_.extras_[field] = value;
 	}
 }
