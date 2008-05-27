@@ -1280,7 +1280,7 @@ void DocumentView::onSortColumnChanged ()
 
 void DocumentView::onColumnEdited (
 	const Glib::ustring& pathStr, 
-	const Glib::ustring& newText,
+	const Glib::ustring& enteredText,
 	const Glib::ustring &columnName)
 {
 	Gtk::TreePath sortPath (pathStr);
@@ -1289,15 +1289,21 @@ void DocumentView::onColumnEdited (
 
 	Gtk::TreeModel::iterator iter = docstore_->get_iter (realPath);
 	Gtk::TreeModelColumn<Glib::ustring> col = listViewColumns_[columnName];
-	if ((*iter)[col] != newText) {
-		(*iter)[col] = newText;
-		
+	if ((*iter)[col] != enteredText) {
 		Document *doc = (*iter)[docpointercol_];
-		doc->setField (columnName, newText);
 
+		Glib::ustring newText = enteredText;
+
+		if (columnName.lowercase() == "key") {
+			Glib::ustring unique = lib_.doclist_->uniqueKey (newText, doc);
+			if (unique != newText)
+				newText = Document::keyReplaceDialog (newText, unique);
+		}
+
+		(*iter)[col] = newText;
+		doc->setField (columnName, newText);
 		win_.setDirty (true);
 	}
-
 }
 
 

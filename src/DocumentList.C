@@ -52,7 +52,20 @@ Document* DocumentList::newDocUnnamed ()
 }
 
 
-Glib::ustring DocumentList::uniqueKey (Glib::ustring const &basename)
+Glib::ustring DocumentList::uniqueKey (
+	Glib::ustring const &basename)
+{
+	return uniqueKey (basename, NULL);
+}
+
+
+/**
+ * Return a key mangled to be unique with respect to
+ * all documents except 'exclusion'
+ */
+Glib::ustring DocumentList::uniqueKey (
+	Glib::ustring const &basename,
+	Document const *exclusion)
 {
 	std::ostringstream name;
 	int extension = -1;
@@ -62,20 +75,21 @@ Glib::ustring DocumentList::uniqueKey (Glib::ustring const &basename)
 		name << basename;
 		if (extension)
 			name << "-" << extension;
-	} while (docExists(name.str()));
+	} while (docExists(name.str(), exclusion));
 
 	return name.str();
 }
 
 
-bool DocumentList::docExists (Glib::ustring const &name)
+bool DocumentList::docExists (
+	Glib::ustring const &name,
+	Document const *exclusion)
 {
 	Container::iterator it = docs_.begin ();
 	Container::iterator const end = docs_.end ();
 	for (; it != end; ++it) {
-		if ((*it).getKey() == name) {
+		if ((&(*it)) != exclusion && (*it).getKey() == name)
 			return true;
-		}
 	}
 
 	return false;

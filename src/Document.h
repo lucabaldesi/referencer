@@ -96,6 +96,8 @@ class Document {
 	bool hasField (Glib::ustring const &field) const;
 	std::map <Glib::ustring, Glib::ustring> getFields ();
 	void clearFields ();
+
+	static Glib::ustring keyReplaceDialog (Glib::ustring const &, Glib::ustring const &);
 };
 
 #endif

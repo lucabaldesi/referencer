@@ -33,11 +33,19 @@ class DocumentList {
 	public:
 	Container& getDocs ();
 	int size () {return docs_.size();}
-	bool docExists (Glib::ustring const &name);
 	Document* newDocWithFile (Glib::ustring const &filename);
 	Document* newDocWithName (Glib::ustring const &key);
 	Document* newDocUnnamed ();
-	Glib::ustring uniqueKey (Glib::ustring const &basename);
+
+	bool docExists (
+		Glib::ustring const &name,
+		Document const *exclusion);
+	Glib::ustring uniqueKey (
+		Glib::ustring const &basename);
+	Glib::ustring uniqueKey (
+		Glib::ustring const &basename,
+		Document const *exclusion);
+
 	void removeDoc (Document* const addr);
 	void loadDoc (
 		Glib::ustring const &filename,

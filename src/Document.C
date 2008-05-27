@@ -84,6 +84,36 @@ Document::Document (
 	relfilename_ = relfilename;
 }
 
+Glib::ustring Document::keyReplaceDialog (
+	Glib::ustring const &original,
+	Glib::ustring const &replacement)
+{
+	Glib::ustring message = String::ucompose (
+		"<big><b>%1</b></big>\n\n%2",
+		_("Key naming conflict"),
+		String::ucompose (
+			_("The chosen key conflicts with an "
+			"existing one.  Replace '%1' with '%2'?"),
+			original, replacement));
+
+	Gtk::MessageDialog dialog (message, true, Gtk::MESSAGE_QUESTION, Gtk::BUTTONS_NONE, true);
+	Gtk::Button *button;
+
+	button = dialog.add_button (_("_Ignore"), Gtk::RESPONSE_CANCEL);
+	Gtk::Image *noImage = Gtk::manage (new Gtk::Image (Gtk::Stock::NO, Gtk::ICON_SIZE_BUTTON));
+	button->set_image (*noImage);
+
+	button = dialog.add_button (_("_Replace"), Gtk::RESPONSE_ACCEPT);
+	Gtk::Image *yesImage = Gtk::manage (new Gtk::Image (Gtk::Stock::YES, Gtk::ICON_SIZE_BUTTON));
+	button->set_image (*yesImage);
+	dialog.set_default_response (Gtk::RESPONSE_ACCEPT);
+
+	if (dialog.run () == Gtk::RESPONSE_ACCEPT)
+		return replacement;
+	else
+		return original;
+}
+
 
 Glib::ustring Document::generateKey ()
 {
