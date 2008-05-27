@@ -340,7 +340,6 @@ std::vector<Glib::ustring> recurseFolder (
 }
 
 
-// key is not ref because it gets initted from a const char*
 void writeBibKey (
 	std::ostringstream &out,
 	Glib::ustring key,
@@ -354,14 +353,14 @@ void writeBibKey (
 	if (!value.empty ()) {
 		// Okay to always append comma, since bibtex doesn't mind the trailing one
 		if (utf8) {
-			// Waiting for feedback from fred brooks about what kind of
-			// escaping etc is still wanted in utf8 mode
-			if (usebraces)
+			/* Exception to rule for braces for pages, since 
+			 * {{100--200}} causes problems for some reason */
+			if (usebraces && key.lowercase() != "pages")
 				out << "\t" << key << " = {{" << value << "}},\n";
 			else
 				out << "\t" << key << " = {" << value << "},\n";
 		} else {
-			if (usebraces)
+			if (usebraces && key.lowercase() != "pages")
 				out << "\t" << key << " = {{" << escapeBibtexAccents (value) << "}},\n";
 			else
 				out << "\t" << key << " = {" << escapeBibtexAccents (value) << "},\n";
