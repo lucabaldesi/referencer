@@ -219,6 +219,7 @@ class RefWindow {
 		void onOpenLibrary ();
 		void onExportBibtex ();
 		void onManageBibtex ();
+		void onLibraryFolder ();
 		void manageBrowseDialog (Gtk::Entry *entry);
 		void onImport ();
 		void onPreferences ();

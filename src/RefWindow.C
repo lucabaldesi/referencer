@@ -378,7 +378,10 @@ void RefWindow::constructMenu ()
   	sigc::mem_fun(*this, &RefWindow::onExportBibtex));
 	actiongroup_->add( Gtk::Action::create("ManageBibtex",
 		Gtk::Stock::CONVERT, _("_Manage BibTeX File...")), Gtk::AccelKey ("<control><shift>b"),
-  	sigc::mem_fun(*this, &RefWindow::onManageBibtex));
+		sigc::mem_fun(*this, &RefWindow::onManageBibtex));
+	actiongroup_->add( Gtk::Action::create("LibraryFolder",
+		Gtk::Stock::OPEN, _("_Library Folder...")),
+		sigc::mem_fun(*this, &RefWindow::onLibraryFolder));
 	actiongroup_->add( Gtk::Action::create("Import",
 		_("_Import...")),
   	sigc::mem_fun(*this, &RefWindow::onImport));
@@ -1413,6 +1416,12 @@ void RefWindow::manageBrowseDialog (Gtk::Entry *entry)
 }
 
 
+void RefWindow::onLibraryFolder ()
+{
+	library_->libraryFolderDialog ();
+}
+
+
 void RefWindow::onManageBibtex ()
 {
 	Gtk::Dialog dialog (_("Manage BibTeX File"), true, false);
@@ -1460,8 +1469,8 @@ void RefWindow::onManageBibtex ()
 	hbox2.set_spacing (6);
 
 	Gtk::Button browsebutton (_("_Browse..."), true);
-  Gtk::Image *openicon = Gtk::manage (
-    new Gtk::Image (Gtk::Stock::OPEN, Gtk::ICON_SIZE_BUTTON));
+	Gtk::Image *openicon = Gtk::manage (
+	new Gtk::Image (Gtk::Stock::OPEN, Gtk::ICON_SIZE_BUTTON));
 	browsebutton.set_image (*openicon);
 	browsebutton.signal_clicked ().connect (
 		sigc::bind(sigc::mem_fun (*this, &RefWindow::manageBrowseDialog), &urientry));

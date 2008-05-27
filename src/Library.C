@@ -107,6 +107,31 @@ void Library::clear ()
 }
 
 
+/**
+ * Show a dialog prompting the user for a folder in which
+ * to download documents and optionally to monitor for new documents
+ */
+void Library::libraryFolderDialog ()
+{
+	Glib::RefPtr<Gnome::Glade::Xml> xml = Gnome::Glade::Xml::create (
+			Utility::findDataFile ("libraryfolder.glade"));
+
+	Gtk::FileChooserButton *location =
+		(Gtk::FileChooserButton *) xml->get_widget ("Location");
+
+	Gtk::CheckButton *monitor =
+		(Gtk::CheckButton *) xml->get_widget ("AutomaticallyAddDocuments");
+
+	Gtk::Dialog *dialog = 
+		(Gtk::Dialog *) xml->get_widget ("LibraryFolder");
+
+	monitor->set_active (library_folder_monitor_);
+	location->select_uri (library_folder_uri_);
+
+	dialog->run ();
+}
+
+
 
 // True on success
 bool Library::load (Glib::ustring const &libfilename)

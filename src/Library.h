@@ -54,10 +54,16 @@ class Library {
 	bool getBibtexUTF8 () {return manage_utf8_;}
 
 
+	void libraryFolderDialog ();
+
 	private:
 	Glib::ustring manage_target_;
 	bool manage_braces_;
 	bool manage_utf8_;
+
+	Glib::ustring library_folder_uri_;
+	bool library_folder_monitor_;
+
 	RefWindow &tagwindow_;
 };
 

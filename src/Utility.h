@@ -53,9 +53,6 @@ namespace Utility {
 		Glib::ustring const &filename,
 		Glib::ustring const &extension);
 
-	Glib::RefPtr<Gnome::Glade::Xml> openGlade (
-		Glib::ustring const &filename);
-
 	Glib::ustring findDataFile (
 		Glib::ustring const &filename);
 
