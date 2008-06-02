@@ -71,7 +71,7 @@ class DocumentView : public Gtk::VBox
 	/* Called by linker actions */
 	void invokeLinker (Linker *linker);
 
-    void select (Document *document);
+	void select (Document *document);
 
 	RefWindow &win_;
 	Library &lib_;
@@ -118,6 +118,11 @@ class DocumentView : public Gtk::VBox
 	/* This is only for the list view, iconview has inbuilt selection */
 	Glib::RefPtr<Gtk::TreeSelection> docslistselection_;
 
+	public:
+	/* Public for the benefit of DocumentCellRenderer */
+	/* Perform the double-click action on a document */
+	void docActivate (Document *doc);
+	private:
 	/* Double click on IconView */
 	void docActivated (const Gtk::TreePath& path);
 	/* Treeviews want a different prototype for the signal */

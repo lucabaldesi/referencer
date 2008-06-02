@@ -263,7 +263,21 @@ protected:
         Gtk::CellRendererState flags)
     {
         GdkEventButton *evButton = (GdkEventButton*)event;      
-        Document *doc = (Document *) property_document_.get_value ();
+	Document *doc = (Document *) property_document_.get_value ();
+
+	if (!evButton) {
+		std::cerr << "DocumentCellRenderer::activate_vfunc with NULL event\n";
+		/* GtkIconView passes a null event when invoking us a result of
+		 * a keypress - pass this up to the "double click" handler */
+
+		docview_->docActivate (doc);
+		
+		return true;
+	} else {
+		GdkEventType type = event->type;
+		std::cerr << "DocumentCellRenderer::activate_vfunc with valid event " << type << "\n";
+	}
+
         Glib::RefPtr<Gdk::Pixbuf> thumb = doc->getThumbnail ();
         
         int x = evButton->x - cell_area.get_x();
@@ -276,19 +290,23 @@ protected:
         			(Gtk::MenuItem*)docview_->win_.uimanager_->get_widget("/DocPopup/TaggerMenu");
         		Gtk::Menu *popup = item->get_submenu ();
 				popup->popup (evButton->button, evButton->time);
+		return true;
             } else if (
                     x - buttonPad > buttonWidth + buttonPad * 2
                     && x - buttonPad < buttonWidth * 2 + buttonPad * 2) {              
                     
                 docview_->win_.openProperties (doc);
+		return true;
             } else if (
                     x - buttonPad > 2 * (buttonWidth + buttonPad * 2)
                     && x - buttonPad < 2 * (buttonWidth + buttonPad * 2) + buttonWidth) {              
                 docview_->popupContextMenu ((GdkEventButton*)event);
-            }
+		return true;
+            } else {
+		return false;
+	    }		
         }
         
-        return true;
     }
 };
 
@@ -906,6 +924,24 @@ void DocumentView::docSelectionChanged ()
 }
 
 
+/**
+ * End-point of
+ *  - double clicking in treeview
+ *  - double clicking in iconview
+ *  - activation in cellrenderer
+ */
+void DocumentView::docActivate (Document *doc)
+{
+	// The methods we're calling should fail out safely and quietly
+	// if the number of docs selected != 1
+	if (!doc->getFileName ().empty ()) {
+		win_.onOpenDoc ();
+	} else {
+		win_.onDocProperties ();
+	}
+}
+
+
 /*
  * User double clicked on a document
  */
@@ -916,14 +952,7 @@ void DocumentView::docActivated (const Gtk::TreeModel::Path& path)
 
 
 	Gtk::ListStore::iterator it = docstore_->get_iter (realPath);
-	Document *doc = (*it)[docpointercol_];
-	// The methods we're calling should fail out safely and quietly
-	// if the number of docs selected != 1
-	if (!doc->getFileName ().empty ()) {
-		win_.onOpenDoc ();
-	} else {
-		win_.onDocProperties ();
-	}
+	docActivate ((*it)[docpointercol_]);
 }
 
 
