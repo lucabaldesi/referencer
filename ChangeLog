@@ -1,3 +1,6 @@
+1.1.4:
+	- Fix crashing on opening docs with keybaord (Bug 235270)
+
 1.1.3:
 	- Annotation support (Charlotte Curtis)
 	- Support import of UTF8 bibtex (Bug 223763, Sergey B Kirpichev's patch)
