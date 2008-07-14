@@ -1,4 +1,5 @@
 1.1.4:
+	- Fix out of date tag action strings (Bug 247557)
 	- Fix crashing on opening docs with keybaord (Bug 235270)
 
 1.1.3:

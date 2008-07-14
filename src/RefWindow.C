@@ -816,8 +816,9 @@ void RefWindow::tagNameEdited (
 	/* Update name in tag store */
 	library_->taglist_->renameTag ((*iter)[taguidcol_], newname);
 
-	/* FIXME: Update name in tag action */
-//	taggerAction_[(*iter)[taguidcol_] 
+	/* Update name in tag action */
+	taggerUI_[(*iter)[taguidcol_]].action->property_label() = newname;
+
 }
 
 
