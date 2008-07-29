@@ -2074,7 +2074,6 @@ void RefWindow::onAddDocById ()
 	Gtk::VBox *vbox = dialog.get_vbox ();
 
 	/*
-	 * XXX
 	 * A combo to select between doi, medline, arxiv
 	 */
 
@@ -2123,7 +2122,10 @@ void RefWindow::onAddDocById ()
 			throw std::runtime_error("onAddDocById");	
 		}*/
 
-		newdoc->setField (field, entry.get_text ());
+		Glib::ustring id = entry.get_text ();
+		id = Utility::trimWhiteSpace (id);
+
+		newdoc->setField (field, id);
 
 		newdoc->getMetaData ();
 		newdoc->setKey (library_->doclist_->uniqueKey (newdoc->generateKey ()));

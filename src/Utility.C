@@ -2116,6 +2116,17 @@ Glib::ustring mozUrlSelectionToUTF8 (
 }
 
 
+Glib::ustring trimWhiteSpace (Glib::ustring const &str)
+{
+	Glib::ustring::size_type pos1 = str.find_first_not_of(' ');
+	Glib::ustring::size_type pos2 = str.find_last_not_of(' ');
+	return str.substr(
+			pos1 == Glib::ustring::npos ? 0 : pos1, 
+			pos2 == Glib::ustring::npos ? str.length() - 1 : pos2 - pos1 + 1);
+}
+
+
+
 }
 
 TextDialog::TextDialog (

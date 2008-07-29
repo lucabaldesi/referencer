@@ -102,6 +102,8 @@ namespace Utility {
 		
 	Glib::ustring mozUrlSelectionToUTF8 (
 		Gtk::SelectionData const &sel);
+
+	Glib::ustring trimWhiteSpace (Glib::ustring const &str);
 }
 
 class TextDialog : public Gtk::Dialog
