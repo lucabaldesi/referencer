@@ -161,15 +161,15 @@ void DocumentList::clearTag (int uid)
 }
 
 
-void DocumentList::writeXML (std::ostringstream& out)
+void DocumentList::writeXML (Glib::ustring &out)
 {
-	out << "<doclist>\n";
+	out += "<doclist>\n";
 	Container::iterator it = docs_.begin();
 	Container::iterator const end = docs_.end();
 	for (; it != end; it++) {
 		(*it).writeXML (out);
 	}
-	out << "</doclist>\n";
+	out += "</doclist>\n";
 }
 
 

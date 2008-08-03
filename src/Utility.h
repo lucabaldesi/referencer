@@ -104,6 +104,7 @@ namespace Utility {
 		Gtk::SelectionData const &sel);
 
 	Glib::ustring trimWhiteSpace (Glib::ustring const &str);
+	void debug (Glib::ustring msg);
 }
 
 class TextDialog : public Gtk::Dialog

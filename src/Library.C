@@ -44,26 +44,36 @@ Library::~Library ()
 
 Glib::ustring Library::writeXML ()
 {
-	std::ostringstream out;
+	/* FIXME: composing entire file in memory before writing to 
+	 * disk, this would fall over for really massive files */
 
-	out << "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n";
-	out << "<library>\n";
+	Glib::ustring out;
 
-	out << "<manage_target"
-		<< " braces=\""
-		<< (manage_braces_ ? "true" : "false")
-		<< "\" utf8=\""
-		<< (manage_utf8_ ? "true" : "false")
-	<< "\">"
-	<< Glib::Markup::escape_text (manage_target_)
-	<< "</manage_target>\n";
+	out += "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n";
+	out += "<library>\n";
+
+	out += Glib::ustring("<manage_target")
+		+ " braces=\""
+		+ (manage_braces_ ? "true" : "false")
+		+ "\" utf8=\""
+		+ (manage_utf8_ ? "true" : "false")
+		+ "\">"
+		+ Glib::Markup::escape_text (manage_target_)
+		+ "</manage_target>\n";
+
+	out += Glib::ustring("<library_folder")
+		+ " monitor=\""
+		+ (library_folder_monitor_ ? "true" : "false")
+		+ "\">"
+		+ Glib::Markup::escape_text (library_folder_uri_)
+		+ "</library_folder>\n";
 
 	taglist_->writeXML (out);
 	doclist_->writeXML (out);
 
-	out << "</library>\n";
+	out += "</library>\n";
 
-	return out.str ();
+	return out;
 }
 
 
@@ -126,9 +136,16 @@ void Library::libraryFolderDialog ()
 		(Gtk::Dialog *) xml->get_widget ("LibraryFolder");
 
 	monitor->set_active (library_folder_monitor_);
-	location->select_uri (library_folder_uri_);
+	location->select_uri ("");
 
 	dialog->run ();
+
+	library_folder_monitor_ = monitor->get_active ();
+	library_folder_uri_ = location->get_uri ();
+
+	std::cerr << __FUNCTION__ << " " << library_folder_uri_ << "\n";
+
+	dialog->hide ();
 }
 
 

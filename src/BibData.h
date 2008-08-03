@@ -41,7 +41,7 @@ class BibData {
 
 	static Glib::ustring &getDefaultDocType ();
 
-	void writeXML (std::ostringstream &out);
+	void writeXML (Glib::ustring &out);
 	void print () const;
 	void clear ();
 

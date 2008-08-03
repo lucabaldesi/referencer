@@ -40,7 +40,7 @@ class TagList {
 	void renameTag (int uid, Glib::ustring newname);
 	void deleteTag (int uid);
 	Glib::ustring getName (int const &uid);
-	void writeXML (std::ostringstream& out);
+	void writeXML (Glib::ustring &out);
 	void clear () {tags_.clear (); uidCounter_ = 0;}
 
 	private:

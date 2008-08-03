@@ -77,6 +77,16 @@ void BibData::clear ()
 
 void BibData::addExtra (Glib::ustring const &key, Glib::ustring const &value)
 {
+	if (!key.validate()) {
+		throw (new std::runtime_error (
+			std::string("Invalid UTF-8 in key in ") + std::string(__FUNCTION__)));
+	}
+
+	if (!value.validate()) {
+		throw (new std::runtime_error (
+			std::string("Invalid UTF-8 in value in ") + std::string(__FUNCTION__)));
+	}
+
 	if ( key == "Keywords" && !extras_[key].empty() ) {
 		extras_[key] = extras_[key] + "; " + value;
 	} else {
@@ -93,24 +103,24 @@ void BibData::clearExtras ()
 
 using Glib::Markup::escape_text;
 
-void BibData::writeXML (std::ostringstream &out)
+void BibData::writeXML (Glib::ustring &out)
 {
-	out << "    <bib_type>" << escape_text(type_) << "</bib_type>\n";
-	out << "    <bib_doi>" << escape_text(doi_) << "</bib_doi>\n";
-	out << "    <bib_title>" << escape_text(title_) << "</bib_title>\n";
-	out << "    <bib_authors>" << escape_text(authors_) << "</bib_authors>\n";
-	out << "    <bib_journal>" << escape_text(journal_) << "</bib_journal>\n";
-	out << "    <bib_volume>" << escape_text(volume_) << "</bib_volume>\n";
-	out << "    <bib_number>" << escape_text(issue_) << "</bib_number>\n";
-	out << "    <bib_pages>" << escape_text(pages_) << "</bib_pages>\n";
-	out << "    <bib_year>" << escape_text(year_) << "</bib_year>\n";
+	out += "    <bib_type>" + escape_text(type_) + "</bib_type>\n";
+	out += "    <bib_doi>" + escape_text(doi_) + "</bib_doi>\n";
+	out += "    <bib_title>" + escape_text(title_) + "</bib_title>\n";
+	out += "    <bib_authors>" + escape_text(authors_) + "</bib_authors>\n";
+	out += "    <bib_journal>" + escape_text(journal_) + "</bib_journal>\n";
+	out += "    <bib_volume>" + escape_text(volume_) + "</bib_volume>\n";
+	out += "    <bib_number>" + escape_text(issue_) + "</bib_number>\n";
+	out += "    <bib_pages>" + escape_text(pages_) + "</bib_pages>\n";
+	out += "    <bib_year>" + escape_text(year_) + "</bib_year>\n";
 
 	ExtrasMap::iterator it = extras_.begin ();
 	ExtrasMap::iterator const end = extras_.end ();
 	for (; it != end; ++it) {
-		out << "    <bib_extra key=\""
-		    << escape_text((*it).first) << "\">"
-		    << escape_text((*it).second) << "</bib_extra>\n";
+		out += "    <bib_extra key=\""
+		    + escape_text((*it).first) + "\">"
+		    + escape_text((*it).second) + "</bib_extra>\n";
 	}
 }
 

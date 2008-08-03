@@ -2125,7 +2125,28 @@ Glib::ustring trimWhiteSpace (Glib::ustring const &str)
 			pos2 == Glib::ustring::npos ? str.length() - 1 : pos2 - pos1 + 1);
 }
 
+/*
+ * Print a debug message, handling unprintable characters gracefully
+ */
+void debug (Glib::ustring msg)
+{
 
+	if (!msg.validate()) {
+		std::cerr << __FUNCTION__ << ": Invalid UTF-8  in msg\n";
+		return;
+	}
+
+	std::string localeCharset;
+	Glib::get_charset (localeCharset);
+
+	std::string localised =
+		Glib::convert_with_fallback (
+			msg,
+			localeCharset,
+			"UTF-8");
+
+	std::cerr << localised;
+}
 
 }
 

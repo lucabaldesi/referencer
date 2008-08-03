@@ -82,19 +82,22 @@ Glib::ustring TagList::getName (int const &uid)
 using Glib::Markup::escape_text;
 
 
-void TagList::writeXML (std::ostringstream& out)
+void TagList::writeXML (Glib::ustring &out)
 {
-	out << "<taglist>\n";
+	out += "<taglist>\n";
 	TagMap::iterator it = tags_.begin();
 	TagMap::iterator const end = tags_.end();
 
 	for (; it != end; it++) {
-		out << "  <tag>\n";
-		out << "    <uid>" << (*it).second.uid_ << "</uid>\n";
-		out << "    <name>" << escape_text((*it).second.name_) << "</name>\n";
-		out << "  </tag>\n";
+		std::ostringstream num;
+		num << (*it).second.uid_;
+
+		out += "  <tag>\n";
+		out += "    <uid>" + num.str() + "</uid>\n";
+		out += "    <name>" + escape_text((*it).second.name_) + "</name>\n";
+		out += "  </tag>\n";
 	}
-	out << "</taglist>\n";
+	out += "</taglist>\n";
 }
 
 

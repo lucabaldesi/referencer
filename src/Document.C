@@ -382,27 +382,29 @@ void Document::writeBibtex (
 
 using Glib::Markup::escape_text;
 
-void Document::writeXML (std::ostringstream &out)
+void Document::writeXML (Glib::ustring &out)
 {
-	out << "  <doc>\n";
-	out << "    <filename>" << escape_text(getFileName())
-		<< "</filename>\n";
-	out << "    <relative_filename>" << escape_text(getRelFileName())
-		<< "</relative_filename>\n";
-	out << "    <key>" << escape_text(getKey())
-		<< "</key>\n";
-	out << "    <notes>" << escape_text(getNotes())
-		<< "</notes>\n";
+	out += "  <doc>\n";
+	out += "    <filename>" + escape_text(getFileName())
+		+ "</filename>\n";
+	out += "    <relative_filename>" + escape_text(getRelFileName())
+		+ "</relative_filename>\n";
+	out += "    <key>" + escape_text(getKey())
+		+ "</key>\n";
+	out += "    <notes>" + escape_text(getNotes())
+		+ "</notes>\n";
 
 	std::vector<int> docvec = getTags();
 	for (std::vector<int>::iterator it = docvec.begin();
 		   it != docvec.end(); ++it) {
-		out << "    <tagged>" << (*it) << "</tagged>\n";
+		std::ostringstream stream;
+		stream << (*it);
+		out += "    <tagged>" + stream.str() + "</tagged>\n";
 	}
 
 	getBibData().writeXML (out);
 
-	out << "  </doc>\n";
+	out += "  </doc>\n";
 }
 
 
@@ -613,7 +615,7 @@ void Document::renameFromKey ()
 
 void Document::setField (Glib::ustring const &field, Glib::ustring const &value)
 {
-	std::cerr << "Document::setField: " << field << ":" << value << "\n";
+	Utility::debug (String::ucompose ("%1: %2 : %3\n", __FUNCTION__, field, value));
 	if (field == "doi")
 		bib_.setDoi (value);
 	else if (field.lowercase() == "title")

@@ -56,7 +56,7 @@ class DocumentList {
 		BibData const &bib);
 	void print ();
 	void clearTag (int uid);
-	void writeXML (std::ostringstream& out);
+	void writeXML (Glib::ustring &out);
 	void clear () {docs_.clear ();}
 
 	int importFromFile (Glib::ustring const &filename, BibUtils::Format format);
