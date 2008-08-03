@@ -73,7 +73,7 @@ for dir in os.environ['PATH'].split (os.pathsep):
 	exe = os.path.join (dir, "lyxclient")
 	if (os.path.exists(exe)):
 		lyxClientBinary = exe
-		print "Found lyxclient at %s\n" % exe
+		print "\tFound lyxclient at %s\n" % exe
 		break
 
 

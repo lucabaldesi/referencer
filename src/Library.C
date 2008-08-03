@@ -196,11 +196,11 @@ bool Library::load (Glib::ustring const &libfilename)
 	free (buffer);
 	libfile.close ();
 
-	std::cerr << "Reading XML...\n";
+	DEBUG ("Reading XML...");
 	if (!readXML (rawtext)) {
 		return false;
 	}
-	std::cerr << "Done, got " << doclist_->getDocs ().size() << " docs\n";
+	DEBUG (String::ucompose ("Done, got %1 docs", doclist_->getDocs().size()));
 
 	progress.update (0.2);
 

@@ -348,12 +348,12 @@ void writeBibKey (
 	bool const utf8)
 {
 	if (!key.validate()) {
-		Utility::debug (String::ucompose ("%1: Bad unicode\n", __FUNCTION__));
+		DEBUG ("Bad unicode");
 		return;
 	}
 
 	if (!value.validate ()) {
-		Utility::debug (String::ucompose ("%1: Bad unicode for key %2\n", __FUNCTION__, key));
+		DEBUG (String::ucompose ("Bad unicode for key %1", key));
 		return;
 	}
 
@@ -2132,8 +2132,14 @@ Glib::ustring trimWhiteSpace (Glib::ustring const &str)
 /*
  * Print a debug message, handling unprintable characters gracefully
  */
-void debug (Glib::ustring msg)
+void debug (Glib::ustring tag, Glib::ustring msg)
 {
+	static Glib::ustring lastTag;
+
+	if (tag != lastTag) {
+		std::cerr << tag << ":\n";
+		lastTag = tag;
+	}
 
 	if (!msg.validate()) {
 		std::cerr << __FUNCTION__ << ": Invalid UTF-8  in msg\n";
@@ -2149,7 +2155,7 @@ void debug (Glib::ustring msg)
 			localeCharset,
 			"UTF-8");
 
-	std::cerr << localised;
+	std::cerr << "\t" << localised << "\n";
 }
 
 }

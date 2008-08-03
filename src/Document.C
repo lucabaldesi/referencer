@@ -277,7 +277,7 @@ void Document::updateRelFileName (Glib::ustring const &libfilename)
 		Utility::relPath (libfilename, getFileName ());
 	if (!newrelfilename.empty())
 		relfilename_ = Utility::relPath (libfilename, getFileName ());
-	std::cerr << "Set relfilename_ = " << relfilename_ << "\n";
+	DEBUG (String::ucompose ("Set refilename_ '%1'", relfilename_));
 }
 
 void Document::setKey (Glib::ustring const &key)
@@ -294,8 +294,8 @@ std::vector<int>& Document::getTags()
 void Document::setTag(int uid)
 {
 	if (hasTag(uid)) {
-		std::cerr << "Warning: Document::setTag: warning, already have tag "
-			<< uid << " on " << key_ << std::endl;
+		std::ostringstream num;
+		num << uid;
 	} else {
 		tagUids_.push_back(uid);
 	}
@@ -307,12 +307,8 @@ void Document::clearTag(int uid)
 	std::vector<int>::iterator location =
 		std::find(tagUids_.begin(), tagUids_.end(), uid);
 
-	if (location != tagUids_.end()) {
+	if (location != tagUids_.end())
 		tagUids_.erase(location);
-	} else {
-		std::cerr << "Warning: Document::clearTag: didn't have tag "
-			<< uid << " on " << key_ << std::endl;
-	}
 }
 
 
@@ -615,7 +611,7 @@ void Document::renameFromKey ()
 
 void Document::setField (Glib::ustring const &field, Glib::ustring const &value)
 {
-	Utility::debug (String::ucompose ("%1: %2 : %3\n", __FUNCTION__, field, value));
+	DEBUG (String::ucompose ("%1 : %2\n", field, value));
 	if (field == "doi")
 		bib_.setDoi (value);
 	else if (field.lowercase() == "title")

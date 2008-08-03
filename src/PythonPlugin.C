@@ -65,7 +65,7 @@ void PythonPlugin::load (std::string const &moduleName)
 	PyObject *pName = PyString_FromString(moduleName.c_str());
 	if (!pName) {
 		printException ();
-		std::cerr << "Plugin::load: Couldn't construct module name\n";
+		DEBUG ("Plugin::load: Couldn't construct module name");
 		return;
 	}
 	pMod_ = PyImport_Import(pName);
@@ -73,19 +73,19 @@ void PythonPlugin::load (std::string const &moduleName)
 
 	if (!pMod_) {
 		printException ();
-		std::cerr << "Plugin::load: Couldn't import module\n";
+		DEBUG ("Plugin::load: Couldn't import module");
 		return;
 	}
 
 	pPluginInfo_ = PyObject_GetAttrString (pMod_, "referencer_plugin_info");
 	if (!pPluginInfo_) {
-		std::cerr << "Plugin::load: Couldn't find plugin info\n";
+		DEBUG ("Plugin::load: Couldn't find plugin info");
 		Py_DECREF (pMod_);
 		return;
 	}
 
 	if (!PyDict_Check (pPluginInfo_)) {
-		std::cerr << "Plugin::load: " << moduleName << ":" << "Info dict isn't a dict!  Old plugin?\n";
+		DEBUG (String::ucompose ("%1:Info dict isn't a dict!  Old plugin?", moduleName));
 
 		Py_DECREF (pMod_);
 		return;
@@ -116,7 +116,7 @@ void PythonPlugin::load (std::string const &moduleName)
 		}
 		Py_DECREF (pCaps);
 	} else {
-		std::cerr << "Plugin::load: No metadata capabilities in " << moduleName_ << "\n";
+		DEBUG (String::ucompose ("no metadata capabilities in %1", moduleName_));
 	}
 
 	/* Extract actions */
@@ -160,7 +160,7 @@ void PythonPlugin::load (std::string const &moduleName)
 					iconFactory->add (stockId, iconSet);
 				} catch(const Glib::Exception& ex) {
 					/* File not found, show error icon */
-					std::cerr << "PythonPlugin::load: exception " << ex.what() << "\n";
+					DEBUG (ex.what());
 					stockId = Gtk::StockID (Gtk::Stock::DIALOG_ERROR);
 				}
 			}
@@ -176,7 +176,7 @@ void PythonPlugin::load (std::string const &moduleName)
 		}
 		Py_DECREF (pActions);
 	} else {
-		std::cerr << "Plugin::load: No actions in " << moduleName_ << "\n";
+		DEBUG (String::ucompose ("No actions in ", moduleName_));
 	}
 
 	/* Extract metadata lookup function */
@@ -184,13 +184,13 @@ void PythonPlugin::load (std::string const &moduleName)
 		cap_.has(PluginCapability::PUBMED)) { 
 		pGetFunc_ = PyObject_GetAttrString (pMod_, "resolve_metadata");
 		if (!pGetFunc_) {
-			std::cerr << "Plugin::load: Couldn't find resolver\n";
+			DEBUG ("Couldn't find resolver");
 			Py_DECREF (pMod_);
 			return;
 		}
 	}
 
-	std::cerr << "Plugin::load: successfully loaded '" << moduleName << "'\n";
+	DEBUG (String::ucompose ("successfully loaded %1", moduleName));
 
 	loaded_ = true;
 }
@@ -218,7 +218,7 @@ bool PythonPlugin::doAction (Glib::ustring const function, std::vector<Document*
 {
 	/* Check the callback exists */
 	if (!PyObject_HasAttrString (pMod_, (char*)function.c_str())) {
-		std::cerr << "PythonPlugin::doAction: function '" << function << "' not found\n";
+		DEBUG1 ("function %1 not found", function);
 		return false;
 	}
 

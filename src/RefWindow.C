@@ -83,16 +83,17 @@ void RefWindow::signalException ()
     } catch (const Glib::Exception &ex) {
         Utility::exceptionDialog (&ex, "executing UI action");
     } catch (const std::exception &ex) {
-        std::cerr << "std::exception in signal handler, what=" << ex.what() << "\n";
+        DEBUG (Glib::ustring("std::exception in signal handler, what=") + ex.what());
+
     } catch (...) {
-        std::cerr << "Unknown type of exception in signal handler";
+        DEBUG ("Unknown type of exception in signal handler");
     }
 }
 
 
 void RefWindow::run ()
 {
-	std::cerr << "RefWindow::run: entering main loop\n";
+	DEBUG ("entering main loop");
 
         /* Connect up exception handler for UI signals */
         Glib::add_exception_handler (sigc::mem_fun (*this, &RefWindow::signalException));
@@ -526,7 +527,7 @@ void RefWindow::onEnabledPluginsPrefChanged ()
 			try {
 				pluginUI_[(*pit)->getShortName()] = uimanager_->add_ui_from_string (ui);
 			} catch (Glib::MarkupError &ex) {
-				std::cerr << "Error merging UI for plugin " << (*pit)->getShortName() << ", exception " << ex.what() << "\n";
+				DEBUG (String::ucompose("Error merging UI For plugin %1, exception %2", (*pit)->getShortName(), ex.what()));
 			}
 		} else if (!(*pit)->isEnabled() && mergeId) {
 			/* Remove plugin actions and UI */
@@ -729,14 +730,13 @@ void RefWindow::populateTagList ()
 
 void RefWindow::printUI ()
 {
-	std::cerr << "UI:\n";
-	std::cerr << uimanager_->get_ui();
-	std::cerr << "Actions:\n";
+	DEBUG (uimanager_->get_ui());
+	DEBUG ("Actions\n");
 	std::vector<Glib::RefPtr<Gtk::Action> > actions = actiongroup_->get_actions ();
 	std::vector<Glib::RefPtr<Gtk::Action> >::iterator actionIt = actions.begin ();
 	std::vector<Glib::RefPtr<Gtk::Action> >::iterator const actionEnd = actions.end ();
 	for (; actionIt != actionEnd; ++actionIt) {
-		std::cerr << (*actionIt)->get_name () << "\n";
+		DEBUG ((*actionIt)->get_name ());
 	}
 }
 
@@ -793,10 +793,10 @@ void RefWindow::tagNameEdited (
 		tagselection_->get_selected_rows ();
 
 	if (paths.empty ()) {
-		std::cerr << "Warning: RefWindow::tagNameEdited: no tag selected\n";
+		DEBUG ("Warning: RefWindow::tagNameEdited: no tag selected");
 		return;
 	} else if (paths.size () > 1) {
-		std::cerr << "Warning: RefWindow::tagNameEdited: too many tags selected\n";
+		DEBUG ("Warning: RefWindow::tagNameEdited: too many tags selected");
 		return;
 	}
 
@@ -1121,7 +1121,7 @@ void RefWindow::onDeleteTag ()
 		tagselection_->get_selected_rows ();
 
 	if (paths.empty()) {
-		std::cerr << "Warning: RefWindow::onDeleteTag: nothing selected\n";
+		DEBUG ("Warning: RefWindow::onDeleteTag: nothing selected");
 		return;
 	}
 
@@ -1132,10 +1132,9 @@ void RefWindow::onDeleteTag ()
 	for (; it != end; it++) {
 		Gtk::TreePath path = (*it);
 		Gtk::ListStore::iterator iter = tagstore_->get_iter (path);
-		std::cerr << (*iter)[taguidcol_] << std::endl;
 		if ((*iter)[taguidcol_] == ALL_TAGS_UID) {
-			std::cerr << "Warning: RefWindow::onDeleteTag:"
-				" someone tried to delete 'All'\n";
+			DEBUG ("Warning: RefWindow::onDeleteTag:"
+				" someone tried to delete 'All'\n");
 			continue;
 		}
 
@@ -1156,7 +1155,7 @@ void RefWindow::onDeleteTag ()
 		confirmdialog.set_default_response (Gtk::RESPONSE_CANCEL);
 
 		if (confirmdialog.run () == Gtk::RESPONSE_ACCEPT) {
-			std::cerr << "going to delete " << (*iter)[taguidcol_] << "\n";
+			DEBUG (String::ucompose ("going to delete %1", (*iter)[taguidcol_]));
 			uidstodelete.push_back ((*iter)[taguidcol_]);
 		}
 	}
@@ -1164,7 +1163,7 @@ void RefWindow::onDeleteTag ()
 	std::vector<int>::iterator uidit = uidstodelete.begin ();
 	std::vector<int>::iterator const uidend = uidstodelete.end ();
 	for (; uidit != uidend; ++uidit) {
-		std::cerr << "Really deleting " << *uidit << "\n";
+		DEBUG (String::ucompose ("really deleting %1", *uidit));
 		// Take it off any docs
 		library_->doclist_->clearTag(*uidit);
 		// Remove it from the tag list
@@ -1184,10 +1183,10 @@ void RefWindow::onRenameTag ()
 		tagselection_->get_selected_rows ();
 
 	if (paths.empty ()) {
-		std::cerr << "Warning: RefWindow::onRenameTag: no tag selected\n";
+		DEBUG ("no tag selected");
 		return;
 	} else if (paths.size () > 1) {
-		std::cerr << "Warning: RefWindow::onRenameTag: too many tags selected\n";
+		DEBUG ("too many tags selected");
 		return;
 	}
 
@@ -1346,7 +1345,7 @@ void RefWindow::onNotesExport ()
 		   if it gets more complicated */
 		std::ofstream notesfile(chooser.get_filename().c_str());
 		if (!notesfile) {
-			std::cerr << "Error opening " << chooser.get_filename() << std::endl;
+			DEBUG (String::ucompose ("Error opening '%1'", chooser.get_filename()));
 			notesfile.close ();
 			return;
 		}
@@ -1402,10 +1401,10 @@ void RefWindow::manageBrowseDialog (Gtk::Entry *entry)
 
 	if (dialog.run() == Gtk::RESPONSE_OK) {
 	//Gnome::Vfs::get_uri_from_local_path (urientry.get_text ()
-		std::cerr << "Manage path is " << dialog.get_uri () << "\n";
-		std::cerr << "Library path is " << openedlib_ << "\n";
 		Glib::ustring relpath = Utility::relPath (openedlib_, dialog.get_uri ());
-		std::cerr << "Relative path is " << relpath << "\n";
+		DEBUG (String::ucompose ("manage path: %1", dialog.get_uri()));
+		DEBUG (String::ucompose ("library path: %1", openedlib_));
+		DEBUG (String::ucompose ("relative path: %1", relpath));
 		// Effect is that we are always setting a UTF-8 filename
 		// NOT a URI.
 		if (!relpath.empty ()) {
@@ -1453,14 +1452,14 @@ void RefWindow::onManageBibtex ()
 	Gtk::Entry urientry;
 	hbox.pack_start (urientry);
 
-	std::cerr << "Got bibtextarget = " << library_->getBibtexTarget () << "\n";
+	DEBUG (String::ucompose ("Got bibtextarget = %1", library_->getBibtexTarget()));
 	Glib::ustring bibfilename =
 		Gnome::Vfs::get_local_path_from_uri (library_->getBibtexTarget ());
-	std::cerr << "Got absolute path " << bibfilename << "\n";
+	DEBUG (String::ucompose ("Got absolute path = %1", bibfilename));
 	// Did we fail?  (if so then it's a relative path)
 	if (bibfilename.empty ()) {
 		bibfilename = Gnome::Vfs::unescape_string (library_->getBibtexTarget ());
-		std::cerr << "Got relative path " << bibfilename << "\n";
+		DEBUG (String::ucompose ("Got relative path = %1", bibfilename));
 	}
 	urientry.set_text (bibfilename);
 
@@ -1505,7 +1504,7 @@ void RefWindow::onManageBibtex ()
 	} else {
 		newtarget = Gnome::Vfs::escape_string (newfilename);
 	}
-	std::cerr << "newtarget = " << newtarget << "\n";
+	DEBUG (String::ucompose ("newtarget: %1", newtarget));
 
 
 	bool const newbraces = bracescheck.get_active ();
@@ -1575,7 +1574,7 @@ void RefWindow::onOpenLibrary ()
 
 		setDirty (false);
 
-		std::cerr << "Calling library_->load on " << libfile << "\n";
+		DEBUG (String::ucompose("Calling library_->load on %1", libfile));
 		if (library_->load (libfile)) {
 			ignoreDocSelectionChanged_ = true;
 			ignoreTagSelectionChanged_ = true;
@@ -1941,7 +1940,7 @@ void RefWindow::addDocFiles (std::vector<Glib::ustring> const &filenames)
 		Glib::RefPtr<Gnome::Vfs::Uri> uri = Gnome::Vfs::Uri::create (*it);
 		if (!Utility::uriIsFast (uri)) {
 			// Should prompt the user to download the file
-			std::cerr << "Ooh, a remote uri\n";
+			DEBUG ("Ooh, a remote uri\n");
 		}
 
 		Document *newdoc = library_->doclist_->newDocWithFile(*it);
@@ -1989,7 +1988,7 @@ void RefWindow::addDocFiles (std::vector<Glib::ustring> const &filenames)
 			key = newdoc->getKey ();
 				
 		} else {
-			std::cerr << "RefWindow::addDocFiles: Warning: didn't succeed adding '" << *it << "'.  Duplicate file?\n";
+			DEBUG (String::ucompose ("RefWindow::addDocFiles: Warning: didn't succeed adding '%1'.  Duplicate file?\n", *it));
 		}
 
 	
@@ -2233,7 +2232,7 @@ void RefWindow::onRemoveDoc ()
 	std::vector<Document*>::iterator it = docs.begin ();
 	std::vector<Document*>::iterator const end = docs.end ();
 	for (; it != end; it++) {
-		std::cerr << "RefWindow::onRemoveDoc: removeDoc on '" << *it << "'\n";
+		DEBUG (String::ucompose ("RefWindow::onRemoveDoc: removeDoc on '%1'", *it));
 		docview_->removeDoc (*it);
 		library_->doclist_->removeDoc(*it);
 	}
@@ -2660,7 +2659,7 @@ void RefWindow::onPasteBibtex (GdkAtom selection)
 	int imported =
 		library_->doclist_->import (clipboardtext, BibUtils::FORMAT_BIBTEX);
 
-	std::cerr << "Imported " << imported << " references\n";
+	DEBUG (String::ucompose ("Imported %1 references", imported));
 
 	if (imported) {
 

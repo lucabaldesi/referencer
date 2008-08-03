@@ -241,9 +241,7 @@ bool CrossRefPlugin::resolve (Document &doc)
 		Glib::ustring &xml = Transfer::readRemoteFile (
 			_("Downloading Metadata"), messagetext, url);
 
-		Utility::debug ("\n\n");
-		Utility::debug (xml);
-		Utility::debug ("\n\n");
+		DEBUG (xml);
 
 		// XXX
 		// Test for "Missing WWW-Authenticate header" for bad username/password

@@ -61,8 +61,8 @@ Preferences::Preferences ()
 
 
 	if (!confclient_->dir_exists (CONF_PATH)) {
-		std::cerr << "Preferences::Preferences: CONF_PATH "
-			"doesn't exist, setting it up\n";
+		DEBUG ( "Preferences::Preferences: CONF_PATH "
+			"doesn't exist, setting it up");
 
 		setLibraryFilename ("");
 		setShowTagPane (true);
@@ -150,7 +150,7 @@ Preferences::Preferences ()
 		for (; dit != dend; ++dit) {
 			if ((*pit)->getShortName() == (*dit)) {
 				(*pit)->setEnabled(false);
-				std::cerr << "disabling plugin " << (*pit)->getShortName() << "\n";
+				DEBUG (String::ucompose ("disabling plugin %1", (*pit)->getShortName()));
 			}
 		}
 	}
@@ -212,7 +212,6 @@ Preferences::~Preferences ()
 
 void Preferences::onConfChange (int number, Gnome::Conf::Entry entry)
 {
-	//std::cerr << "onConfChange: '" << entry.get_key () << "'\n";
 	ignoreChanges_ = true;
 	Glib::ustring key = entry.get_key ();
 
@@ -257,10 +256,8 @@ void Preferences::onConfChange (int number, Gnome::Conf::Entry entry)
 		|| key == CONF_PATH "/notesheight") {
 		;
 	} else {
-		std::cerr << "Warning: Preferences::onConfChange: "
-			"unhandled key '" << key << "'\n";
+		DEBUG (String::ucompose("unhandled key %1", key));
 	}
-	//std::cerr << "Complete.\n";
 
 	ignoreChanges_ = false;
 }
@@ -523,15 +520,13 @@ void Preferences::onPluginToggled (Glib::ustring const &str)
 	bool enable = !(*it)[colEnabled_];
 	Plugin *plugin = (*it)[colPlugin_];
 		plugin->setEnabled (enable);
-	if (enable)
-	{
-		std::cerr << "enabling plugin" << std::endl;
-		// TODO: add UI
-	} else
-	{
-		std::cerr << "disabling plugin" << std::endl;
-		// TODO: remove UI
+
+	if (enable) {
+		DEBUG (String::ucompose("enabling plugin %1", plugin->getShortName()));
+	} else {
+		DEBUG (String::ucompose("disabling plugin %1", plugin->getShortName()));
 	}
+
 	(*it)[colEnabled_] = plugin->isEnabled ();
 	if (plugin->isEnabled() != enable) {
 		if (plugin->hasError()) {

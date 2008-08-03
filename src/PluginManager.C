@@ -39,7 +39,7 @@ referencer_download(PyObject *self, PyObject *args)
 			PyString_AsString(message),
 			PyString_AsString(url));
 		ret = PyString_FromString (xml.c_str());
-		std::cerr << "referencer_download: got " << xml.length() << " characters\n";
+		DEBUG (String::ucompose ("got %1 characters", xml.length()));
 	} catch (Transfer::Exception ex) {
 		Utility::exceptionDialog (&ex, _("Downloading metadata"));
 		Glib::ustring blank;
@@ -126,7 +126,7 @@ void PluginManager::scan (std::string const &pluginDir)
 
 		if (name.substr(name.size() - 3, name.size() - 1) == ".py") {
 			std::string const moduleName = name.substr (0, name.size() - 3);
-			std::cerr << "PluginManager::scan: Found module '" << moduleName << "'\n";
+			DEBUG (String::ucompose("found module %1", moduleName));
 
 
 			// Check we haven't already loaded this module
@@ -166,7 +166,7 @@ Glib::ustring PluginManager::findDataFile (Glib::ustring const file)
 
 		Glib::RefPtr<Gnome::Vfs::Uri> uri = Gnome::Vfs::Uri::create (filename);
 
-		std::cerr << "Trying " << filename << "\n";
+		DEBUG1 ("Trying %1", filename);
 
 		if (uri->uri_exists ())
 			return filename;
