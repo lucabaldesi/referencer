@@ -44,19 +44,19 @@ BibData::BibData ()
  */
 void BibData::print () const
 {
-	std::cout << "DOI: " << doi_ << std::endl;
-	std::cout << "Title: " << title_ << std::endl;
-	std::cout << "Authors: " << authors_ << std::endl;
-	std::cout << "Journal: " << journal_ << std::endl;
-	std::cout << "Volume: " << volume_ << std::endl;
-	std::cout << "Number: " << issue_ << std::endl;
-	std::cout << "Pages: " << pages_ << std::endl;
-	std::cout << "Year: " << year_ << std::endl;
+	Utility::debug (String::ucompose ("%1: %2\n", "DOI: ", doi_));
+	Utility::debug (String::ucompose ("%1: %2\n", "Title: ", title_));
+	Utility::debug (String::ucompose ("%1: %2\n", "Authors: ", authors_));
+	Utility::debug (String::ucompose ("%1: %2\n", "Journal: ", journal_));
+	Utility::debug (String::ucompose ("%1: %2\n", "Volume: ", volume_));
+	Utility::debug (String::ucompose ("%1: %2\n", "Number: ", issue_));
+	Utility::debug (String::ucompose ("%1: %2\n", "Pages: ", pages_));
+	Utility::debug (String::ucompose ("%1: %2\n", "Year: ", year_));
 	
 	ExtrasMap::const_iterator it = extras_.begin ();
 	ExtrasMap::const_iterator const end = extras_.end ();
 	for (; it != end; ++it) {
-		std::cout << it->first << ": " << it->second << std::endl;
+		Utility::debug (String::ucompose ("%1: %2\n", it->first, it->second));
 	}
 }
 

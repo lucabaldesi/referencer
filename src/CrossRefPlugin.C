@@ -226,7 +226,7 @@ bool CrossRefPlugin::resolve (Document &doc)
 		+ Glib::ustring(":")
 		+ _global_prefs->getCrossRefPassword ()
 		+ Glib::ustring("&id=doi:")
-		+ doc.getField("doi")
+		+ Gnome::Vfs::escape_string(doc.getField("doi"))
 		+ Glib::ustring ("&noredirect=true");
 
 	std::cerr << "CrossRefPlugin::resolve: using url '" << url << "'\n";
@@ -241,7 +241,9 @@ bool CrossRefPlugin::resolve (Document &doc)
 		Glib::ustring &xml = Transfer::readRemoteFile (
 			_("Downloading Metadata"), messagetext, url);
 
-		std::cout << "\n\n" << xml << "\n\n";
+		Utility::debug ("\n\n");
+		Utility::debug (xml);
+		Utility::debug ("\n\n");
 
 		// XXX
 		// Test for "Missing WWW-Authenticate header" for bad username/password

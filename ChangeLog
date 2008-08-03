@@ -1,4 +1,6 @@
 1.1.4:
+	- Fix escaping URLs in crossref plugin (Bug 246421)
+	- Fix exceptions with exotic characters on latin1 systems
 	- Fix out of date tag action strings (Bug 247557)
 	- Fix crashing on opening docs with keybaord (Bug 235270)
 
