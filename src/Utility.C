@@ -347,9 +347,16 @@ void writeBibKey (
 	bool const usebraces,
 	bool const utf8)
 {
-	if (!value.validate ()) {
-		std::cerr << "bad unicode in value for '" << key << "'\n";
+	if (!key.validate()) {
+		Utility::debug (String::ucompose ("%1: Bad unicode\n", __FUNCTION__));
+		return;
 	}
+
+	if (!value.validate ()) {
+		Utility::debug (String::ucompose ("%1: Bad unicode for key %2\n", __FUNCTION__, key));
+		return;
+	}
+
 	if (!value.empty ()) {
 		// Okay to always append comma, since bibtex doesn't mind the trailing one
 		if (utf8) {
@@ -372,10 +379,8 @@ void writeBibKey (
 std::string escapeBibtexAccents (
 	Glib::ustring target)
 {
-	//std::cerr << "escapeBibtexAccents '" << target << "'\n";
 	for (Glib::ustring::size_type i = 0; i < target.length(); ++i) {
 		gunichar letter = target[i];
-		//std::cerr << (char)letter << "\n";
 		if (letter < 128) {
 			// Rationale: although in general we pass through {,},\ etc to allow
 			// the user to use his own latex-isms, the ampersand has no legitimate
@@ -384,7 +389,6 @@ std::string escapeBibtexAccents (
 				target.erase (i, 1);
 				target.insert (i, "\\&");
 				i += 1;
-				//std::cerr << target << "\n";
 			}
 			continue;
 		} else {
