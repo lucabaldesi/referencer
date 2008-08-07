@@ -1,4 +1,5 @@
 1.1.4:
+	- Fix import of 'series' field in bibtex InProceedings (Bug 255815)
 	- Fix escaping URLs in crossref plugin (Bug 246421)
 	- Fix exceptions with exotic characters on latin1 systems
 	- Fix out of date tag action strings (Bug 247557)

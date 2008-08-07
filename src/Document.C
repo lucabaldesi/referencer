@@ -611,7 +611,7 @@ void Document::renameFromKey ()
 
 void Document::setField (Glib::ustring const &field, Glib::ustring const &value)
 {
-	DEBUG (String::ucompose ("%1 : %2\n", field, value));
+	DEBUG (String::ucompose ("%1 : %2", field, value));
 	if (field == "doi")
 		bib_.setDoi (value);
 	else if (field.lowercase() == "title")

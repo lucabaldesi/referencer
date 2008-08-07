@@ -318,9 +318,21 @@ Document parseBibUtils (BibUtils::fields *ref)
 			ref->used[j] = 1;
 
 		if (!ref->used[j]) {
-			// Special case: Chapters in InCollection get added as "Title" level 0
-			if (key == "TITLE" && type==TYPE_INCOLLECTION) {
-				key = "Chapter";
+			if (key == "TITLE") {
+				if (type == TYPE_INCOLLECTION) {
+					// Special case: Chapters in InCollection get added as "Title" level 0
+					key = "Chapter";
+				} else if (type == TYPE_INPROCEEDINGS) {
+					// Special case: Series in InProceedings get added as "Title" level 0
+					key = "Series";
+				} else {
+					DEBUG3 ("unexpected TITLE element %1:%2 (%3)",
+						key, value, ref->level[j]);
+					// Don't overwrite existing title field
+					if (!newdoc.getBibData().getTitle().empty()) {
+						continue;
+					}
+				}
 			}
 
 			if (!replacements[key].empty()) {
