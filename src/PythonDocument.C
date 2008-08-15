@@ -91,8 +91,8 @@ static PyMethodDef referencer_document_methods[] = {
 	{"set_field", referencer_document_set_field, METH_VARARGS, "Set a field"},
 	{"get_key", referencer_document_get_key, METH_VARARGS, "Get the key"},
 	{"set_key", referencer_document_set_key, METH_VARARGS, "Set the key"},
-	{"get_filename", referencer_document_get_key, METH_VARARGS, "Get the filename"},
-	{"set_filename", referencer_document_set_key, METH_VARARGS, "Set the filename"},
+	{"get_filename", referencer_document_get_filename, METH_VARARGS, "Get the filename"},
+	{"set_filename", referencer_document_set_filename, METH_VARARGS, "Set the filename"},
 	{"parse_bibtex", referencer_document_parse_bibtex, METH_VARARGS, "Set fields from bibtex string"},
 	{NULL, NULL, 0, NULL}
 };
