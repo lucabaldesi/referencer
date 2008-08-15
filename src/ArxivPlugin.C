@@ -27,7 +27,7 @@
 
 bool ArxivPlugin::resolve (Document &doc)
 {
-	std::cerr << ">> resolve\n";
+	DEBUG (">> resolve");
 	if (!doc.hasField("eprint") || _global_prefs->getWorkOffline())
 		return false;
 
@@ -51,19 +51,19 @@ bool ArxivPlugin::resolve (Document &doc)
 				arxivid)
 		);
 
-	std::cerr << ">> netops\n";
+	DEBUG (">> netops");
 	Glib::ustring *rawtext;
 	try {
 		rawtext = &Transfer::readRemoteFile (
 			_("Downloading Metadata"), messagetext, filename);
 
-		std::cerr << "Raw citebase:\n" << *rawtext << "\n----\n\n";
+		DEBUG1 ("Raw citebase:\n%1\n----", *rawtext);
 	} catch (Transfer::Exception ex) {
 		Utility::exceptionDialog (&ex, _("Downloading metadata"));
 		return false;
 	}
 
-	std::cerr << "<< netops\n";
+	DEBUG ("<< netops");
 
 	if (rawtext->size() == 0)
 		return false;
@@ -82,8 +82,8 @@ bool ArxivPlugin::resolve (Document &doc)
 
 		// Sometimes citebase gives us an URL which is just a doi
 		Glib::ustring const url = newdoc.getBibData().extras_["Url"];
-		std::cerr << "url = " << url << "\n";
-		std::cerr << "substr = " <<  url.substr (0, 4) << "\n";
+		DEBUG1 ("url = %1", url);
+		DEBUG1 ("substr = ",  url.substr (0, 4));
 		if (url.size() >= 5 && url.substr (0, 4) == Glib::ustring("doi:")) {
 			if (newdoc.getBibData().getDoi().empty()) {
 				newdoc.getBibData().setDoi (url.substr(4, url.size()));

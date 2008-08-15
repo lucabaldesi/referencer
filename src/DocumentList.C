@@ -129,8 +129,7 @@ void DocumentList::removeDoc (Document * const addr)
 		}
 	}
 
-	std::cerr << "Warning: DocumentList::removeDoc: couldn't find '"
-		<< addr << "' to erase it\n";
+	DEBUG1 ("Warning: DocumentList::removeDoc: couldn't find '%1' to erase it", addr);
 }
 
 
@@ -139,14 +138,15 @@ void DocumentList::print()
 	Container::iterator it = docs_.begin();
 	Container::iterator const end = docs_.end();
 	for (; it != end; it++) {
-		std::cerr << (*it).getFileName() << " ";
-		std::cerr << (*it).getKey() << " ";
+		Glib::ustring format;
+		format += (*it).getFileName() + " ";
+		format += (*it).getKey() + " ";
 		std::vector<int> docvec = (*it).getTags();
 		for (std::vector<int>::iterator it = docvec.begin();
 			   it != docvec.end(); ++it) {
-			std::cerr << (*it);
+			format += String::ucompose("%1, ", *it);
 		}
-		std::cerr << std::endl;
+		DEBUG (format);
 	}
 }
 
@@ -198,7 +198,7 @@ int DocumentList::importFromFile (
 
 	char *buffer = (char *) malloc (sizeof(char) * (fileinfo->get_size() + 1));
 	if (!buffer) {
-		std::cerr << "Warning: DocumentList::import: couldn't get buffer\n";
+		DEBUG ("Warning: DocumentList::import: couldn't get buffer");
 		return false;
 	}
 
@@ -221,7 +221,7 @@ int DocumentList::importFromFile (
 
 	Glib::ustring utf8text = rawtext;
 	if (!utf8text.validate()) {
-		std::cerr << "DocumentList::importFromFile: input not utf-8, trying latin1\n";
+		DEBUG ("DocumentList::importFromFile: input not utf-8, trying latin1");
 		/* Upps, it's not utf8, assume it's latin1 */
 		try {
 			utf8text = Glib::convert (rawtext, "UTF8", "iso-8859-1");
@@ -234,7 +234,7 @@ int DocumentList::importFromFile (
 			return false;
 		}
 	} else {
-		std::cerr << "DocumentList::importFromFile: validated input as utf-8\n";
+		DEBUG ("DocumentList::importFromFile: validated input as utf-8");
 	}
 
 	return import(utf8text, format);

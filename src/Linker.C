@@ -58,7 +58,7 @@ void Linker::createUI (RefWindow *window, DocumentView *view)
 
 void Linker::doLink (Document *doc)
 {
-	std::cerr << "Linker::doLink called erroneously!\n";
+	DEBUG ("Linker::doLink called erroneously!");
 }
 
 bool DoiLinker::canLink (Document const *doc)
@@ -171,7 +171,7 @@ void GoogleLinker::doLink (Document *doc)
 
 
 	Glib::ustring escaped = Gnome::Vfs::escape_string (searchTerm);
-	std::cerr << escaped << "\n";
+	DEBUG (escaped);
 	Glib::ustring url = Glib::ustring ("http://scholar.google.co.uk/scholar?q=") + escaped + Glib::ustring("&btnG=Search");
 
 	Gnome::Vfs::url_show (url);

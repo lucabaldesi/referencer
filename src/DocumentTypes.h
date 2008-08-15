@@ -8,6 +8,7 @@
 #include <glibmm/ustring.h>
 
 #include "CaseFoldCompare.h"
+#include "Utility.h"
 
 class DocumentField {
 	// for the moment internalName is bibtexName and vice versa

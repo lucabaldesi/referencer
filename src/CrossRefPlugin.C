@@ -47,7 +47,7 @@ class CrossRefParser : public Glib::Markup::Parser {
 		text_ = "";
 		// Should use a more reliable check than this
 		if (element_name == "html" || element_name == "HTML") {
-			std::cerr << "html tag found, throwing error\n";
+			DEBUG ("html tag found, throwing error");
 			Glib::MarkupError error (
 				Glib::MarkupError::INVALID_CONTENT,
 				"Looks like a HTML document, not an XML document");
@@ -62,7 +62,7 @@ class CrossRefParser : public Glib::Markup::Parser {
 
 
 			if (statusString == "unresolved") {
-				std::cerr << "CrossRefParser: query failed, throwing error\n";
+				DEBUG ("CrossRefParser: query failed, throwing error");
 				Glib::MarkupError error (
 					Glib::MarkupError::INVALID_CONTENT,
 					"Looks like a HTML document, not an XML document");
@@ -94,7 +94,6 @@ class CrossRefParser : public Glib::Markup::Parser {
 				text_.length () - strlen ("<![CDATA[" "]]>"));
 		}
 
-		//std::cerr << "CrossRefParser: Ended element '" << element << "'\n";
 		if (element == "doi") {
 			bib_.setDoi (text_);
 		} else if (element == "article_title") {
@@ -140,7 +139,7 @@ class CrossRefParser : public Glib::Markup::Parser {
 		Glib::Markup::ParseContext& context,
 		const Glib::MarkupError& error)
 	{
-		std::cerr << "CrossRefParser: Parse Error!\n";
+		DEBUG ("CrossRefParser: Parse Error!");
 	}
 
 	virtual void on_text (
@@ -229,7 +228,7 @@ bool CrossRefPlugin::resolve (Document &doc)
 		+ Gnome::Vfs::escape_string(doc.getField("doi"))
 		+ Glib::ustring ("&noredirect=true");
 
-	std::cerr << "CrossRefPlugin::resolve: using url '" << url << "'\n";
+	DEBUG1 ("CrossRefPlugin::resolve: using url '%1'", url);
 
 	// FIXME: even if we don't get any metadata, 
 	// an exceptionless download+parse is considered
@@ -253,18 +252,16 @@ bool CrossRefPlugin::resolve (Document &doc)
 			context.parse (xml);
 			context.end_parse ();
 		} catch (Glib::MarkupError const ex) {
-			std::cerr << "Markuperror while parsing:\n'''\n" << xml << "\n'''\n";
+			DEBUG1 ("Markuperror while parsing:\n'''%1\n'''", xml);
 			//Utility::exceptionDialog (&ex, _("Parsing CrossRef XML.  The DOI could be invalid, or not known to crossref.org"));
 			success = false;
 		}
-		std::cerr << ">> end_parse\n";
-		std::cerr << "<< end_parse\n";
 	} catch (Transfer::Exception ex) {
 		//Utility::exceptionDialog (&ex, _("Downloading metadata"));
 		success = false;
 	}
 
-	std::cerr << "resolve returning " << success << "\n";
+	DEBUG1 ("resolve returning %1", success);
 	return success;
 }
 

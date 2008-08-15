@@ -53,7 +53,7 @@ Glib::ustring referencer_ui =
 		"      <menuitem action='AddDocFolder'/>"
 		"      <menuitem action='AddDocDoi'/>"
 		"      <menuitem action='AddDocUnnamed'/>"
-		"      <menuitem action='LibraryFolder'/>"
+//		"      <menuitem action='LibraryFolder'/>"
 		"      <separator/>"
 		"      <menuitem action='OpenDoc'/>"
 		"      <menuitem action='DocProperties'/>"

@@ -89,7 +89,7 @@ DocumentProperties::DocumentProperties ()
 bool DocumentProperties::show (Document *doc)
 {
 	if (!doc) {
-		std::cerr << "DocumentProperties::show: NULL doc pointer\n";
+		DEBUG ("DocumentProperties::show: NULL doc pointer");
 		return false;
 	}
 
@@ -342,10 +342,10 @@ void DocumentProperties::onEditExtraField ()
 		extrafieldssel_->get_selected_rows ();
 
 	if (paths.empty ()) {
-		std::cerr << "Warning: DocumentProperties::onEditExtraField: none selected\n";
+		DEBUG ("Warning: DocumentProperties::onEditExtraField: none selected");
 		return;
 	} else if (paths.size () > 1) {
-		std::cerr << "Warning: DocumentProperties::onEditExtraField: too many selected\n";
+		DEBUG ("Warning: DocumentProperties::onEditExtraField: too many selected");
 		return;
 	}
 
@@ -397,8 +397,7 @@ void DocumentProperties::onPasteBibtex ()
 	DocumentList doclist;
 	int const imported = doclist.import (clipboardtext, BibUtils::FORMAT_BIBTEX);
 
-	std::cerr << "DocumentProperties::onPasteBibtex: Imported "
-		<< imported << " references\n";
+	DEBUG1 ("DocumentProperties::onPasteBibtex: Imported %1 references", imported);
 
 	if (imported) {
 		DocumentList::Container &docs = doclist.getDocs ();

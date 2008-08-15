@@ -232,8 +232,8 @@ Glib::ustring findDataFile (
 	}
 
 	// Fall through
-	std::cerr << "Utility::findDataFile: couldn't "
-		"find file '" << filename << "'\n";
+	DEBUG1 ("Utility::findDataFile: couldn't "
+		"find file '%1'", filename);
 	return Glib::ustring();
 }
 
@@ -396,8 +396,7 @@ std::string escapeBibtexAccents (
 
 			int gotone = wvConvertUnicodeToLaTeX (letter, replacement);
 			if (!gotone) {
-				std::cerr << "escapeBibtexAccents: no replacement found for '"
-					<< letter << "'\n";
+				DEBUG1 ("escapeBibtexAccents: no replacement found for '%1'", letter);
 				replacement = "*";
 			}
 
@@ -478,7 +477,7 @@ Glib::RefPtr<Gdk::Pixbuf> getThemeIcon(Glib::ustring const &iconname)
 {
 	Glib::RefPtr<Gtk::IconTheme> theme = Gtk::IconTheme::get_default();
 	if (!theme) {
-		std::cerr << "Utility::getThemeIcon: failed to load default theme\n";
+		DEBUG ("Utility::getThemeIcon: failed to load default theme");
 		return Glib::RefPtr<Gdk::Pixbuf> (NULL);
 	}
 
@@ -488,12 +487,10 @@ Glib::RefPtr<Gdk::Pixbuf> getThemeIcon(Glib::ustring const &iconname)
 				theme->load_icon(iconname, 96, Gtk::ICON_LOOKUP_FORCE_SVG);
 			
 			if (!pixbuf)
-				std::cerr << "Utility::getThemeIcon: icon '"
-					<< iconname << "' failed to load\n";
+				DEBUG1 ("Utility::getThemeIcon: icon '%1' failed to load", iconname);
 				return pixbuf;
 		} else {
-			std::cerr << "Utility::getThemeIcon: icon '"
-				<< iconname << "' not found\n";
+			DEBUG1 ("Utility::getThemeIcon: icon '%1' no found", iconname);
 		}
 	}
 

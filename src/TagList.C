@@ -14,6 +14,7 @@
 #include <sstream>
 
 #include "TagList.h"
+#include "Utility.h"
 
 Tag::Tag (int const uid, std::string const name)
 {
@@ -54,9 +55,7 @@ void TagList::print ()
 	TagMap::iterator it = tags_.begin();
 	TagMap::iterator const end = tags_.end();
 	for (; it != end; it++) {
-		std::cerr << (*it).second.uid_ << " ";
-		std::cerr << (*it).second.name_ << " ";
-		std::cerr << std::endl;
+		DEBUG((*it).second.uid_ + " " + (*it).second.name_);
 	}
 }
 
@@ -65,8 +64,8 @@ void TagList::deleteTag (int uid)
 {
 	TagMap::iterator found = tags_.find (uid);
 	if (found == tags_.end()) {
-		std::cerr << "TagList::deleteTag: tried to delete non-existent "
-			"tag " << uid << "\n";
+		DEBUG1 ("TagList::deleteTag: tried to delete non-existent "
+			"tag %1", uid);
 	} else {
 		tags_.erase (tags_.find (uid));
 	}

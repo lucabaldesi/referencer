@@ -342,7 +342,6 @@ Document parseBibUtils (BibUtils::fields *ref)
 			}
 
 			int level = ref->level[j];
-			//std::cerr << key << " = " << value << "(" << level << ")\n";
 			if (!value.empty ()) {
 				newdoc.getBibData().addExtra (key, value);
 			}

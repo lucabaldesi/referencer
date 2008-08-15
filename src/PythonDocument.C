@@ -5,6 +5,7 @@
 #include <structmember.h>
 
 #include "Document.h"
+#include "Utility.h"
 
 #include "PythonDocument.h"
 
@@ -65,7 +66,7 @@ static PyObject *referencer_document_parse_bibtex (PyObject *self, PyObject *arg
 
 static void referencer_document_dealloc (PyObject *self)
 {
-	std::cerr << ">> referencer_document_dealloc\n";
+	DEBUG (">> referencer_document_dealloc");
 }
 
 static PyObject *referencer_document_string (PyObject *self)
@@ -75,7 +76,7 @@ static PyObject *referencer_document_string (PyObject *self)
 
 static int referencer_document_init (PyObject *self, PyObject *args, PyObject *kwds)
 {
-	std::cerr << ">> referencer_document_init\n";
+	DEBUG (">> referencer_document_init");
 
 	return 0;
 }

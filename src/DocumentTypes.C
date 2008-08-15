@@ -19,7 +19,7 @@ void DocumentTypeManager::registerField (
 void DocumentTypeManager::addField (DocumentType &type, Glib::ustring internalName, bool required)
 {
 	if (documentFields_.find (internalName) == documentFields_.end())
-		std::cerr << "unknown field " << internalName << "\n";
+		DEBUG ("unknown field " + internalName);
 
 	if (required)
 		type.requiredFields_.push_back (documentFields_[internalName]); 

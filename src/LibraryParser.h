@@ -19,6 +19,7 @@
 #include "TagList.h"
 #include "BibData.h"
 #include "ucompose.hpp"
+#include "Utility.h"
 
 class LibraryParser : public Glib::Markup::Parser {
 	Library &library_;
@@ -95,7 +96,6 @@ class LibraryParser : public Glib::Markup::Parser {
 		const Glib::Markup::Parser::AttributeMap& attributes)
 	{
 		textBuffer_ = "";
-		//std::cerr << "Started element " << element_name << "\n";
 		if (element_name == "tag") {
 			inTag_ = true;
 			newTagUid_ = "";
@@ -162,7 +162,6 @@ class LibraryParser : public Glib::Markup::Parser {
 		Glib::Markup::ParseContext& context,
 		const Glib::ustring& element_name)
 	{
-		//std::cerr << "Ended element " << element_name << "\n";
 		if (element_name == "tag") {
 			inTag_ = false;
 			// Hardcoded for ATTACH tags only
@@ -228,7 +227,7 @@ class LibraryParser : public Glib::Markup::Parser {
 		Glib::Markup::ParseContext& context,
 		const Glib::MarkupError& error)
 	{
-		std::cerr << "LibraryParser: Parse Error!\n";
+		DEBUG("LibraryParser: Parse Error!");
 	}
 
 	virtual void on_text (

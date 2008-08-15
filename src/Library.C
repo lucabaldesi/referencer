@@ -87,7 +87,8 @@ bool Library::readXML (Glib::ustring XMLtext)
 	try {
 		context.parse (XMLtext);
 	} catch (Glib::MarkupError const ex) {
-		std::cerr << "Exception on line " << context.get_line_number () << ", character " << context.get_char_number () << ": '" << ex.what () << "'\n";
+		DEBUG3 ("Exception on line %1, character %2: '%3'",
+			context.get_line_number (), context.get_char_number (), ex.what ());
 		Utility::exceptionDialog (&ex, _("Parsing Library XML"));
 
 		delete newtags;
@@ -143,7 +144,7 @@ void Library::libraryFolderDialog ()
 	library_folder_monitor_ = monitor->get_active ();
 	library_folder_uri_ = location->get_uri ();
 
-	std::cerr << __FUNCTION__ << " " << library_folder_uri_ << "\n";
+	DEBUG (library_folder_uri_);
 
 	dialog->hide ();
 }
@@ -176,7 +177,7 @@ bool Library::load (Glib::ustring const &libfilename)
 
 	char *buffer = (char *) malloc (sizeof(char) * (fileinfo->get_size() + 1));
 	if (!buffer) {
-		std::cerr << "Warning: RefWindow::loadLibrary: couldn't allocate buffer\n";
+		DEBUG ("Warning: RefWindow::loadLibrary: couldn't allocate buffer");
 		return false;
 	}
 
@@ -232,9 +233,6 @@ bool Library::load (Glib::ustring const &libfilename)
 				docit->getRelFileName());
 		}
 		
-		//std::cerr << "Abs: " << absfilename
-		//	<< "\nRel: " << relfilename << "\n\n";
-
 		bool const absexists = Utility::fileExists (absfilename);
 		bool const relexists = Utility::fileExists (relfilename);
 
@@ -301,7 +299,7 @@ bool Library::save (Glib::ustring const &libfilename)
 
 	Glib::ustring tmplibfilename = libfilename + ".save-tmp";
 
-	std::cerr << "Library::save: " << libfilename << " ~ " << tmplibfilename << "\n";
+	DEBUG2 ("%1 ~ %2", libfilename, tmplibfilename);
 
 	try {
 		libfile.create (tmplibfilename, Gnome::Vfs::OPEN_WRITE,
@@ -312,7 +310,7 @@ bool Library::save (Glib::ustring const &libfilename)
 	}
 
 
-	std::cerr << "Updating relative filenames...\n";
+	DEBUG ("Updating relative filenames...");
 	DocumentList::Container &docs = doclist_->getDocs ();
 	DocumentList::Container::iterator docit = docs.begin ();
 	DocumentList::Container::iterator const docend = docs.end ();
@@ -321,11 +319,11 @@ bool Library::save (Glib::ustring const &libfilename)
 			docit->updateRelFileName (libfilename);
 		}
 	}
-	std::cerr << "Done.\n";
+	DEBUG ("Done.");
 
-	std::cerr << "Generating XML...\n";
+	DEBUG ("Generating XML...");
 	Glib::ustring rawtext = writeXML ();
-	std::cerr << "Done.\n";
+	DEBUG ("Done.");
 
 	try {
 		libfile.write (rawtext.c_str(), strlen(rawtext.c_str()));
@@ -350,7 +348,7 @@ bool Library::save (Glib::ustring const &libfilename)
 		return false;
 	}
 
-	std::cerr << "Writing bibtex, manage_target_ = " << manage_target_ << "'\n";
+	DEBUG1 ("Writing bibtex, manage_target_ = %1", manage_target_);
 	// Having successfully saved the library, write the bibtex if needed
 	if (!manage_target_.empty ()) {
 		// manage_target_ is either an absolute URI or a relative URI
@@ -358,7 +356,7 @@ bool Library::save (Glib::ustring const &libfilename)
 			Gnome::Vfs::Uri::make_full_from_relative (
 				libfilename,
 				manage_target_);
-		std::cerr << "bibtextarget = " << bibtextarget << "\n";
+		DEBUG1 ("bibtextarget = %1", bibtextarget);
 
 		std::vector<Document*> docs;
 		DocumentList::Container &docrefs = doclist_->getDocs ();
@@ -374,7 +372,7 @@ bool Library::save (Glib::ustring const &libfilename)
 			return false;
 		}
 	}
-	std::cerr << "Done.\n";
+	DEBUG ("Done.");
 
 	return true;
 }
@@ -388,7 +386,7 @@ void Library::writeBibtex (
 {
 	Glib::ustring tmpbibfilename = bibfilename + ".export-tmp";
 
-	std::cerr << "Library::writeBibtex: " << bibfilename << " ~ " << tmpbibfilename << "\n";
+	DEBUG2 ("%1 ~ %2", bibfilename, tmpbibfilename);
 
 	Gnome::Vfs::Handle bibfile;
 
@@ -396,8 +394,7 @@ void Library::writeBibtex (
 		bibfile.create (tmpbibfilename, Gnome::Vfs::OPEN_WRITE,
 			false, Gnome::Vfs::PERM_USER_READ | Gnome::Vfs::PERM_USER_WRITE);
 	} catch (const Gnome::Vfs::exception ex) {
-		std::cerr << "RefWindow::onExportBibtex: "
-			"exception in create '" << ex.what() << "'\n";
+		DEBUG ("exception in create " + ex.what());
 		Utility::exceptionDialog (&ex, "opening BibTex file");
 		return;
 	}

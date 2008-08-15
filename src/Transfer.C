@@ -192,10 +192,10 @@ void openCB (
 	Gnome::Vfs::Result result)
 {
 	if (result == Gnome::Vfs::OK) {
-		std::cerr << "openCB: result OK, opened\n";
+		DEBUG ("openCB: result OK, opened");
 		advance = true;
 	} else {
-		std::cerr << "openCB: result not OK\n";
+		DEBUG ("openCB: result not OK");
 		transferStatus |= TRANSFER_FAIL_SILENT;
 	}
 }
@@ -208,11 +208,11 @@ void readCB (
 	Gnome::Vfs::FileSize requested,
 	Gnome::Vfs::FileSize reallyread)
 {
-	std::cerr << "Woo, read " << reallyread << " bytes\n";
+	DEBUG1 ("Woo, read %1 bytes", reallyread);
 	char *charbuf = (char *) buffer;
 	charbuf [reallyread] = 0;
 	if (result == Gnome::Vfs::OK) {
-		std::cerr << "readCB: result OK\n";
+		DEBUG ("readCB: result OK");
 		if (reallyread > 0) {
 			Gnome::Vfs::Async::Handle &h = const_cast<Gnome::Vfs::Async::Handle&> (handle);
 			h.read ((char*)buffer + reallyread, 1024 * 256 - reallyread, sigc::ptr_fun (&readCB));
@@ -221,10 +221,10 @@ void readCB (
 		}
 	} else  {
 		if (result == Gnome::Vfs::ERROR_EOF) {
-			std::cerr << "readCB: EOF\n";
+			DEBUG ("readCB: EOF");
 			advance = true;
 		} else {
-			std::cerr << "readCB: result error\n";
+			DEBUG ("readCB: result error");
 			transferStatus |= TRANSFER_FAIL_SILENT;
 		}
 	}
@@ -236,10 +236,10 @@ void closeCB (
 	Gnome::Vfs::Result result)
 {
 	if (result == Gnome::Vfs::OK) {
-		std::cerr << "closeCB: result OK, closed\n";
+		DEBUG ("closeCB: result OK, closed");
 	} else {
 		// Can't really do much about this
-		std::cerr << "closeCB: warning: result not OK\n";
+		DEBUG ("closeCB: warning: result not OK");
 	}
 
 	advance = true;
@@ -251,7 +251,7 @@ void closeCB (
 static bool waitForFlag (volatile bool &flag)
 {
 	while (flag == false) {
-		std::cerr << "Waiting...\n";
+		DEBUG ("Waiting...");
 		Glib::usleep (100000);
 		if ((transferStatus & TRANSFER_FAIL_SILENT) | (transferStatus & TRANSFER_FAIL_LOUD)) {
 			// The parent decided we've timed out or cancelled and should give up
@@ -259,11 +259,11 @@ static bool waitForFlag (volatile bool &flag)
 			//     This method currently leaks memory
 			bibfile.cancel ();
 			// Should close it if it's open
-			std::cerr << "waitForFlag completed due to transferfail\n";
+			DEBUG ("waitForFlag completed due to transferfail");
 			return true;
 		}
 	}
-	std::cerr << "Done!\n";
+	DEBUG ("Done!");
 	return false;
 }
 
@@ -279,7 +279,7 @@ void fetcherThread (Glib::ustring const &filename)
 		              0,
 		              sigc::ptr_fun(&openCB));
 	} catch (const Gnome::Vfs::exception ex) {
-		std::cerr << "Got an exception from open\n";
+		DEBUG ("Got an exception from open");
 		transferStatus |= TRANSFER_FAIL_SILENT;
 		Utility::exceptionDialog (&ex,
 			String::ucompose (
@@ -303,7 +303,7 @@ void fetcherThread (Glib::ustring const &filename)
 	try {
 		bibfile.read (buffer, maxsize, sigc::ptr_fun (&readCB));
 	} catch (const Gnome::Vfs::exception ex) {
-		std::cerr << "Got an exception from read\n";
+		DEBUG ("Got an exception from read");
 		// should close handle?
 		transferStatus |= TRANSFER_FAIL_SILENT;
 		Utility::exceptionDialog (&ex,
@@ -323,7 +323,7 @@ void fetcherThread (Glib::ustring const &filename)
 	try {
 		bibfile.close (sigc::ptr_fun (&closeCB));
 	} catch (const Gnome::Vfs::exception ex) {
-		std::cerr << "Got an exception from close\n";
+		DEBUG ("Got an exception from close");
 		transferStatus |= TRANSFER_FAIL_SILENT;
 		Utility::exceptionDialog (&ex,
 			String::ucompose (

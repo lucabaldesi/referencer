@@ -245,7 +245,7 @@ bool PythonPlugin::doAction (Glib::ustring const function, std::vector<Document*
 	Py_DECREF (pArgs);
 
 	if (pReturn == NULL) {
-		std::cerr << "PythonPlugin::doAction: NULL return value\n";
+		DEBUG ("PythonPlugin::doAction: NULL return value");
 		displayException ();
 		return false;
 	} else {
@@ -285,7 +285,7 @@ bool PythonPlugin::updateSensitivity (Glib::ustring const function, std::vector<
 	Py_DECREF (pArgs);
 
 	if (pReturn == NULL) {
-		std::cerr << "PythonPlugin::doAction: NULL return value\n";
+		DEBUG ("PythonPlugin::doAction: NULL return value");
 		displayException ();
 		return false;
 	} else {
@@ -331,7 +331,7 @@ Glib::ustring PythonPlugin::formatException ()
 
 void PythonPlugin::printException ()
 {
-	std::cerr << formatException ();
+	DEBUG(formatException ());
 }
 
 void PythonPlugin::displayException ()
@@ -394,8 +394,7 @@ bool PythonPlugin::resolveID (Document &doc, PluginCapability::Identifier id)
 			pArgs = Py_BuildValue ("(Os)", pDoc, "pubmed");
 		break;
 		default:
-			std::cerr << "PythonPlugin::resolveID: warning, unhandled id type "
-				<< id << "\n";
+			DEBUG1 ("PythonPlugin::resolveID: warning, unhandled id type %1", id);
 			return false;
 	}
 
@@ -409,7 +408,7 @@ bool PythonPlugin::resolveID (Document &doc, PluginCapability::Identifier id)
 		Py_DECREF(pReturn);
 		success = (pReturn == Py_True);
 	} else {
-		std::cerr << "PythonPlugin::resolveID: NULL return from PyObject_CallObject\n";
+		DEBUG ("PythonPlugin::resolveID: NULL return from PyObject_CallObject");
 		displayException ();
 	}
 

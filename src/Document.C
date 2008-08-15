@@ -407,7 +407,7 @@ void Document::writeXML (Glib::ustring &out)
 bool Document::readPDF ()
 {
 	if (filename_.empty()) {
-		std::cerr << "Document::readPDF: has no filename\n";
+		DEBUG ("Document::readPDF: has no filename");
 		return false;
 	}
 
@@ -415,8 +415,7 @@ bool Document::readPDF ()
 
 	PopplerDocument *popplerdoc = poppler_document_new_from_file (filename_.c_str(), NULL, &error);
 	if (popplerdoc == NULL) {
-		std::cerr << "Document::readPDF: Failed to load '"
-			<< filename_ << "'\n";
+		DEBUG1 ("Document::readPDF: Failed to load '%1'", filename_);
 		g_error_free (error);
 		return false;
 	}
@@ -540,19 +539,18 @@ bool Document::getMetaData ()
 
 	for (; it != end; ++it) {
 		if (!(*it)->cap_.hasAny(potentials)) {
-			std::cerr << "Document::getMetaData: module '"
-				<< (*it)->getShortName() << "' has no "
-				"suitable capabilities\n";
+			DEBUG1 ("Document::getMetaData: module '%1' has no "
+				"suitable capabilities", (*it)->getShortName());
 			continue;
 		}
 
-		std::cerr << "Document::getMetaData: trying module '"
-			<< (*it)->getShortName() << "'\n";
+		DEBUG1 ("Document::getMetaData: trying module '%1'",
+			(*it)->getShortName());
 		success = (*it)->resolve(*this);
 
 		if (success) {
-			std::cerr << "BibData::resolveDoi: paydirt with module '"
-				<< (*it)->getShortName() << "'\n";
+			DEBUG1 ("BibData::resolveDoi: paydirt with module '%1'",
+				(*it)->getShortName());
 			break;
 		}
 	}
@@ -577,9 +575,9 @@ void Document::renameFromKey ()
 	Glib::RefPtr<Gnome::Vfs::Uri> olduri = Gnome::Vfs::Uri::create (getFileName());
 
 	Glib::ustring shortname = olduri->extract_short_name ();
-	std::cerr << "Shortname = " << shortname << "\n";
+	DEBUG1 ("Shortname = %1", shortname);
 	Glib::ustring dirname = olduri->extract_dirname ();
-	std::cerr << "Dirname = " << dirname << "\n";
+	DEBUG1 ("Dirname = %1", dirname);
 
 	Glib::ustring::size_type pos = shortname.rfind (".");
 	Glib::ustring extension = "";
@@ -587,7 +585,7 @@ void Document::renameFromKey ()
 		extension = shortname.substr (pos, shortname.length() - 1);
 
 	Glib::ustring newfilename = getKey() + extension;
-	std::cerr << "Newfilename = " << newfilename << "\n";
+	DEBUG1 ("Newfilename = %1", newfilename);
 
 	//Glib::RefPtr<Gnome::Vfs::Uri> newuri = Gnome::Vfs::Uri::create (newfilename);
 	Glib::RefPtr<Gnome::Vfs::Uri> newuri =
@@ -661,8 +659,7 @@ Glib::ustring Document::getField (Glib::ustring const &field)
 			const Glib::ustring _field = field;
 			return bib_.extras_[_field];
 		} else {
-			std::cerr << "Document::getField: WARNING: unknown field "
-				<< field << "\n";
+			DEBUG1 ("Document::getField: WARNING: unknown field %1", field);
 		}
 	}
 }

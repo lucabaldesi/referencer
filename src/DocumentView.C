@@ -266,7 +266,7 @@ protected:
 	Document *doc = (Document *) property_document_.get_value ();
 
 	if (!evButton) {
-		std::cerr << "DocumentCellRenderer::activate_vfunc with NULL event\n";
+		DEBUG ("DocumentCellRenderer::activate_vfunc with NULL event");
 		/* GtkIconView passes a null event when invoking us a result of
 		 * a keypress - pass this up to the "double click" handler */
 
@@ -275,7 +275,7 @@ protected:
 		return true;
 	} else {
 		GdkEventType type = event->type;
-		std::cerr << "DocumentCellRenderer::activate_vfunc with valid event " << type << "\n";
+		DEBUG1 ("DocumentCellRenderer::activate_vfunc with valid event %1", type);
 	}
 
         Glib::RefPtr<Gdk::Pixbuf> thumb = doc->getThumbnail ();
@@ -561,8 +561,8 @@ void DocumentView::onIconsDragData (
 	const Glib::RefPtr <Gdk::DragContext> &context,
 	int n1, int n2, const Gtk::SelectionData &sel, guint n3, guint n4)
 {
-	std::cerr << "onIconsDragData: got '" << sel.get_data_as_string () << "'\n";
-	std::cerr << "\tOf type '" << sel.get_data_type () << "'\n";
+	DEBUG ("got '" + sel.get_data_as_string () + "'");
+	DEBUG ("\tOf type '" + sel.get_data_type () + "'");
 
 	std::vector<Glib::ustring> files;
 
@@ -609,7 +609,7 @@ void DocumentView::onIconsDragData (
 				destinationdir,
 				uri->extract_short_path_name ());
 
-			std::cerr << "'" << destination << "\n";
+			DEBUG (destination);
 			Transfer::downloadRemoteFile (
 				*it,
 				destination,
@@ -700,7 +700,7 @@ Document *DocumentView::getSelectedDoc ()
 			docslistselection_->get_selected_rows ();
 
 		if (paths.size() != 1) {
-			std::cerr << "Warning: DocumentView::getSelectedDoc: size != 1\n";
+			DEBUG ("Warning: DocumentView::getSelectedDoc: size != 1");
 			return NULL;
 		}
 
@@ -713,7 +713,7 @@ Document *DocumentView::getSelectedDoc ()
 			docsiconview_->get_selected_items ();
 
 		if (paths.size() != 1) {
-			std::cerr << "Warning: DocumentView::getSelectedDoc: size != 1\n";
+			DEBUG ("Warning: DocumentView::getSelectedDoc: size != 1");
 			return NULL;
 		}
 
@@ -1094,7 +1094,7 @@ void DocumentView::updateDoc (Document * const doc)
 		}
 	}
 	
-	std::cerr << "DocumentView::updateDoc: Warning: doc not found\n";
+	DEBUG ("DocumentView::updateDoc: Warning: doc not found");
 }
 
 
@@ -1119,7 +1119,7 @@ void DocumentView::removeDoc (Document * const doc)
 	docSelectionChanged ();
 	
 	if (!found)
-		std::cerr << "DocumentView::removeDoc: Warning: doc not found\n";
+		DEBUG ("DocumentView::removeDoc: Warning: doc not found");
 }
 
 /*
@@ -1154,7 +1154,7 @@ void DocumentView::addDoc (Document * doc)
  */
 void DocumentView::populateDocStore ()
 {
-	//std::cerr << "RefWindow::populateDocStore >>\n";
+	//DEBUG ("RefWindow::populateDocStore >>");
 	ignoreSelectionChanged_ = true;
 
 	/* XXX not the only one any more! */
@@ -1387,8 +1387,7 @@ void DocumentView::select (Document *document)
     }
 
     if (docIter == docEnd) {
-        std::cerr << "DocumentView::select: warning: document "
-            << document << " not found\n";
+        DEBUG1 ("DocumentView::select: warning: document %1 not found", document);
     }
 
     Gtk::TreeModel::Path path = docstoresort_->get_path (docIter);
@@ -1418,8 +1417,8 @@ void DocumentView::redraw (Document *document)
 	}
 
 	if (docIter == docEnd) {
-		std::cerr << "DocumentView::select: warning: document "
-			<< document << " not found\n";
+		DEBUG ("DocumentView::select: warning: document "
+			<< document << " not found");
 	}
 
 	Gtk::TreeModel::Path path = docstoresort_->get_path (docIter);

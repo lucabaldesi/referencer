@@ -94,11 +94,11 @@ Glib::RefPtr<Gdk::Pixbuf> ThumbnailGenerator::lookupThumb (Glib::ustring const &
 
 		// Should we be using Gnome::UI::icon_lookup_sync?
 		if (thumbfile.empty()) {
-			std::cerr << "Couldn't find thumbnail:'" << file << "'\n";
+			DEBUG1 ("Couldn't find thumbnail:'%1'", file);
 			if (thumbfac_->has_valid_failed_thumbnail (file, mtime)) {
-				std::cerr << "Has valid failed thumbnail: '" << file << "'\n";
+				DEBUG1 ("Has valid failed thumbnail: '%1'", file);
 			} else {
-				std::cerr << "Generate thumbnail: '" << file << "'\n";
+				DEBUG1 ("Generate thumbnail: '%1'", file);
 				Glib::ustring mimetype = 
 					(uri->get_file_info (Gnome::Vfs::FILE_INFO_GET_MIME_TYPE))->get_mime_type ();
 
@@ -106,7 +106,7 @@ Glib::RefPtr<Gdk::Pixbuf> ThumbnailGenerator::lookupThumb (Glib::ustring const &
 				if (thumbnail) {
 					thumbfac_->save_thumbnail (thumbnail, file, mtime);
 				} else {
-					std::cerr << "Failed to generate thumbnail: '" << file << "'\n";
+					DEBUG1 ("Failed to generate thumbnail: '%1'", file);
 					thumbfac_->create_failed_thumbnail (file, mtime);
 				}
 			}
