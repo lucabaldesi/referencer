@@ -752,6 +752,7 @@ void RefWindow::taggerActionToggled (Glib::RefPtr<Gtk::ToggleAction> action, int
 
 	bool active = action->get_active ();
 
+	ignoreDocSelectionChanged_ = true;
 	std::vector<Document*>::iterator it = selecteddocs.begin ();
 	std::vector<Document*>::iterator const end = selecteddocs.end ();
 	for (; it != end; it++) {
@@ -763,6 +764,8 @@ void RefWindow::taggerActionToggled (Glib::RefPtr<Gtk::ToggleAction> action, int
 
 		docview_->updateDoc (doc);
 	}
+	ignoreDocSelectionChanged_ = false;
+	docSelectionChanged ();
 
     // If we've untagged something it might no longer be visible
     // Or if we've added a tag to something while viewing "untagged"

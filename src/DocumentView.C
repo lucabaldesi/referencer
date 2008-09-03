@@ -266,7 +266,7 @@ protected:
 	Document *doc = (Document *) property_document_.get_value ();
 
 	if (!evButton) {
-		DEBUG ("DocumentCellRenderer::activate_vfunc with NULL event");
+		DEBUG ("NULL event");
 		/* GtkIconView passes a null event when invoking us a result of
 		 * a keypress - pass this up to the "double click" handler */
 
@@ -275,7 +275,6 @@ protected:
 		return true;
 	} else {
 		GdkEventType type = event->type;
-		DEBUG1 ("DocumentCellRenderer::activate_vfunc with valid event %1", type);
 	}
 
         Glib::RefPtr<Gdk::Pixbuf> thumb = doc->getThumbnail ();
@@ -685,7 +684,17 @@ std::vector<Document*> DocumentView::getSelectedDocs ()
 			Gtk::TreePath realPath = docstorefilter_->convert_path_to_child_path (filterPath);
 
 			Gtk::ListStore::iterator iter = docstore_->get_iter (realPath);
-			docpointers.push_back((*iter)[docpointercol_]);
+			Document *docptr = (*iter)[docpointercol_];
+
+			if (!docptr) {
+				/* This is really bad and we will probably crash, but 
+				 * at least we will know why by looking at stdout.  
+				 * Propagate the error because this should never 
+				 * happen and I don't want it to go unnoticed */
+				DEBUG ("Unset document pointer!");
+			}
+
+			docpointers.push_back(docptr);
 		}
 	}
 
