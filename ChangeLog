@@ -1,3 +1,6 @@
+1.1.5:
+	- Fix crash when tagging (Bug 258780)
+
 1.1.4:
 	- Fix python get_filename and set_filename (Bug 258103)
 	- Fix import of 'series' field in bibtex InProceedings (Bug 255815)
