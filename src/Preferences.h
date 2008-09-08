@@ -83,8 +83,8 @@ private:
 	Gnome::Conf::Entry listSortColumn_;
 	Gnome::Conf::Entry listSortOrder_;
 public:
-	std::pair<int, int> getListSort ();
-	void setListSort (int const column, int const order);
+	std::pair<Glib::ustring, int> getListSort ();
+	void setListSort (Glib::ustring const &columnName, int const order);
 	/*
 	 * End of list view options
 	 */

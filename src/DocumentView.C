@@ -33,6 +33,7 @@
 #include "tracker.h"
 #endif
 
+static const Glib::ustring defaultSortColumn = "title";
 
 class DocumentCellRenderer : public Gtk::CellRendererPixbuf
 {
@@ -337,12 +338,13 @@ DocumentView::DocumentView (
 	 * Model common to icon and list views
 	 */
 	Gtk::TreeModel::ColumnRecord doccols;
+
 	doccols.add(docpointercol_);
 	doccols.add(doccaptioncol_);
 	doccols.add(docthumbnailcol_);
-	#if GTK_VERSION_GE(2,12)
+#if GTK_VERSION_GE(2,12)
 	doccols.add(doctooltipcol_);
-    #endif
+#endif
 	doccols.add(dockeycol_);
 	doccols.add(doctitlecol_);
 	doccols.add(docauthorscol_);
@@ -356,8 +358,7 @@ DocumentView::DocumentView (
 	docstoresort_->signal_sort_column_changed ().connect(
 		sigc::mem_fun (*this, &DocumentView::onSortColumnChanged));
 
-	std::pair<int, int> sortinfo = _global_prefs->getListSort ();
-	docstoresort_->set_sort_column (sortinfo.first, (Gtk::SortType)sortinfo.second);
+
 
 	/*
 	 * Icon View
@@ -505,6 +506,27 @@ DocumentView::DocumentView (
 	 * End of search box
 	 */
 
+
+	/*
+	 * Sorting
+	 * (This isn't done at model construction because it needs to be after populateColumns)
+	 */
+	std::pair<Glib::ustring, int> sortInfo = _global_prefs->getListSort ();
+	std::map<Glib::ustring, Column>::iterator columnIter = columns_.find(sortInfo.first);
+	if (columnIter != columns_.end()) {
+		DEBUG1 ("Initialising sort column to %1", sortInfo.first);
+		docstoresort_->set_sort_column (
+				columnIter->second.modelColumn,
+				(Gtk::SortType)sortInfo.second);
+	} else {
+		DEBUG1 ("Initialising sort column to default, '%1'", defaultSortColumn);
+		docstoresort_->set_sort_column (
+				(columns_.find(defaultSortColumn))->second.modelColumn,
+				(Gtk::SortType)sortInfo.second);
+	}
+	/*
+	 * End of sorting
+	 */
 }
 
 
@@ -1313,7 +1335,19 @@ void DocumentView::onSortColumnChanged ()
 	Gtk::SortType order;
 	int column;
 	docstoresort_->get_sort_column_id (column, order);
-	_global_prefs->setListSort (column, order);
+
+	std::map<Glib::ustring, Column>::iterator columnIter = columns_.begin();
+	std::map<Glib::ustring, Column>::iterator columnEnd = columns_.end();
+	for (; columnIter != columnEnd; ++columnIter) {
+		DEBUG1 ("Trying %1", (*columnIter).second.modelColumn.index());
+		if ((*columnIter).second.modelColumn.index() == column) {
+			_global_prefs->setListSort ((*columnIter).first, order);
+			return;
+		}
+	}
+
+	DEBUG1 ("Failed to resolve column id %1 to a name", column);
+
 }
 
 void DocumentView::onColumnEdited (
@@ -1326,7 +1360,7 @@ void DocumentView::onColumnEdited (
 	Gtk::TreePath realPath = docstorefilter_->convert_path_to_child_path (filterPath);
 
 	Gtk::TreeModel::iterator iter = docstore_->get_iter (realPath);
-	Gtk::TreeModelColumn<Glib::ustring> col = listViewColumns_[columnName];
+	Gtk::TreeModelColumn<Glib::ustring> col = columns_.find(columnName)->second.modelColumn;
 	if ((*iter)[col] != enteredText) {
 		Document *doc = (*iter)[docpointercol_];
 
@@ -1345,14 +1379,16 @@ void DocumentView::onColumnEdited (
 }
 
 
-void DocumentView::addCol (
+void DocumentView::addColumn (
 	Glib::ustring const &name,
 	Glib::ustring const &caption,
-	Gtk::TreeModelColumn<Glib::ustring> modelCol,
+	Gtk::TreeModelColumn<Glib::ustring> &modelCol,
 	bool const expand,
 	bool const ellipsize)
 {
-	listViewColumns_[name] = modelCol;
+	Column column(modelCol, caption);
+	std::pair<Glib::ustring, Column> pair (name, column);
+	columns_.insert (pair);
 
 	// Er, we're actually passing this as reference, is this the right way
 	// to create it?  Will the treeview actually copy it?
@@ -1373,15 +1409,16 @@ void DocumentView::addCol (
 			name)
 		);
 	docslistview_->append_column (*col);
+
 }
 
 
 void DocumentView::populateColumns ()
 {
-	addCol ("key", _("Key"), dockeycol_, false, false);
-	addCol ("title", _("Title"), doctitlecol_, true, true);
-	addCol ("author", _("Author"), docauthorscol_, false, true);
-	addCol ("year", _("Year"), docyearcol_, false, false);
+	addColumn ("key", _("Key"), dockeycol_, false, false);
+	addColumn ("title", _("Title"), doctitlecol_, true, true);
+	addColumn ("author", _("Author"), docauthorscol_, false, true);
+	addColumn ("year", _("Year"), docyearcol_, false, false);
 }
 
 

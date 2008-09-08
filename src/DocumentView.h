@@ -157,14 +157,23 @@ class DocumentView : public Gtk::VBox
 		const Glib::ustring& newText,
 		const Glib::ustring &columnName);
 
-	std::map <Glib::ustring, Gtk::TreeModelColumn<Glib::ustring> > listViewColumns_;
+	class Column {
+		public:
+		Gtk::TreeModelColumn<Glib::ustring> &modelColumn;
+		Glib::ustring caption;
+		Column (Gtk::TreeModelColumn<Glib::ustring> &modelColumn_, Glib::ustring const &caption_)
+			: modelColumn (modelColumn_), caption(caption_) {}
+		Column (Column const &copy) : modelColumn (copy.modelColumn), caption(copy.caption) {}
+	};
+
+	std::map <Glib::ustring, Column> columns_;
 
 	void populateColumns ();
 
-	void addCol (
+	void addColumn (
 		Glib::ustring const &name,
 		Glib::ustring const &caption,
-		Gtk::TreeModelColumn<Glib::ustring> modelCol,
+		Gtk::TreeModelColumn<Glib::ustring> &modelCol,
 		bool const expand,
 		bool const ellipsize);
 };

@@ -71,7 +71,7 @@ Preferences::Preferences ()
 		setUseListView (false);
 		setWorkOffline (false);
 		setWindowSize (std::pair<int,int>(700,500));
-		setListSort (-1, 0);
+		setListSort ("title", 0);
 		firsttime_ = true;
 	} else {
 		firsttime_ = false;
@@ -485,29 +485,29 @@ void Preferences::setWindowSize (std::pair<int, int> size)
 }
 
 
-std::pair<int, int> Preferences::getListSort ()
+std::pair<Glib::ustring, int> Preferences::getListSort ()
 {
-	std::pair<int, int> retval;
-	retval.first = confclient_->get_int (listSortColumn_.get_key());
-	retval.second = confclient_->get_int (listSortOrder_.get_key());
+	std::pair<Glib::ustring, int> retval;
+	try {
+		retval.first = confclient_->get_string (listSortColumn_.get_key());
+	} catch (Gnome::Conf::Error &err) {
+		DEBUG1 ("Got a gconf error '%1', probably a legacy config, defaulting.",
+			err.what());
 
-	/*
-	 * XXX bit cracky, 0 is an invalid value because it
-	 * refers to the pointer col that gtk doesn't know how
-	 * to sort.  -1 means "sort on no columns".  This shouldn't
-	 * happen if we have a proper gconf schema
-	 */
-	if (retval.first == 0) {
-		retval.first = -1;
-	} 
+		DEBUG ("Legacy config, setting no sort column");
+		retval.first = "";
+	}
+	DEBUG1 ("Got column '%1'", retval.first);
+
+	retval.second = confclient_->get_int (listSortOrder_.get_key());
 
 	return retval;
 }
 
 
-void Preferences::setListSort (int const column, int const order)
+void Preferences::setListSort (Glib::ustring const &columnName, int const order)
 {
-	confclient_->set (listSortColumn_.get_key(), column);
+	confclient_->set (listSortColumn_.get_key(), columnName);
 	confclient_->set (listSortOrder_.get_key(), order);
 }
 
