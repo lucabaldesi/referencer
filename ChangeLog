@@ -1,4 +1,5 @@
 1.1.5:
+	- Mark library as dirty when executing plugin action
 	- Fix crash when tagging (Bug 258780)
 
 1.1.4:

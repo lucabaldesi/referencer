@@ -2893,5 +2893,11 @@ void RefWindow::onPluginRun (Glib::ustring const function, Plugin* plugin)
 	for (; it != end; ++it) {
 		docview_->updateDoc (*it);
 	}
+
+	/*
+	 * Mark the library as dirty since the plugin might 
+	 * have modified any of the documents
+	 */
+	setDirty (true);
 }
 
