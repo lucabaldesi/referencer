@@ -979,15 +979,36 @@ documents
 library
 \emph default
  is a unused.
+ For example:
+\end_layout
+
+\begin_layout LyX-Code
+def sensitivity_genkey (library, documents):
+\end_layout
+
+\begin_layout LyX-Code
+    pass
+\end_layout
+
+\begin_layout LyX-Code
+ 
+\end_layout
+
+\begin_layout LyX-Code
+def do_genkey (library, documents):
+\end_layout
+
+\begin_layout LyX-Code
+    pass
 \end_layout
 
 \begin_layout Standard
 Some plugin actions may wish to display arbitrary UI such as dialogs: this
  can be done using PyGtk.
- aA detailed explanation of PyGTK would be outside the scope of this document:
- there are many tutorials on writing PyGTK applications, and .
- Note that gtk is already initialised by referencer, so a plugin must not
- do any initialisation or finalisation.
+ A detailed explanation of PyGTK would be outside the scope of this document:
+ there are many tutorials on writing PyGTK applications.
+ Note that GTK is already initialised by referencer, so a plugin must not
+ do any GTK initialisation or finalisation.
  For example, the following code would stand entirely alone:
 \end_layout
 
