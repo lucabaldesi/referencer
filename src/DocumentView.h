@@ -33,7 +33,6 @@ class DocumentView : public Gtk::VBox
 	void updateVisible ();
 	void clear ();
 
-
 	Document *getSelectedDoc ();
 	std::vector<Document*> getSelectedDocs ();
 	int getSelectedDocCount ();
@@ -159,14 +158,28 @@ class DocumentView : public Gtk::VBox
 
 	class Column {
 		public:
-		Gtk::TreeModelColumn<Glib::ustring> &modelColumn;
-		Glib::ustring caption;
 		Column (Gtk::TreeModelColumn<Glib::ustring> &modelColumn_, Glib::ustring const &caption_)
 			: modelColumn (modelColumn_), caption(caption_) {}
 		Column (Column const &copy) : modelColumn (copy.modelColumn), caption(copy.caption) {}
+
+		Gtk::TreeModelColumn<Glib::ustring> &modelColumn;
+		Glib::ustring caption;
 	};
 
+	class SortAction {
+		public:
+		Glib::ustring name;
+		Glib::RefPtr<Gtk::RadioAction> action;
+		Gtk::UIManager::ui_merge_id merge;
+	};
+
+	typedef std::map<Glib::ustring, SortAction> SortActionMap;
+	SortActionMap sortUI_;
+	Gtk::RadioButtonGroup sortUIGroup_;
+
 	std::map <Glib::ustring, Column> columns_;
+
+	void sortActionToggled (SortAction const &action);
 
 	void populateColumns ();
 

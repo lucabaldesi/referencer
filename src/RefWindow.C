@@ -394,6 +394,7 @@ void RefWindow::constructMenu ()
 	actiongroup_->add ( Gtk::Action::create("EditMenu", _("_Edit")) );
 
 	actiongroup_->add ( Gtk::Action::create("ViewMenu", _("_View")) );
+	actiongroup_->add ( Gtk::Action::create("ViewMenuSort", _("_Sort")) );
 	actiongroup_->add( Gtk::Action::create(
 		"PasteBibtex", Gtk::Stock::PASTE, _("_Paste BibTeX"),
 		_("Import references from BibTeX on the clipboard")),
@@ -2834,8 +2835,7 @@ void RefWindow::docSelectionChanged ()
 		DocumentView::SubSet state = docview_->selectedDocsHaveTag ((*tagit).second.uid_);
 
 		/* God fucking damn it, why doesn't Gtk::ToggleAction
-		 * support inconsistent state?  Oh great Lord of irony,
-		 * that is so inconsistent!  My eyes! */
+		 * support inconsistent state?  That is so inconsistent!  My eyes! */
 		if (state == DocumentView::ALL) {
 			action->set_active (true);
 			//action->set_inconsistent (false);

@@ -1339,7 +1339,6 @@ void DocumentView::onSortColumnChanged ()
 	std::map<Glib::ustring, Column>::iterator columnIter = columns_.begin();
 	std::map<Glib::ustring, Column>::iterator columnEnd = columns_.end();
 	for (; columnIter != columnEnd; ++columnIter) {
-		DEBUG1 ("Trying %1", (*columnIter).second.modelColumn.index());
 		if ((*columnIter).second.modelColumn.index() == column) {
 			_global_prefs->setListSort ((*columnIter).first, order);
 			return;
@@ -1390,11 +1389,14 @@ void DocumentView::addColumn (
 	std::pair<Glib::ustring, Column> pair (name, column);
 	columns_.insert (pair);
 
-	// Er, we're actually passing this as reference, is this the right way
-	// to create it?  Will the treeview actually copy it?
+	/*
+	 * Create treeview column
+	 */
 	Gtk::CellRendererText *cell;
 	Gtk::TreeViewColumn *col;
 
+	// Er, we're actually passing this as reference, is this the right way
+	// to create it?  Will the treeview actually copy it?
 	col = Gtk::manage (new Gtk::TreeViewColumn (caption, modelCol));
 	col->set_resizable (true);
 	col->set_expand (expand);
@@ -1410,7 +1412,56 @@ void DocumentView::addColumn (
 		);
 	docslistview_->append_column (*col);
 
+	/*
+	 * Create gtkuimanager action
+	 */
+
+	/* Unique UI action identifier */
+	Glib::ustring actionName = String::ucompose ("sort_%1", name);
+
+	SortAction action;
+	action.name = name;
+	action.action = Gtk::RadioAction::create (sortUIGroup_, actionName, caption);
+	action.action->signal_toggled().connect(
+			sigc::bind(
+				sigc::mem_fun (*this, &DocumentView::sortActionToggled),
+				action));
+
+	/* Merge it into the UI */
+	Glib::ustring ui = 
+		"<ui>"
+		"<menubar name='MenuBar'>"
+		"<menu action='ViewMenu' name='ViewMenu'>"
+		"<menu action='ViewMenuSort' name='ViewMenuSort'>"
+		"  <placeholder name='ViewMenuSortItems'>"
+		"    <menuitem action='";
+	ui += actionName;
+	ui += "'/>"
+		"  </placeholder>"
+		"</menu>"
+		"</menu>"
+		"</menubar>"
+		"</ui>";
+
+	win_.actiongroup_->add(action.action);
+	try {
+		action.merge = win_.uimanager_->add_ui_from_string (ui);
+	} catch (Glib::Error err) {
+		DEBUG (ui);
+		DEBUG1 ("Merge error: %1", err.what());
+	}
+
+	sortUI_[name] = action;
 }
+
+
+void DocumentView::sortActionToggled (SortAction const &action)
+{
+	docstoresort_->set_sort_column (
+			(columns_.find(action.name))->second.modelColumn,
+			Gtk::SORT_ASCENDING);
+}
+
 
 
 void DocumentView::populateColumns ()
