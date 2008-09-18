@@ -1330,25 +1330,6 @@ void DocumentView::onSearchChanged ()
 }
 
 
-void DocumentView::onSortColumnChanged ()
-{
-	Gtk::SortType order;
-	int column;
-	docstoresort_->get_sort_column_id (column, order);
-
-	std::map<Glib::ustring, Column>::iterator columnIter = columns_.begin();
-	std::map<Glib::ustring, Column>::iterator columnEnd = columns_.end();
-	for (; columnIter != columnEnd; ++columnIter) {
-		if ((*columnIter).second.modelColumn.index() == column) {
-			_global_prefs->setListSort ((*columnIter).first, order);
-			return;
-		}
-	}
-
-	DEBUG1 ("Failed to resolve column id %1 to a name", column);
-
-}
-
 void DocumentView::onColumnEdited (
 	const Glib::ustring& pathStr, 
 	const Glib::ustring& enteredText,
@@ -1463,11 +1444,45 @@ void DocumentView::addColumn (
 
 void DocumentView::sortActionToggled (SortAction const &action)
 {
-	docstoresort_->set_sort_column (
-			(columns_.find(action.name))->second.modelColumn,
-			Gtk::SORT_ASCENDING);
+	if (action.action->get_active()) {
+		docstoresort_->set_sort_column (
+				(columns_.find(action.name))->second.modelColumn,
+				Gtk::SORT_ASCENDING);
+
+		_global_prefs->setListSort (action.name, 0);
+	}
 }
 
+
+void DocumentView::onSortColumnChanged ()
+{
+	Gtk::SortType order;
+	int column;
+	docstoresort_->get_sort_column_id (column, order);
+
+	Glib::ustring columnName;
+
+	std::map<Glib::ustring, Column>::iterator columnIter = columns_.begin();
+	std::map<Glib::ustring, Column>::iterator columnEnd = columns_.end();
+	for (; columnIter != columnEnd; ++columnIter) {
+		if ((*columnIter).second.modelColumn.index() == column) {
+			columnName = (*columnIter).first;
+		}
+	}
+
+	if (!columnName.empty()) {
+		SortActionMap::iterator action = sortUI_.find(columnName);
+		if (action != sortUI_.end()) {
+			DEBUG1 ("Activated action for column name %1", columnName);
+			action->second.action->set_active(true);
+		} else {
+			DEBUG1 ("Failed to find UI action for column name %1", columnName);
+		}
+		_global_prefs->setListSort (columnName, order);
+	} else {
+		DEBUG1 ("Failed to resolve column id %1 to a name", column);
+	}
+}
 
 
 void DocumentView::populateColumns ()
