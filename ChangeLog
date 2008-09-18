@@ -1,4 +1,5 @@
 1.1.5:
+	- Add DOI entry to document properties (Andreas Dalsgaard)
 	- Add menu item for selecting sort mode
 	- Mark library as dirty when executing plugin action
 	- Fix crash when tagging (Bug 258780)
