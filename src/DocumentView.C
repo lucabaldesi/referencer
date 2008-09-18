@@ -1417,11 +1417,17 @@ void DocumentView::addColumn (
 	 */
 
 	/* Unique UI action identifier */
-	Glib::ustring actionName = String::ucompose ("sort_%1", name);
+	Glib::ustring const actionName = String::ucompose ("sort_%1", name);
+	/* Translation note: this completes the sentence started by 
+	 * the "Arrange Items" string, which is the parent menu 
+	 * item.  If this does not make sense in your locale, translate 
+	 * "Arrange Items" as something like "Sort" and translate this 
+	 * as just "%1" */
+	Glib::ustring const actionCaption = String::ucompose (_("By %1"), caption);
 
 	SortAction action;
 	action.name = name;
-	action.action = Gtk::RadioAction::create (sortUIGroup_, actionName, caption);
+	action.action = Gtk::RadioAction::create (sortUIGroup_, actionName, actionCaption);
 	action.action->signal_toggled().connect(
 			sigc::bind(
 				sigc::mem_fun (*this, &DocumentView::sortActionToggled),

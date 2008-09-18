@@ -394,7 +394,12 @@ void RefWindow::constructMenu ()
 	actiongroup_->add ( Gtk::Action::create("EditMenu", _("_Edit")) );
 
 	actiongroup_->add ( Gtk::Action::create("ViewMenu", _("_View")) );
-	actiongroup_->add ( Gtk::Action::create("ViewMenuSort", _("_Sort")) );
+	/* Translation note: this begins the sentence completed by
+	 * the "By %1" string, which is the child menu 
+	 * item.  If this does not make sense in your locale, translate 
+	 * "Arrange Items" as something like "Sort" and translate "By %1" 
+	 * as just "%1" */
+	actiongroup_->add ( Gtk::Action::create("ViewMenuSort", _("Arran_ge Items")) );
 	actiongroup_->add( Gtk::Action::create(
 		"PasteBibtex", Gtk::Stock::PASTE, _("_Paste BibTeX"),
 		_("Import references from BibTeX on the clipboard")),
