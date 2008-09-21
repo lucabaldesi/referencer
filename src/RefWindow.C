@@ -773,8 +773,8 @@ void RefWindow::taggerActionToggled (Glib::RefPtr<Gtk::ToggleAction> action, int
 	ignoreDocSelectionChanged_ = false;
 	docSelectionChanged ();
 
-    // If we've untagged something it might no longer be visible
-    // Or if we've added a tag to something while viewing "untagged"
+	// If we've untagged something it might no longer be visible
+	// Or if we've added a tag to something while viewing "untagged"
 	updateStatusBar ();
 	
 	// All tag changes influence the fonts in the tag list
