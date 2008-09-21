@@ -677,16 +677,8 @@ std::vector<Document*> DocumentView::getSelectedDocs ()
 		Gtk::TreeSelection::ListHandle_Path::iterator it = paths.begin ();
 		Gtk::TreeSelection::ListHandle_Path::iterator const end = paths.end ();
 		for (; it != end; it++) {
-			/*
-			 * Explicit resolution through the proxy models is not strictly
-			 * necessary, but this way we pick up on it if the models aren't
-			 * in sync, rather than finding out the hard way
-			 */
 			Gtk::TreePath sortPath = (*it);
-			Gtk::TreePath filterPath = docstoresort_->convert_path_to_child_path (sortPath);
-			Gtk::TreePath realPath = docstorefilter_->convert_path_to_child_path (filterPath);
-
-			Gtk::ListStore::iterator iter = docstore_->get_iter (realPath);
+			Gtk::ListStore::iterator iter = docstoresort_->get_iter(sortPath);
 			docpointers.push_back((*iter)[docpointercol_]);
 		}
 	} else {
@@ -696,16 +688,8 @@ std::vector<Document*> DocumentView::getSelectedDocs ()
 		Gtk::IconView::ArrayHandle_TreePaths::iterator it = paths.begin ();
 		Gtk::IconView::ArrayHandle_TreePaths::iterator const end = paths.end ();
 		for (; it != end; it++) {
-			/*
-			 * Explicit resolution through the proxy models is not strictly
-			 * necessary, but this way we pick up on it if the models aren't
-			 * in sync, rather than finding out the hard way
-			 */
 			Gtk::TreePath sortPath = (*it);
-			Gtk::TreePath filterPath = docstoresort_->convert_path_to_child_path (sortPath);
-			Gtk::TreePath realPath = docstorefilter_->convert_path_to_child_path (filterPath);
-
-			Gtk::ListStore::iterator iter = docstore_->get_iter (realPath);
+			Gtk::ListStore::iterator iter = docstoresort_->get_iter(sortPath);
 			Document *docptr = (*iter)[docpointercol_];
 
 			if (!docptr) {

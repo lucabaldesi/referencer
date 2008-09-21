@@ -192,10 +192,10 @@ void openCB (
 	Gnome::Vfs::Result result)
 {
 	if (result == Gnome::Vfs::OK) {
-		DEBUG ("openCB: result OK, opened");
+		DEBUG ("result OK, opened");
 		advance = true;
 	} else {
-		DEBUG ("openCB: result not OK");
+		DEBUG ("result not OK");
 		transferStatus |= TRANSFER_FAIL_SILENT;
 	}
 }
