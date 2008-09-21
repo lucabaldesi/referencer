@@ -1121,6 +1121,9 @@ void RefWindow::onCreateAndAttachTag ()
 		(*docIter)->setTag (newtag);
 	}
 
+	updateTagSizes ();
+
+	setDirty (true);
 }
 
 
