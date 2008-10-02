@@ -121,8 +121,9 @@ void Library::clear ()
 /**
  * Show a dialog prompting the user for a folder in which
  * to download documents and optionally to monitor for new documents
+ * Returns true if there was a change.
  */
-void Library::libraryFolderDialog ()
+bool Library::libraryFolderDialog ()
 {
 	Glib::RefPtr<Gnome::Glade::Xml> xml = Gnome::Glade::Xml::create (
 			Utility::findDataFile ("libraryfolder.glade"));
@@ -135,18 +136,24 @@ void Library::libraryFolderDialog ()
 
 	Gtk::Dialog *dialog = 
 		(Gtk::Dialog *) xml->get_widget ("LibraryFolder");
+ 
+	bool oldMonitorState = library_folder_monitor_;
+	Glib::ustring const oldFolder = library_folder_uri_;
 
-	monitor->set_active (library_folder_monitor_);
-	location->select_uri ("");
+	monitor->set_active (library_folder_monitor_);	
+	location->select_uri (library_folder_uri_);
 
 	dialog->run ();
 
 	library_folder_monitor_ = monitor->get_active ();
-	library_folder_uri_ = location->get_uri ();
+	if (!location->get_uri().empty())
+	        library_folder_uri_ = location->get_uri ();
 
 	DEBUG (library_folder_uri_);
 
 	dialog->hide ();
+	return ((oldMonitorState != library_folder_monitor_) || 
+		(oldFolder != library_folder_uri_));
 }
 
 

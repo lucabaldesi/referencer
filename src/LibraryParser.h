@@ -41,6 +41,10 @@ class LibraryParser : public Glib::Markup::Parser {
 	bool inTagged_;
 	bool inBibItem_;
 
+	bool inLibraryFolder_;
+
+	Glib::ustring libraryFolderUri_;
+
 	Glib::ustring newDocKey_;
 	Glib::ustring newDocFileName_;
 	Glib::ustring newDocRelFileName_;
@@ -63,7 +67,7 @@ class LibraryParser : public Glib::Markup::Parser {
 	{
 		inTag_ = false;
 		inUid_ = false;
-		inTagName_ = false;
+		inTagName_ = false;		
 
 		inDoc_ = false;
 		inKey_ = false;
@@ -72,6 +76,8 @@ class LibraryParser : public Glib::Markup::Parser {
 		inNotes_ = false;
 		inTagged_ = false;
 		inBibItem_ = false;
+
+ 		inLibraryFolder_ = false;
 
 		manageBraces_ = false;
 		manageUTF8_ = false;
@@ -154,6 +160,9 @@ class LibraryParser : public Glib::Markup::Parser {
 				keyval = *attrib;
 				manageUTF8_ = boolFromStr (keyval.second);
 			}
+		} else if (element_name == "library_folder") {
+		        inLibraryFolder_ = true;
+			libraryFolderUri_ = "";
 		}
 
 	}
@@ -220,6 +229,10 @@ class LibraryParser : public Glib::Markup::Parser {
 		} else if (element_name == "manage_target") {
 			library_.manageBibtex (textBuffer_, manageBraces_, manageUTF8_);
 		}
+		else if (element_name == "library_folder") {
+		        inLibraryFolder_ = false;
+			library_.setLibraryFolder(libraryFolderUri_);
+		}
 	}
 
  	// Called on error, including one thrown by an overridden virtual method.
@@ -252,6 +265,8 @@ class LibraryParser : public Glib::Markup::Parser {
 			newDocTag_ += text;
 		else if (inBibItem_)
 			bibText_ += text;
+		else if (inLibraryFolder_)
+		        libraryFolderUri_ += text;
 		else {
 			textBuffer_ += text;
 		}

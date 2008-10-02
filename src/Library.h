@@ -53,8 +53,12 @@ class Library {
 	bool getBibtexBraces () {return manage_braces_;}
 	bool getBibtexUTF8 () {return manage_utf8_;}
 
+	Glib::ustring getLibraryFolder () {return library_folder_uri_;}
+	void setLibraryFolder (Glib::ustring LibraryFolderUri) {
+	        library_folder_uri_ = LibraryFolderUri;
+	}
 
-	void libraryFolderDialog ();
+	bool libraryFolderDialog ();
 
 	private:
 	Glib::ustring manage_target_;

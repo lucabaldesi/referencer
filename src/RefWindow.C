@@ -58,6 +58,7 @@ RefWindow::RefWindow ()
 		setOpenedLib (libfile);
 		populateTagList ();
 		docview_->populateDocStore ();
+		addfolder_ = Gnome::Vfs::get_local_path_from_uri(library_->getLibraryFolder());
 	} else {
 		onNewLibrary ();
 	}
@@ -380,8 +381,8 @@ void RefWindow::constructMenu ()
 	actiongroup_->add( Gtk::Action::create("ManageBibtex",
 		Gtk::Stock::CONVERT, _("_Manage BibTeX File...")), Gtk::AccelKey ("<control><shift>b"),
 		sigc::mem_fun(*this, &RefWindow::onManageBibtex));
-	actiongroup_->add( Gtk::Action::create("LibraryFolder",
-		Gtk::Stock::OPEN, _("_Library Folder...")),
+	actiongroup_->add( Gtk::Action::create("Properties",
+		Gtk::Stock::PROPERTIES, _("_Properties...")), Gtk::AccelKey ("<control>p"),
 		sigc::mem_fun(*this, &RefWindow::onLibraryFolder));
 	actiongroup_->add( Gtk::Action::create("Import",
 		_("_Import...")),
@@ -1430,7 +1431,7 @@ void RefWindow::manageBrowseDialog (Gtk::Entry *entry)
 
 void RefWindow::onLibraryFolder ()
 {
-	library_->libraryFolderDialog ();
+        setDirty(library_->libraryFolderDialog ());
 }
 
 
@@ -1598,6 +1599,7 @@ void RefWindow::onOpenLibrary ()
 
 			updateStatusBar ();
 			setOpenedLib (libfile);
+			addfolder_ = Gnome::Vfs::get_local_path_from_uri(library_->getLibraryFolder());
 		} else {
 			//library_->load would have shown an exception error dialog
 		}

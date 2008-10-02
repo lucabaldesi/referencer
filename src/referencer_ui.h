@@ -17,6 +17,8 @@ Glib::ustring referencer_ui =
 		"      <menuitem action='ExportNotes'/>"
 		"      <menuitem action='Import'/>"
 		"      <separator/>"
+		"      <menuitem action='Properties'/>"
+		"      <separator/>"
 		"      <menuitem action='WorkOffline'/>"
 		"      <separator/>"
 		"      <placeholder name='PluginLibraryActions'/>"
