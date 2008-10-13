@@ -101,7 +101,7 @@ def do_genkey (library, documents):
 			# replace %a with first author's last name
 			key = format
 			key = key.replace ("%y", shortYear)
-			key = key.replace ("%Y", shortYear)
+			key = key.replace ("%Y", year)
 			key = key.replace ("%a", author)
 		else:
 			key = document.get_key ()
