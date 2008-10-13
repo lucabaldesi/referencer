@@ -1,4 +1,5 @@
 1.1.5:
+	- Change 'keywords' to 'tags' in bibtex export
 	- Add DOI entry to document properties (Andreas Dalsgaard)
 	- Add menu item for selecting sort mode
 	- Mark library as dirty when executing plugin action
