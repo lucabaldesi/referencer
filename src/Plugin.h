@@ -2,6 +2,8 @@
 #ifndef PLUGIN_H
 #define PLUGIN_H
 
+
+#include <gtkmm.h>
 #include <vector>
 
 class PluginCapability
@@ -17,7 +19,8 @@ class PluginCapability
 			DOI = 1 << 0,
 			ARXIV = 1 << 1,
 			PUBMED = 1 << 2,
-			DOCUMENT_ACTION = 1 << 3
+			DOCUMENT_ACTION = 1 << 3,
+			URL = 1 << 4
 		} Identifier;
 
 		void add (Identifier const id) {
@@ -53,6 +56,61 @@ class PluginCapability
 		}
 
 		uint64_t mask_;
+
+		static Glib::ustring getFriendlyName (Identifier const id) {
+			switch (id) {
+				case DOCUMENT_ACTION:
+					return "Document action";
+				case DOI:
+					return "DOI";
+				case ARXIV:
+					return "arXiv e-print";
+				case PUBMED:
+					return "PubMed ID";
+				case URL:
+					return "Web URL";
+				case NONE:
+				default:
+					return "Invalid PluginCapability for display";
+
+			}
+		}	
+
+		static Glib::ustring getFieldName (Identifier const id) {
+			switch (id) {
+				case DOI:
+					return "doi";
+				case ARXIV:
+					return "eprint";
+				case PUBMED:
+					return "pmid";
+				case URL:
+					return "url";
+
+				case NONE:
+				case DOCUMENT_ACTION:
+				default:
+					return "";
+
+			}
+		}	
+
+		/**
+		 * Returns a list of capability IDs suitable for display in 
+		 * a list of document ID types
+		 */
+		static std::vector<Identifier> getMetadataCapabilities () {
+			std::vector<Identifier> retval;
+			retval.push_back (DOI);
+			retval.push_back (PUBMED);
+			retval.push_back (ARXIV);
+			retval.push_back (URL);
+			return retval;
+		}
+
+		bool hasMetadataCapability () {
+			return has (DOI) || has (ARXIV) || has (PUBMED) || has (URL);
+		}
 };
 
 class Document;

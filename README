@@ -32,7 +32,11 @@ The build dependencies are:
 	python
 	python API
 
-On Ubuntu 6.10 (or 6.06 LTS), all of these may be obtained by running the following command:
+
+On Ubuntu 8.10:
+	sudo apt-get install build-essential libpoppler-glib-dev libgtkmm-2.4-dev libgnomeuimm-2.6-dev libgnome-vfsmm-2.6-dev libglademm-2.4-dev libgconfmm-2.6-dev libboost-dev intltool python-dev gnome-icon-theme librsvg2-common libgnomevfs2-extra libboost-regex-dev gnome-common automake
+
+On Ubuntu 6.10 (or 6.06 LTS):
 	sudo apt-get install build-essential libpoppler-glib-dev libgtkmm-2.4-dev libgnomeuimm-2.6-dev libgnome-vfsmm-2.6-dev libglademm-2.4-dev libgconfmm-2.6-dev libboost-dev intltool python-dev gnome-icon-theme librsvg2-common libgnomevfs2-extra
 
 On 8.04 you will also require libboost-regex-dev

@@ -361,7 +361,7 @@ void Document::writeBibtex (
 	writeBibKey (out, "doi",    bib_.getDoi(), usebraces, utf8);
 	
 	if (tagUids_.size () > 0) {
-		out << "\tkeywords = \"";
+		out << "\ttags = \"";
 		std::vector<int>::iterator tagit = tagUids_.begin ();
 		std::vector<int>::iterator const tagend = tagUids_.end ();
 		for (; tagit != tagend; ++tagit) {
@@ -525,6 +525,9 @@ bool Document::getMetaData ()
 
 	if (hasField("pmid"))
 		potentials.add(PluginCapability::PUBMED);
+
+	if (hasField("url"))
+		potentials.add(PluginCapability::URL);
 
 	if (potentials.empty())
 		return false;

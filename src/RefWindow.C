@@ -2081,30 +2081,48 @@ void RefWindow::onAddDocUnnamed ()
 
 void RefWindow::onAddDocById ()
 {
+	static Glib::ustring lastSelected;
 
 	Gtk::Dialog dialog (_("Add Reference with ID"), true, false);
 
 	Gtk::VBox *vbox = dialog.get_vbox ();
 
+
+	/* Populate structures of ID type names, IDs */
+	std::vector<PluginCapability::Identifier> capIds;
+	std::vector<Glib::ustring> capNames;
+	std::map<Glib::ustring, PluginCapability::Identifier> capNameToId;
+
+	capIds = PluginCapability::getMetadataCapabilities ();
+	std::vector<PluginCapability::Identifier>::iterator capIter = capIds.begin();
+	std::vector<PluginCapability::Identifier>::iterator const capEnd = capIds.end();
+	for (; capIter != capEnd; ++capIter) {
+		PluginCapability::Identifier id = *capIter;
+		Glib::ustring const name = PluginCapability::getFriendlyName(id);
+		capNames.push_back(name);
+		capNameToId.insert (std::pair<Glib::ustring, PluginCapability::Identifier>(name, id));
+	}
+
 	/*
-	 * A combo to select between doi, medline, arxiv
+	 * A combo to select between ID types
 	 */
 
-	Glib::ustring doiDisplayName = "DOI";
-	Glib::ustring pubmedDisplayName = "PubMed ID";
-	Glib::ustring arxivDisplayName = "arXiv e-print";
-
 	Gtk::ComboBoxText combo;
-	combo.append_text (doiDisplayName);
-	combo.append_text (pubmedDisplayName);
-	combo.append_text (arxivDisplayName);
-	combo.set_active_text (doiDisplayName);
+	std::vector<Glib::ustring>::iterator nameIter = capNames.begin();
+	std::vector<Glib::ustring>::iterator const nameEnd = capNames.end();
+	for (; nameIter != nameEnd; ++nameIter) {
+		combo.append_text (*nameIter);
+	}
+
+	if (!lastSelected.empty())
+		combo.set_active_text (lastSelected);
+	else
+		combo.set_active_text (capNames[0]);
 
 	Gtk::HBox hbox;
 	hbox.set_spacing (6);
 	vbox->pack_start (hbox, true, true, 0);
 
-//	Gtk::Label label (_("ID:"), false);
 	hbox.pack_start (combo, false, false, 0);
 
 	Gtk::Entry entry;
@@ -2123,17 +2141,22 @@ void RefWindow::onAddDocById ()
 		setDirty (true);
 		Document *newdoc = library_->doclist_->newDocUnnamed ();
 
-		Glib::ustring field;
+		/* Look up selection to capability ID */
 		Glib::ustring displayField = combo.get_active_text ();
-		if (displayField == doiDisplayName) {
-			field = "doi";
-		} else if (displayField == pubmedDisplayName) {
-			field = "pmid";
-		} else if (displayField == arxivDisplayName) {
-			field = "eprint";
-		}/* else {
-			throw std::runtime_error("onAddDocById");	
-		}*/
+		std::map<Glib::ustring, PluginCapability::Identifier>::iterator idIter = capNameToId.find(displayField);
+		if (idIter == capNameToId.end()) {
+			/* Epic fail, user somehow selected a field that 
+			 * we don't remember creating */
+			DEBUG1 ("Bad displayField %1", displayField);
+		}
+		PluginCapability::Identifier capId = idIter->second;
+
+		/* Look up capability ID to document field name */
+		Glib::ustring const field = PluginCapability::getFieldName(capId);
+		if (field == "") {
+			/* A capability without a valid field name */
+			DEBUG1 ("Bad capId %1", capId);
+		}
 
 		Glib::ustring id = entry.get_text ();
 		id = Utility::trimWhiteSpace (id);
@@ -2145,6 +2168,8 @@ void RefWindow::onAddDocById ()
 
 		docview_->addDoc (newdoc);
 		updateStatusBar ();
+
+		lastSelected = displayField;
 	}
 }
 
