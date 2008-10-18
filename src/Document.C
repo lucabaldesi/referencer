@@ -526,6 +526,9 @@ bool Document::getMetaData ()
 	if (hasField("pmid"))
 		potentials.add(PluginCapability::PUBMED);
 
+	if (hasField("url"))
+		potentials.add(PluginCapability::URL);
+
 	if (potentials.empty())
 		return false;
 

@@ -113,6 +113,8 @@ void PythonPlugin::load (std::string const &moduleName)
 				cap_.add(PluginCapability::ARXIV);
 			else if (str == "pubmed")
 				cap_.add(PluginCapability::PUBMED);
+			else if (str == "url")
+				cap_.add(PluginCapability::URL);
 		}
 		Py_DECREF (pCaps);
 	} else {
@@ -176,17 +178,18 @@ void PythonPlugin::load (std::string const &moduleName)
 		}
 		Py_DECREF (pActions);
 	} else {
-		DEBUG (String::ucompose ("No actions in ", moduleName_));
+		DEBUG (String::ucompose ("No actions in %1", moduleName_));
 	}
 
 	/* Extract metadata lookup function */
-	if (cap_.has(PluginCapability::DOI) || cap_.has(PluginCapability::ARXIV) || 
-		cap_.has(PluginCapability::PUBMED)) { 
+	if (cap_.hasMetadataCapability()) { 
 		pGetFunc_ = PyObject_GetAttrString (pMod_, "resolve_metadata");
 		if (!pGetFunc_) {
 			DEBUG ("Couldn't find resolver");
 			Py_DECREF (pMod_);
 			return;
+		} else {
+			DEBUG1 ("Found resolver %1", pGetFunc_);
 		}
 	}
 
@@ -392,6 +395,11 @@ bool PythonPlugin::resolveID (Document &doc, PluginCapability::Identifier id)
 			if (!doc.hasField ("pmid"))
 				return false;
 			pArgs = Py_BuildValue ("(Os)", pDoc, "pubmed");
+		break;
+		case PluginCapability::URL:
+			if (!doc.hasField ("url"))
+				return false;
+			pArgs = Py_BuildValue ("(Os)", pDoc, "url");
 		break;
 		default:
 			DEBUG1 ("PythonPlugin::resolveID: warning, unhandled id type %1", id);
