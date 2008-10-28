@@ -18,7 +18,10 @@ dnl -----------------------------------------------
 
 AM_INIT_AUTOMAKE($PACKAGE, $VERSION)
 
+AC_CONFIG_MACRO_DIR([m4])
+
 GNOME_COMMON_INIT
+GNOME_DOC_INIT
 
 AC_LANG_CPLUSPLUS
 
@@ -125,6 +128,7 @@ AM_CONDITIONAL([ENABLE_PYTHON],[test "x$enable_python" = "xyes"])
 dnl This allows the bug-report script to know whether python has been enabled
 AC_SUBST(enable_python)
 
+
 dnl Create makefiles
 AC_OUTPUT(
 	Makefile
@@ -133,6 +137,7 @@ AC_OUTPUT(
 	data/Makefile
 	data/referencer.desktop.in
 	plugins/Makefile
+	help/Makefile
 	po/Makefile.in
 	referencer.spec
 )
