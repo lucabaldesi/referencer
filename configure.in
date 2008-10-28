@@ -10,7 +10,7 @@ dnl Package name and version number (user defined)
 dnl -----------------------------------------------
 
 PACKAGE=referencer
-VERSION=1.1.5
+VERSION=1.1.6
 
 dnl -----------------------------------------------
 dnl Package name and version number (DO NOT MODIFY)
