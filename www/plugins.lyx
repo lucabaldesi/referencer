@@ -549,10 +549,25 @@ value
 \begin_layout Description
 
 \family typewriter
-print_bibtex()
+print_bibtex(
+\emph on
+braces,\InsetSpace ~
+utf8
+\emph default
+)
 \family default
  Return a string containing the bibtex representation of the document's
  metadata.
+ 
+\family typewriter
+braces
+\family default
+ specifies whether each value should be enclosed in {}, and 
+\family typewriter
+utf8
+\family default
+ specifies whether the output should be given in ASCII with bibtex entitites
+ (false) or in UTF-8 encoding (true).
 \end_layout
 
 \begin_layout Subsection
