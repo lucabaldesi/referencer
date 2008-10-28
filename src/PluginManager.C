@@ -9,6 +9,7 @@
 #include "Python.h"
 
 #include "BibData.h"
+#include "Document.h"
 #include "Preferences.h"
 #include "PythonDocument.h"
 #include "Transfer.h"
@@ -50,6 +51,39 @@ referencer_download(PyObject *self, PyObject *args)
 	return ret;
 }
 
+/**
+ * Convert a bibtex snippet into a dictionary of key/value 
+ * pairs compatible with set_field in PythonDocument
+ */
+static PyObject *
+referencer_bibtex_to_fields (PyObject *self, PyObject *args)
+{
+	/* Get bibtex string from argument tuple */
+	PyObject *bibtex_py_str = PyTuple_GetItem (args, 0);
+	char *bibtex_str = PyString_AsString(bibtex_py_str);
+
+	/* Parse bibtex into a Document */
+	Document doc;
+	doc.parseBibtex (bibtex_str);
+
+	/* Retrieve STL map of fields */
+	Document::FieldMap fields = doc.getFields ();
+
+	/* Convert STL map to python dict */
+	PyObject *dict = PyDict_New();
+
+	Document::FieldMap::iterator fieldIter = fields.begin ();
+	Document::FieldMap::iterator const fieldEnd = fields.end ();
+	for (; fieldIter != fieldEnd; ++fieldIter) {
+		PyDict_SetItem (
+			dict,
+			PyString_FromString (fieldIter->first.c_str()),
+			PyString_FromString (fieldIter->second.c_str()));
+	}
+
+	return dict;
+}
+
 /* Call gettext */
 static PyObject*
 referencer_gettext(PyObject *self, PyObject *args)
@@ -83,6 +117,8 @@ referencer_pref_get (PyObject *self, PyObject *args)
 static PyMethodDef ReferencerMethods[] = {
 	{"download", referencer_download, METH_VARARGS,
 		"Retrieve a remote file"},
+	{"bibtex_to_fields", referencer_bibtex_to_fields, METH_VARARGS,
+		"Convert bibtex to referencer document fields"},
 	{"pref_get", referencer_pref_get, METH_VARARGS,
 		 "Get configuration item"},
 	{"pref_set", referencer_pref_set, METH_VARARGS,

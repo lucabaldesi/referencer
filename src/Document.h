@@ -79,6 +79,11 @@ class Document {
 		std::ostringstream& out,
 		bool const usebraces,
 		bool const utf8);
+
+	Glib::ustring printBibtex (
+		bool const useBraces,
+		bool const utf8);
+		
 	void writeXML (Glib::ustring &out);
 	bool readPDF ();
 	bool getMetaData ();
@@ -91,10 +96,12 @@ class Document {
 
 	bool parseBibtex (Glib::ustring const &bibtex);
 
+	typedef std::map <Glib::ustring, Glib::ustring> FieldMap;
+
 	void setField (Glib::ustring const &field, Glib::ustring const &value);
 	Glib::ustring getField (Glib::ustring const &field);
 	bool hasField (Glib::ustring const &field) const;
-	std::map <Glib::ustring, Glib::ustring> getFields ();
+	FieldMap getFields ();
 	void clearFields ();
 
 	static Glib::ustring keyReplaceDialog (Glib::ustring const &, Glib::ustring const &);

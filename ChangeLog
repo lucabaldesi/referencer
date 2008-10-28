@@ -1,4 +1,6 @@
 1.1.6:
+	- Plugin interface: add bibtex_to_fields utility function, 
+	  add print_bibtex method to PythonDocument
 	- Docbook manual (Mario Blätterman)
 
 1.1.5:
