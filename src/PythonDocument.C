@@ -42,10 +42,25 @@ static PyObject *referencer_document_set_filename (PyObject *self, PyObject *arg
 static PyObject *referencer_document_get_field (PyObject *self, PyObject *args)
 {
 	PyObject *fieldName = PyTuple_GetItem (args, 0);
-	Glib::ustring value = ((referencer_document*)self)->doc_->getField (PyString_AsString(fieldName));
-	return PyString_FromString(value.c_str());
+
+	try {
+		Glib::ustring value = ((referencer_document*)self)->doc_->getField (PyString_AsString(fieldName));
+		return PyString_FromString(value.c_str());
+	} catch (std::exception &ex) {
+		PyErr_SetString (PyExc_KeyError, ex.what());
+		return NULL;
+	}
 }
 
+static PyObject *referencer_document_get_fields (PyObject *self, PyObject *args)
+{
+/* TODO */
+}
+
+static PyObject *referencer_document_set_fields (PyObject *self, PyObject *args)
+{
+/* TODO */
+}
 
 static PyObject *referencer_document_set_field (PyObject *self, PyObject *args)
 {
@@ -97,13 +112,15 @@ static int referencer_document_init (PyObject *self, PyObject *args, PyObject *k
 
 
 static PyMemberDef referencer_document_members[] = {
-	{"ptr", T_INT, offsetof(referencer_document, doc_), 0, "a pointer"},
+	{"ptr", T_INT, offsetof(referencer_document, doc_), 0, "Pointer to C++ Document"},
 	{NULL}
 };
 
 static PyMethodDef referencer_document_methods[] = {
 	{"get_field", referencer_document_get_field, METH_VARARGS, "Get a field"},
+	{"get_fields", referencer_document_get_fields, METH_VARARGS, "Get a dictionary of all fields"},
 	{"set_field", referencer_document_set_field, METH_VARARGS, "Set a field"},
+	{"set_fields", referencer_document_set_fields, METH_VARARGS, "Set all fields from a dictionary"},
 	{"get_key", referencer_document_get_key, METH_VARARGS, "Get the key"},
 	{"set_key", referencer_document_set_key, METH_VARARGS, "Set the key"},
 	{"get_filename", referencer_document_get_filename, METH_VARARGS, "Get the filename"},

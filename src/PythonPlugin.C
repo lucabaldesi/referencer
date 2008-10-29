@@ -209,6 +209,7 @@ bool PythonPlugin::resolve (Document &doc)
 		success = resolveID (doc, *it);
 		if (success)
 			break;
+	}
 	
 
 	if (success)
