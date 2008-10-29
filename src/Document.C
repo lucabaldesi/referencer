@@ -714,6 +714,7 @@ Glib::ustring Document::getField (Glib::ustring const &field)
 			return bib_.extras_[_field];
 		} else {
 			DEBUG1 ("Document::getField: WARNING: unknown field %1", field);
+			return Glib::ustring();
 		}
 	}
 }
