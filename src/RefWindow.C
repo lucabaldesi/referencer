@@ -258,6 +258,8 @@ void RefWindow::constructUI ()
 		*render, sigc::mem_fun (*this, &RefWindow::tagCellRenderer));
 	namecol->add_attribute (render->property_markup (), tagnamecol_);
 	namecol->add_attribute (render->property_font_desc (), tagfontcol_);
+	((Gtk::CellRendererText*)(std::vector<Gtk::CellRenderer*>(namecol->get_cell_renderers())[0]))->property_ellipsize() = Pango::ELLIPSIZE_MIDDLE;
+	
 	tags->append_column (*namecol);
 	tags->signal_button_press_event().connect_notify(
 		sigc::mem_fun (*this, &RefWindow::tagClicked));
@@ -576,6 +578,9 @@ void RefWindow::updateTagSizes ()
 			tagusecounts[*tagit]++;
 	}
 
+
+	
+
 	/* What was I smoking when I wrote TagList?  Mung it into a more
 	 * useful data structure. */
 	typedef std::map<Glib::ustring, std::pair<int, int> > SensibleMap;
@@ -598,23 +603,28 @@ void RefWindow::updateTagSizes ()
 			continue;
 
 		int useCount = tagusecounts[(*tagIter)[taguidcol_]];
-		int size = window_->get_style ()->get_font().get_size ();
 
-		if (useCount > 0) {
-			float factor;
-			float const maxfactor = 1.55;
-			if (doccount > 0)
-				factor = 0.75 + (logf((float)useCount / (float)doccount + 0.1) - logf(0.1)) * 0.4;
-			else
-				factor = 1.5;
-			if (factor > maxfactor)
-				factor = maxfactor;
 
-			size = (int) (factor * (float)size);
+
+		float factor = 0.0;
+		if (useCount > 0 && doccount > 0) {
+			//factor = 0.75 + (logf((float)useCount / (float)doccount + 0.1) - logf(0.1)) * 0.4;
+			factor = (float)useCount / (float)doccount;
 		}
+
+		int size = (int)((float)(window_->get_style ()->get_font().get_size ()) * (0.95f + (factor * 0.1f)));
+
+
 		Pango::FontDescription font;
-		font.set_size (size);
-		font.set_weight (Pango::WEIGHT_SEMIBOLD);
+		if (factor < 0.1) {
+			font.set_weight (Pango::WEIGHT_NORMAL);
+		} else if (factor < 0.5) {
+			font.set_weight (Pango::WEIGHT_SEMIBOLD);
+		} else {
+			font.set_weight (Pango::WEIGHT_SEMIBOLD);
+		}
+		font.set_size(size);
+
 		(*tagIter)[tagfontcol_] = font;
 	}
 }
@@ -1798,7 +1808,9 @@ RefWindow::TaggerDialog::TaggerDialog (RefWindow *window, TagList *taglist)
 	selected->add_attribute (toggle_->property_active(), selectedColumn_);
 
 	view_->append_column (*selected);
-	view_->append_column (*(Gtk::manage (new Gtk::TreeViewColumn ("", nameColumn_))));
+	Gtk::TreeViewColumn *name_column = (Gtk::manage (new Gtk::TreeViewColumn ("", nameColumn_)));
+	((Gtk::CellRendererText*)(std::vector<Gtk::CellRenderer*>(name_column->get_cell_renderers())[0]))->property_ellipsize() = Pango::ELLIPSIZE_MIDDLE;
+	view_->append_column (*name_column);
 
 	/* "Create tag" button */
 	Gtk::Button *button = Gtk::manage (new Gtk::Button (_("C_reate Tag..."), true));

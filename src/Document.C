@@ -547,17 +547,17 @@ bool Document::canGetMetadata ()
 
 bool Document::matchesSearch (Glib::ustring const &search)
 {
-	Glib::ustring const searchNormalised = search.uppercase();
+	Glib::ustring const searchNormalised = search.casefold();
 
 	FieldMap fields = getFields ();
 	FieldMap::iterator fieldIter = fields.begin ();
 	FieldMap::iterator const fieldEnd = fields.end ();
 	for (; fieldIter != fieldEnd; ++fieldIter) {
-		if (fieldIter->second.uppercase().find(searchNormalised) != Glib::ustring::npos)
+		if (fieldIter->second.casefold().find(searchNormalised) != Glib::ustring::npos)
 			return true;
 	}
 
-	if (notes_.uppercase().find(searchNormalised) != Glib::ustring::npos)
+	if (notes_.casefold().find(searchNormalised) != Glib::ustring::npos)
 		return true;
 
 	return false;
