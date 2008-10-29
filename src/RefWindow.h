@@ -17,6 +17,7 @@
 #include <map>
 
 #include <gtkmm.h>
+#include <libglademm.h>
 
 #include "Plugin.h"
 
@@ -166,6 +167,7 @@ class RefWindow {
 		void onAddDocById ();
 		void onAddDocFile ();
 		void onAddDocFolder ();
+		void onSearch ();
 
 		/* Helpers for addDocFiles */
 		void onAddDocFilesCancel       (Gtk::Button *button, Gtk::ProgressBar *progress);
@@ -193,8 +195,20 @@ class RefWindow {
 			TagList *taglist_;
 			public:
 			TaggerDialog (RefWindow *window, TagList *taglist);
-			std::vector<int> tagPrompt ();
-			
+			std::vector<int> tagPrompt (); }; class SearchDialog { public: SearchDialog (); void run (); 
+			private:
+			Glib::RefPtr<Gnome::Glade::Xml> xml_;
+
+			Gtk::Dialog *dialog_;
+			Gtk::Button *searchButton_;
+			Gtk::Entry *searchEntry_;
+			Gtk::ComboBox *pluginCombo_;
+			Gtk::TreeView *resultsView_;
+
+			Glib::RefPtr<Gtk::ListStore>        model_;
+			Gtk::TreeModelColumn<Document*> ptrColumn_;
+			Gtk::TreeModelColumn<Glib::ustring> titleColumn_;
+			Gtk::TreeModelColumn<Glib::ustring> authorColumn_;
 		};
 
 		public:

@@ -462,6 +462,10 @@ void RefWindow::constructMenu ()
 		"DocProperties", Gtk::Stock::PROPERTIES), Gtk::AccelKey ("<control>e"),
   	sigc::mem_fun(*this, &RefWindow::onDocProperties));
 
+	actiongroup_->add( Gtk::Action::create(
+		    "Search", Gtk::Stock::FIND, _("Search...")), Gtk::AccelKey ("<control>e"),
+		sigc::mem_fun(*this, &RefWindow::onSearch));
+
 	actiongroup_->add ( Gtk::Action::create("TaggerMenuAction", _("_Tags")) );
 	//actiongroup_->get_action("TaggerMenuAction")->set_property("hide_if_empty", false);
 
@@ -2290,6 +2294,13 @@ void RefWindow::onRemoveDoc ()
 }
 
 
+void RefWindow::onSearch ()
+{
+	SearchDialog dialog;
+	dialog.run();
+}
+
+
 void RefWindow::onGetMetadataDoc ()
 {
 	progress_->start (_("Fetching metadata"));
@@ -2945,4 +2956,34 @@ void RefWindow::onPluginRun (Glib::ustring const function, Plugin* plugin)
 	    setDirty (true);
 	}
 }
+
+
+RefWindow::SearchDialog::SearchDialog ()
+{
+	xml_ = Gnome::Glade::Xml::create (
+		Utility::findDataFile ("search.glade"));
+	
+	xml_->get_widget ("SearchDialog", dialog_);
+	xml_->get_widget ("Find", searchButton_);
+	xml_->get_widget ("SearchText", searchEntry_);
+	xml_->get_widget ("Plugin", pluginCombo_);
+	xml_->get_widget ("SearchResults", resultsView_);
+
+	Gtk::TreeModel::ColumnRecord cols;
+	cols.add (ptrColumn_);
+	cols.add (titleColumn_);
+	cols.add (authorColumn_);
+	model_ = Gtk::ListStore::create (cols);
+
+	resultsView_->set_model (model_);
+}
+
+
+void RefWindow::SearchDialog::run ()
+{
+	dialog_->run ();
+	dialog_->hide ();
+}
+
+
 

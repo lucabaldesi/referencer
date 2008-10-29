@@ -2,6 +2,7 @@ resourcesdir   = $(pkgdatadir)
 resources_DATA = \
 		 documentproperties.glade \
 		 preferences.glade \
+		 search.glade \
 		 introduction.html \
 		 main.css \
 		 thumbnail_frame.png \
