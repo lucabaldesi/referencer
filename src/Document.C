@@ -547,13 +547,18 @@ bool Document::canGetMetadata ()
 
 bool Document::matchesSearch (Glib::ustring const &search)
 {
+	Glib::ustring const searchNormalised = search.uppercase();
+
 	FieldMap fields = getFields ();
 	FieldMap::iterator fieldIter = fields.begin ();
 	FieldMap::iterator const fieldEnd = fields.end ();
 	for (; fieldIter != fieldEnd; ++fieldIter) {
-		if (fieldIter->second.uppercase().find(search.uppercase()) != Glib::ustring::npos)
+		if (fieldIter->second.uppercase().find(searchNormalised) != Glib::ustring::npos)
 			return true;
 	}
+
+	if (notes_.uppercase().find(searchNormalised) != Glib::ustring::npos)
+		return true;
 
 	return false;
 }
@@ -777,7 +782,6 @@ std::map <Glib::ustring, Glib::ustring> Document::getFields ()
 
 	if (!bib_.getPages ().empty())
 		fields["pages"] = bib_.getPages();
-
 
 		
 	BibData::ExtrasMap::iterator it = bib_.extras_.begin ();
