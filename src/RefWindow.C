@@ -2915,22 +2915,22 @@ void RefWindow::onUseListViewPrefChanged ()
 void RefWindow::onPluginRun (Glib::ustring const function, Plugin* plugin)
 {
 	std::vector<Document*> docs = docview_->getSelectedDocs();
-	plugin->doAction(function, docs);
+	if (plugin->doAction(function, docs)) {;
+	    /*
+	     * Update the docs in the view since the plugin could 
+	     * have written to them
+	     */
+	    std::vector<Document*>::iterator it = docs.begin ();
+	    std::vector<Document*>::iterator const end = docs.end ();
+	    for (; it != end; ++it) {
+		    docview_->updateDoc (*it);
+	    }
 
-	/*
-	 * Update the docs in the view since the plugin could 
-	 * have written to them
-	 */
-	std::vector<Document*>::iterator it = docs.begin ();
-	std::vector<Document*>::iterator const end = docs.end ();
-	for (; it != end; ++it) {
-		docview_->updateDoc (*it);
+	    /*
+	     * Mark the library as dirty since the plugin might 
+	     * have modified any of the documents
+	     */
+	    setDirty (true);
 	}
-
-	/*
-	 * Mark the library as dirty since the plugin might 
-	 * have modified any of the documents
-	 */
-	setDirty (true);
 }
 

@@ -209,7 +209,7 @@ bool PythonPlugin::resolve (Document &doc)
 		success = resolveID (doc, *it);
 		if (success)
 			break;
-	}
+	
 
 	if (success)
 		doc.getBibData().setType("article");
@@ -217,6 +217,11 @@ bool PythonPlugin::resolve (Document &doc)
 	return success;
 }
 
+
+/**
+ * Invoke a plugin action and return true if the plugin 
+ * modifies a document or the library
+ */
 bool PythonPlugin::doAction (Glib::ustring const function, std::vector<Document*> docs)
 {
 	/* Check the callback exists */

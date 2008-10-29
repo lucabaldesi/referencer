@@ -1032,27 +1032,17 @@ documents
 library
 \emph default
  is a unused.
- For example:
-\end_layout
-
-\begin_layout LyX-Code
-def sensitivity_genkey (library, documents):
-\end_layout
-
-\begin_layout LyX-Code
-    pass
-\end_layout
-
-\begin_layout LyX-Code
- 
-\end_layout
-
-\begin_layout LyX-Code
-def do_genkey (library, documents):
-\end_layout
-
-\begin_layout LyX-Code
-    pass
+ The sensitivity function should return true if the action should be usable
+ (some plugins may wish to use the condition 
+\family typewriter
+len(documents) > 0
+\family default
+, or always return True if the action is unconditionally usable.
+ The action callback function should return 
+\family typewriter
+True
+\family default
+ if it modifies any documents or library settings.
 \end_layout
 
 \begin_layout Standard
