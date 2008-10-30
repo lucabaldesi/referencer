@@ -2981,6 +2981,18 @@ RefWindow::SearchDialog::SearchDialog ()
 
 void RefWindow::SearchDialog::run ()
 {
+	/* Retrieve list of usable search plugins */
+	PluginManager::PluginList plugins = _global_plugins->getEnabledPlugins ();
+	PluginManager::PluginList::const_iterator pluginIter = plugins.begin();
+	PluginManager::PluginList::const_iterator const pluginEnd = plugins.end();
+	for (; pluginIter != pluginEnd; pluginIter++) {
+	//	(*pluginIter)->
+		
+	}
+
+	//model_.append ()
+
+
 	dialog_->run ();
 	dialog_->hide ();
 }

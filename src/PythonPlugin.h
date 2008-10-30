@@ -29,6 +29,11 @@ class PythonPlugin : public Plugin
 		/* Metadata lookup */
 		virtual bool resolve (Document &doc);
 
+		/* Search */
+		virtual bool canSearch ();
+		virtual Plugin::SearchResults doSearch (Glib::ustring const &searchTerms);
+		virtual Document getSearchResult (Glib::ustring const &token);
+
 		/* Config hook */
 		virtual bool canConfigure ();
 		virtual void doConfigure ();

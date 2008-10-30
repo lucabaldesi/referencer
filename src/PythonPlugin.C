@@ -19,7 +19,6 @@
 PythonPlugin::PythonPlugin(PluginManager *owner)
 {
 	pGetFunc_ = NULL;
-	pActionFunc_ = NULL;
 	pMod_ = NULL;
 	owner_ = owner;
 }
@@ -30,8 +29,6 @@ PythonPlugin::~PythonPlugin()
 	if (loaded_) {
 		if (pGetFunc_ != NULL)
 			Py_DECREF (pGetFunc_);
-		if (pActionFunc_ != NULL)
-			Py_DECREF (pActionFunc_);
 		if (pPluginInfo_ != NULL)
 			Py_DECREF (pPluginInfo_);
 		Py_DECREF (pMod_);
@@ -121,6 +118,18 @@ void PythonPlugin::load (std::string const &moduleName)
 		DEBUG (String::ucompose ("no metadata capabilities in %1", moduleName_));
 	}
 
+	/* Extract metadata lookup function */
+	if (cap_.hasMetadataCapability()) { 
+		pGetFunc_ = PyObject_GetAttrString (pMod_, "resolve_metadata");
+		if (!pGetFunc_) {
+			DEBUG ("Couldn't find resolver");
+			Py_DECREF (pMod_);
+			return;
+		} else {
+			DEBUG1 ("Found resolver %1", pGetFunc_);
+		}
+	}
+
 	/* Extract actions */
 	if (PyObject_HasAttrString (pMod_, "referencer_plugin_actions")) {
 		PyObject *pActions = PyObject_GetAttrString (pMod_, "referencer_plugin_actions");
@@ -181,17 +190,7 @@ void PythonPlugin::load (std::string const &moduleName)
 		DEBUG (String::ucompose ("No actions in %1", moduleName_));
 	}
 
-	/* Extract metadata lookup function */
-	if (cap_.hasMetadataCapability()) { 
-		pGetFunc_ = PyObject_GetAttrString (pMod_, "resolve_metadata");
-		if (!pGetFunc_) {
-			DEBUG ("Couldn't find resolver");
-			Py_DECREF (pMod_);
-			return;
-		} else {
-			DEBUG1 ("Found resolver %1", pGetFunc_);
-		}
-	}
+
 
 	DEBUG (String::ucompose ("successfully loaded %1", moduleName));
 
@@ -512,4 +511,27 @@ Glib::ustring PythonPlugin::getError ()
 	return exceptionLog_;
 }
 
+
+bool PythonPlugin::canSearch ()
+{
+	if (pMod_)
+		return PyObject_HasAttrString (pMod_, "referencer_search")
+		       && PyObject_HasAttrString (pMod_, "referencer_search_result");
+	else
+		return false;
+}
+
+
+/**
+ * Invoke pSearchFunc_ and cast results from list of 
+ * dictionaries into vector of maps
+ */
+Plugin::SearchResults PythonPlugin::doSearch (Glib::ustring const &searchTerms)
+{
+}
+
+
+Document PythonPlugin::getSearchResult (Glib::ustring const &token)
+{
+}
 

@@ -154,6 +154,8 @@ class LibraryParser : public Glib::Markup::Parser {
 				keyval = *attrib;
 				manageUTF8_ = boolFromStr (keyval.second);
 			}
+		} else {
+			std::cerr << "Unknown tag begin '" << element_name << "'\n";
 		}
 
 	}

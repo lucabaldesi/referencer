@@ -211,12 +211,12 @@ Glib::ustring PluginManager::findDataFile (Glib::ustring const file)
 	return Glib::ustring ();
 }
 
-std::list<Plugin*> PluginManager::getPlugins ()
+PluginManager::PluginList PluginManager::getPlugins ()
 {
-	std::list<Plugin*> retval;
+	PluginList retval;
+
 	std::list<PythonPlugin>::iterator it = pythonPlugins_.begin();
 	std::list<PythonPlugin>::iterator end = pythonPlugins_.end();
-
 	for (; it != end; ++it) {
 		retval.push_back (&(*it));
 	}
@@ -228,7 +228,7 @@ std::list<Plugin*> PluginManager::getPlugins ()
 }
 
 
-std::list<Plugin*> PluginManager::getEnabledPlugins ()
+PluginManager::PluginList PluginManager::getEnabledPlugins ()
 {
 	std::list<Plugin*> retval;
 	std::list<PythonPlugin>::iterator it = pythonPlugins_.begin();
