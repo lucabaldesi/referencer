@@ -2967,35 +2967,101 @@ RefWindow::SearchDialog::SearchDialog ()
 	xml_->get_widget ("Find", searchButton_);
 	xml_->get_widget ("SearchText", searchEntry_);
 	xml_->get_widget ("Plugin", pluginCombo_);
-	xml_->get_widget ("SearchResults", resultsView_);
+	xml_->get_widget ("SearchResults", resultView_);
 
-	Gtk::TreeModel::ColumnRecord cols;
-	cols.add (ptrColumn_);
-	cols.add (titleColumn_);
-	cols.add (authorColumn_);
-	model_ = Gtk::ListStore::create (cols);
+	searchButton_->signal_clicked().connect (
+		sigc::mem_fun (*this, &RefWindow::SearchDialog::search));
 
-	resultsView_->set_model (model_);
+	Gtk::TreeModel::ColumnRecord resultCols;
+	resultCols.add (resultTokenColumn_);
+	resultCols.add (resultTitleColumn_);
+	resultCols.add (resultAuthorColumn_);
+	resultModel_ = Gtk::ListStore::create (resultCols);
+
+	resultView_->set_model (resultModel_);
+	resultView_->append_column ("Author", resultAuthorColumn_);
+	resultView_->append_column ("Title", resultTitleColumn_);
+
+	Gtk::TreeModel::ColumnRecord pluginCols;
+	pluginCols.add (pluginPtrColumn_);
+	pluginCols.add (pluginNameColumn_);
+	pluginModel_ = Gtk::ListStore::create (pluginCols);
+	pluginCombo_->set_model (pluginModel_);
+	Gtk::CellRendererText *pluginCell = Gtk::manage (new Gtk::CellRendererText());
+	pluginCombo_->pack_start (*pluginCell, true);
+	pluginCombo_->add_attribute (pluginCell->property_text(), pluginNameColumn_);
 }
 
 
 void RefWindow::SearchDialog::run ()
 {
+	/* FIXME: choose plugin from last time? */
+	Glib::ustring const defaultPlugin = "blahblahlbah";
+
 	/* Retrieve list of usable search plugins */
 	PluginManager::PluginList plugins = _global_plugins->getEnabledPlugins ();
 	PluginManager::PluginList::const_iterator pluginIter = plugins.begin();
 	PluginManager::PluginList::const_iterator const pluginEnd = plugins.end();
 	for (; pluginIter != pluginEnd; pluginIter++) {
-	//	(*pluginIter)->
-		
+		if ((*pluginIter)->canSearch()) {
+			Gtk::ListStore::iterator iter = pluginModel_->append();
+			Plugin *plugin = *pluginIter;
+
+			(*iter)[pluginPtrColumn_] = plugin;
+			(*iter)[pluginNameColumn_] = plugin->getShortName();
+
+			/* Make this active if it's the default */
+			if (plugin->getShortName() == defaultPlugin) {
+				pluginCombo_->set_active (iter);
+			}
+		}
 	}
 
-	//model_.append ()
+	/* If the default wasn't found then make then
+	 * activate the first plugin in the list */
+	pluginCombo_->set_active (pluginModel_->children().begin());
 
 
 	dialog_->run ();
+
 	dialog_->hide ();
 }
+
+
+void RefWindow::SearchDialog::search ()
+{
+	/* Retrieve search text */
+	Glib::ustring const searchTerms = searchEntry_->get_text ();
+	DEBUG1 ("Searching for '%1'", searchTerms);
+
+	/* Retrieve choice of plugin */
+	Plugin *plugin = (*(pluginCombo_->get_active()))[pluginPtrColumn_];
+	Plugin::SearchResults results = plugin->doSearch(searchTerms);
+
+	Plugin::SearchResults::const_iterator resultIter = results.begin ();
+	Plugin::SearchResults::const_iterator const resultEnd = results.end ();
+	for (; resultIter != resultEnd; ++resultIter) {
+		Glib::ustring title;
+		Glib::ustring author;
+
+		/* FIXME: unnecessary copy */
+		Plugin::SearchResult result = *resultIter;
+
+		Plugin::SearchResult::iterator found;
+		found = result.find("title");
+		if (found != result.end())
+			title = found->second;
+		found = result.find("author");
+		if (found != result.end())
+			author = found->second;
+
+		Gtk::ListStore::iterator newRow = resultModel_->append();
+		(*newRow)[resultTitleColumn_] = title;
+		(*newRow)[resultAuthorColumn_] = author;
+	}
+}
+
+
 
 
 

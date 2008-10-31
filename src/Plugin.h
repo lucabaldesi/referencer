@@ -126,7 +126,8 @@ class PluginCapability
 class Plugin
 {
 	public:
-		typedef std::vector<std::map<Glib::ustring, Glib::ustring> > SearchResults;
+		typedef std::map <Glib::ustring, Glib::ustring> SearchResult;
+		typedef std::vector< SearchResult > SearchResults;
 
 		Plugin () {enabled_ = false; loaded_ = false;}
 		virtual ~Plugin () {};

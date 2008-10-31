@@ -497,6 +497,7 @@ void PythonPlugin::doConfigure ()
 		Py_DECREF (confFunc);
 	if (pReturn)
 		Py_DECREF (pReturn);
+	Plugin::SearchResults retval;
 }
 
 
@@ -528,6 +529,37 @@ bool PythonPlugin::canSearch ()
  */
 Plugin::SearchResults PythonPlugin::doSearch (Glib::ustring const &searchTerms)
 {
+	/* Look up search function */
+	PyObject *searchFunc = PyObject_GetAttrString (pMod_, "referencer_search");
+	if (!searchFunc)
+		return Plugin::SearchResults();
+
+	/* Invoke search function */
+	PyObject *pArgs = Py_BuildValue ("(s)", searchTerms.c_str());
+	PyObject *pReturn = PyObject_CallObject(searchFunc, pArgs);
+	Py_DECREF (pArgs);
+	
+	/* Copy Python result into C++ structures */
+	Plugin::SearchResults retval;
+	int itemCount = PyList_Size (pReturn);
+	for (int i = 0; i < itemCount; ++i) {
+
+		/* Borrowed reference */
+		PyObject *dict = PyList_GetItem (pReturn, i);
+		std::map<Glib::ustring, Glib::ustring> result;
+
+		/* Iterate over all items */
+		PyObject *key, *value;
+		Py_ssize_t pos = 0;
+		while (PyDict_Next(dict, &pos, &key, &value)) {
+			result[PyString_AsString(key)] = PyString_AsString(value);
+		}
+
+		retval.push_back(result);
+	}
+	Py_DECREF (pReturn);
+
+	return retval;
 }
 
 

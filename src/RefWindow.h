@@ -195,20 +195,32 @@ class RefWindow {
 			TagList *taglist_;
 			public:
 			TaggerDialog (RefWindow *window, TagList *taglist);
-			std::vector<int> tagPrompt (); }; class SearchDialog { public: SearchDialog (); void run (); 
+			std::vector<int> tagPrompt ();
+		};
+		class SearchDialog {
+			public:
+			SearchDialog ();
+			void run (); 
+
 			private:
+			void search ();
+
 			Glib::RefPtr<Gnome::Glade::Xml> xml_;
 
 			Gtk::Dialog *dialog_;
 			Gtk::Button *searchButton_;
 			Gtk::Entry *searchEntry_;
 			Gtk::ComboBox *pluginCombo_;
-			Gtk::TreeView *resultsView_;
+			Gtk::TreeView *resultView_;
 
-			Glib::RefPtr<Gtk::ListStore>        model_;
-			Gtk::TreeModelColumn<Document*> ptrColumn_;
-			Gtk::TreeModelColumn<Glib::ustring> titleColumn_;
-			Gtk::TreeModelColumn<Glib::ustring> authorColumn_;
+			Glib::RefPtr<Gtk::ListStore>        pluginModel_;
+			Gtk::TreeModelColumn<Plugin*>       pluginPtrColumn_;
+			Gtk::TreeModelColumn<Glib::ustring> pluginNameColumn_;
+
+			Glib::RefPtr<Gtk::ListStore>        resultModel_;
+			Gtk::TreeModelColumn<Glib::ustring> resultTokenColumn_;
+			Gtk::TreeModelColumn<Glib::ustring> resultTitleColumn_;
+			Gtk::TreeModelColumn<Glib::ustring> resultAuthorColumn_;
 		};
 
 		public:
