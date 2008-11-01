@@ -5,6 +5,7 @@
 #include <dirent.h>
 
 #include <glibmm/i18n.h>
+#include <libgnomeuimm.h>
 
 #include "Python.h"
 
@@ -114,6 +115,30 @@ referencer_pref_get (PyObject *self, PyObject *args)
 }
 
 
+/**
+ * Update UI, and teturn true if the user has requested cancellation
+ */
+static PyObject *
+referencer_poll_cancellation (PyObject *self, PyObject *args)
+{
+	/* Advance GTK+ */
+	while (Gnome::Main::events_pending())
+		Gnome::Main::iteration (); 
+
+	/* Invoke any registered callback */
+	bool cancelled = false;
+	if (_global_plugins->progressCallback_) {
+		cancelled = (*(_global_plugins->progressCallback_)) (_global_plugins->progressObject_);
+	}
+
+	/* Advance GTK+ */
+	while (Gnome::Main::events_pending())
+		Gnome::Main::iteration (); 
+
+	return cancelled ? Py_True : Py_False;
+}
+
+
 static PyMethodDef ReferencerMethods[] = {
 	{"download", referencer_download, METH_VARARGS,
 		"Retrieve a remote file"},
@@ -123,6 +148,8 @@ static PyMethodDef ReferencerMethods[] = {
 		 "Get configuration item"},
 	{"pref_set", referencer_pref_set, METH_VARARGS,
 		 "Set configuration item"},
+	{"poll_cancellation", referencer_poll_cancellation, METH_VARARGS,
+		 "Update UI and poll for cancellation"},
 	{"_", referencer_gettext, METH_VARARGS,
 		"Translate a string"},
 	{NULL, NULL, 0, NULL}
@@ -135,6 +162,8 @@ PluginManager::PluginManager ()
 
 	PyType_Ready (&t_referencer_document);
 	PyObject_SetAttrString (module, "document", (PyObject*)&t_referencer_document);
+
+	progressCallback_ = NULL;
 }
 
 PluginManager::~PluginManager ()

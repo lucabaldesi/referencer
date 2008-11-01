@@ -2968,6 +2968,8 @@ RefWindow::SearchDialog::SearchDialog ()
 	xml_->get_widget ("SearchText", searchEntry_);
 	xml_->get_widget ("Plugin", pluginCombo_);
 	xml_->get_widget ("SearchResults", resultView_);
+	xml_->get_widget ("Cancel", cancelButton_);
+	xml_->get_widget ("Progress", progressbar_);
 
 	searchButton_->signal_clicked().connect (
 		sigc::mem_fun (*this, &RefWindow::SearchDialog::search));
@@ -3019,8 +3021,14 @@ void RefWindow::SearchDialog::run ()
 
 	/* If the default wasn't found then make then
 	 * activate the first plugin in the list */
-	pluginCombo_->set_active (pluginModel_->children().begin());
+	if (pluginModel_->children().size()) {
+		pluginCombo_->set_active (pluginModel_->children().begin());
+	}
 
+	searchButton_->set_sensitive (pluginModel_->children().size());	
+
+	cancelButton_->hide ();
+	progressbar_->hide ();
 
 	dialog_->run ();
 
@@ -3028,15 +3036,53 @@ void RefWindow::SearchDialog::run ()
 }
 
 
+bool RefWindow::SearchDialog::progressCallback (void *ptr)
+{
+	RefWindow::SearchDialog *dialog = (RefWindow::SearchDialog*)ptr;
+
+	return dialog->progress ();
+}
+
+
+bool RefWindow::SearchDialog::progress ()
+{
+	progressbar_->pulse ();
+}
+
+
 void RefWindow::SearchDialog::search ()
 {
+	/* UI to initial state */
+	cancelButton_->show ();
+	cancelButton_->set_sensitive (true);
+	progressbar_->show ();
+	progressbar_->set_fraction (0.0);
+	progressbar_->set_text (_("Searching..."));
+	resultModel_->clear();
+
 	/* Retrieve search text */
 	Glib::ustring const searchTerms = searchEntry_->get_text ();
 	DEBUG1 ("Searching for '%1'", searchTerms);
 
 	/* Retrieve choice of plugin */
 	Plugin *plugin = (*(pluginCombo_->get_active()))[pluginPtrColumn_];
+
+	/* Set up progress callback */
+	_global_plugins->progressCallback_ = &(RefWindow::SearchDialog::progressCallback);
+	_global_plugins->progressObject_ = this;
+
+	/* Invoke plugin's search function */
 	Plugin::SearchResults results = plugin->doSearch(searchTerms);
+	DEBUG1 ("Searching with plugin '%1'", plugin->getShortName());
+
+	/* Revoke callback */
+	_global_plugins->progressCallback_ = NULL;
+	_global_plugins->progressObject_ = NULL;
+
+	/* Progress UI to complete state */
+	cancelButton_->set_sensitive (false);
+	progressbar_->set_fraction (1.0);
+	progressbar_->set_text (_("Complete"));
 
 	Plugin::SearchResults::const_iterator resultIter = results.begin ();
 	Plugin::SearchResults::const_iterator const resultEnd = results.end ();

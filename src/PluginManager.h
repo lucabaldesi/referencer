@@ -34,6 +34,10 @@ class PluginManager
 		/* Look for data files in plugin paths */
 		Glib::ustring findDataFile (Glib::ustring file);
 
+		/* Callback for progression while in plugins */
+		void *progressObject_;
+		bool (*progressCallback_)(void*);
+
 	private:
 		/* Python module search locations */
 		std::vector<Glib::ustring> pythonPaths_;

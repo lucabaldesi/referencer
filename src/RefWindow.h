@@ -202,6 +202,9 @@ class RefWindow {
 			SearchDialog ();
 			void run (); 
 
+			static bool progressCallback (void *ptr);
+			bool progress ();
+
 			private:
 			void search ();
 
@@ -212,6 +215,8 @@ class RefWindow {
 			Gtk::Entry *searchEntry_;
 			Gtk::ComboBox *pluginCombo_;
 			Gtk::TreeView *resultView_;
+			Gtk::Button *cancelButton_;
+			Gtk::ProgressBar *progressbar_;
 
 			Glib::RefPtr<Gtk::ListStore>        pluginModel_;
 			Gtk::TreeModelColumn<Plugin*>       pluginPtrColumn_;
