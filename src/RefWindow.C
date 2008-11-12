@@ -488,8 +488,8 @@ void RefWindow::constructMenu ()
 
 	actiongroup_->add ( Gtk::Action::create("HelpMenu", _("_Help")) );
 	actiongroup_->add( Gtk::Action::create(
-		"Introduction", Gtk::Stock::HELP, _("Introduction")),
-  	sigc::mem_fun(*this, &RefWindow::onIntroduction));
+		"Introduction", Gtk::Stock::HELP, _("Contents")),
+		sigc::mem_fun(*this, &RefWindow::onIntroduction));
 	actiongroup_->add( Gtk::Action::create(
 		"About", Gtk::Stock::ABOUT),
   	sigc::mem_fun(*this, &RefWindow::onAbout));
