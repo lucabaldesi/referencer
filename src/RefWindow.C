@@ -455,7 +455,7 @@ void RefWindow::constructMenu ()
 		Gtk::AccelKey ("<control>Delete"),
   	sigc::mem_fun(*this, &RefWindow::onRemoveDoc));
 	actiongroup_->add( Gtk::Action::create(
-		"OpenDoc", Gtk::Stock::OPEN, _("_Open...")), Gtk::AccelKey ("<control>a"),
+		"OpenDoc", Gtk::Stock::OPEN, _("_Open")), Gtk::AccelKey ("<control>a"),
   	sigc::mem_fun(*this, &RefWindow::onOpenDoc));
 	actiongroup_->add( Gtk::Action::create(
 		"DocProperties", Gtk::Stock::PROPERTIES), Gtk::AccelKey ("<control>e"),
