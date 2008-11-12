@@ -137,25 +137,29 @@
           <term>Toolbar</term>
           <listitem>
             <para>
-              Please add a short description!
+              The toolbar provides quick access to some frequently used menu items.
             </para>
           </listitem>
         </varlistentry>
-        
+ 
         <varlistentry>
-          <term>Sidebar</term>
+          <term>Document list</term>
           <listitem>
             <para>
-              Please add a short description!
+              The document list shows the documents in the library being worked on.  It can 
+			  be used in either <guimenuitem>List View</guimenuitem> or <guimenuitem>Icon 
+			  View</guimenuitem>.
             </para>
           </listitem>
-        </varlistentry>
+        </varlistentry>       
 
         <varlistentry>
-          <term>List view</term>
+          <term>Tag pane</term>
           <listitem>
             <para>
-              Please add a short description!
+              The tag pane provides a list of tags which can be applied to documents, as well as 
+			  buttons for creatings and deleting tags.  The document list can be filtered to 
+			  certain tags by selecting them in the tag pane.
             </para>
           </listitem>
         </varlistentry>
