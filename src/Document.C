@@ -466,6 +466,7 @@ bool Document::readPDF ()
 
 	g_object_unref (popplerdoc);
 
+	DEBUG1 ("%1", textdump);
 	// If we didn't find the ID on the first page and we have some text
 	// then search the whole document text for the ID and year
 	if (!got_id && !textdump.empty()) {

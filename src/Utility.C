@@ -2072,48 +2072,46 @@ Glib::RefPtr<Gdk::Pixbuf> eelEmbedImageInFrame (
 Glib::ustring mozUrlSelectionToUTF8 (
 	Gtk::SelectionData const &sel)
 {
-        GString *str;
-        int i;
-        const guint16 *char_data;
-        int char_len;
-        
-        /* MOZ_URL is in UCS-2 but in format 8. BROKEN!
-         *
-         * The data contains the URL, a \n, then the
-         * title of the web page.
-         */
-        if (sel.get_format() != 8 ||
-            sel.get_length() == 0 ||
-            (sel.get_length() % 2) != 0)
-          {
-            g_printerr ("Mozilla url dropped on terminal had wrong format (%d) or length (%d)\n",
-                        sel.get_format(),
-                        sel.get_length());
-            return Glib::ustring();
-          }
+	GString *str;
+	int i;
+	const guint16 *char_data;
+	int char_len;
 
-        str = g_string_new (NULL);
-        
-        char_len = sel.get_length() / 2;
-        char_data = (const guint16*) sel.get_data();
-        i = 0;
-        while (i < char_len)
-          {
-            if (char_data[i] == '\n')
-              break;
-            
-            g_string_append_unichar (str, (gunichar) char_data[i]);
-            
-            ++i;
-          }
-        
-        /* FIXME just brazenly ignoring encoding issues, 
-         * returning some UTF-8
-         */
-         
-        return Glib::ustring(str->str, str->len);
-     
-        g_string_free (str, TRUE);
+	/* MOZ_URL is in UCS-2 but in format 8. BROKEN!
+	 *
+	 * The data contains the URL, a \n, then the
+	 * title of the web page.
+	 */
+	if (sel.get_format() != 8 ||
+			sel.get_length() == 0 ||
+			(sel.get_length() % 2) != 0)
+	{
+		g_printerr ("Mozilla url dropped on terminal had wrong format (%d) or length (%d)\n",
+				sel.get_format(),
+				sel.get_length());
+		return Glib::ustring();
+	}
+
+	str = g_string_new (NULL);
+
+	char_len = sel.get_length() / 2;
+	char_data = (const guint16*) sel.get_data();
+	i = 0;
+	while (i < char_len)
+	{
+		if (char_data[i] == '\n')
+			break;
+
+		g_string_append_unichar (str, (gunichar) char_data[i]);
+
+		++i;
+	}
+
+	Glib::ustring cppString = Glib::ustring(str->str, str->len);
+
+	g_string_free (str, TRUE);
+
+	return cppString;
 }
 
 

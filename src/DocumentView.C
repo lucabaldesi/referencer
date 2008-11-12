@@ -582,8 +582,7 @@ void DocumentView::onIconsDragData (
 	const Glib::RefPtr <Gdk::DragContext> &context,
 	int n1, int n2, const Gtk::SelectionData &sel, guint n3, guint n4)
 {
-	DEBUG ("got '" + sel.get_data_as_string () + "'");
-	DEBUG ("\tOf type '" + sel.get_data_type () + "'");
+	DEBUG ("Type '" + sel.get_data_type () + "'");
 
 	std::vector<Glib::ustring> files;
 
@@ -603,37 +602,81 @@ void DocumentView::onIconsDragData (
 		Glib::RefPtr<Gnome::Vfs::Uri> uri = Gnome::Vfs::Uri::create (*it);
 
 		if (!Utility::uriIsFast (uri)) {
-			// It's a remote file, download it
-			Glib::RefPtr<Gnome::Vfs::Uri> liburi =
-				Gnome::Vfs::Uri::create (win_.getOpenedLib());
-			
+			/* This is a remote file, download it */
+			Glib::ustring folder = lib_.getLibraryFolder();
+			Glib::ustring destinationUri;
+			Glib::ustring const sourceUri = *it;
+
 			/*
-			 * THIS IS ALL BOLLOCKS
-			 * Really we should just show the user a save dialog and let him choose
-			 */
+			 * If we have a set download path, then put it there,
+			 * otherwise display a dialog for the location and optionally 
+			 * let the user set this as the download path.
+			 */	
 
-			Glib::ustring destinationdir;			
-			if (liburi) {
-				destinationdir =
-					liburi->get_scheme ()
-					+ "://"
-					+	Glib::build_filename (
-						liburi->extract_dirname (),
-						_("Downloaded Documents"));
+			Glib::ustring const libraryFolder = lib_.getLibraryFolder();
+			if (libraryFolder != "") {
+				/* Check destination folder exists, create it if not */
+				/* FIXME: exceptions exceptions */
+				if (!Gnome::Vfs::Uri::create (libraryFolder)->uri_exists ()) {
+					Gnome::Vfs::Handle::make_directory (libraryFolder, 0757);
+				}
 
-				if (!Gnome::Vfs::Uri::create (destinationdir)->uri_exists ()) {
-					Gnome::Vfs::Handle::make_directory (destinationdir, 0757);
+				/* If folder location is not writeable, fall back to dialog to query it */
+				//destinationUri = ""
+
+				/* Compose destination URI */
+				//destinationUri = libraryFolder + 
+			}
+
+			if (destinationUri == "") {
+				Gtk::FileChooserDialog dialog(_("Document Download Folder"), Gtk::FILE_CHOOSER_ACTION_SAVE);
+				Gtk::CheckButton check(_("Download subsequent documents here without asking"), true);;
+				dialog.set_extra_widget (check);
+				dialog.add_button (Gtk::Stock::CANCEL, Gtk::RESPONSE_REJECT);
+				dialog.add_button (_("Download here"), Gtk::RESPONSE_ACCEPT);
+				dialog.set_default_response (Gtk::RESPONSE_ACCEPT);
+
+				/* FIXME: remember last location if user wants to use dialog again 
+				 * and again rather than setting library folder */
+				/* Or on first try pick the .reflib file's path:
+				if (liburi) {
+					destinationdir =
+						liburi->get_scheme ()
+						+ "://"
+						+	Glib::build_filename (
+							liburi->extract_dirname ());
+				}	 */
+
+				int result = dialog.run ();
+				if (result == Gtk::RESPONSE_REJECT) {
+					/* Cancelling one download cancels for all URIs in list */
+
+					/* This cancel-one=cancel-all policy is reasonable since 
+					 * otherwise in a multi-remote-url situation the user would 
+					 * have to pump this cancel button a bunch of times, and 
+					 * multi-remote-url situations aren't really the expected 
+					 * "dragged a PDF from a web site" use case */
+					return;
+				} else {
+						dialog.hide ();
+
+						Glib::ustring destinationUri = dialog.get_uri ();
+						DEBUG1 ("Destination URI %1", destinationUri);
+
+						if (check.get_active()) {
+							folder = dialog.get_current_folder_uri();
+							DEBUG1 ("Setting library folder %1", folder);
+							/* Set the library download folder */
+							lib.setLibraryFolder (folder);
+						}
+
 				}
 			}
 
-			Glib::ustring const destination = Glib::build_filename (
-				destinationdir,
-				uri->extract_short_path_name ());
-
 			DEBUG (destination);
 			Transfer::downloadRemoteFile (
-				*it,
-				destination,
+				sourceUri,
+				destinationUri,
 				*(win_.getProgress()));
 			files.push_back (destination);
 		} else {
