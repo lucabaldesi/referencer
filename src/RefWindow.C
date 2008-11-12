@@ -1880,7 +1880,7 @@ void RefWindow::addDocFiles (std::vector<Glib::ustring> const &filenames)
 	Gtk::Label label ("", false);
 	label.set_markup (messagetext);
 
-	vbox->pack_start (label, true, true, 0);
+	vbox->pack_start (label, false, false, 0);
 
 	Gtk::ProgressBar progress;
 	vbox->pack_start (progress, false, false, 0);
@@ -1915,6 +1915,8 @@ void RefWindow::addDocFiles (std::vector<Glib::ustring> const &filenames)
 	reportFrame.add (reportScroll);
 	if (!singular)
 		vbox->pack_start (reportFrame, true, true, 0);
+	else
+		dialog.set_resizable(false);
 
 	/* Create buttons */
 	Gtk::Button *cancelButton = dialog.add_button (Gtk::Stock::CANCEL, Gtk::RESPONSE_ACCEPT);
