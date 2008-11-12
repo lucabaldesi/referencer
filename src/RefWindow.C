@@ -1716,16 +1716,12 @@ void RefWindow::onAbout ()
 
 void RefWindow::onIntroduction ()
 {
-	Glib::ustring filename = Utility::findDataFile ("introduction.html");
-
-	if (filename.empty ())
-		return;
-
+	Glib::ustring const uri = "ghelp:referencer";
 	try {
-		Gnome::Vfs::url_show (Gnome::Vfs::get_uri_from_local_path (filename));
+		Gnome::Vfs::url_show (uri);
 	} catch (Gnome::Vfs::exception &ex) {
 		Utility::exceptionDialog (&ex,
-			String::ucompose(_("Showing '%1'"), filename));
+			String::ucompose(_("Showing '%1'"), uri));
 	}
 }
 
