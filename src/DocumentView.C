@@ -601,6 +601,7 @@ void DocumentView::onIconsDragData (
 		bool is_dir = false;
 		Glib::RefPtr<Gnome::Vfs::Uri> uri = Gnome::Vfs::Uri::create (*it);
 
+#if 0
 		if (!Utility::uriIsFast (uri)) {
 			/* This is a remote file, download it */
 			Glib::ustring folder = lib_.getLibraryFolder();
@@ -679,7 +680,9 @@ void DocumentView::onIconsDragData (
 				destinationUri,
 				*(win_.getProgress()));
 			files.push_back (destination);
-		} else {
+		} else
+#endif
+		{
 			// It's a local file, see if it's a directory
 			Glib::RefPtr<Gnome::Vfs::FileInfo> info;
 			try {
