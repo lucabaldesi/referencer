@@ -1,4 +1,8 @@
 1.1.6:
+	- Include document notes in searches
+	- Plugin interface: add bibtex_to_fields utility function, 
+	  add print_bibtex method to PythonDocument
+	- Docbook manual (Mario Blätterman)
 	- UI tweaks (Kai Willadsen, Bugs 297081, 297079)
 
 1.1.5:

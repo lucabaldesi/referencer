@@ -259,6 +259,8 @@ void RefWindow::constructUI ()
 		*render, sigc::mem_fun (*this, &RefWindow::tagCellRenderer));
 	namecol->add_attribute (render->property_markup (), tagnamecol_);
 	namecol->add_attribute (render->property_font_desc (), tagfontcol_);
+	((Gtk::CellRendererText*)(std::vector<Gtk::CellRenderer*>(namecol->get_cell_renderers())[0]))->property_ellipsize() = Pango::ELLIPSIZE_MIDDLE;
+	
 	tags->append_column (*namecol);
 	tags->signal_button_press_event().connect_notify(
 		sigc::mem_fun (*this, &RefWindow::tagClicked));
@@ -461,6 +463,10 @@ void RefWindow::constructMenu ()
 		"DocProperties", Gtk::Stock::PROPERTIES), Gtk::AccelKey ("<control>e"),
   	sigc::mem_fun(*this, &RefWindow::onDocProperties));
 
+	actiongroup_->add( Gtk::Action::create(
+		    "Search", Gtk::Stock::FIND, _("Search...")), Gtk::AccelKey ("<control>e"),
+		sigc::mem_fun(*this, &RefWindow::onSearch));
+
 	actiongroup_->add ( Gtk::Action::create("TaggerMenuAction", _("_Tags")) );
 	//actiongroup_->get_action("TaggerMenuAction")->set_property("hide_if_empty", false);
 
@@ -577,6 +583,9 @@ void RefWindow::updateTagSizes ()
 			tagusecounts[*tagit]++;
 	}
 
+
+	
+
 	/* What was I smoking when I wrote TagList?  Mung it into a more
 	 * useful data structure. */
 	typedef std::map<Glib::ustring, std::pair<int, int> > SensibleMap;
@@ -599,23 +608,28 @@ void RefWindow::updateTagSizes ()
 			continue;
 
 		int useCount = tagusecounts[(*tagIter)[taguidcol_]];
-		int size = window_->get_style ()->get_font().get_size ();
 
-		if (useCount > 0) {
-			float factor;
-			float const maxfactor = 1.55;
-			if (doccount > 0)
-				factor = 0.75 + (logf((float)useCount / (float)doccount + 0.1) - logf(0.1)) * 0.4;
-			else
-				factor = 1.5;
-			if (factor > maxfactor)
-				factor = maxfactor;
 
-			size = (int) (factor * (float)size);
+
+		float factor = 0.0;
+		if (useCount > 0 && doccount > 0) {
+			//factor = 0.75 + (logf((float)useCount / (float)doccount + 0.1) - logf(0.1)) * 0.4;
+			factor = (float)useCount / (float)doccount;
 		}
+
+		int size = (int)((float)(window_->get_style ()->get_font().get_size ()) * (0.95f + (factor * 0.1f)));
+
+
 		Pango::FontDescription font;
-		font.set_size (size);
-		font.set_weight (Pango::WEIGHT_SEMIBOLD);
+		if (factor < 0.1) {
+			font.set_weight (Pango::WEIGHT_NORMAL);
+		} else if (factor < 0.5) {
+			font.set_weight (Pango::WEIGHT_SEMIBOLD);
+		} else {
+			font.set_weight (Pango::WEIGHT_SEMIBOLD);
+		}
+		font.set_size(size);
+
 		(*tagIter)[tagfontcol_] = font;
 	}
 }
@@ -1800,7 +1814,9 @@ RefWindow::TaggerDialog::TaggerDialog (RefWindow *window, TagList *taglist)
 	selected->add_attribute (toggle_->property_active(), selectedColumn_);
 
 	view_->append_column (*selected);
-	view_->append_column (*(Gtk::manage (new Gtk::TreeViewColumn ("", nameColumn_))));
+	Gtk::TreeViewColumn *name_column = (Gtk::manage (new Gtk::TreeViewColumn ("", nameColumn_)));
+	((Gtk::CellRendererText*)(std::vector<Gtk::CellRenderer*>(name_column->get_cell_renderers())[0]))->property_ellipsize() = Pango::ELLIPSIZE_MIDDLE;
+	view_->append_column (*name_column);
 
 	/* "Create tag" button */
 	Gtk::Button *button = Gtk::manage (new Gtk::Button (_("C_reate Tag..."), true));
@@ -2279,6 +2295,13 @@ void RefWindow::onRemoveDoc ()
 	}
 
 	setDirty (true);
+}
+
+
+void RefWindow::onSearch ()
+{
+	SearchDialog dialog;
+	dialog.run();
 }
 
 
@@ -2919,22 +2942,176 @@ void RefWindow::onUseListViewPrefChanged ()
 void RefWindow::onPluginRun (Glib::ustring const function, Plugin* plugin)
 {
 	std::vector<Document*> docs = docview_->getSelectedDocs();
-	plugin->doAction(function, docs);
+	if (plugin->doAction(function, docs)) {;
+	    /*
+	     * Update the docs in the view since the plugin could 
+	     * have written to them
+	     */
+	    std::vector<Document*>::iterator it = docs.begin ();
+	    std::vector<Document*>::iterator const end = docs.end ();
+	    for (; it != end; ++it) {
+		    docview_->updateDoc (*it);
+	    }
 
-	/*
-	 * Update the docs in the view since the plugin could 
-	 * have written to them
-	 */
-	std::vector<Document*>::iterator it = docs.begin ();
-	std::vector<Document*>::iterator const end = docs.end ();
-	for (; it != end; ++it) {
-		docview_->updateDoc (*it);
+	    /*
+	     * Mark the library as dirty since the plugin might 
+	     * have modified any of the documents
+	     */
+	    setDirty (true);
+	}
+}
+
+
+RefWindow::SearchDialog::SearchDialog ()
+{
+	xml_ = Gnome::Glade::Xml::create (
+		Utility::findDataFile ("search.glade"));
+	
+	xml_->get_widget ("SearchDialog", dialog_);
+	xml_->get_widget ("Find", searchButton_);
+	xml_->get_widget ("SearchText", searchEntry_);
+	xml_->get_widget ("Plugin", pluginCombo_);
+	xml_->get_widget ("SearchResults", resultView_);
+	xml_->get_widget ("Cancel", cancelButton_);
+	xml_->get_widget ("Progress", progressbar_);
+
+	searchButton_->signal_clicked().connect (
+		sigc::mem_fun (*this, &RefWindow::SearchDialog::search));
+
+	Gtk::TreeModel::ColumnRecord resultCols;
+	resultCols.add (resultTokenColumn_);
+	resultCols.add (resultTitleColumn_);
+	resultCols.add (resultAuthorColumn_);
+	resultModel_ = Gtk::ListStore::create (resultCols);
+
+	resultView_->set_model (resultModel_);
+	resultView_->append_column ("Author", resultAuthorColumn_);
+	resultView_->append_column ("Title", resultTitleColumn_);
+
+	Gtk::TreeModel::ColumnRecord pluginCols;
+	pluginCols.add (pluginPtrColumn_);
+	pluginCols.add (pluginNameColumn_);
+	pluginModel_ = Gtk::ListStore::create (pluginCols);
+	pluginCombo_->set_model (pluginModel_);
+	Gtk::CellRendererText *pluginCell = Gtk::manage (new Gtk::CellRendererText());
+	pluginCombo_->pack_start (*pluginCell, true);
+	pluginCombo_->add_attribute (pluginCell->property_text(), pluginNameColumn_);
+}
+
+
+void RefWindow::SearchDialog::run ()
+{
+	/* FIXME: choose plugin from last time? */
+	Glib::ustring const defaultPlugin = "blahblahlbah";
+
+	/* Retrieve list of usable search plugins */
+	PluginManager::PluginList plugins = _global_plugins->getEnabledPlugins ();
+	PluginManager::PluginList::const_iterator pluginIter = plugins.begin();
+	PluginManager::PluginList::const_iterator const pluginEnd = plugins.end();
+	for (; pluginIter != pluginEnd; pluginIter++) {
+		if ((*pluginIter)->canSearch()) {
+			Gtk::ListStore::iterator iter = pluginModel_->append();
+			Plugin *plugin = *pluginIter;
+
+			(*iter)[pluginPtrColumn_] = plugin;
+			(*iter)[pluginNameColumn_] = plugin->getShortName();
+
+			/* Make this active if it's the default */
+			if (plugin->getShortName() == defaultPlugin) {
+				pluginCombo_->set_active (iter);
+			}
+		}
 	}
 
-	/*
-	 * Mark the library as dirty since the plugin might 
-	 * have modified any of the documents
-	 */
-	setDirty (true);
+	/* If the default wasn't found then make then
+	 * activate the first plugin in the list */
+	if (pluginModel_->children().size()) {
+		pluginCombo_->set_active (pluginModel_->children().begin());
+	}
+
+	searchButton_->set_sensitive (pluginModel_->children().size());	
+
+	cancelButton_->hide ();
+	progressbar_->hide ();
+
+	dialog_->run ();
+
+	dialog_->hide ();
 }
+
+
+bool RefWindow::SearchDialog::progressCallback (void *ptr)
+{
+	RefWindow::SearchDialog *dialog = (RefWindow::SearchDialog*)ptr;
+
+	return dialog->progress ();
+}
+
+
+bool RefWindow::SearchDialog::progress ()
+{
+	progressbar_->pulse ();
+}
+
+
+void RefWindow::SearchDialog::search ()
+{
+	/* UI to initial state */
+	cancelButton_->show ();
+	cancelButton_->set_sensitive (true);
+	progressbar_->show ();
+	progressbar_->set_fraction (0.0);
+	progressbar_->set_text (_("Searching..."));
+	resultModel_->clear();
+
+	/* Retrieve search text */
+	Glib::ustring const searchTerms = searchEntry_->get_text ();
+	DEBUG1 ("Searching for '%1'", searchTerms);
+
+	/* Retrieve choice of plugin */
+	Plugin *plugin = (*(pluginCombo_->get_active()))[pluginPtrColumn_];
+
+	/* Set up progress callback */
+	_global_plugins->progressCallback_ = &(RefWindow::SearchDialog::progressCallback);
+	_global_plugins->progressObject_ = this;
+
+	/* Invoke plugin's search function */
+	Plugin::SearchResults results = plugin->doSearch(searchTerms);
+	DEBUG1 ("Searching with plugin '%1'", plugin->getShortName());
+
+	/* Revoke callback */
+	_global_plugins->progressCallback_ = NULL;
+	_global_plugins->progressObject_ = NULL;
+
+	/* Progress UI to complete state */
+	cancelButton_->set_sensitive (false);
+	progressbar_->set_fraction (1.0);
+	progressbar_->set_text (_("Complete"));
+
+	Plugin::SearchResults::const_iterator resultIter = results.begin ();
+	Plugin::SearchResults::const_iterator const resultEnd = results.end ();
+	for (; resultIter != resultEnd; ++resultIter) {
+		Glib::ustring title;
+		Glib::ustring author;
+
+		/* FIXME: unnecessary copy */
+		Plugin::SearchResult result = *resultIter;
+
+		Plugin::SearchResult::iterator found;
+		found = result.find("title");
+		if (found != result.end())
+			title = found->second;
+		found = result.find("author");
+		if (found != result.end())
+			author = found->second;
+
+		Gtk::ListStore::iterator newRow = resultModel_->append();
+		(*newRow)[resultTitleColumn_] = title;
+		(*newRow)[resultAuthorColumn_] = author;
+	}
+}
+
+
+
+
 

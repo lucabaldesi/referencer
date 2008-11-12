@@ -326,6 +326,57 @@ bool Document::hasTag(int uid)
 
 using Utility::writeBibKey;
 
+
+/**
+ * Temporarily duplicating functionality in printBibtex and 
+ * writeBibtex -- the difference is that writeBibtex requires a 
+ * Library reference in order to resolve tag uids to names.
+ * In order to be usable from PythonDocument printBibtex just 
+ * doesn't bother printing tags at all.
+ *
+ * This will get fixed when the ill-conceived tag ID system is 
+ * replaced with lists of strings
+ */
+Glib::ustring Document::printBibtex (
+	bool const useBraces,
+	bool const utf8)
+{
+	std::ostringstream out;
+
+	// BibTeX values cannot be larger than 1000 characters - should make sure of this
+	// We should strip illegal characters from key in a predictable way
+	out << "@" << bib_.getType() << "{" << key_ << ",\n";
+
+	BibData::ExtrasMap extras = bib_.getExtras ();
+	BibData::ExtrasMap::iterator it = extras.begin ();
+	BibData::ExtrasMap::iterator const end = extras.end ();
+	for (; it != end; ++it) {
+		// Exceptions to useBraces are editor and author because we
+		// don't want "Foo, B.B. and John Bar" to be literal
+		writeBibKey (
+			out,
+			(*it).first,
+			(*it).second,
+			((*it).first.lowercase () != "editor") && useBraces, utf8);
+	}
+
+	// Ideally should know what's a list of human names and what's an
+	// institution name be doing something different for non-human-name authors?
+	writeBibKey (out, "author",  bib_.getAuthors(), false, utf8);
+	writeBibKey (out, "title",   bib_.getTitle(), useBraces, utf8);
+	writeBibKey (out, "journal", bib_.getJournal(), useBraces, utf8);
+	writeBibKey (out, "volume",  bib_.getVolume(), useBraces, utf8);
+	writeBibKey (out, "number",  bib_.getIssue(), useBraces, utf8);
+	writeBibKey (out, "pages",   bib_.getPages(), useBraces, utf8);
+	writeBibKey (out, "year",    bib_.getYear(), useBraces, utf8);
+	writeBibKey (out, "doi",    bib_.getDoi(), useBraces, utf8);
+
+	out << "}\n\n";
+
+	return out.str();
+}
+
+
 void Document::writeBibtex (
 	Library const &lib,
 	std::ostringstream& out,
@@ -497,13 +548,18 @@ bool Document::canGetMetadata ()
 
 bool Document::matchesSearch (Glib::ustring const &search)
 {
-	std::map <Glib::ustring, Glib::ustring> fields = getFields ();
-	std::map <Glib::ustring, Glib::ustring>::iterator fieldIter = fields.begin ();
-	std::map <Glib::ustring, Glib::ustring>::iterator const fieldEnd = fields.end ();
+	Glib::ustring const searchNormalised = search.casefold();
+
+	FieldMap fields = getFields ();
+	FieldMap::iterator fieldIter = fields.begin ();
+	FieldMap::iterator const fieldEnd = fields.end ();
 	for (; fieldIter != fieldEnd; ++fieldIter) {
-		if (fieldIter->second.uppercase().find(search.uppercase()) != Glib::ustring::npos)
+		if (fieldIter->second.casefold().find(searchNormalised) != Glib::ustring::npos)
 			return true;
 	}
+
+	if (notes_.casefold().find(searchNormalised) != Glib::ustring::npos)
+		return true;
 
 	return false;
 }
@@ -664,6 +720,7 @@ Glib::ustring Document::getField (Glib::ustring const &field)
 			return bib_.extras_[_field];
 		} else {
 			DEBUG1 ("Document::getField: WARNING: unknown field %1", field);
+			throw std::range_error("Document::getField: unknown field");
 		}
 	}
 }
@@ -726,7 +783,6 @@ std::map <Glib::ustring, Glib::ustring> Document::getFields ()
 
 	if (!bib_.getPages ().empty())
 		fields["pages"] = bib_.getPages();
-
 
 		
 	BibData::ExtrasMap::iterator it = bib_.extras_.begin ();

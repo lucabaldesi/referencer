@@ -1,0 +1,299 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE article PUBLIC "-//OASIS//DTD DocBook XML V4.1.2//EN" "http://www.oasis-open.org/docbook/xml/4.1.2/docbookx.dtd" [
+<!ENTITY legal SYSTEM "legal.xml">
+<!ENTITY appversion "1.1.6">
+<!ENTITY manrevision "1.1.6">
+<!ENTITY date "October 2008">
+<!ENTITY app "<application>Referencer</application>">
+<!-- Information about the entities
+       The legal.xml file contains legal information, there is no need to edit the file. 
+       Use the appversion entity to specify the version of the application.
+       Use the manrevision entity to specify the revision number of this manual.
+       Use the date entity to specify the release date of this manual.
+       Use the app entity to specify the name of the application. -->]>
+<article id="index" lang="de">
+  <articleinfo>
+    <title><application>Referencer</application>-Handbuch V1.1.6</title>
+    <abstract role="description">
+      <para> 
+        Referencer is a tool to help you manage your collection of documents, and to use them to generate a bibliography.
+      </para>
+    </abstract>
+    <copyright> 
+      <year>2008</year> 
+      <holder>John Spray</holder> 
+    </copyright><copyright><year>2008</year><holder>Mario Blättermann (mario.blaettermann@t-online.de)</holder></copyright>
+    <publisher> 
+      <publishername>Referencer-Entwickler-Team</publishername> 
+    </publisher> 
+      <legalnotice id="legalnotice">
+	<para>Das vorliegende Dokument kann gemäß den Bedingungen der GNU Free Documentation License (GFDL), Version 1.1 oder jeder späteren, von der Free Software Foundation veröffentlichten Version ohne unveränderbare Abschnitte sowie ohne Texte auf dem vorderen und hinteren Buchdeckel kopiert, verteilt und/oder modifiziert werden. Eine Kopie der GFDL finden Sie unter diesem <ulink type="help" url="ghelp:fdl">Link</ulink> oder in der mit diesem Handbuch gelieferten Datei COPYING-DOCS.</para>
+         <para>Dieses Handbuch ist Teil einer Sammlung von GNOME-Handbüchern, die unter der GFDL veröffentlicht werden. Wenn Sie dieses Handbuch getrennt von der Sammlung weiterverbreiten möchten, können Sie das tun, indem Sie eine Kopie der Lizenz zum Handbuch hinzufügen, wie es in Abschnitt 6 der Lizenz beschrieben ist.</para>
+
+	<para>Viele der Namen, die von Unternehmen verwendet werden, um ihre Produkte und Dienstleistungen von anderen zu unterscheiden, sind eingetragene Warenzeichen. An den Stellen, an denen diese Namen in einer GNOME-Dokumentation erscheinen, werden die Namen in Großbuchstaben oder mit einem großen Anfangsbuchstaben geschrieben, wenn das GNOME-Dokumentationsprojekt auf diese Warenzeichen hingewiesen wird.</para>
+
+	<para>DAS DOKUMENT UND VERÄNDERTE FASSUNGEN DES DOKUMENTS WERDEN UNTER DEN BEDINGUNGEN DER GNU FREE DOCUMENTATION LICENSE ZUR VERFÜGUNG GESTELLT MIT DEM WEITERGEHENDEN VERSTÄNDNIS, DASS: <orderedlist>
+		<listitem>
+		  <para>DIESES DOKUMENT WIRD »WIE VORLIEGEND« GELIEFERT, OHNE GARANTIEN IRGENDEINER ART, SOWOHL AUSDRÜCKLICH GENANNTE ALS AUCH ANGEDEUTETE. DIES BEZIEHT SICH AUCH OHNE EINSCHRÄNKUNG AUF GARANTIEN, DASS DIESES DOKUMENT ODER VERÄNDERTE FASSUNGEN DIESES DOKUMENTS FREI VON HANDELSDEFEKTEN, FÜR EINEN BESTIMMTEN ZWECK GEEIGNET IST ODER DASS ES KEINE RECHTE DRITTER VERLETZT. DAS VOLLE RISIKO WAS QUALITÄT, GENAUIGKEIT UND LEISTUNG DES DOKUMENTS ODER VERÄNDERTE FASSUNGEN DES DOKUMENTS LIEGT BEI IHNEN. SOLLTE EIN DOKUMENT ODER EINE VERÄNDERTE FASSUNG DAVON FEHLER IRGENDEINER ART BEINHALTEN, TRAGEN SIE (NICHT DER URSPRUNGSAUTOR, DER AUTOR ODER EIN MITWIRKENDER) DIE KOSTEN FÜR NOTWENDIGE DIENSTLEISTUNGEN, REPARATUREN ODER FEHLERKORREKTUREN. DIESER HAFTUNGSAUSSCHLUSS IST EIN ESSENZIELLER TEIL DIESER LIZENZ. DIE VERWENDUNG EINES DOKUMENTS ODER EINER VERÄNDERTEN VERSION DES DOKUMENTS IST NICHT GESTATTET AUßER UNTER BEACHTUNG DIESES HAFTUNGSAUSSCHLUSSES UND</para>
+		</listitem>
+		<listitem>
+		  <para>UNTER KEINEN UMSTÄNDEN UND AUF BASIS KEINER RECHTSGRUNDLAGE, EGAL OB DURCH UNERLAUBTEN HANDLUNGEN (EINSCHLIEßLICH FAHRLÄSSIGKEIT), VERTRAG ODER ANDERWEITIG KANN DER AUTOR, URSPRUNGSAUTOR, EIN MITWIRKENDER ODER EIN VERTRIEBSPARTNER DIESES DOKUMENTS ODER EINER VERÄNDERTEN FASSUNG DES DOKUMENTS ODER EIN ZULIEFERER EINER DIESER PARTEIEN, HAFTBAR GEMACHT WERDEN FÜR DIREKTE, INDIREKTE, SPEZIELLE, VERSEHENTLICHE ODER FOLGESCHÄDEN JEGLICHER ART, EINSCHLIEßLICH UND OHNE EINSCHRÄNKUNGEN SCHÄDEN DURCH VERLUST VON KULANZ, ARBEITSAUSFALL, COMPUTERVERSAGEN ODER COMPUTERFEHLFUNKTIONEN ODER ALLE ANDEREN SCHÄDEN ODER VERLUSTE, DIE SICH AUS ODER IN VERBINDUNG MIT DER VERWENDUNG DES DOKUMENTS UND VERÄNDERTER FASSUNGEN DES DOKUMENTS ERGEBEN, AUCH WENN DIE OBEN GENANNTEN PARTEIEN ÜBER DIE MÖGLICHKEIT SOLCHER SCHÄDEN INFORMIERT WAREN.</para>
+		</listitem>
+	  </orderedlist></para>
+  </legalnotice>
+
+
+    <authorgroup>
+      <author role="maintainer">
+	<firstname>John</firstname> <surname>Spray</surname>
+	<affiliation>
+	  <address>
+	    <email>jcspray@icculus.org</email>
+	  </address>
+	</affiliation>
+      </author> 
+    </authorgroup>
+    <revhistory>
+      <revision>
+	<revnumber>Referencer-Handbuch V 1.1.6</revnumber>
+	<date>22. Oktober 2008</date>
+	<revdescription>
+	  <para role="author">John Spray</para>
+	</revdescription>
+      </revision>
+    </revhistory>
+
+    <releaseinfo>Dieses Handbuch beschreibt Version 1.1.6 von <application>Referencer</application>.</releaseinfo> 
+      <legalnotice> 
+      <title>Rückmeldungen</title> 
+      <para>To report a bug or make a suggestion regarding the <application>Referencer</application> application or
+      this manual, please visit the <ulink url="http://icculus.org/referencer" type="help">Referencer home page</ulink>. 
+      </para>
+      </legalnotice>
+  </articleinfo>
+
+  <sect1 id="intro">
+    <title>Einführung</title>
+      <para>
+      <application>Referencer</application> is a tool to help you manage your collection of documents, and to use them to generate a bibliography. It is designed with the scientist/researcher in mind, and "document" may be taken to mean "paper" in general, although <application>Referencer</application> can deal with any kind of document that BibTeX can.
+      </para>
+      </sect1>
+      
+      <!-- =========== Getting Started ============================== -->
+<!-- Use the Getting Started section to describe the steps required
+     to start the application and to describe the user interface components
+     of the application. If there is other information that it is important
+     for readers to know before they start using the application, you should
+     also include this information here.
+     If the information about how to get started is very short, you can
+     include it in the Introduction and omit this section. -->
+
+  <sect1 id="referencer-getting-started">
+    <title>Erste Schritte</title>
+
+    <sect2 id="referencer-start">
+      <title><application>Referencer</application> starten</title>
+      <para>Sie können <application>Referencer</application> auf folgende Arten starten:</para>
+
+      <variablelist>
+        <varlistentry>
+          <term>Menü <guimenu>Anwendungen</guimenu></term>
+          <listitem>
+            <para>Wählen Sie <menuchoice><guisubmenu>Büroanwendungen</guisubmenu><guimenuitem>Referencer</guimenuitem></menuchoice>.</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>Befehlszeile</term>
+          <listitem>
+            <para>Um <application>Referencer</application> in einer Befehlszeile zu starten, geben Sie folgenden Befehl ein und drücken dann die <keycap>Eingabetaste</keycap>:</para>
+            <para><command>referencer</command></para>
+          </listitem>
+        </varlistentry>
+      </variablelist>
+    </sect2>
+
+    <sect2 id="referencer-when-start">
+      <title>Beim Start von <application>Referencer</application></title>
+      <para>Wenn Sie <application>Referencer</application> starten, wird folgendes Fenster angezeigt.</para>
+
+      <figure id="referencer-window-fig">
+        <title><application>Referencer</application>-Startfenster</title>
+        <screenshot>
+          <mediaobject>
+            <imageobject><imagedata fileref="figures/referencer_window.png" format="PNG"/></imageobject>
+            <textobject><phrase>Shows <application>Referencer</application> main window.</phrase></textobject>
+          </mediaobject>
+        </screenshot>
+      </figure>
+
+      <para>Das <application>Referencer</application>-Fenster enthält folgende Elemente:</para>
+
+      <variablelist>
+        <varlistentry>
+          <term>Menüleiste</term>
+          <listitem>
+            <para>Die Menüs in der Menüleiste enthalten alle Befehle, die Sie zum Arbeiten mit Dateien in <application>Referencer</application> benötigen.</para>            
+          </listitem>
+        </varlistentry>
+        
+		<varlistentry>
+          <term>Werkzeugleiste</term>
+          <listitem>
+            <para>
+              Please add a short description!
+            </para>
+          </listitem>
+        </varlistentry>
+        
+        <varlistentry>
+          <term>Seitenleiste</term>
+          <listitem>
+            <para>
+              Please add a short description!
+            </para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>Listenansicht</term>
+          <listitem>
+            <para>
+              Please add a short description!
+            </para>
+          </listitem>
+        </varlistentry>
+      </variablelist>
+    </sect2>
+  </sect1>
+  
+  <sect1 id="usage">
+      <title>Benutzung</title>  
+   
+   <para>At it's most basic, <application>Referencer</application> may be used for editing your documents and bibliography data (library). However, it also includes useful time-saving features. Chief amongst these is the automatic acquisition of bibliographic information (metadata) for some kinds of document.</para>
+  
+  <para>When you add a PDF file to your <application>Referencer</application> library, it will automatically be searched for key identifiers such as a DOI code or arXiv identifier. If either of these is found, <application>Referencer</application> uses your internet connection to retrieve the metadata for the document.</para>
+  
+  <note>If you've got a collection of already-downloaded PDFs of papers, this can save you a lot of typing!</note>
+  
+  <para><application>Referencer</application> also uses its knowledge of papers to provide handy functions such as opening the web page associated with the article, or opening the document itself. Additionally, you can attach tags to documents to catgorise them, and then browse documents more easily by filtering them by tag.</para>
+  
+  <para><application>Referencer</application> is intended to be extremely user-friendly, but to help you get up and running as smoothly as possible, the following subsections explain how to use <application>Referencer</application>.</para>
+  
+  
+  
+  <sect2 id="howto-bibtex">
+      <title>To use <application>Referencer</application> with BibTex</title> 
+      <para><application>Referencer</application> maintains its own library of your documents, rather than loading and editing a BibTeX file. As such, when you're ready to use your library in your LaTeX document, you can have <application>Referencer</application> generate a BibTeX file (by choosing <menuchoice><guisubmenu>Library</guisubmenu>
+              <guimenuitem>Export to BibTex</guimenuitem></menuchoice>). By default this will include all documents in your library: if you would rather only export some documents then you can use the <guilabel>Selection:</guilabel> field in the export dialog to restrict the export to certain documents. Rather than repeatedly exporting when you make changes, you can tell <application>Referencer</application> to write the BibTeX file every time you change your library (<menuchoice><guisubmenu>Library</guisubmenu>
+              <guimenuitem>Manage BibTex File</guimenuitem></menuchoice>).</para>
+              
+              <para><application>Referencer</application> will automatically handle conversion of special characters (e.g. <literal>ß</literal>) to their <application>LaTex</application> equivalents (e.g. <literal>\ss</literal>). Depending on the BibTeX style you are using in your work, capitalization of text in your LaTex output may differ from that in your <application>Referencer</application> library. This is to allow publishers to impose their own capitalization schemes. If you want text to be capitalized in your work exactly as it is in your library, then you can use the <guilabel>Protect capitalization</guilabel> option in the BibTeX export dialog.</para>
+              
+              <para>If you already have a BibTeX file, you can import it into <application>Referencer</application> by choosing <menuchoice><guisubmenu>Library</guisubmenu><guimenuitem>Import...</guimenuitem></menuchoice> from the menubar.</para>
+              
+              <note>Importing and then exporting a BibTex file is not guaranteed (or intended) to produce exactly the same file as went in: <application>Referencer</application> is not a BibTeX editor!</note>
+              
+              <para>Information such as document filenames and tags is not included in BibTeX files. You should always use your <application>Referencer</application> library file as the authoritative copy.</para>
+
+</sect2>  
+  <sect2 id="howto-add-docs">
+      <title>To add documents</title> 
+      
+   	<sect3 id="howto-add-docs-by-file">
+      <title>To add documents by file/folder</title>
+      	<para>Choose <menuchoice><guisubmenu>Documents</guisubmenu>
+              <guimenuitem>Add file …</guimenuitem></menuchoice> from the menubar.</para>
+        <para>If you have some document files you'd like Referencer to know about, you can add one or more files, or a whole folder (by choosing <menuchoice><guisubmenu>Documents</guisubmenu>
+              <guimenuitem>Add folder …</guimenuitem></menuchoice>), and <application>Referencer</application> will create entries for each file. PDF files will be read, and <application>Referencer</application> will do its best to fill out the metadata for you.</para>
+              <note>When adding a folder of files, files named ".svn", "CVS", files with the extension ".bib" or ".reflib" and files with names starting "." are automatically skipped. These files can still be added individually.</note>
+   	</sect3>
+   	<sect3 id="howto-add-docs-by-DOI">
+      <title>To add documents by DOI code</title>
+      	<para>Choose <menuchoice><guisubmenu>Documents</guisubmenu>
+              <guimenuitem>Add document with DOI …</guimenuitem></menuchoice> from the menubar.
+        </para>
+        <para>If you have the DOI code for a paper, you can save yourself the effort of inputting its metadata by simply giving <application>Referencer</application> the DOI and letting it look up the metadata for you.
+        </para>
+   	</sect3>
+   	<sect3 id="howto-add-docs-by-hand">
+      <title>To add documents by hand</title>
+      	<para>Choose <menuchoice><guisubmenu>Documents</guisubmenu>
+              <guimenuitem>Add empty reference …</guimenuitem></menuchoice> from the menubar.
+        </para>
+        <para>As a last resort, <application>Referencer</application> provides a simple interface for manually creating a document and inputting metadata. A document with no information is created, and the properties window is opened for you to enter a name for the document and some metadata.
+        </para>
+   	</sect3>
+   	<sect3 id="howto-add-docs-from-bibtex">
+      <title>To add documents from a BibTeX/EndNote/Refer file</title>
+      <para>Choose <menuchoice><guisubmenu>Library</guisubmenu>
+              <guimenuitem>Import …</guimenuitem></menuchoice> from the menubar.
+              </para>
+              <para>Your existing bibliography files, or snippets from websites can be imported. Items from these files will be loaded and added to the currently open library.
+              </para>
+   	</sect3>
+   	<sect3 id="howto-add-docs-by-file">
+      <title>To add documents by Copy/Paste</title>
+      <para>Choose <menuchoice><guisubmenu>Edit</guisubmenu>
+              <guimenuitem>Paste BibTex</guimenuitem></menuchoice> from the menubar.
+      <para>To conveniently import references from the web, or particular references from an existing BibTeX file, you can simply copy and past BibTeX markup into referencer, where these references will be added as if you had imported them from a file.
+      </para>
+      </para>
+   	</sect3>
+   </sect2>
+   
+   <sect2 id="howto-use-different-docs">
+      <title>To use different document types/fields</title> 
+      <para><application>Referencer's</application> user interface is optimized for dealing with scientific papers. As such, the document type is "Article" by default and fields such as <guilabel>Title</guilabel>, <guilabel>Authors</guilabel>, <guilabel>Journal</guilabel> and <guilabel>Volume</guilabel> are shown. Other types of document may be selected in the properties window. To open this, choose <menuchoice><guisubmenu>Documents</guisubmenu>
+              <guimenuitem>Properties</guimenuitem></menuchoice> from the menubar.</para>
+              
+              <para>If you don't see the BibTeX type you want, simply type it in and it will be passed through verbatim when exporting to your BibTeX file. Some document types may require additional metadata fields, for example "Book" documents should have an "Editor" field. You can add this by expanding the <guilabel>Extra Fields</guilabel> section of the properties window, and clicking the <guilabel>New</guilabel> icon. To enter some data into your new field, select it and click the <guilabel>Edit</guilabel> icon. </para>
+
+
+   </sect2>
+  </sect1>
+  
+  <sect1 id="tagging-searching">
+      <title>Tagging And Searching</title> 
+      <para>Tagging allows you to categorize your documents. Unlike a traditional hierarchical directory type organisation, a tag-based system allows a document to belong to multiple overlapping categories. For instance, you might have tags called "Physics" and "Biology", and another called "Exciting papers". If these were directories, you would have to make arbitrary choices about which to put a paper into. As it is, you can just assign both "Physics" and "Exciting papers" to a document, and when you're not excited any more just remove the "Exciting papers" tag.
+      </para>
+	  <para>Once you've created a tag (by choosing <menuchoice><guisubmenu>Tags</guisubmenu>
+              <guimenuitem>Create Tag …</guimenuitem></menuchoice>), a checkbox for the tag will appear in the bottom half of the Tag Pane (shown or hidden using <menuchoice><guisubmenu>View</guisubmenu>
+              <guimenuitem>Show Tag Pane</guimenuitem></menuchoice>). Once you've selected one or more documents, you can set or unset this tag for the group by clicking the checkbox.
+	  </para>
+	  <para>Once you've tagged some documents, you may want to filter your view by tag. You can do this by clicking on a tag in the list in the top half of the Tag Pane. To include more tags in the view, hold <keycap>Ctrl</keycap> while clicking to select more than one tag.
+	  </para>
+	  <para>To complement the tagging system, a search box is provided above the document view. Entering text into the search box will cause only those documents featuring the search text to be shown. The search only considers the <guilabel>Title</guilabel>, <guilabel>Authors</guilabel> and <guilabel>Key</guilabel> fields of the documents.
+	  </para>
+
+   </sect1>
+   
+   <sect1 id="plugins">
+      <title>Plugins</title> 
+      <para>Additional functionality can be added to <application>Referencer</application> using the versatile <ulink url="http://www.python.org" type="http">Python</ulink> language. As of version 1.1, two kinds of plugin are supported: <application>Metadata fetcher</application> plugins, and <application>Document action</application> plugins. The former might be a script that looks up metadata for a DOI code in an internet database, while the latter might be something that manipulates the metadata of an existing document in some way.</para>
+      
+      <para>Interested developers should download the <application>Referencer</application> source code and look in the plugins/ directory for examples and in plugins/README for a brief guide.</para>
+
+
+   </sect1>
+   
+   <!-- ============= About ================================== -->
+<!-- This section contains info about the program (not docs), such as
+      author's name(s), web page, license, feedback address. This
+      section is optional: primary place for this info is "About.." box of
+      the program. However, if you do wish to include this info in the
+      manual, this is the place to put it. Alternatively, you can put this information in the title page.-->
+  <sect1 id="gnome-lirc-properties-about">
+    <title>Info zu <application>Referencer</application></title>
+
+    <para>
+     <application>Referencer</application> and this manual were written by John Spray (<email>jcspray@icculus.org</email>).
+     Some contributions to the manual came from Mario Blättermann 
+     (<email>mario.blaettermann@t-online.de</email>. To find more information about
+      <application>Referencer</application> and the most recent documentation, please visit the <ulink url="http://icculus.org/referencer" type="http">project
+     page</ulink>.
+    </para>
+    <para>Dieses Programm ist freie Software. Sie können es unter den Bedingungen der <citetitle>GNU General Public License</citetitle>, wie von der Free Software Foundation veröffentlicht, weitergeben und/oder modifizieren, entweder gemäß Version 2 der Lizenz oder (nach Ihrer Option) jeder späteren Version. Eine <ulink url="ghelp:gpl" type="help">Kopie dieser Lizenz</ulink> ist in dieser Dokumentation enthalten, eine weitere in der Datei COPYING, die im Quellcode dieses Programms enthalten ist.</para>
+  </sect1>
+
+</article>

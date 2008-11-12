@@ -19,7 +19,6 @@
 PythonPlugin::PythonPlugin(PluginManager *owner)
 {
 	pGetFunc_ = NULL;
-	pActionFunc_ = NULL;
 	pMod_ = NULL;
 	owner_ = owner;
 }
@@ -30,8 +29,6 @@ PythonPlugin::~PythonPlugin()
 	if (loaded_) {
 		if (pGetFunc_ != NULL)
 			Py_DECREF (pGetFunc_);
-		if (pActionFunc_ != NULL)
-			Py_DECREF (pActionFunc_);
 		if (pPluginInfo_ != NULL)
 			Py_DECREF (pPluginInfo_);
 		Py_DECREF (pMod_);
@@ -121,6 +118,18 @@ void PythonPlugin::load (std::string const &moduleName)
 		DEBUG (String::ucompose ("no metadata capabilities in %1", moduleName_));
 	}
 
+	/* Extract metadata lookup function */
+	if (cap_.hasMetadataCapability()) { 
+		pGetFunc_ = PyObject_GetAttrString (pMod_, "resolve_metadata");
+		if (!pGetFunc_) {
+			DEBUG ("Couldn't find resolver");
+			Py_DECREF (pMod_);
+			return;
+		} else {
+			DEBUG1 ("Found resolver %1", pGetFunc_);
+		}
+	}
+
 	/* Extract actions */
 	if (PyObject_HasAttrString (pMod_, "referencer_plugin_actions")) {
 		PyObject *pActions = PyObject_GetAttrString (pMod_, "referencer_plugin_actions");
@@ -181,17 +190,7 @@ void PythonPlugin::load (std::string const &moduleName)
 		DEBUG (String::ucompose ("No actions in %1", moduleName_));
 	}
 
-	/* Extract metadata lookup function */
-	if (cap_.hasMetadataCapability()) { 
-		pGetFunc_ = PyObject_GetAttrString (pMod_, "resolve_metadata");
-		if (!pGetFunc_) {
-			DEBUG ("Couldn't find resolver");
-			Py_DECREF (pMod_);
-			return;
-		} else {
-			DEBUG1 ("Found resolver %1", pGetFunc_);
-		}
-	}
+
 
 	DEBUG (String::ucompose ("successfully loaded %1", moduleName));
 
@@ -210,6 +209,7 @@ bool PythonPlugin::resolve (Document &doc)
 		if (success)
 			break;
 	}
+	
 
 	if (success)
 		doc.getBibData().setType("article");
@@ -217,6 +217,11 @@ bool PythonPlugin::resolve (Document &doc)
 	return success;
 }
 
+
+/**
+ * Invoke a plugin action and return true if the plugin 
+ * modifies a document or the library
+ */
 bool PythonPlugin::doAction (Glib::ustring const function, std::vector<Document*> docs)
 {
 	/* Check the callback exists */
@@ -492,6 +497,7 @@ void PythonPlugin::doConfigure ()
 		Py_DECREF (confFunc);
 	if (pReturn)
 		Py_DECREF (pReturn);
+	Plugin::SearchResults retval;
 }
 
 
@@ -506,4 +512,58 @@ Glib::ustring PythonPlugin::getError ()
 	return exceptionLog_;
 }
 
+
+bool PythonPlugin::canSearch ()
+{
+	if (pMod_)
+		return PyObject_HasAttrString (pMod_, "referencer_search")
+		       && PyObject_HasAttrString (pMod_, "referencer_search_result");
+	else
+		return false;
+}
+
+
+/**
+ * Invoke pSearchFunc_ and cast results from list of 
+ * dictionaries into vector of maps
+ */
+Plugin::SearchResults PythonPlugin::doSearch (Glib::ustring const &searchTerms)
+{
+	/* Look up search function */
+	PyObject *searchFunc = PyObject_GetAttrString (pMod_, "referencer_search");
+	if (!searchFunc)
+		return Plugin::SearchResults();
+
+	/* Invoke search function */
+	PyObject *pArgs = Py_BuildValue ("(s)", searchTerms.c_str());
+	PyObject *pReturn = PyObject_CallObject(searchFunc, pArgs);
+	Py_DECREF (pArgs);
+	
+	/* Copy Python result into C++ structures */
+	Plugin::SearchResults retval;
+	int itemCount = PyList_Size (pReturn);
+	for (int i = 0; i < itemCount; ++i) {
+
+		/* Borrowed reference */
+		PyObject *dict = PyList_GetItem (pReturn, i);
+		std::map<Glib::ustring, Glib::ustring> result;
+
+		/* Iterate over all items */
+		PyObject *key, *value;
+		Py_ssize_t pos = 0;
+		while (PyDict_Next(dict, &pos, &key, &value)) {
+			result[PyString_AsString(key)] = PyString_AsString(value);
+		}
+
+		retval.push_back(result);
+	}
+	Py_DECREF (pReturn);
+
+	return retval;
+}
+
+
+Document PythonPlugin::getSearchResult (Glib::ustring const &token)
+{
+}
 

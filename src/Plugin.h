@@ -2,6 +2,7 @@
 #ifndef PLUGIN_H
 #define PLUGIN_H
 
+#include "Document.h"
 
 #include <gtkmm.h>
 #include <vector>
@@ -20,7 +21,8 @@ class PluginCapability
 			ARXIV = 1 << 1,
 			PUBMED = 1 << 2,
 			DOCUMENT_ACTION = 1 << 3,
-			URL = 1 << 4
+			URL = 1 << 4,
+			SEARCH = 1 << 5
 		} Identifier;
 
 		void add (Identifier const id) {
@@ -69,6 +71,8 @@ class PluginCapability
 					return "PubMed ID";
 				case URL:
 					return "Web URL";
+				case SEARCH:
+					return "Search";
 				case NONE:
 				default:
 					return "Invalid PluginCapability for display";
@@ -88,6 +92,7 @@ class PluginCapability
 					return "url";
 
 				case NONE:
+				case SEARCH:
 				case DOCUMENT_ACTION:
 				default:
 					return "";
@@ -113,7 +118,7 @@ class PluginCapability
 		}
 };
 
-class Document;
+
 
 /*
  * Base class for metadata fetching plugins
@@ -121,6 +126,9 @@ class Document;
 class Plugin
 {
 	public:
+		typedef std::map <Glib::ustring, Glib::ustring> SearchResult;
+		typedef std::vector< SearchResult > SearchResults;
+
 		Plugin () {enabled_ = false; loaded_ = false;}
 		virtual ~Plugin () {};
 
@@ -160,6 +168,12 @@ class Plugin
 		}
 
 		PluginCapability cap_;
+
+		
+		/* Searching */
+		virtual bool canSearch () {return false;}
+		virtual SearchResults doSearch (Glib::ustring const &searchTerms) {return SearchResults();}
+		virtual Document getSearchResult (Glib::ustring const &token) {throw std::logic_error("Unimplemented");};
 
 	protected:
 		bool loaded_;

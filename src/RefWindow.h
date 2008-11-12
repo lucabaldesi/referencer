@@ -17,6 +17,7 @@
 #include <map>
 
 #include <gtkmm.h>
+#include <libglademm.h>
 
 #include "Plugin.h"
 
@@ -166,6 +167,7 @@ class RefWindow {
 		void onAddDocById ();
 		void onAddDocFile ();
 		void onAddDocFolder ();
+		void onSearch ();
 
 		/* Helpers for addDocFiles */
 		void onAddDocFilesCancel       (Gtk::Button *button, Gtk::ProgressBar *progress);
@@ -194,7 +196,36 @@ class RefWindow {
 			public:
 			TaggerDialog (RefWindow *window, TagList *taglist);
 			std::vector<int> tagPrompt ();
-			
+		};
+		class SearchDialog {
+			public:
+			SearchDialog ();
+			void run (); 
+
+			static bool progressCallback (void *ptr);
+			bool progress ();
+
+			private:
+			void search ();
+
+			Glib::RefPtr<Gnome::Glade::Xml> xml_;
+
+			Gtk::Dialog *dialog_;
+			Gtk::Button *searchButton_;
+			Gtk::Entry *searchEntry_;
+			Gtk::ComboBox *pluginCombo_;
+			Gtk::TreeView *resultView_;
+			Gtk::Button *cancelButton_;
+			Gtk::ProgressBar *progressbar_;
+
+			Glib::RefPtr<Gtk::ListStore>        pluginModel_;
+			Gtk::TreeModelColumn<Plugin*>       pluginPtrColumn_;
+			Gtk::TreeModelColumn<Glib::ustring> pluginNameColumn_;
+
+			Glib::RefPtr<Gtk::ListStore>        resultModel_;
+			Gtk::TreeModelColumn<Glib::ustring> resultTokenColumn_;
+			Gtk::TreeModelColumn<Glib::ustring> resultTitleColumn_;
+			Gtk::TreeModelColumn<Glib::ustring> resultAuthorColumn_;
 		};
 
 		public:

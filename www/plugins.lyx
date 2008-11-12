@@ -333,6 +333,35 @@ y is not required.
 \begin_layout Description
 
 \family typewriter
+referencer.bibtex_to_fields(
+\emph on
+bibtex
+\emph default
+)
+\family default
+\series bold
+ 
+\series default
+Bibtex parser.
+ Converts a bibtex snippet into a dictionary having keys/value pairs compatible
+ with the 
+\family typewriter
+set_field
+\family default
+ and 
+\family typewriter
+get_field 
+\family default
+methods of the 
+\family typewriter
+document
+\family default
+ class.
+\end_layout
+
+\begin_layout Description
+
+\family typewriter
 referencer._(
 \emph on
 text)
@@ -515,6 +544,30 @@ value
 value
 \emph default
  as plain-text BibTex and set the document's fields accordingly.
+\end_layout
+
+\begin_layout Description
+
+\family typewriter
+print_bibtex(
+\emph on
+braces,\InsetSpace ~
+utf8
+\emph default
+)
+\family default
+ Return a string containing the bibtex representation of the document's
+ metadata.
+ 
+\family typewriter
+braces
+\family default
+ specifies whether each value should be enclosed in {}, and 
+\family typewriter
+utf8
+\family default
+ specifies whether the output should be given in ASCII with bibtex entitites
+ (false) or in UTF-8 encoding (true).
 \end_layout
 
 \begin_layout Subsection
@@ -979,27 +1032,17 @@ documents
 library
 \emph default
  is a unused.
- For example:
-\end_layout
-
-\begin_layout LyX-Code
-def sensitivity_genkey (library, documents):
-\end_layout
-
-\begin_layout LyX-Code
-    pass
-\end_layout
-
-\begin_layout LyX-Code
- 
-\end_layout
-
-\begin_layout LyX-Code
-def do_genkey (library, documents):
-\end_layout
-
-\begin_layout LyX-Code
-    pass
+ The sensitivity function should return true if the action should be usable
+ (some plugins may wish to use the condition 
+\family typewriter
+len(documents) > 0
+\family default
+, or always return True if the action is unconditionally usable.
+ The action callback function should return 
+\family typewriter
+True
+\family default
+ if it modifies any documents or library settings.
 \end_layout
 
 \begin_layout Standard

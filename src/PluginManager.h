@@ -20,17 +20,23 @@ class PluginManager
 		PluginManager ();
 		~PluginManager ();
 
+		typedef std::list<Plugin*> PluginList;
+
 		/* List of loaded plugins */
-		std::list<Plugin*> getPlugins();
+		PluginList getPlugins();
 
 		/* List of enabled plugins */
-		std::list<Plugin*> getEnabledPlugins();
+		PluginList getEnabledPlugins();
 
 		/* Load all plugins in the directory */
 		void scan (std::string const &pluginDir);
 
 		/* Look for data files in plugin paths */
 		Glib::ustring findDataFile (Glib::ustring file);
+
+		/* Callback for progression while in plugins */
+		void *progressObject_;
+		bool (*progressCallback_)(void*);
 
 	private:
 		/* Python module search locations */

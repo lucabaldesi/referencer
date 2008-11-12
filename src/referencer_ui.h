@@ -71,6 +71,7 @@ Glib::ustring referencer_ui =
 		"      <placeholder name='PluginDocumentActions'/>"
 		"    </menu>"
 		"    <menu action='ToolsMenu'>"
+		"      <menuitem action='Search'/>"
 		"      <placeholder name='PluginToolsActions'/>"
 		"    </menu>"
 		"    <placeholder name='PluginMenus'/>"
