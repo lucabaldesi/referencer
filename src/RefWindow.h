@@ -199,19 +199,25 @@ class RefWindow {
 		};
 		class SearchDialog {
 			public:
-			SearchDialog ();
+			SearchDialog (Library &library, DocumentView &view);
 			void run (); 
 
 			static bool progressCallback (void *ptr);
 			bool progress ();
 
 			private:
+			Library &library_;
+			DocumentView &documentView_;
+
 			void search ();
+			void addSelected ();
+			void updateSensitivity ();
 
 			Glib::RefPtr<Gnome::Glade::Xml> xml_;
 
 			Gtk::Dialog *dialog_;
 			Gtk::Button *searchButton_;
+			Gtk::Button *addButton_;
 			Gtk::Entry *searchEntry_;
 			Gtk::ComboBox *pluginCombo_;
 			Gtk::TreeView *resultView_;

@@ -2296,7 +2296,7 @@ void RefWindow::onRemoveDoc ()
 
 void RefWindow::onSearch ()
 {
-	SearchDialog dialog;
+	SearchDialog dialog(*library_, *docview_);
 	dialog.run();
 }
 
@@ -2958,13 +2958,15 @@ void RefWindow::onPluginRun (Glib::ustring const function, Plugin* plugin)
 }
 
 
-RefWindow::SearchDialog::SearchDialog ()
+RefWindow::SearchDialog::SearchDialog (Library &library, DocumentView &view)
+	: library_(library),documentView_(view)
 {
 	xml_ = Gnome::Glade::Xml::create (
 		Utility::findDataFile ("search.glade"));
 	
 	xml_->get_widget ("SearchDialog", dialog_);
 	xml_->get_widget ("Find", searchButton_);
+	xml_->get_widget ("AddDocument", addButton_);
 	xml_->get_widget ("SearchText", searchEntry_);
 	xml_->get_widget ("Plugin", pluginCombo_);
 	xml_->get_widget ("SearchResults", resultView_);
@@ -2973,6 +2975,8 @@ RefWindow::SearchDialog::SearchDialog ()
 
 	searchButton_->signal_clicked().connect (
 		sigc::mem_fun (*this, &RefWindow::SearchDialog::search));
+	addButton_->signal_clicked().connect (
+		sigc::mem_fun (*this, &RefWindow::SearchDialog::addSelected));
 
 	Gtk::TreeModel::ColumnRecord resultCols;
 	resultCols.add (resultTokenColumn_);
@@ -2983,6 +2987,9 @@ RefWindow::SearchDialog::SearchDialog ()
 	resultView_->set_model (resultModel_);
 	resultView_->append_column ("Author", resultAuthorColumn_);
 	resultView_->append_column ("Title", resultTitleColumn_);
+
+	resultView_->get_selection()->signal_changed().connect (
+			sigc::mem_fun (*this, &RefWindow::SearchDialog::updateSensitivity));
 
 	Gtk::TreeModel::ColumnRecord pluginCols;
 	pluginCols.add (pluginPtrColumn_);
@@ -3050,6 +3057,13 @@ bool RefWindow::SearchDialog::progress ()
 }
 
 
+void RefWindow::SearchDialog::updateSensitivity ()
+{
+	bool const somethingSelected = resultView_->get_selection()->count_selected_rows () != 0;
+	addButton_->set_sensitive (somethingSelected); 
+}
+
+
 void RefWindow::SearchDialog::search ()
 {
 	/* UI to initial state */
@@ -3089,8 +3103,8 @@ void RefWindow::SearchDialog::search ()
 	for (; resultIter != resultEnd; ++resultIter) {
 		Glib::ustring title;
 		Glib::ustring author;
+		Glib::ustring token;
 
-		/* FIXME: unnecessary copy */
 		Plugin::SearchResult result = *resultIter;
 
 		Plugin::SearchResult::iterator found;
@@ -3100,11 +3114,31 @@ void RefWindow::SearchDialog::search ()
 		found = result.find("author");
 		if (found != result.end())
 			author = found->second;
+		found = result.find("token");
+		if (found != result.end())
+			token = found->second;
 
 		Gtk::ListStore::iterator newRow = resultModel_->append();
 		(*newRow)[resultTitleColumn_] = title;
 		(*newRow)[resultAuthorColumn_] = author;
+		(*newRow)[resultTokenColumn_] = token;
 	}
+}
+
+void RefWindow::SearchDialog::addSelected ()
+{
+	Glib::RefPtr<Gtk::TreeSelection> sel = resultView_->get_selection ();
+
+	/* Retrieve lookup token */
+	Gtk::TreeModel::iterator it = sel->get_selected ();	
+	Glib::ustring const token = (*it)[resultTokenColumn_];
+
+	/* Retrieve choice of plugin */
+	Plugin *plugin = (*(pluginCombo_->get_active()))[pluginPtrColumn_];
+
+	Document const newdoc = plugin->getSearchResult(token);
+
+	documentView_.addDoc (library_.doclist_->insertDoc(newdoc));
 }
 
 

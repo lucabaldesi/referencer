@@ -16,14 +16,18 @@ referencer_plugin_info = {
 	"longname":  "Search test",
 }
 
+results = [{"token":"GOD00", "title":"The Holy Bible", "author":"The lord our God"}]
 
 def referencer_search (search_text):
 	for n in range(0,28):
-		time.sleep (0.1)
+		#time.sleep (0.1)
 		foo =  referencer.poll_cancellation()
 
-
-	return [{"title":"The Bible", "author":"God"}]
+	return results
 
 def referencer_search_result (token):
-	return None
+	for result in results:
+		if result["token"] == token:
+			return result
+
+	return {}

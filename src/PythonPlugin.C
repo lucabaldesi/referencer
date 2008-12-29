@@ -29,8 +29,10 @@ PythonPlugin::~PythonPlugin()
 	if (loaded_) {
 		if (pGetFunc_ != NULL)
 			Py_DECREF (pGetFunc_);
+
 		if (pPluginInfo_ != NULL)
 			Py_DECREF (pPluginInfo_);
+
 		Py_DECREF (pMod_);
 	}
 }
@@ -497,7 +499,6 @@ void PythonPlugin::doConfigure ()
 		Py_DECREF (confFunc);
 	if (pReturn)
 		Py_DECREF (pReturn);
-	Plugin::SearchResults retval;
 }
 
 
@@ -565,5 +566,41 @@ Plugin::SearchResults PythonPlugin::doSearch (Glib::ustring const &searchTerms)
 
 Document PythonPlugin::getSearchResult (Glib::ustring const &token)
 {
+	DEBUG1 ("token '%1'", token);
+	/* Look up result lookup function */
+	PyObject *searchFunc = PyObject_GetAttrString (pMod_, "referencer_search_result");
+	if (!searchFunc)
+		return Document();
+
+	/* Invoke result lookup function */
+	PyObject *pArgs = Py_BuildValue ("(s)", token.c_str());
+	PyObject *pReturn = PyObject_CallObject(searchFunc, pArgs);
+	Py_DECREF (pArgs);
+
+	if (pReturn) {
+		/* Compose Document from returned fields */
+		Document doc;
+		int itemCount = PyList_Size (pReturn);
+		DEBUG1 ("got %1 fields", itemCount);
+
+		PyObject *dict = pReturn;
+		/* Borrowed reference */
+		std::map<Glib::ustring, Glib::ustring> result;
+
+		/* Iterate over all items */
+		PyObject *key, *value;
+		Py_ssize_t pos = 0;
+		while (PyDict_Next(dict, &pos, &key, &value)) {
+			DEBUG2 ("Setting %1 %2", PyString_AsString(key), PyString_AsString(value));
+			doc.setField (PyString_AsString(key), PyString_AsString(value));
+		}
+
+		Py_DECREF (pReturn);
+
+		return doc;
+	} else {
+		DEBUG ("PythonPlugin::getSearchResult: NULL return value");
+		displayException();
+	}
 }
 

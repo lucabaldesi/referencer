@@ -104,6 +104,12 @@ Document* DocumentList::newDocWithName (Glib::ustring const &key)
 	return &(docs_.back());
 }
 
+Document *DocumentList::insertDoc (Document const &doc)
+{
+	docs_.push_back(doc);
+	return &(docs_.back());
+}
+
 
 void DocumentList::loadDoc (
 	Glib::ustring const &filename,

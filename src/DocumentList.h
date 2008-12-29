@@ -36,6 +36,7 @@ class DocumentList {
 	Document* newDocWithFile (Glib::ustring const &filename);
 	Document* newDocWithName (Glib::ustring const &key);
 	Document* newDocUnnamed ();
+	Document* insertDoc (Document const &doc);
 
 	bool docExists (
 		Glib::ustring const &name,
