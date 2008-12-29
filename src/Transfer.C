@@ -186,6 +186,9 @@ Glib::ustring &readRemoteFile (
 
 volatile static bool advance;
 Gnome::Vfs::Async::Handle bibfile;
+static long transferCounter;
+/* FIXME: remove this limit */
+static int const maxSize = 1024 * 256;
 
 void openCB (
 	Gnome::Vfs::Async::Handle const &handle,
@@ -206,16 +209,17 @@ void readCB (
 	Gnome::Vfs::Result result,
 	gpointer buffer,
 	Gnome::Vfs::FileSize requested,
-	Gnome::Vfs::FileSize reallyread)
+	Gnome::Vfs::FileSize reallyRead)
 {
-	DEBUG1 ("Woo, read %1 bytes", reallyread);
+	transferCounter += reallyRead;
+	DEBUG2 ("Transferred %1 bytes (%2)", transferCounter, reallyRead);
+
 	char *charbuf = (char *) buffer;
-	charbuf [reallyread] = 0;
+	charbuf [reallyRead] = 0;
 	if (result == Gnome::Vfs::OK) {
-		DEBUG ("readCB: result OK");
-		if (reallyread > 0) {
+		if (reallyRead > 0) {
 			Gnome::Vfs::Async::Handle &h = const_cast<Gnome::Vfs::Async::Handle&> (handle);
-			h.read ((char*)buffer + reallyread, 1024 * 256 - reallyread, sigc::ptr_fun (&readCB));
+			h.read ((char*)buffer + reallyRead, maxSize - transferCounter, sigc::ptr_fun (&readCB));
 		} else {
 			advance = true;
 		}
@@ -296,12 +300,12 @@ void fetcherThread (Glib::ustring const &filename)
 	// paper is more than 256kB.  If it really is then we will
 	// later try and parse incomplete XML, and should fail
 	// there probably.
-	int const maxsize = 1024 * 256;
-	char *buffer = (char *) malloc (sizeof (char) * maxsize);
+	char *buffer = (char *) malloc (sizeof (char) * maxSize);
 
+	transferCounter = 0;
 	advance = false;
 	try {
-		bibfile.read (buffer, maxsize, sigc::ptr_fun (&readCB));
+		bibfile.read (buffer, maxSize, sigc::ptr_fun (&readCB));
 	} catch (const Gnome::Vfs::exception ex) {
 		DEBUG ("Got an exception from read");
 		// should close handle?

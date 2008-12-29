@@ -464,7 +464,7 @@ void RefWindow::constructMenu ()
   	sigc::mem_fun(*this, &RefWindow::onDocProperties));
 
 	actiongroup_->add( Gtk::Action::create(
-		    "Search", Gtk::Stock::FIND, _("Search...")), Gtk::AccelKey ("<control>e"),
+		    "Search", Gtk::Stock::FIND, _("Search...")), Gtk::AccelKey ("<control>x"),
 		sigc::mem_fun(*this, &RefWindow::onSearch));
 
 	actiongroup_->add ( Gtk::Action::create("TaggerMenuAction", _("_Tags")) );
@@ -2988,6 +2988,8 @@ RefWindow::SearchDialog::SearchDialog (Library &library, DocumentView &view)
 	resultView_->append_column ("Author", resultAuthorColumn_);
 	resultView_->append_column ("Title", resultTitleColumn_);
 
+	resultView_->signal_row_activated().connect (
+			sigc::mem_fun (*this, &RefWindow::SearchDialog::resultActivated));
 	resultView_->get_selection()->signal_changed().connect (
 			sigc::mem_fun (*this, &RefWindow::SearchDialog::updateSensitivity));
 
@@ -3125,9 +3127,17 @@ void RefWindow::SearchDialog::search ()
 	}
 }
 
+void RefWindow::SearchDialog::resultActivated (const Gtk::TreePath &path, Gtk::TreeViewColumn * col)
+{
+	addSelected ();
+}
+
 void RefWindow::SearchDialog::addSelected ()
 {
 	Glib::RefPtr<Gtk::TreeSelection> sel = resultView_->get_selection ();
+
+	if (sel->count_selected_rows() == 0)
+		return;
 
 	/* Retrieve lookup token */
 	Gtk::TreeModel::iterator it = sel->get_selected ();	

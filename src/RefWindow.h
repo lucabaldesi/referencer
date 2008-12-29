@@ -212,6 +212,7 @@ class RefWindow {
 			void search ();
 			void addSelected ();
 			void updateSensitivity ();
+			void resultActivated (const Gtk::TreePath &path, Gtk::TreeViewColumn * col);
 
 			Glib::RefPtr<Gnome::Glade::Xml> xml_;
 

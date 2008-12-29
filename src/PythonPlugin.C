@@ -540,27 +540,33 @@ Plugin::SearchResults PythonPlugin::doSearch (Glib::ustring const &searchTerms)
 	PyObject *pReturn = PyObject_CallObject(searchFunc, pArgs);
 	Py_DECREF (pArgs);
 	
-	/* Copy Python result into C++ structures */
-	Plugin::SearchResults retval;
-	int itemCount = PyList_Size (pReturn);
-	for (int i = 0; i < itemCount; ++i) {
+	if (pReturn) {
+		/* Copy Python result into C++ structures */
+		Plugin::SearchResults retval;
+		int itemCount = PyList_Size (pReturn);
+		for (int i = 0; i < itemCount; ++i) {
 
-		/* Borrowed reference */
-		PyObject *dict = PyList_GetItem (pReturn, i);
-		std::map<Glib::ustring, Glib::ustring> result;
+			/* Borrowed reference */
+			PyObject *dict = PyList_GetItem (pReturn, i);
+			std::map<Glib::ustring, Glib::ustring> result;
 
-		/* Iterate over all items */
-		PyObject *key, *value;
-		Py_ssize_t pos = 0;
-		while (PyDict_Next(dict, &pos, &key, &value)) {
-			result[PyString_AsString(key)] = PyString_AsString(value);
+			/* Iterate over all items */
+			PyObject *key, *value;
+			Py_ssize_t pos = 0;
+			while (PyDict_Next(dict, &pos, &key, &value)) {
+				result[PyString_AsString(key)] = PyString_AsString(value);
+			}
+
+			retval.push_back(result);
 		}
-
-		retval.push_back(result);
+		Py_DECREF (pReturn);
+		return retval;
+	} else {
+		DEBUG ("NULL return value");
+		displayException();
+		return Plugin::SearchResults();
 	}
-	Py_DECREF (pReturn);
 
-	return retval;
 }
 
 
@@ -599,8 +605,9 @@ Document PythonPlugin::getSearchResult (Glib::ustring const &token)
 
 		return doc;
 	} else {
-		DEBUG ("PythonPlugin::getSearchResult: NULL return value");
+		DEBUG ("NULL return value");
 		displayException();
+		return Document();
 	}
 }
 

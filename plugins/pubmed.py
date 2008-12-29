@@ -20,49 +20,6 @@ referencer_plugin_info = {
 referencer_plugin_capabilities = ["doi", "pubmed"]
 
 
-def get_citation_from_doi(query, email='referencer@icculus.org', tool='Referencer', database='pubmed'):
-	params = {
-		'db':database,
-		'tool':tool,
-		'email':email,
-		'term':query + "[doi]",
-		'usehistory':'y',
-		'retmax':1
-	}
-
-	# try to resolve the PubMed ID of the DOI
-	url = 'http://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?' + urllib.urlencode(params)
-	data = referencer.download (_("Resolving DOI"), _("Finding PubMed ID from DOI %s") % query , url);
-
-	# parse XML output from PubMed...
-	xmldoc = minidom.parseString(data)
-	ids = xmldoc.getElementsByTagName('Id')
-
-	# nothing found, exit
-	if len(ids) == 0:
-		raise "pubmed.get_citation_from_doi: DOI not found"
-
-	# get ID
-	id = ids[0].childNodes[0].data
-
-	print "pubmed.get_citation_from_doi: DOI ", query, " has PubMed ID ", id
-
-	return get_citation_from_pmid (id)
- 
-def get_citation_from_pmid (pmid, email='referencer@icculus.org', tool='Referencer', database='pubmed'):
-	params = {
-		'db':database,
-		'tool':tool,
-		'email':email,
-		'id':pmid,
-		'retmode':'xml'
-	}
-
-	# get citation info:
-	url = 'http://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?' + urllib.urlencode(params)
-	data = referencer.download (_("Resolving PubMed ID"), _("Fetching metadata from NCBI for PubMed ID %s") % pmid, url);
-
-	return data
 
 
 # Encoding: every PyUnicode that minidom gives us gets
@@ -151,6 +108,142 @@ def text_output(xml):
 			output2.append(pair)
 
 	return output2
+
+
+def referencer_search (search_text):
+	email='referencer@icculus.org'
+   	tool='Referencer'
+	database='pubmed'
+
+	retmax = 100
+
+	params = {
+		'db':database,
+		'tool':tool,
+		'email':email,
+		'term':search_text,
+		'usehistory':'y',
+		'retmax':retmax
+	}
+
+	# try to resolve the PubMed ID of the DOI
+	url = 'http://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?' + urllib.urlencode(params)
+	data = referencer.download (_("Searching pubmed"), _("Searching pubmed for '%s'") % search_text , url);
+
+	# parse XML output from PubMed...
+	print data
+	xmldoc = minidom.parseString(data)
+	ids = xmldoc.getElementsByTagName('Id')
+
+	# nothing found, exit
+	# FIXME: not really an error
+	if len(ids) == 0:
+		raise "pubmed.referencer_search: no results"
+
+	webenv = xmldoc.getElementsByTagName('WebEnv')
+	if len(webenv) == 0:
+		raise "pubmed.referencer_search: no webenv"
+	webenv = webenv[0].childNodes[0].data
+
+	query_key = xmldoc.getElementsByTagName('QueryKey')
+	if len(query_key) == 0:
+		raise "pubmed.referencer_search: no query_key"
+	query_key = query_key[0].childNodes[0].data
+
+	params = {
+		'db':database,
+		'tool':tool,
+		'email':email,
+		'webenv':webenv,
+		'query_key':query_key,
+		'retmax':retmax
+	}
+	url = 'http://eutils.ncbi.nlm.nih.gov/entrez/eutils/esummary.fcgi?' + urllib.urlencode(params)
+	data = referencer.download (_("Retrieving pubmed summaries"), _("Retrieving summaries for '%s'") % search_text , url);
+
+	xmldoc = minidom.parseString(data)
+
+	results = []
+	for docsum in xmldoc.getElementsByTagName('DocSum'):
+		title = ""
+		author = ""
+		pmid = ""
+		id = docsum.getElementsByTagName("Id")
+		if len(id) !=0:
+			pmid = id[0].childNodes[0].data
+		else:
+			raise "pubmed.referencer_search: docsum without id"
+
+		for childnode in docsum.getElementsByTagName("Item"):
+			if childnode.getAttribute("Name") == "Title":
+				title = childnode.childNodes[0].data
+			if childnode.getAttribute("Name") == "Author":
+				author = childnode.childNodes[0].data
+
+		results.append ({"token":pmid,"title":title,"author":author})
+
+	print results
+
+	return results
+
+def referencer_search_result (token):
+	data = get_citation_from_pmid(token)
+	fields = text_output(data)
+
+	print "referencer_search_result: token = ", token
+	print "referencer_search_result: fields = ", fields
+
+	dict = {}
+	for field in fields:
+		dict[field[0]] = field[1]
+
+	return dict
+
+
+def get_citation_from_doi(query, email='referencer@icculus.org', tool='Referencer', database='pubmed'):
+	params = {
+		'db':database,
+		'tool':tool,
+		'email':email,
+		'term':query + "[doi]",
+		'usehistory':'y',
+		'retmax':1
+	}
+
+	# try to resolve the PubMed ID of the DOI
+	url = 'http://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?' + urllib.urlencode(params)
+	data = referencer.download (_("Resolving DOI"), _("Finding PubMed ID from DOI %s") % query , url);
+
+	# parse XML output from PubMed...
+	xmldoc = minidom.parseString(data)
+	ids = xmldoc.getElementsByTagName('Id')
+
+	# nothing found, exit
+	if len(ids) == 0:
+		raise "pubmed.get_citation_from_doi: DOI not found"
+
+	# get ID
+	id = ids[0].childNodes[0].data
+
+	print "pubmed.get_citation_from_doi: DOI ", query, " has PubMed ID ", id
+
+	return get_citation_from_pmid (id)
+ 
+def get_citation_from_pmid (pmid, email='referencer@icculus.org', tool='Referencer', database='pubmed'):
+	params = {
+		'db':database,
+		'tool':tool,
+		'email':email,
+		'id':pmid,
+		'retmode':'xml'
+	}
+
+	# get citation info:
+	url = 'http://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?' + urllib.urlencode(params)
+	data = referencer.download (_("Resolving PubMed ID"), _("Fetching metadata from NCBI for PubMed ID %s") % pmid, url);
+
+	return data
+
 
 def resolve_metadata (doc, method):
 	try:
