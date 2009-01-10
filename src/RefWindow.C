@@ -3146,7 +3146,12 @@ void RefWindow::SearchDialog::addSelected ()
 	/* Retrieve choice of plugin */
 	Plugin *plugin = (*(pluginCombo_->get_active()))[pluginPtrColumn_];
 
-	Document const newdoc = plugin->getSearchResult(token);
+	Document newdoc = plugin->getSearchResult(token);
+	if (newdoc.getField("key") == "") {
+		newdoc.setField(
+				"key",
+				library_.doclist_->uniqueKey(newdoc.generateKey(), NULL));
+	}
 
 	documentView_.addDoc (library_.doclist_->insertDoc(newdoc));
 }

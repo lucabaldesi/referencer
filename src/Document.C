@@ -714,6 +714,8 @@ Glib::ustring Document::getField (Glib::ustring const &field)
 		return bib_.getYear ();
 	else if (field == "pages")
 		return bib_.getPages ();
+	else if (field == "key")
+		return getKey();
 	else {
 		if (bib_.extras_.find(field) != bib_.extras_.end()) {
 			const Glib::ustring _field = field;
