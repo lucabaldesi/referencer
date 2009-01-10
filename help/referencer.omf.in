@@ -3,7 +3,7 @@
   <resource>
     <subject category="GNOME|Applications|Office"/>
     <type>manual</type>
-    <relation seriesid="64567bbe-6003-11dd-8e86-848351b2d6c2"/>
-    <rights type="GNU FDL" license.version="1.2" holder="John Spray"/>
+    <relation seriesid="079107ad-8f44-679e-8b54-09f87e6ae456d0"/>
+    <rights type="GNU GPL" license.version="2.0" holder="John Spray"/>
   </resource>
 </omf>

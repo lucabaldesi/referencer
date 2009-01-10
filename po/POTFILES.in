@@ -1,4 +1,3 @@
-data/referencer.desktop.in
 data/documentproperties.glade
 data/preferences.glade
 plugins/pubmed.py

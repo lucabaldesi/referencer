@@ -1,9 +1,12 @@
+# German translation of the Referencer manual.
+# Mario Blättermann <mario.blaettermann@t-online.de>, 2008.
+#
 msgid ""
 msgstr ""
 "Project-Id-Version: Referencer\n"
-"POT-Creation-Date: 2008-10-22 20:28+0200\n"
-"PO-Revision-Date: \n"
-"Last-Translator: Mario Blättermann <mario.blaettermann@t-online.de>\n"
+"POT-Creation-Date: 2008-12-31 14:21+0100\n"
+"PO-Revision-Date: 2008-12-31 14:27+0100\n"
+"Last-Translator: Mario Blättermann <mariobl@gnome.org>\n"
 "Language-Team: German <gnome-de@gnome.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -11,187 +14,84 @@ msgstr ""
 "X-Poedit-Language: German\n"
 "X-Poedit-Country: GERMANY\n"
 
-#: legal.xml:2(para)
-msgid ""
-"Permission is granted to copy, distribute and/or modify this document under "
-"the terms of the GNU Free Documentation License (GFDL), Version 1.1 or any "
-"later version published by the Free Software Foundation with no Invariant "
-"Sections, no Front-Cover Texts, and no Back-Cover Texts. You can find a copy "
-"of the GFDL at this <ulink type=\"help\" url=\"ghelp:fdl\">link</ulink> or in "
-"the file COPYING-DOCS distributed with this manual."
-msgstr ""
-"Das vorliegende Dokument kann gemäß den Bedingungen der GNU Free "
-"Documentation License (GFDL), Version 1.1 oder jeder späteren, von der Free "
-"Software Foundation veröffentlichten Version ohne unveränderbare Abschnitte "
-"sowie ohne Texte auf dem vorderen und hinteren Buchdeckel kopiert, verteilt "
-"und/oder modifiziert werden. Eine Kopie der GFDL finden Sie unter diesem "
-"<ulink type=\"help\" url=\"ghelp:fdl\">Link</ulink> oder in der mit diesem "
-"Handbuch gelieferten Datei COPYING-DOCS."
-
-#: legal.xml:12(para)
-msgid ""
-"This manual is part of a collection of GNOME manuals distributed under the "
-"GFDL. If you want to distribute this manual separately from the collection, "
-"you can do so by adding a copy of the license to the manual, as described in "
-"section 6 of the license."
-msgstr ""
-"Dieses Handbuch ist Teil einer Sammlung von GNOME-Handbüchern, die unter der "
-"GFDL veröffentlicht werden. Wenn Sie dieses Handbuch getrennt von der "
-"Sammlung weiterverbreiten möchten, können Sie das tun, indem Sie eine Kopie "
-"der Lizenz zum Handbuch hinzufügen, wie es in Abschnitt 6 der Lizenz "
-"beschrieben ist."
-
-#: legal.xml:19(para)
-msgid ""
-"Many of the names used by companies to distinguish their products and "
-"services are claimed as trademarks. Where those names appear in any GNOME "
-"documentation, and the members of the GNOME Documentation Project are made "
-"aware of those trademarks, then the names are in capital letters or initial "
-"capital letters."
-msgstr ""
-"Viele der Namen, die von Unternehmen verwendet werden, um ihre Produkte und "
-"Dienstleistungen von anderen zu unterscheiden, sind eingetragene "
-"Warenzeichen. An den Stellen, an denen diese Namen in einer GNOME-"
-"Dokumentation erscheinen, werden die Namen in Großbuchstaben oder mit einem "
-"großen Anfangsbuchstaben geschrieben, wenn das GNOME-Dokumentationsprojekt "
-"auf diese Warenzeichen hingewiesen wird."
-
-#: legal.xml:35(para)
-msgid ""
-"DOCUMENT IS PROVIDED ON AN \"AS IS\" BASIS, WITHOUT WARRANTY OF ANY KIND, "
-"EITHER EXPRESSED OR IMPLIED, INCLUDING, WITHOUT LIMITATION, WARRANTIES THAT "
-"THE DOCUMENT OR MODIFIED VERSION OF THE DOCUMENT IS FREE OF DEFECTS "
-"MERCHANTABLE, FIT FOR A PARTICULAR PURPOSE OR NON-INFRINGING. THE ENTIRE RISK "
-"AS TO THE QUALITY, ACCURACY, AND PERFORMANCE OF THE DOCUMENT OR MODIFIED "
-"VERSION OF THE DOCUMENT IS WITH YOU. SHOULD ANY DOCUMENT OR MODIFIED VERSION "
-"PROVE DEFECTIVE IN ANY RESPECT, YOU (NOT THE INITIAL WRITER, AUTHOR OR ANY "
-"CONTRIBUTOR) ASSUME THE COST OF ANY NECESSARY SERVICING, REPAIR OR "
-"CORRECTION. THIS DISCLAIMER OF WARRANTY CONSTITUTES AN ESSENTIAL PART OF THIS "
-"LICENSE. NO USE OF ANY DOCUMENT OR MODIFIED VERSION OF THE DOCUMENT IS "
-"AUTHORIZED HEREUNDER EXCEPT UNDER THIS DISCLAIMER; AND"
-msgstr ""
-"DIESES DOKUMENT WIRD »WIE VORLIEGEND« GELIEFERT, OHNE GARANTIEN IRGENDEINER "
-"ART, SOWOHL AUSDRÜCKLICH GENANNTE ALS AUCH ANGEDEUTETE. DIES BEZIEHT SICH "
-"AUCH OHNE EINSCHRÄNKUNG AUF GARANTIEN, DASS DIESES DOKUMENT ODER VERÄNDERTE "
-"FASSUNGEN DIESES DOKUMENTS FREI VON HANDELSDEFEKTEN, FÜR EINEN BESTIMMTEN "
-"ZWECK GEEIGNET IST ODER DASS ES KEINE RECHTE DRITTER VERLETZT. DAS VOLLE "
-"RISIKO WAS QUALITÄT, GENAUIGKEIT UND LEISTUNG DES DOKUMENTS ODER VERÄNDERTE "
-"FASSUNGEN DES DOKUMENTS LIEGT BEI IHNEN. SOLLTE EIN DOKUMENT ODER EINE "
-"VERÄNDERTE FASSUNG DAVON FEHLER IRGENDEINER ART BEINHALTEN, TRAGEN SIE (NICHT "
-"DER URSPRUNGSAUTOR, DER AUTOR ODER EIN MITWIRKENDER) DIE KOSTEN FÜR "
-"NOTWENDIGE DIENSTLEISTUNGEN, REPARATUREN ODER FEHLERKORREKTUREN. DIESER "
-"HAFTUNGSAUSSCHLUSS IST EIN ESSENZIELLER TEIL DIESER LIZENZ. DIE VERWENDUNG "
-"EINES DOKUMENTS ODER EINER VERÄNDERTEN VERSION DES DOKUMENTS IST NICHT "
-"GESTATTET AUßER UNTER BEACHTUNG DIESES HAFTUNGSAUSSCHLUSSES UND"
-
-#: legal.xml:55(para)
-msgid ""
-"UNDER NO CIRCUMSTANCES AND UNDER NO LEGAL THEORY, WHETHER IN TORT (INCLUDING "
-"NEGLIGENCE), CONTRACT, OR OTHERWISE, SHALL THE AUTHOR, INITIAL WRITER, ANY "
-"CONTRIBUTOR, OR ANY DISTRIBUTOR OF THE DOCUMENT OR MODIFIED VERSION OF THE "
-"DOCUMENT, OR ANY SUPPLIER OF ANY OF SUCH PARTIES, BE LIABLE TO ANY PERSON FOR "
-"ANY DIRECT, INDIRECT, SPECIAL, INCIDENTAL, OR CONSEQUENTIAL DAMAGES OF ANY "
-"CHARACTER INCLUDING, WITHOUT LIMITATION, DAMAGES FOR LOSS OF GOODWILL, WORK "
-"STOPPAGE, COMPUTER FAILURE OR MALFUNCTION, OR ANY AND ALL OTHER DAMAGES OR "
-"LOSSES ARISING OUT OF OR RELATING TO USE OF THE DOCUMENT AND MODIFIED "
-"VERSIONS OF THE DOCUMENT, EVEN IF SUCH PARTY SHALL HAVE BEEN INFORMED OF THE "
-"POSSIBILITY OF SUCH DAMAGES."
-msgstr ""
-"UNTER KEINEN UMSTÄNDEN UND AUF BASIS KEINER RECHTSGRUNDLAGE, EGAL OB DURCH "
-"UNERLAUBTEN HANDLUNGEN (EINSCHLIEßLICH FAHRLÄSSIGKEIT), VERTRAG ODER "
-"ANDERWEITIG KANN DER AUTOR, URSPRUNGSAUTOR, EIN MITWIRKENDER ODER EIN "
-"VERTRIEBSPARTNER DIESES DOKUMENTS ODER EINER VERÄNDERTEN FASSUNG DES "
-"DOKUMENTS ODER EIN ZULIEFERER EINER DIESER PARTEIEN, HAFTBAR GEMACHT WERDEN "
-"FÜR DIREKTE, INDIREKTE, SPEZIELLE, VERSEHENTLICHE ODER FOLGESCHÄDEN JEGLICHER "
-"ART, EINSCHLIEßLICH UND OHNE EINSCHRÄNKUNGEN SCHÄDEN DURCH VERLUST VON "
-"KULANZ, ARBEITSAUSFALL, COMPUTERVERSAGEN ODER COMPUTERFEHLFUNKTIONEN ODER "
-"ALLE ANDEREN SCHÄDEN ODER VERLUSTE, DIE SICH AUS ODER IN VERBINDUNG MIT DER "
-"VERWENDUNG DES DOKUMENTS UND VERÄNDERTER FASSUNGEN DES DOKUMENTS ERGEBEN, "
-"AUCH WENN DIE OBEN GENANNTEN PARTEIEN ÜBER DIE MÖGLICHKEIT SOLCHER SCHÄDEN "
-"INFORMIERT WAREN."
-
-#: legal.xml:28(para)
-msgid ""
-"DOCUMENT AND MODIFIED VERSIONS OF THE DOCUMENT ARE PROVIDED UNDER THE TERMS "
-"OF THE GNU FREE DOCUMENTATION LICENSE WITH THE FURTHER UNDERSTANDING THAT: "
-"<placeholder-1/>"
-msgstr ""
-"DAS DOKUMENT UND VERÄNDERTE FASSUNGEN DES DOKUMENTS WERDEN UNTER DEN "
-"BEDINGUNGEN DER GNU FREE DOCUMENTATION LICENSE ZUR VERFÜGUNG GESTELLT MIT DEM "
-"WEITERGEHENDEN VERSTÄNDNIS, DASS: <placeholder-1/>"
-
 #. When image changes, this message will be marked fuzzy or untranslated for you.
 #. It doesn't matter what you translate it to: it's not used at all.
-#: referencer.xml:118(None)
+#: ../C/referencer.xml:118(None)
 msgid ""
 "@@image: 'figures/referencer_window.png'; md5=f74411d3c605160d5a38b5db1e3b7281"
 msgstr "translated"
 
-#: referencer.xml:18(title)
+#: ../C/referencer.xml:18(title)
 msgid "<application>Referencer</application> Manual V1.1.6"
 msgstr "<application>Referencer</application>-Handbuch V1.1.6"
 
-#: referencer.xml:20(para)
+#: ../C/referencer.xml:20(para)
 msgid ""
 "Referencer is a tool to help you manage your collection of documents, and to "
 "use them to generate a bibliography."
 msgstr ""
+"Referencer ist ein Werkzeug, das Ihnen bei der Verwaltung Ihrer "
+"Dokumentensammlung hilft und aus Ihren Dokumenten eine Bibliografie erstellt."
 
-#: referencer.xml:25(year)
+#: ../C/referencer.xml:25(year)
 msgid "2008"
 msgstr "2008"
 
-#: referencer.xml:26(holder) referencer.xml:47(para)
+#: ../C/referencer.xml:26(holder) ../C/referencer.xml:47(para)
 msgid "John Spray"
 msgstr "John Spray"
 
-#: referencer.xml:29(publishername)
+#: ../C/referencer.xml:29(publishername)
 msgid "Referencer Development Team"
 msgstr "Referencer-Entwickler-Team"
 
-#: referencer.xml:34(firstname)
+#: ../C/referencer.xml:34(firstname)
 msgid "John"
 msgstr "John"
 
-#: referencer.xml:34(surname)
+#: ../C/referencer.xml:34(surname)
 msgid "Spray"
 msgstr "Spray"
 
-#: referencer.xml:37(email)
+#: ../C/referencer.xml:37(email)
 msgid "jcspray@icculus.org"
 msgstr "jcspray@icculus.org"
 
-#: referencer.xml:44(revnumber)
+#: ../C/referencer.xml:44(revnumber)
 msgid "Referencer Manual V 1.1.6"
 msgstr "Referencer-Handbuch V 1.1.6"
 
-#: referencer.xml:45(date)
+#: ../C/referencer.xml:45(date)
 msgid "2008-10-22"
 msgstr "22. Oktober 2008"
 
-#: referencer.xml:52(releaseinfo)
+#: ../C/referencer.xml:52(releaseinfo)
 msgid ""
 "This manual describes version 1.1.6 of <application>Referencer</application>."
 msgstr ""
 "Dieses Handbuch beschreibt Version 1.1.6 von <application>Referencer</"
 "application>."
 
-#: referencer.xml:55(title)
+#: ../C/referencer.xml:55(title)
 msgid "Feedback"
 msgstr "Rückmeldungen"
 
-#: referencer.xml:56(para)
+#: ../C/referencer.xml:56(para)
 msgid ""
 "To report a bug or make a suggestion regarding the <application>Referencer</"
 "application> application or this manual, please visit the <ulink url=\"http://"
 "icculus.org/referencer\" type=\"help\">Referencer home page</ulink>."
 msgstr ""
+"Um Fehler zu melden oder einen Vorschlag zur Anwendung "
+"<application>Referencer</application> oder zu diesem Handbuch zu machen, "
+"besuchen Sie bitte die <ulink url=\"http://icculus.org/referencer\" type="
+"\"help\">Referencer-Website</ulink>."
 
-#: referencer.xml:64(title)
+#: ../C/referencer.xml:64(title)
 msgid "Introduction"
 msgstr "Einführung"
 
-#: referencer.xml:65(para)
+#: ../C/referencer.xml:65(para)
 msgid ""
 "<application>Referencer</application> is a tool to help you manage your "
 "collection of documents, and to use them to generate a bibliography. It is "
@@ -199,26 +99,32 @@ msgid ""
 "to mean \"paper\" in general, although <application>Referencer</application> "
 "can deal with any kind of document that BibTeX can."
 msgstr ""
+"<application>Referencer</application> ist ein Werkzeug, das Ihnen bei der "
+"Verwaltung Ihrer Dokumentensammlung hilft und aus Ihren Dokumenten eine "
+"Bibliografie erstellt. Es wurde für die Anforderungen des Wissenschaftlers "
+"und Forschers entwickelt, wobei »Dokument« sich auf »Papier« im Allgemeinen "
+"bezieht, obgleich <application>Referencer</application> mit allen von BibTex "
+"verarbeitbaren Dokumenten umgehen kann."
 
-#: referencer.xml:80(title)
+#: ../C/referencer.xml:80(title)
 msgid "Getting Started"
 msgstr "Erste Schritte"
 
-#: referencer.xml:83(title)
+#: ../C/referencer.xml:83(title)
 msgid "Starting <application>Referencer</application>"
 msgstr "<application>Referencer</application> starten"
 
-#: referencer.xml:84(para)
+#: ../C/referencer.xml:84(para)
 msgid ""
 "You can start <application>Referencer</application> in the following ways:"
 msgstr ""
 "Sie können <application>Referencer</application> auf folgende Arten starten:"
 
-#: referencer.xml:88(term)
+#: ../C/referencer.xml:88(term)
 msgid "<guimenu>Applications</guimenu> menu"
 msgstr "Menü <guimenu>Anwendungen</guimenu>"
 
-#: referencer.xml:90(para)
+#: ../C/referencer.xml:90(para)
 msgid ""
 "Choose <menuchoice><guisubmenu>Office</guisubmenu><guimenuitem>Referencer</"
 "guimenuitem></menuchoice>."
@@ -226,28 +132,28 @@ msgstr ""
 "Wählen Sie <menuchoice><guisubmenu>Büroanwendungen</"
 "guisubmenu><guimenuitem>Referencer</guimenuitem></menuchoice>."
 
-#: referencer.xml:98(term)
+#: ../C/referencer.xml:98(term)
 msgid "Command line"
 msgstr "Befehlszeile"
 
-#: referencer.xml:100(para)
+#: ../C/referencer.xml:100(para)
 msgid ""
 "To start <application>Referencer</application> from a command line, type the "
 "following command, then press <keycap>Return</keycap>:"
 msgstr ""
-"Um <application>Referencer</application> in einer Befehlszeile zu starten, "
+"Um <application>Referencer</application> aus einer Befehlszeile zu starten, "
 "geben Sie folgenden Befehl ein und drücken dann die <keycap>Eingabetaste</"
 "keycap>:"
 
-#: referencer.xml:104(command)
+#: ../C/referencer.xml:104(command)
 msgid "referencer"
 msgstr "referencer"
 
-#: referencer.xml:111(title)
+#: ../C/referencer.xml:111(title)
 msgid "When You Start <application>Referencer</application>"
 msgstr "Beim Start von <application>Referencer</application>"
 
-#: referencer.xml:112(para)
+#: ../C/referencer.xml:112(para)
 msgid ""
 "When you start <application>Referencer</application>, the following window is "
 "displayed."
@@ -255,26 +161,26 @@ msgstr ""
 "Wenn Sie <application>Referencer</application> starten, wird folgendes "
 "Fenster angezeigt."
 
-#: referencer.xml:115(title)
+#: ../C/referencer.xml:115(title)
 msgid "<application>Referencer</application> Start Up Window"
 msgstr "<application>Referencer</application>-Startfenster"
 
-#: referencer.xml:119(phrase)
+#: ../C/referencer.xml:119(phrase)
 msgid "Shows <application>Referencer</application> main window."
 msgstr "Zeigt das Startfenster von <application>Referencer</application>."
 
-#: referencer.xml:124(para)
+#: ../C/referencer.xml:124(para)
 msgid ""
 "The <application>Referencer</application> window contains the following "
 "elements:"
 msgstr ""
 "Das <application>Referencer</application>-Fenster enthält folgende Elemente:"
 
-#: referencer.xml:128(term)
+#: ../C/referencer.xml:128(term)
 msgid "Menubar"
 msgstr "Menüleiste"
 
-#: referencer.xml:130(para)
+#: ../C/referencer.xml:130(para)
 msgid ""
 "The menus on the menubar contain all of the commands that you need to work "
 "with files in <application>Referencer</application>."
@@ -282,27 +188,52 @@ msgstr ""
 "Die Menüs in der Menüleiste enthalten alle Befehle, die Sie zum Arbeiten mit "
 "Dateien in <application>Referencer</application> benötigen."
 
-#: referencer.xml:137(term)
+#: ../C/referencer.xml:137(term)
 msgid "Toolbar"
 msgstr "Werkzeugleiste"
 
-#: referencer.xml:139(para) referencer.xml:148(para) referencer.xml:157(para)
-msgid "Please add a short description!"
+#: ../C/referencer.xml:139(para)
+msgid "The toolbar provides quick access to some frequently used menu items."
 msgstr ""
+"Die Werkzeugleiste ermöglicht Ihnen den schnellen Zugriff auf häufig benutzte "
+"Menüeinträge."
 
-#: referencer.xml:146(term)
-msgid "Sidebar"
-msgstr "Seitenleiste"
+#: ../C/referencer.xml:146(term)
+msgid "Document list"
+msgstr "Dokumentenliste"
 
-#: referencer.xml:155(term)
-msgid "List view"
-msgstr "Listenansicht"
+#: ../C/referencer.xml:148(para)
+msgid ""
+"The document list shows the documents in the library being worked on. It can "
+"be used in either <guimenuitem>List View</guimenuitem> or <guimenuitem>Icon "
+"View</guimenuitem>."
+msgstr ""
+"Die Dokumentenliste zeigt eine Liste der Dokumente der Bibliothek an, in "
+"welcher Sie gegenwärtig arbeiten. Die Anzeige ist entweder in der "
+"<guimenuitem>Listenansicht</guimenuitem> oder in der "
+"<guimenuitem>Symbolansicht</guimenuitem> möglich."
 
-#: referencer.xml:167(title)
+#: ../C/referencer.xml:157(term)
+msgid "Tag pane"
+msgstr "Markenleiste"
+
+#: ../C/referencer.xml:159(para)
+msgid ""
+"The tag pane provides a list of tags which can be applied to documents, as "
+"well as buttons for creatings and deleting tags. The document list can be "
+"filtered to certain tags by selecting them in the tag pane."
+msgstr ""
+"Die Markenleiste stellt eine Liste von Marken bereit, die zu Dokumenten "
+"hinzugefügt werden können, und zwar in Form von Knöpfen zum Hinzufügen und "
+"Entfernen von Marken. Die Dokumentenliste kann anhand bestimmter Marken "
+"gefiltert werden, indem Sie die entsprechenden Marken in der Markenleiste "
+"auswählen."
+
+#: ../C/referencer.xml:171(title)
 msgid "Usage"
 msgstr "Benutzung"
 
-#: referencer.xml:169(para)
+#: ../C/referencer.xml:173(para)
 msgid ""
 "At it's most basic, <application>Referencer</application> may be used for "
 "editing your documents and bibliography data (library). However, it also "
@@ -310,8 +241,13 @@ msgid ""
 "acquisition of bibliographic information (metadata) for some kinds of "
 "document."
 msgstr ""
+"Das grundlegende Anwendungsgebiet von <application>Referencer</application> "
+"ist das Bearbeiten von Dokumenten und bibliografischen Daten (Bibliotheken). "
+"Allerdings bietet die Anwendung auch einige zeitsparende Funktionen. Die "
+"wichtigste davon ist das automatische Ergänzen bibliografischer Informationen "
+"(Metadaten) für einige Dokumenttypen."
 
-#: referencer.xml:171(para)
+#: ../C/referencer.xml:175(para)
 msgid ""
 "When you add a PDF file to your <application>Referencer</application> "
 "library, it will automatically be searched for key identifiers such as a DOI "
@@ -319,14 +255,21 @@ msgid ""
 "<application>Referencer</application> uses your internet connection to "
 "retrieve the metadata for the document."
 msgstr ""
+"Wenn Sie eine PDF-Datei zu Ihrer <application>Referencer</application>-"
+"Bibliothek hinzufügen, wird diese Datei automatisch nach Schlüsseln wie dem "
+"DOI-Code oder arXiv-Kennungen durchsucht. Falls eines davon gefunden wird, "
+"benutzt <application>Referencer</application> Ihre Internetverbindung, um die "
+"Metadaten für dieses Dokument zu holen."
 
-#: referencer.xml:173(note)
+#: ../C/referencer.xml:177(note)
 msgid ""
 "If you've got a collection of already-downloaded PDFs of papers, this can "
 "save you a lot of typing!"
 msgstr ""
+"Falls Sie bereits über eine Sammlung bereits heruntergeladener PDF-Dateien "
+"oder Papiere verfügen, erspart Ihnen dies eine Menge Tipparbeit!"
 
-#: referencer.xml:175(para)
+#: ../C/referencer.xml:179(para)
 msgid ""
 "<application>Referencer</application> also uses its knowledge of papers to "
 "provide handy functions such as opening the web page associated with the "
@@ -334,20 +277,30 @@ msgid ""
 "documents to catgorise them, and then browse documents more easily by "
 "filtering them by tag."
 msgstr ""
+"<application>Referencer</application> benutzt auch seine Kenntnisse im Umgang "
+"mit Papieren zur Bereitstellung praktischer Funktionen wie dem Öffnen einer "
+"mit dem Artikel verbundenen Website, oder dem Öffnen des Dokuments selbst. "
+"Zusätzlich können Sie zur Kategorisierung der Dokumente Marken hinzufügen. "
+"Dadurch lässt sich die Dokumentenbibliothek leichter durchsuchen, indem sie "
+"anhand der Marken gefiltert wird."
 
-#: referencer.xml:177(para)
+#: ../C/referencer.xml:181(para)
 msgid ""
 "<application>Referencer</application> is intended to be extremely user-"
 "friendly, but to help you get up and running as smoothly as possible, the "
 "following subsections explain how to use <application>Referencer</"
 "application>."
 msgstr ""
+"<application>Referencer</application> ist extrem benutzerfreundlich angelegt, "
+"aber um Ihnen den Einstieg so unkompliziert wie möglich zu gestalten, "
+"beschreiben die folgenden Unterabschnitte, wie Sie <application>Referencer</"
+"application> benutzen."
 
-#: referencer.xml:182(title)
+#: ../C/referencer.xml:186(title)
 msgid "To use <application>Referencer</application> with BibTex"
-msgstr ""
+msgstr "Verwendung von <application>Referencer</application> mit BibTex"
 
-#: referencer.xml:183(para)
+#: ../C/referencer.xml:187(para)
 msgid ""
 "<application>Referencer</application> maintains its own library of your "
 "documents, rather than loading and editing a BibTeX file. As such, when "
@@ -363,8 +316,22 @@ msgid ""
 "(<menuchoice><guisubmenu>Library</guisubmenu><guimenuitem>Manage BibTex File</"
 "guimenuitem></menuchoice>)."
 msgstr ""
+"<application>Referencer</application> lädt nicht nur BibTex-Dateien und "
+"bearbeitet diese, sondern verwaltet seine eigene Dokumentenbibliothek. Wenn "
+"Sie Ihre Bibliothek in einem LaTex-Dokument verwenden wollen, können Sie "
+"durch <application>Referencer</application> eine BibTex-Datei erzeugen "
+"lassen. Wählen Sie hierzu <menuchoice><guisubmenu>Bibliothek</"
+"guisubmenu><guimenuitem>BibTex exportieren</guimenuitem></menuchoice>. "
+"Standardmäßig schließt dies alle Dokumente in Ihrer Bibliothek ein. Falls Sie "
+"nur einige Dokumente exportieren wollen, können Sie das Feld "
+"<guilabel>Auswahl:</guilabel> im Exportdialog verwenden, um den Export auf "
+"bestimmte Dokumente zu beschränken. Um immer wiederkehrendes Exportieren nach "
+"Änderungen zu vermeiden, können Sie <application>Referencer</application> "
+"anweisen, nach jeder Änderung die BibTex-Datei neu zu speichern. Wählen Sie "
+"hierzu <menuchoice><guisubmenu>Bibliothek</guisubmenu><guimenuitem>BibTex-"
+"Datei verwalten</guimenuitem></menuchoice>"
 
-#: referencer.xml:187(para)
+#: ../C/referencer.xml:191(para)
 msgid ""
 "<application>Referencer</application> will automatically handle conversion of "
 "special characters (e.g. <literal>ß</literal>) to their <application>LaTex</"
@@ -376,44 +343,67 @@ msgid ""
 "your library, then you can use the <guilabel>Protect capitalization</"
 "guilabel> option in the BibTeX export dialog."
 msgstr ""
+"<application>Referencer</application> wandelt automatisch spezielle Zeichen "
+"(z.B. <literal>ß</literal>) in die <application>LaTex</application>-"
+"Entsprechungen um (im genannten Fall <literal>\\ss</literal>). Abhängig von "
+"dem in Ihren Arbeiten verwendeten BibTex-Stil könnte sich die Großschreibung "
+"im Text der LaTex-Ausgabe von der in Ihrer <application>Referencer</"
+"application>-Bibliothek unterscheiden, weil das den Veröffentlichern "
+"ermöglicht, ihre eigenen Großschreibungs-Schemen durchzusetzen. Falls Sie die "
+"Großschreibung in Ihren Arbeiten exakt so erhalten möchten wie in Ihrer "
+"Bibliothek, dann können Sie dazu die Option <guilabel>Großschreibung "
+"schützen</guilabel> im BibTex-Exportdialog verwenden."
 
-#: referencer.xml:189(para)
+#: ../C/referencer.xml:193(para)
 msgid ""
 "If you already have a BibTeX file, you can import it into "
 "<application>Referencer</application> by choosing "
 "<menuchoice><guisubmenu>Library</guisubmenu><guimenuitem>Import...</"
 "guimenuitem></menuchoice> from the menubar."
 msgstr ""
+"Falls sie bereits über eine BibTex-Datei verfügen, können Sie diese durch "
+"<application>Referencer</application> importieren lassen. Wählen Sie "
+"<menuchoice><guisubmenu>Bibliothek</guisubmenu><guimenuitem>Importieren...</"
+"guimenuitem></menuchoice> aus der Menüleiste."
 
-#: referencer.xml:191(note)
+#: ../C/referencer.xml:195(note)
 msgid ""
 "Importing and then exporting a BibTex file is not guaranteed (or intended) to "
 "produce exactly the same file as went in: <application>Referencer</"
 "application> is not a BibTeX editor!"
 msgstr ""
+"Das Importieren und anschließende Exportieren als BibTex-Datei garantiert "
+"(oder beabsichtigt) nicht, dass Sie exakt die gleiche Datei erhalten wie vor "
+"dem Import: <application>Referencer</application> ist kein BibTex-Editor!"
 
-#: referencer.xml:193(para)
+#: ../C/referencer.xml:197(para)
 msgid ""
 "Information such as document filenames and tags is not included in BibTeX "
 "files. You should always use your <application>Referencer</application> "
 "library file as the authoritative copy."
 msgstr ""
+"Informationen wie die Dateinamen der Dokumente und die Markierungen sind in "
+"den BibTex-Dateien nicht enthalten. Sie sollten stets Ihre "
+"<application>Referencer</application>-Bibliotheksdatei als maßgebende Kopie "
+"verwenden."
 
-#: referencer.xml:197(title)
+#: ../C/referencer.xml:201(title)
 msgid "To add documents"
-msgstr ""
+msgstr "Hinzufügen von Dokumenten"
 
-#: referencer.xml:200(title)
+#: ../C/referencer.xml:204(title)
 msgid "To add documents by file/folder"
-msgstr ""
+msgstr "Hinzufügen von Dokumenten nach Datei oder Ordner"
 
-#: referencer.xml:201(para)
+#: ../C/referencer.xml:205(para)
 msgid ""
 "Choose <menuchoice><guisubmenu>Documents</guisubmenu><guimenuitem>Add file …</"
 "guimenuitem></menuchoice> from the menubar."
 msgstr ""
+"Wählen Sie <menuchoice><guisubmenu>Dokumente</guisubmenu><guimenuitem>Datei "
+"hinzufügen…</guimenuitem></menuchoice> aus der Menüleiste."
 
-#: referencer.xml:203(para)
+#: ../C/referencer.xml:207(para)
 msgid ""
 "If you have some document files you'd like Referencer to know about, you can "
 "add one or more files, or a whole folder (by choosing "
@@ -423,88 +413,124 @@ msgid ""
 "<application>Referencer</application> will do its best to fill out the "
 "metadata for you."
 msgstr ""
+"Falls Sie Referencer über vorhandene Dokumentdateien in Kenntnis setzen "
+"wollen, können Sie eine oder mehrere Dateien oder auch einen ganzen Ordner "
+"hinzufügen. Wählen Sie <menuchoice><guisubmenu>Dokumente</"
+"guisubmenu><guimenuitem>Ordner hinzufügen …</guimenuitem></menuchoice>, und "
+"<application>Referencer</application> erstellt Einträge für jede Datei. PDF-"
+"Dateien werden gelesen, und <application>Referencer</application> tut sein "
+"bestes, um die Metadaten für Sie hinzuzufügen."
 
-#: referencer.xml:205(note)
+#: ../C/referencer.xml:209(note)
 msgid ""
 "When adding a folder of files, files named \".svn\", \"CVS\", files with the "
 "extension \".bib\" or \".reflib\" and files with names starting \".\" are "
 "automatically skipped. These files can still be added individually."
 msgstr ""
+"Wenn Sie einen Ordner oder Dateien hinzufügen, werden Objekte namens ».svn«, "
+"»CVS«, Dateien mit den Erweiterungen ».bib« oder ».reflib» sowie Dateien, deren "
+"Namen mit ».« beginnen, automatisch übersprungen. Diese Dateien können jedoch "
+"individuell hinzugefügt werden."
 
-#: referencer.xml:208(title)
+#: ../C/referencer.xml:212(title)
 msgid "To add documents by DOI code"
-msgstr ""
+msgstr "Hinzufügen von Dokumenten anhand des DOI-Codes"
 
-#: referencer.xml:209(para)
+#: ../C/referencer.xml:213(para)
 msgid ""
 "Choose <menuchoice><guisubmenu>Documents</guisubmenu><guimenuitem>Add "
 "document with DOI …</guimenuitem></menuchoice> from the menubar."
 msgstr ""
+"Wählen Sie <menuchoice><guisubmenu>Dokumente</"
+"guisubmenu><guimenuitem>Dokument mit DOI hinzufügen…</guimenuitem></"
+"menuchoice> aus der Menüleiste."
 
-#: referencer.xml:212(para)
+#: ../C/referencer.xml:216(para)
 msgid ""
 "If you have the DOI code for a paper, you can save yourself the effort of "
 "inputting its metadata by simply giving <application>Referencer</application> "
 "the DOI and letting it look up the metadata for you."
 msgstr ""
+"Falls Sie über den DOI-Code für ein Papier verfügen, können Sie sich die Mühe "
+"der Eingabe der Metadaten ersparen, indem Sie <application>Referencer</"
+"application> anhand des DOI-Codes für Sie nach den Metadaten suchen lassen."
 
-#: referencer.xml:216(title)
+#: ../C/referencer.xml:220(title)
 msgid "To add documents by hand"
-msgstr ""
+msgstr "Manuelles Hinzufügen von Dokumenten"
 
-#: referencer.xml:217(para)
+#: ../C/referencer.xml:221(para)
 msgid ""
 "Choose <menuchoice><guisubmenu>Documents</guisubmenu><guimenuitem>Add empty "
 "reference …</guimenuitem></menuchoice> from the menubar."
 msgstr ""
+"Wählen Sie <menuchoice><guisubmenu>Dokumente</guisubmenu><guimenuitem>Leere "
+"Referenz hinzufügen…</guimenuitem></menuchoice> aus der Menüleiste."
 
-#: referencer.xml:220(para)
+#: ../C/referencer.xml:224(para)
 msgid ""
 "As a last resort, <application>Referencer</application> provides a simple "
 "interface for manually creating a document and inputting metadata. A document "
 "with no information is created, and the properties window is opened for you "
 "to enter a name for the document and some metadata."
 msgstr ""
+"Nicht zuletzt stellt <application>Referencer</application> auch eine einfache "
+"Oberfläche für das manuelle Erzeugen eines Dokuments und die Eingabe der "
+"Metadaten bereit. Ein Dokument ohne Informationen wird erzeugt und ein "
+"Eigenschaftsdialog geöffnet, in dem Sie einen Namen für das Dokument und "
+"einige Metadaten eingeben können."
 
-#: referencer.xml:224(title)
+#: ../C/referencer.xml:228(title)
 msgid "To add documents from a BibTeX/EndNote/Refer file"
-msgstr ""
+msgstr "Hinzufügen von Dokumenten aus einer BibTeX/EndNote/Refer-Datei"
 
-#: referencer.xml:225(para)
+#: ../C/referencer.xml:229(para)
 msgid ""
 "Choose <menuchoice><guisubmenu>Library</guisubmenu><guimenuitem>Import …</"
 "guimenuitem></menuchoice> from the menubar."
 msgstr ""
+"Wählen Sie <menuchoice><guisubmenu>Bibliothek</"
+"guisubmenu><guimenuitem>Importieren…</guimenuitem></menuchoice> aus der "
+"Menüleiste."
 
-#: referencer.xml:228(para)
+#: ../C/referencer.xml:232(para)
 msgid ""
 "Your existing bibliography files, or snippets from websites can be imported. "
 "Items from these files will be loaded and added to the currently open library."
 msgstr ""
+"Ihre vorhandenen Bibliografie-Dateien und auch Schnipsel aus Websites können "
+"importiert werden. Die Objekte aus solchen Dateien werden geladen und zur "
+"gegenwärtig geöffneten Bibliothek hinzugefügt."
 
-#: referencer.xml:232(title)
+#: ../C/referencer.xml:236(title)
 msgid "To add documents by Copy/Paste"
-msgstr ""
+msgstr "Hinzufügen von Dokumenten mittels Kopieren und Einfügen"
 
-#: referencer.xml:235(para)
+#: ../C/referencer.xml:239(para)
 msgid ""
 "To conveniently import references from the web, or particular references from "
 "an existing BibTeX file, you can simply copy and past BibTeX markup into "
 "referencer, where these references will be added as if you had imported them "
 "from a file."
 msgstr ""
+"Um bequem Referenzen aus dem Web oder Referenzen aus einer vorhandenen BibTex-"
+"Datei zu importieren, können Sie diese einfach kopieren und in Referencer "
+"einfügen. Diese Referenzen werden auf die gleiche Weise hinzugefügt, als "
+"wären sie aus einer Datei importiert worden."
 
-#: referencer.xml:233(para)
+#: ../C/referencer.xml:237(para)
 msgid ""
 "Choose <menuchoice><guisubmenu>Edit</guisubmenu><guimenuitem>Paste BibTex</"
 "guimenuitem></menuchoice> from the menubar. <placeholder-1/>"
 msgstr ""
+"Wählen Sie <menuchoice><guisubmenu>Bearbeiten</guisubmenu><guimenuitem>BibTex "
+"einfügen</guimenuitem></menuchoice> aus der Menüleiste. <placeholder-1/>"
 
-#: referencer.xml:242(title)
+#: ../C/referencer.xml:246(title)
 msgid "To use different document types/fields"
-msgstr ""
+msgstr "Verwendung verschiedener Dokumenttypen und -felder"
 
-#: referencer.xml:243(para)
+#: ../C/referencer.xml:247(para)
 msgid ""
 "<application>Referencer's</application> user interface is optimized for "
 "dealing with scientific papers. As such, the document type is \"Article\" by "
@@ -515,8 +541,16 @@ msgid ""
 "guisubmenu><guimenuitem>Properties</guimenuitem></menuchoice> from the "
 "menubar."
 msgstr ""
+"Die Benutzeroberfläche von <application>Referencer</application> ist für den "
+"Umgang mit wissenschaftlichen Papieren optimiert. Daher ist der vorgegebene "
+"Dokumenttyp »Article« und Felder wie <guilabel>Title</guilabel>, "
+"<guilabel>Authors</guilabel>, <guilabel>Journal</guilabel> und "
+"<guilabel>Volume</guilabel> werden angezeigt. Andere Dokumenttypen können im "
+"Eigenschaftsdialog gewählt werden. Um diesen zu öffnen, wählen Sie "
+"<menuchoice><guisubmenu>Dokumente</guisubmenu><guimenuitem>Eigenschaften</"
+"guimenuitem></menuchoice> aus der Menüleiste."
 
-#: referencer.xml:246(para)
+#: ../C/referencer.xml:250(para)
 msgid ""
 "If you don't see the BibTeX type you want, simply type it in and it will be "
 "passed through verbatim when exporting to your BibTeX file. Some document "
@@ -526,12 +560,20 @@ msgid ""
 "clicking the <guilabel>New</guilabel> icon. To enter some data into your new "
 "field, select it and click the <guilabel>Edit</guilabel> icon."
 msgstr ""
+"Falls nicht der von Ihnen gewünschte BibTex-Typ angezeigt wird, geben Sie ihn "
+"einfach ein und er wird unverändert beim Exportieren Ihrer BibTex-Datei "
+"übernommen. Einige Dokumenttypen erfordern zusätzliche Metadatenfelder, "
+"beispielsweise sollten »Book«-Dokumente über ein »Editor«-Feld verfügen. Diese "
+"können Sie durch Ausklappen des Abschnitts <guilabel>Zusätzliche Felder</"
+"guilabel> im Eigenschaftsdialog und Anklicken des Symbols <guilabel>Neu</"
+"guilabel> hinzufügen. Um Daten in das neue Feld einzugeben, wählen Sie es aus "
+"und klicken Sie auf das Symbol <guilabel>Bearbeiten</guilabel>."
 
-#: referencer.xml:253(title)
+#: ../C/referencer.xml:257(title)
 msgid "Tagging And Searching"
-msgstr ""
+msgstr "Markieren und Suchen"
 
-#: referencer.xml:254(para)
+#: ../C/referencer.xml:258(para)
 msgid ""
 "Tagging allows you to categorize your documents. Unlike a traditional "
 "hierarchical directory type organisation, a tag-based system allows a "
@@ -542,8 +584,17 @@ msgid ""
 "assign both \"Physics\" and \"Exciting papers\" to a document, and when "
 "you're not excited any more just remove the \"Exciting papers\" tag."
 msgstr ""
+"Das Markieren ermöglicht Ihnen die Kategorisierung Ihrer Dokumente. Im "
+"Gegensatz zur traditionellen hierarchischen Ordnerstruktur erlaubt ein auf "
+"Markierungen basierendes System, ein Dokument mehreren einander überlappenden "
+"Kategorien zuzuordnen. Beispielsweise verfügen Sie über Marken wie »Physik« "
+"und »Biologie« sowie eine weitere namens »Wichtige Papiere«. Falls es sich "
+"dabei um Ordner handelt, müssen Sie willkürlich festlegen, wo Sie ein Papier "
+"einordnen wollen. Hier jedoch können Sie sowohl »Physik« als auch »Wichtige "
+"Papiere« verwenden, und wenn die Wichtigkeit nicht mehr gegeben ist, dann "
+"entfernen Sie einfach die Marke »Wichtige Papiere«."
 
-#: referencer.xml:256(para)
+#: ../C/referencer.xml:260(para)
 msgid ""
 "Once you've created a tag (by choosing <menuchoice><guisubmenu>Tags</"
 "guisubmenu><guimenuitem>Create Tag …</guimenuitem></menuchoice>), a checkbox "
@@ -552,16 +603,28 @@ msgid ""
 "guimenuitem></menuchoice>). Once you've selected one or more documents, you "
 "can set or unset this tag for the group by clicking the checkbox."
 msgstr ""
+"Sobald Sie durch <menuchoice><guisubmenu>Marken</"
+"guisubmenu><guimenuitem>Marke erzeugen …</guimenuitem></menuchoice> eine "
+"Marke erzeugt haben, erscheint in der unteren Hälfte der Markenleiste ein "
+"Kontrollkästchen. Die Markenleiste können Sie aktivieren oder deaktivieren, "
+"indem Sie die Option <menuchoice><guisubmenu>Ansicht</"
+"guisubmenu><guimenuitem>Markenleiste anzeigen</guimenuitem></menuchoice> "
+"wählen. Nach der Auswahl eines oder mehrerer Dokumente setzen oder entfernen "
+"Sie eine Marke, indem Sie in das Kontrollkästchen klicken."
 
-#: referencer.xml:260(para)
+#: ../C/referencer.xml:264(para)
 msgid ""
 "Once you've tagged some documents, you may want to filter your view by tag. "
 "You can do this by clicking on a tag in the list in the top half of the Tag "
 "Pane. To include more tags in the view, hold <keycap>Ctrl</keycap> while "
 "clicking to select more than one tag."
 msgstr ""
+"Wenn Sie einige Dokumente markiert haben, möchten Sie vielleicht die Ansicht "
+"nach Marken filtern. Klicken Sie dazu auf eine Marke in der Liste in der "
+"oberen Hälfte der Markenleiste. Um mehrere Marken auszuwählen, halten Sie "
+"dazu die <keycap>Strg</keycap>-Taste gedrückt."
 
-#: referencer.xml:262(para)
+#: ../C/referencer.xml:266(para)
 msgid ""
 "To complement the tagging system, a search box is provided above the document "
 "view. Entering text into the search box will cause only those documents "
@@ -569,12 +632,17 @@ msgid ""
 "<guilabel>Title</guilabel>, <guilabel>Authors</guilabel> and <guilabel>Key</"
 "guilabel> fields of the documents."
 msgstr ""
+"Als Ergänzung des Marken-Systems wird oberhalb der Dokumentenansicht ein "
+"Suchfeld angezeigt. Wenn Sie hier Text eingeben, werden nur Dokumente "
+"angezeigt, die diesen Text enthalten. Die Suche berücksichtigt nur die Felder "
+"<guilabel>Title</guilabel>, <guilabel>Authors</guilabel> und <guilabel>Key</"
+"guilabel> des Dokuments."
 
-#: referencer.xml:268(title)
+#: ../C/referencer.xml:272(title)
 msgid "Plugins"
 msgstr "Plugins"
 
-#: referencer.xml:269(para)
+#: ../C/referencer.xml:273(para)
 msgid ""
 "Additional functionality can be added to <application>Referencer</"
 "application> using the versatile <ulink url=\"http://www.python.org\" type="
@@ -585,19 +653,30 @@ msgid ""
 "the latter might be something that manipulates the metadata of an existing "
 "document in some way."
 msgstr ""
+"Zusätzliche Funktionalität kann <application>Referencer</application> mit "
+"Hilfe der vielseitigen Skriptsprache <ulink url=\"http://www.python.org\" "
+"type=\"http\">Python</ulink> verliehen werden. Seit Version 1.1 werden zwei "
+"Arten von Plugins unterstützt: <application>Metadata fetcher</application>-"
+"Plugins und <application>Document action</application>-Plugins. Das erstere "
+"ist ein Skript, das nach Metadaten des DOI-Codes in einer Internet-Datenbank "
+"sucht, das letztere dient zur Bearbeitung der Metadaten eines vorhandenen "
+"Dokuments auf verschiedene Weise."
 
-#: referencer.xml:271(para)
+#: ../C/referencer.xml:275(para)
 msgid ""
 "Interested developers should download the <application>Referencer</"
 "application> source code and look in the plugins/ directory for examples and "
 "in plugins/README for a brief guide."
 msgstr ""
+"Interessierte Entwickler sollten den <application>Referencer</application>-"
+"Quellcode herunterladen. Im Ordner plugins/ befinden sich Beispiele sowie in "
+"plugins/README eine Kurzanleitung."
 
-#: referencer.xml:283(title)
+#: ../C/referencer.xml:287(title)
 msgid "About <application>Referencer</application>"
 msgstr "Info zu <application>Referencer</application>"
 
-#: referencer.xml:285(para)
+#: ../C/referencer.xml:289(para)
 msgid ""
 "<application>Referencer</application> and this manual were written by John "
 "Spray (<email>jcspray@icculus.org</email>). Some contributions to the manual "
@@ -606,8 +685,14 @@ msgid ""
 "most recent documentation, please visit the <ulink url=\"http://icculus.org/"
 "referencer\" type=\"http\">project page</ulink>."
 msgstr ""
+"<application>Referencer</application> und dieses Handbuch wurden von John "
+"Spray (<email>jcspray@icculus.org</email>) geschrieben. Einige Beiträge zu "
+"diesem Handbuch kamen von Mario Blättermann (<email>mario.blaettermann@t-"
+"online.de</email>. Weitere Informationen über <application>Referencer</"
+"application> sowie die aktuellste Dokumentation finden Sie auf der <ulink url="
+"\"http://icculus.org/referencer\" type=\"http\">Projekt-Website</ulink>."
 
-#: referencer.xml:292(para)
+#: ../C/referencer.xml:296(para)
 msgid ""
 "This program is distributed under the terms of the GNU General Public license "
 "as published by the Free Software Foundation; either version 2 of the "
@@ -624,7 +709,118 @@ msgstr ""
 "dieser Dokumentation enthalten, eine weitere in der Datei COPYING, die im "
 "Quellcode dieses Programms enthalten ist."
 
+#: ../C/legal.xml:2(para)
+msgid ""
+"Permission is granted to copy, distribute and/or modify this document under "
+"the terms of the GNU General Public License Version 2. You can find a copy of "
+"the GPL at this <ulink type=\"help\" url=\"ghelp:gpl\">link</ulink> or in the "
+"file COPYING distributed with this manual."
+msgstr ""
+"Das vorliegende Dokument kann gemäß den Bedingungen der GNU General Public "
+"License (GPL), Version 2 kopiert, verteilt und/oder modifiziert werden. Eine "
+"Kopie der GPL finden Sie unter diesem <ulink type=\"help\" url=\"ghelp:gpl"
+"\">Link</ulink> oder in der mit diesem Handbuch gelieferten Datei COPYING."
+
 #. Put one translator per line, in the form of NAME <EMAIL>, YEAR1, YEAR2.
-#: referencer.xml:0(None)
+#: ../C/legal.xml:0(None)
 msgid "translator-credits"
-msgstr "Mario Blättermann <mario.blaettermann@t-online.de>, 2008"
+msgstr "Mario Blättermann <mariobl@gnome.org>, 2008"
+
+#~ msgid ""
+#~ "This manual is part of a collection of GNOME manuals distributed under the "
+#~ "GFDL. If you want to distribute this manual separately from the "
+#~ "collection, you can do so by adding a copy of the license to the manual, "
+#~ "as described in section 6 of the license."
+#~ msgstr ""
+#~ "Dieses Handbuch ist Teil einer Sammlung von GNOME-Handbüchern, die unter "
+#~ "der GFDL veröffentlicht werden. Wenn Sie dieses Handbuch getrennt von der "
+#~ "Sammlung weiterverbreiten möchten, können Sie das tun, indem Sie eine "
+#~ "Kopie der Lizenz zum Handbuch hinzufügen, wie es in Abschnitt 6 der Lizenz "
+#~ "beschrieben ist."
+
+#~ msgid ""
+#~ "Many of the names used by companies to distinguish their products and "
+#~ "services are claimed as trademarks. Where those names appear in any GNOME "
+#~ "documentation, and the members of the GNOME Documentation Project are made "
+#~ "aware of those trademarks, then the names are in capital letters or "
+#~ "initial capital letters."
+#~ msgstr ""
+#~ "Viele der Namen, die von Unternehmen verwendet werden, um ihre Produkte "
+#~ "und Dienstleistungen von anderen zu unterscheiden, sind eingetragene "
+#~ "Warenzeichen. An den Stellen, an denen diese Namen in einer GNOME-"
+#~ "Dokumentation erscheinen, werden die Namen in Großbuchstaben oder mit "
+#~ "einem großen Anfangsbuchstaben geschrieben, wenn das GNOME-"
+#~ "Dokumentationsprojekt auf diese Warenzeichen hingewiesen wird."
+
+#~ msgid ""
+#~ "DOCUMENT IS PROVIDED ON AN \"AS IS\" BASIS, WITHOUT WARRANTY OF ANY KIND, "
+#~ "EITHER EXPRESSED OR IMPLIED, INCLUDING, WITHOUT LIMITATION, WARRANTIES "
+#~ "THAT THE DOCUMENT OR MODIFIED VERSION OF THE DOCUMENT IS FREE OF DEFECTS "
+#~ "MERCHANTABLE, FIT FOR A PARTICULAR PURPOSE OR NON-INFRINGING. THE ENTIRE "
+#~ "RISK AS TO THE QUALITY, ACCURACY, AND PERFORMANCE OF THE DOCUMENT OR "
+#~ "MODIFIED VERSION OF THE DOCUMENT IS WITH YOU. SHOULD ANY DOCUMENT OR "
+#~ "MODIFIED VERSION PROVE DEFECTIVE IN ANY RESPECT, YOU (NOT THE INITIAL "
+#~ "WRITER, AUTHOR OR ANY CONTRIBUTOR) ASSUME THE COST OF ANY NECESSARY "
+#~ "SERVICING, REPAIR OR CORRECTION. THIS DISCLAIMER OF WARRANTY CONSTITUTES "
+#~ "AN ESSENTIAL PART OF THIS LICENSE. NO USE OF ANY DOCUMENT OR MODIFIED "
+#~ "VERSION OF THE DOCUMENT IS AUTHORIZED HEREUNDER EXCEPT UNDER THIS "
+#~ "DISCLAIMER; AND"
+#~ msgstr ""
+#~ "DIESES DOKUMENT WIRD »WIE VORLIEGEND« GELIEFERT, OHNE GARANTIEN IRGENDEINER "
+#~ "ART, SOWOHL AUSDRÜCKLICH GENANNTE ALS AUCH ANGEDEUTETE. DIES BEZIEHT SICH "
+#~ "AUCH OHNE EINSCHRÄNKUNG AUF GARANTIEN, DASS DIESES DOKUMENT ODER "
+#~ "VERÄNDERTE FASSUNGEN DIESES DOKUMENTS FREI VON HANDELSDEFEKTEN, FÜR EINEN "
+#~ "BESTIMMTEN ZWECK GEEIGNET IST ODER DASS ES KEINE RECHTE DRITTER VERLETZT. "
+#~ "DAS VOLLE RISIKO WAS QUALITÄT, GENAUIGKEIT UND LEISTUNG DES DOKUMENTS ODER "
+#~ "VERÄNDERTE FASSUNGEN DES DOKUMENTS LIEGT BEI IHNEN. SOLLTE EIN DOKUMENT "
+#~ "ODER EINE VERÄNDERTE FASSUNG DAVON FEHLER IRGENDEINER ART BEINHALTEN, "
+#~ "TRAGEN SIE (NICHT DER URSPRUNGSAUTOR, DER AUTOR ODER EIN MITWIRKENDER) DIE "
+#~ "KOSTEN FÜR NOTWENDIGE DIENSTLEISTUNGEN, REPARATUREN ODER "
+#~ "FEHLERKORREKTUREN. DIESER HAFTUNGSAUSSCHLUSS IST EIN ESSENZIELLER TEIL "
+#~ "DIESER LIZENZ. DIE VERWENDUNG EINES DOKUMENTS ODER EINER VERÄNDERTEN "
+#~ "VERSION DES DOKUMENTS IST NICHT GESTATTET AUßER UNTER BEACHTUNG DIESES "
+#~ "HAFTUNGSAUSSCHLUSSES UND"
+
+#~ msgid ""
+#~ "UNDER NO CIRCUMSTANCES AND UNDER NO LEGAL THEORY, WHETHER IN TORT "
+#~ "(INCLUDING NEGLIGENCE), CONTRACT, OR OTHERWISE, SHALL THE AUTHOR, INITIAL "
+#~ "WRITER, ANY CONTRIBUTOR, OR ANY DISTRIBUTOR OF THE DOCUMENT OR MODIFIED "
+#~ "VERSION OF THE DOCUMENT, OR ANY SUPPLIER OF ANY OF SUCH PARTIES, BE LIABLE "
+#~ "TO ANY PERSON FOR ANY DIRECT, INDIRECT, SPECIAL, INCIDENTAL, OR "
+#~ "CONSEQUENTIAL DAMAGES OF ANY CHARACTER INCLUDING, WITHOUT LIMITATION, "
+#~ "DAMAGES FOR LOSS OF GOODWILL, WORK STOPPAGE, COMPUTER FAILURE OR "
+#~ "MALFUNCTION, OR ANY AND ALL OTHER DAMAGES OR LOSSES ARISING OUT OF OR "
+#~ "RELATING TO USE OF THE DOCUMENT AND MODIFIED VERSIONS OF THE DOCUMENT, "
+#~ "EVEN IF SUCH PARTY SHALL HAVE BEEN INFORMED OF THE POSSIBILITY OF SUCH "
+#~ "DAMAGES."
+#~ msgstr ""
+#~ "UNTER KEINEN UMSTÄNDEN UND AUF BASIS KEINER RECHTSGRUNDLAGE, EGAL OB DURCH "
+#~ "UNERLAUBTEN HANDLUNGEN (EINSCHLIEßLICH FAHRLÄSSIGKEIT), VERTRAG ODER "
+#~ "ANDERWEITIG KANN DER AUTOR, URSPRUNGSAUTOR, EIN MITWIRKENDER ODER EIN "
+#~ "VERTRIEBSPARTNER DIESES DOKUMENTS ODER EINER VERÄNDERTEN FASSUNG DES "
+#~ "DOKUMENTS ODER EIN ZULIEFERER EINER DIESER PARTEIEN, HAFTBAR GEMACHT "
+#~ "WERDEN FÜR DIREKTE, INDIREKTE, SPEZIELLE, VERSEHENTLICHE ODER FOLGESCHÄDEN "
+#~ "JEGLICHER ART, EINSCHLIEßLICH UND OHNE EINSCHRÄNKUNGEN SCHÄDEN DURCH "
+#~ "VERLUST VON KULANZ, ARBEITSAUSFALL, COMPUTERVERSAGEN ODER "
+#~ "COMPUTERFEHLFUNKTIONEN ODER ALLE ANDEREN SCHÄDEN ODER VERLUSTE, DIE SICH "
+#~ "AUS ODER IN VERBINDUNG MIT DER VERWENDUNG DES DOKUMENTS UND VERÄNDERTER "
+#~ "FASSUNGEN DES DOKUMENTS ERGEBEN, AUCH WENN DIE OBEN GENANNTEN PARTEIEN "
+#~ "ÜBER DIE MÖGLICHKEIT SOLCHER SCHÄDEN INFORMIERT WAREN."
+
+#~ msgid ""
+#~ "DOCUMENT AND MODIFIED VERSIONS OF THE DOCUMENT ARE PROVIDED UNDER THE "
+#~ "TERMS OF THE GNU FREE DOCUMENTATION LICENSE WITH THE FURTHER UNDERSTANDING "
+#~ "THAT: <placeholder-1/>"
+#~ msgstr ""
+#~ "DAS DOKUMENT UND VERÄNDERTE FASSUNGEN DES DOKUMENTS WERDEN UNTER DEN "
+#~ "BEDINGUNGEN DER GNU FREE DOCUMENTATION LICENSE ZUR VERFÜGUNG GESTELLT MIT "
+#~ "DEM WEITERGEHENDEN VERSTÄNDNIS, DASS: <placeholder-1/>"
+
+#~ msgid "Please add a short description!"
+#~ msgstr "Bitte eine Beschreibung hinzufügen!"
+
+#~ msgid "Sidebar"
+#~ msgstr "Seitenleiste"
+
+#~ msgid "List view"
+#~ msgstr "Listenansicht"

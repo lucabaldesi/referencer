@@ -1,15 +1,19 @@
 # German translation for referencer
 # Copyright (c) 2007 Rosetta Contributors and Canonical Ltd 2007
 # This file is distributed under the same license as the referencer package.
-# FIRST AUTHOR <EMAIL@ADDRESS>, 2007.
+#
+# Launchpad Contributions:
+# Andreas Wagner https://launchpad.net/~a-wagner-stud
+# Ivo P. https://launchpad.net/~pirrip.philip
+# Joachim Sauer https://launchpad.net/~saua
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: referencer\n"
-"Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
-"POT-Creation-Date: 2008-09-18 16:29+0100\n"
-"PO-Revision-Date: 2008-09-19 06:20+0000\n"
-"Last-Translator: Andreas Wagner <A.Wagner@stud.uni-frankfurt.de>\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2008-12-31 15:09+0100\n"
+"PO-Revision-Date: 2008-12-31 15:13+0100\n"
+"Last-Translator: Mario Blättermann <mariobl@gnome.org>\n"
 "Language-Team: German <de@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -73,9 +77,9 @@ msgstr "_Schlüssel:"
 msgid "_Look Up"
 msgstr "_Nachschlagen"
 
-#: ../data/documentproperties.glade.h:15 ../src/RefWindow.C:404
+#: ../data/documentproperties.glade.h:15 ../src/RefWindow.C:407
 msgid "_Paste BibTeX"
-msgstr "BibTex _Einfügen"
+msgstr "BibTex _einfügen"
 
 #: ../data/preferences.glade.h:1
 msgid "<b>Proxy</b>"
@@ -86,7 +90,7 @@ msgid ""
 "<i>Plugins nearer the top of the list are tried first when looking up "
 "metadata.</i>"
 msgstr ""
-"<i>Plugins am oberen Ende der Liste werden zuerst versucht um Metadaten "
+"<i>Plugins am oberen Ende der Liste werden zuerst versucht, um Metadaten "
 "abzufragen.</i>"
 
 #: ../data/preferences.glade.h:3
@@ -95,8 +99,8 @@ msgid ""
 "to all Gnome applications.  Auto-configuration\n"
 " URLs are not supported.</i>"
 msgstr ""
-"<i>Diese Proxy Einstellungen gelten für alle\n"
-"Gnome Anwendungen. URLs zur Auto-konfiguration\n"
+"<i>Diese Proxy-Einstellungen gelten für alle\n"
+"Gnome-Anwendungen. URLs zur Auto-Konfiguration\n"
 " werden nicht unterstützt.</i>"
 
 #: ../data/preferences.glade.h:6
@@ -137,11 +141,11 @@ msgstr "Einstellungen"
 
 #: ../data/preferences.glade.h:15
 msgid "Use authentication"
-msgstr "Benutze Authentifizierung"
+msgstr "Legitimierung verwenden"
 
 #: ../data/preferences.glade.h:16
 msgid "Use web proxy"
-msgstr "Netzwerk Proxy verwenden"
+msgstr "Netzwerk-Proxy verwenden"
 
 #: ../data/preferences.glade.h:17
 msgid "Username:"
@@ -155,23 +159,41 @@ msgstr "_Info …"
 msgid "PubMed DOI resolver"
 msgstr "PubMed DOI Auflösung"
 
-#: ../plugins/pubmed.py:35
-msgid "Resolving DOI"
-msgstr "Löse DOI auf"
+#: ../plugins/pubmed.py:131
+msgid "Searching pubmed"
+msgstr "Pubmed suchen"
 
-#: ../plugins/pubmed.py:35
+#: ../plugins/pubmed.py:131
+#, python-format
+msgid "Searching pubmed for '%s'"
+msgstr "Pubmed für »%s« wird gesucht"
+
+#: ../plugins/pubmed.py:162
+msgid "Retrieving pubmed summaries"
+msgstr "Pubmed-Zusammenfassungen holen"
+
+#: ../plugins/pubmed.py:162
+#, python-format
+msgid "Retrieving summaries for '%s'"
+msgstr "Zusammenfassungen für »%s« werden geholt"
+
+#: ../plugins/pubmed.py:215
+msgid "Resolving DOI"
+msgstr "DOI wird aufgelöst"
+
+#: ../plugins/pubmed.py:215
 #, python-format
 msgid "Finding PubMed ID from DOI %s"
-msgstr "Finde PubMed ID von DOI %s"
+msgstr "PubMed-Kennung von DOI %s wird gesucht"
 
-#: ../plugins/pubmed.py:63
+#: ../plugins/pubmed.py:243
 msgid "Resolving PubMed ID"
-msgstr "Löse PubMed ID auf"
+msgstr "PubMed-Kennung wird aufgelöst"
 
-#: ../plugins/pubmed.py:63
+#: ../plugins/pubmed.py:243
 #, python-format
 msgid "Fetching metadata from NCBI for PubMed ID %s"
-msgstr "Hole Metadaten für PubMed ID %s von NCBI"
+msgstr "Metadaten für PubMed-Kennung %s werden von NCBI geholt"
 
 #: ../plugins/lyx.py:11 ../plugins/lyx.py:41
 msgid "Cite in LyX"
@@ -187,37 +209,37 @@ msgstr "Metadaten werden empfangen"
 
 #: ../src/ArxivPlugin.C:50
 msgid "Contacting citebase.org to retrieve metadata for '%1'"
-msgstr "Kontaktiere citebase.org um Metadaten für »%1« abzurufen."
+msgstr "citebase.org wird kontaktiert, um Metadaten für »%1« abzurufen"
 
 #: ../src/ArxivPlugin.C:58 ../src/CrossRefPlugin.C:241
 msgid "Downloading Metadata"
 msgstr "Metadaten werden heruntergeladen"
 
 #: ../src/ArxivPlugin.C:62 ../src/CrossRefPlugin.C:216
-#: ../src/PluginManager.C:44
+#: ../src/PluginManager.C:46
 msgid "Downloading metadata"
 msgstr "Metadaten werden heruntergeladen"
 
-#: ../src/ArxivPlugin.C:100 ../src/Document.C:772
+#: ../src/ArxivPlugin.C:100 ../src/Document.C:832
 msgid "Parsing BibTeX"
 msgstr "BibTeX wird gelesen"
 
 #: ../src/ArxivPlugin.C:116
 msgid "Arxiv.org ArXiv-ID resolver"
-msgstr "Arxiv.org ArXiv-ID Auflösung"
+msgstr "Arxiv.org-ArXiv-ID-Auflösung"
 
 #: ../src/CrossRefPlugin.C:180
 msgid "CrossRef credentials not found"
-msgstr "CrossRef Anmeldedaten nicht gefunden"
+msgstr "CrossRef-Anmeldedaten nicht gefunden"
 
 #: ../src/CrossRefPlugin.C:181
 msgid ""
-"To use the CrossRef service, a free account is needed.  Login information "
-"may be set in Preferences, or the CrossRef plugin may be disabled."
+"To use the CrossRef service, a free account is needed.  Login information may "
+"be set in Preferences, or the CrossRef plugin may be disabled."
 msgstr ""
 "Um den CrossRef-Dienst zu benutzen, ist ein kostenloses Benutzerkonto "
-"erforderlich. In den Einstellungen können die Anmeldedaten angegeben oder "
-"das CrossRef-Plugin deaktiviert werden."
+"erforderlich. In den Einstellungen können die Anmeldedaten angegeben oder das "
+"CrossRef-Plugin deaktiviert werden."
 
 #: ../src/CrossRefPlugin.C:190
 msgid "_Preferences"
@@ -225,30 +247,29 @@ msgstr "_Einstellungen"
 
 #: ../src/CrossRefPlugin.C:191
 msgid "_Disable CrossRef"
-msgstr "CrossRef _Deaktivieren"
+msgstr "CrossRef _deaktivieren"
 
 #: ../src/CrossRefPlugin.C:218
 msgid "Contacting crossref.org to retrieve metadata for '%1'"
-msgstr "Kontaktiere crossref.org um Metadaten für »%1« abzurufen."
+msgstr "crossref.org wird kontaktiert, um Metadaten für »%1« abzurufen."
 
 #: ../src/CrossRefPlugin.C:277
 msgid "Crossref.org OpenURL DOI resolver"
-msgstr "CrossRef.org OpenURL DOI Auflösung"
+msgstr "CrossRef.org-OpenURL-DOI-Auflösung"
 
 #: ../src/Document.C:38
 msgid "Unnamed"
-msgstr "Ohne Namen"
+msgstr "Unbenannt"
 
 #: ../src/Document.C:93
 msgid "Key naming conflict"
 msgstr "Konflikt in der Schlüsselbenennung"
 
 #: ../src/Document.C:95
-msgid ""
-"The chosen key conflicts with an existing one.  Replace '%1' with '%2'?"
+msgid "The chosen key conflicts with an existing one.  Replace '%1' with '%2'?"
 msgstr ""
-"Der gewählte Schlüssel konfligiert mit einem bereits bestehenden. '%1' durch "
-"'%2' ersetzen?"
+"Der gewählte Schlüssel steht mit einem bereits bestehenden in Konflikt. '%1' "
+"durch '%2' ersetzen?"
 
 #: ../src/Document.C:102
 msgid "_Ignore"
@@ -258,35 +279,35 @@ msgstr "_Ignorieren"
 msgid "_Replace"
 msgstr "E_rsetzen"
 
-#: ../src/Document.C:602
+#: ../src/Document.C:662
 msgid "Moving '%1' to '%2'"
-msgstr "Verschiebe »%1« nach »%2«"
+msgstr "»%1« wird nach »%2« verschoben"
 
-#: ../src/DocumentList.C:191
+#: ../src/DocumentList.C:197
 msgid "Opening file '%1'"
 msgstr "Datei »%1« wird geöffnet"
 
-#: ../src/DocumentList.C:210
+#: ../src/DocumentList.C:216
 msgid "Reading file '%1'"
 msgstr "Datei »%1« wird gelesen"
 
-#: ../src/DocumentList.C:231
+#: ../src/DocumentList.C:237
 msgid "converting file %1 to utf8 from (guessed) latin1"
-msgstr "Konvertiere Datei %1 zu UTF-8 von Latin1 (geraten)"
+msgstr "Datei %1 zu UTF-8 von Latin1 konvertieren (empfohlen)"
 
-#: ../src/DocumentList.C:265
+#: ../src/DocumentList.C:271
 msgid "Parsing import"
 msgstr "Parsen der zu importierenden Daten"
 
-#: ../src/DocumentList.C:278
+#: ../src/DocumentList.C:284
 msgid "Extracting document %1 from bibutils structure"
-msgstr "Lese Dokument %1 aus der Bibutils-Struktur aus"
+msgstr "Dokument %1 wird aus der Bibutils-Struktur entpackt"
 
 #: ../src/DocumentProperties.C:200
 msgid "_Type:"
 msgstr "_Typ:"
 
-#: ../src/DocumentProperties.C:420 ../src/RefWindow.C:2690
+#: ../src/DocumentProperties.C:420 ../src/RefWindow.C:2741
 msgid "No references found on clipboard.\n"
 msgstr "Keine Referenzen in der Zwischenablage gefunden.\n"
 
@@ -294,7 +315,7 @@ msgstr "Keine Referenzen in der Zwischenablage gefunden.\n"
 msgid "Multiple references found on clipboard.\n"
 msgstr "Mehrere Referenzen in der Zwischenablage gefunden.\n"
 
-#: ../src/DocumentTypes.C:31 ../src/DocumentView.C:1491
+#: ../src/DocumentTypes.C:31 ../src/DocumentView.C:1521
 msgid "Title"
 msgstr "Titel"
 
@@ -306,7 +327,7 @@ msgstr "Autoren"
 msgid "Journal"
 msgstr "Zeitschrift"
 
-#: ../src/DocumentTypes.C:34 ../src/DocumentView.C:1493
+#: ../src/DocumentTypes.C:34 ../src/DocumentView.C:1523
 msgid "Year"
 msgstr "Jahr"
 
@@ -330,7 +351,7 @@ msgstr "Monat"
 msgid "Note"
 msgstr "Anmerkung"
 
-#: ../src/DocumentTypes.C:41 ../src/DocumentView.C:1490
+#: ../src/DocumentTypes.C:41 ../src/DocumentView.C:1520
 msgid "Key"
 msgstr "Schlüssel"
 
@@ -442,16 +463,24 @@ msgstr "Handbuch"
 msgid "Technical Report"
 msgstr "Technischer Report"
 
-#: ../src/DocumentView.C:622
-msgid "Downloaded Documents"
-msgstr "Heruntergeladene Dokumente"
+#: ../src/DocumentView.C:633
+msgid "Document Download Folder"
+msgstr "Download-Odner für Dokumente"
 
-#: ../src/DocumentView.C:647
+#: ../src/DocumentView.C:634
+msgid "Download subsequent documents here without asking"
+msgstr "Zugehörige Dokumente ohne Nachfrage herunterladen"
+
+#: ../src/DocumentView.C:637
+msgid "Download here"
+msgstr "Hier herunterladen"
+
+#: ../src/DocumentView.C:693
 msgid "Getting info for file '%1'"
 msgstr "Informationen für Datei»'%1« werden abgefragt"
 
 #. Translators: this is the format for the document captions
-#: ../src/DocumentView.C:1046
+#: ../src/DocumentView.C:1076
 msgid ""
 "<span size='xx-small'> </span>\n"
 "<small>%1</small>\n"
@@ -470,27 +499,27 @@ msgstr ""
 #. * item.  If this does not make sense in your locale, translate
 #. * "Arrange Items" as something like "Sort" and translate this
 #. * as just "%1"
-#: ../src/DocumentView.C:1407
+#: ../src/DocumentView.C:1437
 msgid "By %1"
 msgstr "nach %1"
 
-#: ../src/DocumentView.C:1492
+#: ../src/DocumentView.C:1522
 msgid "Author"
 msgstr "Author"
 
 #: ../src/Library.C:92
 msgid "Parsing Library XML"
-msgstr "Parse das Bibliotheks XML"
+msgstr "Bibliotheks-XML wird geparst"
 
-#: ../src/Library.C:164
+#: ../src/Library.C:171
 msgid "Opening %1"
-msgstr "Öffne %1"
+msgstr "%1 wird geöffnet"
 
-#: ../src/Library.C:251
+#: ../src/Library.C:258
 msgid "Document location ambiguity"
-msgstr "Dokument Ort ist mehrdeutig"
+msgstr "Ort des Dokuments ist mehrdeutig"
 
-#: ../src/Library.C:253
+#: ../src/Library.C:260
 msgid ""
 "The file '%1' exists in two locations:\n"
 "\tOriginal: <b>%2</b>\n"
@@ -502,40 +531,40 @@ msgstr ""
 "\tOriginal: <b>%2</b>\n"
 "\tNeu: <b>%3</b>\n"
 "\n"
-"Wollen Sie den original Ort beibeihalten, oder auf den neuen verweisen?"
+"Wollen Sie den originalen Ort beibeihalten, oder auf den neuen aktualisieren?"
 
-#: ../src/Library.C:269
+#: ../src/Library.C:276
 msgid "Apply choice to all ambiguous locations"
 msgstr "Entscheidung auf alle mehrdeutigen Orte anwenden"
 
-#: ../src/Library.C:273
+#: ../src/Library.C:280
 msgid "Keep _Original"
 msgstr "_Original beibehalten"
 
-#: ../src/Library.C:274
+#: ../src/Library.C:281
 msgid "Use _New"
 msgstr "_Neuen Ort verwenden"
 
-#: ../src/LibraryParser.h:89
+#: ../src/LibraryParser.h:95
 #, c-format
 msgid "'%s' is not a valid boolean value"
-msgstr "»%s« is kein gültiger boolescher Wert"
+msgstr "»%s« is kein gültiger Boolescher Wert"
 
 #: ../src/Linker.C:78
 msgid "DOI Link"
-msgstr "DOI Verknüpfung"
+msgstr "DOI-Verknüpfung"
 
 #: ../src/Linker.C:99
 msgid "arXiv Link"
-msgstr "arXiv Verknüpfung"
+msgstr "arXiv-Verknüpfung"
 
 #: ../src/Linker.C:118
 msgid "URL Link"
-msgstr "URL Verknüpfung"
+msgstr "UR- Verknüpfung"
 
 #: ../src/Linker.C:138
 msgid "PubMed Link"
-msgstr "PubMed Verknüpfung"
+msgstr "PubMed-Verknüpfung"
 
 #: ../src/Linker.C:182
 msgid "Google Scholar"
@@ -543,14 +572,13 @@ msgstr "Google Scholar"
 
 #: ../src/main.C:92
 msgid "Terminating due to unhandled exception"
-msgstr "Beende aufgrund eines unbehandelten Ausnahmefehlers"
+msgstr "Aufgrund eines unbehandelten Ausnahmefehlers wird beendet"
 
 #: ../src/Preferences.C:183
 msgid "Enabled"
 msgstr "Aktiviert"
 
-#: ../src/Preferences.C:187 ../src/PythonPlugin.C:317
-#: ../src/PythonPlugin.C:357
+#: ../src/Preferences.C:187 ../src/PythonPlugin.C:327 ../src/PythonPlugin.C:367
 msgid "Module"
 msgstr "Modul"
 
@@ -562,7 +590,7 @@ msgstr "Beschreibung"
 msgid "Plugin error"
 msgstr "Pluginfehler"
 
-#: ../src/PythonPlugin.C:314
+#: ../src/PythonPlugin.C:324
 msgid ""
 "%1: %2\n"
 "\n"
@@ -574,15 +602,15 @@ msgstr ""
 "%3: %4\n"
 "%5: %6\n"
 
-#: ../src/PythonPlugin.C:315 ../src/PythonPlugin.C:355 ../src/Utility.C:260
+#: ../src/PythonPlugin.C:325 ../src/PythonPlugin.C:365 ../src/Utility.C:260
 msgid "Exception"
 msgstr "Ausnahme"
 
-#: ../src/PythonPlugin.C:319 ../src/PythonPlugin.C:359
+#: ../src/PythonPlugin.C:329 ../src/PythonPlugin.C:369
 msgid "Explanation"
 msgstr "Erklärung"
 
-#: ../src/PythonPlugin.C:354
+#: ../src/PythonPlugin.C:364
 msgid ""
 "<big><b>%1: %2</b></big>\n"
 "\n"
@@ -594,47 +622,47 @@ msgstr ""
 "%3: %4\n"
 "%5: %6"
 
-#: ../src/RefWindow.C:256
+#: ../src/RefWindow.C:257
 msgid "Tags"
 msgstr "Marken"
 
-#: ../src/RefWindow.C:364
+#: ../src/RefWindow.C:367
 msgid "_Library"
 msgstr "_Bibliothek"
 
-#: ../src/RefWindow.C:369 ../src/RefWindow.C:457
+#: ../src/RefWindow.C:372
 msgid "_Open..."
-msgstr "Ö_ffnen..."
-
-#: ../src/RefWindow.C:375
-msgid "Save _As..."
-msgstr "Speichern _unter..."
+msgstr "Ö_ffnen …"
 
 #: ../src/RefWindow.C:378
-msgid "E_xport as BibTeX..."
-msgstr "Als BibTeX e_xportieren..."
+msgid "Save _As..."
+msgstr "Speichern _unter …"
 
 #: ../src/RefWindow.C:381
-msgid "_Manage BibTeX File..."
-msgstr "BibTeX Datei verwalten..."
+msgid "E_xport as BibTeX..."
+msgstr "Als BibTeX e_xportieren …"
 
 #: ../src/RefWindow.C:384
-msgid "_Library Folder..."
-msgstr ""
+msgid "_Manage BibTeX File..."
+msgstr "BibTeX-Datei verwalten …"
 
 #: ../src/RefWindow.C:387
-msgid "_Import..."
-msgstr "_Importieren..."
+msgid "_Properties..."
+msgstr "Eigenschaften …"
 
 #: ../src/RefWindow.C:390
+msgid "_Import..."
+msgstr "_Importieren …"
+
+#: ../src/RefWindow.C:393
 msgid "_Work Offline"
 msgstr "_Offline arbeiten"
 
-#: ../src/RefWindow.C:394
+#: ../src/RefWindow.C:397
 msgid "_Edit"
 msgstr "_Bearbeiten"
 
-#: ../src/RefWindow.C:396
+#: ../src/RefWindow.C:399
 msgid "_View"
 msgstr "_Ansicht"
 
@@ -643,232 +671,240 @@ msgstr "_Ansicht"
 #. * item.  If this does not make sense in your locale, translate
 #. * "Arrange Items" as something like "Sort" and translate "By %1"
 #. * as just "%1"
-#: ../src/RefWindow.C:402
+#: ../src/RefWindow.C:405
 msgid "Arran_ge Items"
 msgstr "Objekte _anordnen"
 
-#: ../src/RefWindow.C:405
-msgid "Import references from BibTeX on the clipboard"
-msgstr "BibTeX Referenzen aus der Zwischenablage importieren"
-
 #: ../src/RefWindow.C:408
+msgid "Import references from BibTeX on the clipboard"
+msgstr "BibTeX-Referenzen aus der Zwischenablage importieren"
+
+#: ../src/RefWindow.C:411
 msgid "_Copy LaTeX citation"
 msgstr "LaTeX Zitat _kopieren"
 
-#: ../src/RefWindow.C:409
+#: ../src/RefWindow.C:412
 msgid "Copy currently selected keys to the clipboard as a LaTeX citation"
 msgstr ""
-"Momentan ausgewählte Schlüsel als LaTeX Zitat in die Zwischenablage kopieren"
+"Momentan ausgewählte Schlüsel als LaTeX-Zitat in die Zwischenablage kopieren"
 
-#: ../src/RefWindow.C:417
+#: ../src/RefWindow.C:420
 msgid "Use _List View"
 msgstr "_Listenansicht"
 
-#: ../src/RefWindow.C:419
+#: ../src/RefWindow.C:422
 msgid "Use _Icon View"
 msgstr "_Symbolansicht"
 
-#: ../src/RefWindow.C:421
+#: ../src/RefWindow.C:424
 msgid "_Show Tag Pane"
 msgstr "Markenleis_te anzeigen"
 
-#: ../src/RefWindow.C:423
+#: ../src/RefWindow.C:426
 msgid "Show _Notes Pane"
-msgstr "Zeige _Notizen"
+msgstr "_Notizen anzeigen"
 
-#: ../src/RefWindow.C:425 ../src/RefWindow.C:463
+#: ../src/RefWindow.C:428 ../src/RefWindow.C:470
 msgid "_Tags"
 msgstr "_Marken"
 
-#: ../src/RefWindow.C:427
-msgid "_Create Tag..."
-msgstr "Marke _erzeugen..."
-
 #: ../src/RefWindow.C:430
-msgid "_Attach New Tag..."
-msgstr "Neue Marke _anhängen..."
+msgid "_Create Tag..."
+msgstr "Marke _erzeugen …"
 
 #: ../src/RefWindow.C:433
+msgid "_Attach New Tag..."
+msgstr "Neue Marke _anhängen …"
+
+#: ../src/RefWindow.C:436
 msgid "_Delete Tag"
 msgstr "Marke _löschen"
 
-#: ../src/RefWindow.C:436
+#: ../src/RefWindow.C:439
 msgid "_Rename Tag"
 msgstr "Marke _umbenennen"
 
-#: ../src/RefWindow.C:439
+#: ../src/RefWindow.C:442
 msgid "_Documents"
 msgstr "_Dokumente"
 
-#: ../src/RefWindow.C:441
-msgid "_Add File..."
-msgstr "Datei _hinzufügen ..."
-
 #: ../src/RefWindow.C:444
-msgid "Add _Folder..."
-msgstr "_Verzeichnis hinzufügen..."
+msgid "_Add File..."
+msgstr "Datei _hinzufügen …"
 
 #: ../src/RefWindow.C:447
-msgid "Add E_mpty Reference..."
-msgstr "_Leere Referenz hinzufügen..."
+msgid "Add _Folder..."
+msgstr "_Ordner hinzufügen …"
 
 #: ../src/RefWindow.C:450
-msgid "Add Refere_nce with ID..."
-msgstr "Refere_nz mit ID hinzufügen"
+msgid "Add E_mpty Reference..."
+msgstr "_Leere Referenz hinzufügen …"
 
 #: ../src/RefWindow.C:453
+msgid "Add Refere_nce with ID..."
+msgstr "Refere_nz mit Kennung hinzufügen"
+
+#: ../src/RefWindow.C:456
 msgid "_Remove"
 msgstr "_Entfernen"
 
+#: ../src/RefWindow.C:460
+msgid "_Open"
+msgstr "Ö_ffnen"
+
 #: ../src/RefWindow.C:467
+msgid "Search..."
+msgstr "Suchen …"
+
+#: ../src/RefWindow.C:474
 msgid "_Get Metadata"
 msgstr "Metadaten _holen"
 
-#: ../src/RefWindow.C:470
+#: ../src/RefWindow.C:477
 msgid "_Delete File from Drive"
-msgstr "Lösche _Datei vom Laufwerk"
+msgstr "_Datei vom Laufwerk löschen"
 
-#: ../src/RefWindow.C:474
+#: ../src/RefWindow.C:481
 msgid "R_ename File from Key"
 msgstr "Datei nach Schlüssel u_mbenennen"
 
-#: ../src/RefWindow.C:477
+#: ../src/RefWindow.C:484
 msgid "_Tools"
 msgstr "_Werkzeuge"
 
-#: ../src/RefWindow.C:479
+#: ../src/RefWindow.C:486
 msgid "Export Notes as HTML"
 msgstr "Notizen als HTML exportieren"
 
-#: ../src/RefWindow.C:482
+#: ../src/RefWindow.C:489
 msgid "_Help"
 msgstr "_Hilfe"
 
-#: ../src/RefWindow.C:484
-msgid "Introduction"
-msgstr "Einführung"
+#: ../src/RefWindow.C:491
+msgid "Contents"
+msgstr "Inhalte"
 
-#: ../src/RefWindow.C:640
+#: ../src/RefWindow.C:655
 msgid "All"
 msgstr "Alle"
 
-#: ../src/RefWindow.C:645
+#: ../src/RefWindow.C:660
 msgid "Untagged"
 msgstr "Unmarkierte"
 
-#: ../src/RefWindow.C:911
+#: ../src/RefWindow.C:926
 msgid "%1 documents (%2 selected)"
 msgstr "%1 Dokumente (%2 ausgewählt)"
 
-#: ../src/RefWindow.C:915
+#: ../src/RefWindow.C:930
 msgid "%1 documents"
 msgstr "%1 Dokumente"
 
-#: ../src/RefWindow.C:952
+#: ../src/RefWindow.C:967
 msgid "_Notes: <i>%1</i>"
 msgstr "_Notizen: <i>%1</i>"
 
-#: ../src/RefWindow.C:955
+#: ../src/RefWindow.C:970
 msgid "Multiple documents selected"
 msgstr "Mehrere Dokumente sind ausgewählt"
 
-#: ../src/RefWindow.C:957
+#: ../src/RefWindow.C:972
 msgid "Select a document to view and edit notes"
-msgstr ""
+msgstr "Dokument zur Ansicht und Bearbeitung von Notizen"
 
-#: ../src/RefWindow.C:1019
+#: ../src/RefWindow.C:1034
 msgid "Save changes to library before closing?"
 msgstr "Änderungen an der Bibliothek vor dem Schließen speichern?"
 
-#: ../src/RefWindow.C:1025
+#: ../src/RefWindow.C:1040
 msgid "Close _without Saving"
-msgstr "Schließen _ohne speichern"
+msgstr "Schließen _ohne zu speichern"
 
-#: ../src/RefWindow.C:1061
+#: ../src/RefWindow.C:1076
 msgid "Type a tag"
 msgstr "Marke eintippen"
 
-#: ../src/RefWindow.C:1065
+#: ../src/RefWindow.C:1080
 msgid "Create tag"
 msgstr "Marke erzeugen"
 
-#: ../src/RefWindow.C:1066
+#: ../src/RefWindow.C:1081
 msgid "Short memorable tag names help you organise your documents"
 msgstr ""
 "Kurze, eingängige Markennamen helfen bei der Organisation von Dokumenten"
 
-#: ../src/RefWindow.C:1077
+#: ../src/RefWindow.C:1092
 msgid "Name"
 msgstr "Name"
 
-#: ../src/RefWindow.C:1151
+#: ../src/RefWindow.C:1169
 msgid "Are you sure you want to delete \"%1\"?"
-msgstr "Sine Sie sicher, dass sie »%1« löschen wollen"
+msgstr "Sine Sie sicher, dass Sie »%1« löschen wollen?"
 
-#: ../src/RefWindow.C:1158
+#: ../src/RefWindow.C:1176
 msgid ""
-"When a tag is deleted it is also permanently removed from all documents it "
-"is currently associated with."
+"When a tag is deleted it is also permanently removed from all documents it is "
+"currently associated with."
 msgstr ""
-"Wenn eine Marke entfernt wird, wird sie auch von allen Dokuemnten entfernt, "
+"Wenn eine Marke entfernt wird, wird sie auch von allen Dokumenten entfernt, "
 "auf die sie angewandt wurde."
 
-#: ../src/RefWindow.C:1211
+#: ../src/RefWindow.C:1229
 msgid "Export BibTeX"
 msgstr "BibTeX exportieren"
 
-#: ../src/RefWindow.C:1220 ../src/RefWindow.C:1403 ../src/RefWindow.C:2581
+#: ../src/RefWindow.C:1238 ../src/RefWindow.C:1421 ../src/RefWindow.C:2632
 msgid "BibTeX Files"
-msgstr "BiBTeX Dateien"
+msgstr "BiBTeX-Dateien"
 
-#: ../src/RefWindow.C:1225 ../src/RefWindow.C:1306 ../src/RefWindow.C:1408
-#: ../src/RefWindow.C:1576 ../src/RefWindow.C:1642 ../src/RefWindow.C:2568
+#: ../src/RefWindow.C:1243 ../src/RefWindow.C:1324 ../src/RefWindow.C:1426
+#: ../src/RefWindow.C:1594 ../src/RefWindow.C:1661 ../src/RefWindow.C:2619
 msgid "All Files"
 msgstr "Alle Dateien"
 
-#: ../src/RefWindow.C:1236 ../src/RefWindow.C:1317
+#: ../src/RefWindow.C:1254 ../src/RefWindow.C:1335
 msgid "Selection:"
 msgstr "Auswahl:"
 
-#: ../src/RefWindow.C:1239 ../src/RefWindow.C:1320
+#: ../src/RefWindow.C:1257 ../src/RefWindow.C:1338
 msgid "All Documents"
 msgstr "Alle Dokumente"
 
-#: ../src/RefWindow.C:1240 ../src/RefWindow.C:1321
+#: ../src/RefWindow.C:1258 ../src/RefWindow.C:1339
 msgid "Selected Documents"
 msgstr "Ausgewählte Dokumente"
 
 #. Any options here should be replicated in onManageBibtex
 #. Any options here should be replicated in onExportBibtex
-#: ../src/RefWindow.C:1246 ../src/RefWindow.C:1496
+#: ../src/RefWindow.C:1264 ../src/RefWindow.C:1514
 msgid "Protect capitalization (surround values with {})"
 msgstr "Groß-/Kleinschreibung schützen (Werte mit {} umgeben)"
 
-#: ../src/RefWindow.C:1248 ../src/RefWindow.C:1499
+#: ../src/RefWindow.C:1266 ../src/RefWindow.C:1517
 msgid "Use Unicode (UTF-8) encoding"
-msgstr "Benutze Unicode (UTF-8) Kodierung"
+msgstr "Unicode- (UTF-8) Kodierung benutzen"
 
-#: ../src/RefWindow.C:1292
+#: ../src/RefWindow.C:1310
 msgid "Export Notes"
 msgstr "Notizen exportieren"
 
-#: ../src/RefWindow.C:1301
+#: ../src/RefWindow.C:1319
 msgid "HTML Files"
 msgstr "HTML-Dateien"
 
-#: ../src/RefWindow.C:1364 ../src/RefWindow.C:2519
+#: ../src/RefWindow.C:1382 ../src/RefWindow.C:2570
 msgid "Unnamed Library"
 msgstr "Ungespeicherte Bibliothek"
 
-#: ../src/RefWindow.C:1396
+#: ../src/RefWindow.C:1414
 msgid "Browse"
 msgstr "Durchsuchen"
 
-#: ../src/RefWindow.C:1436 ../src/RefWindow.C:1451
+#: ../src/RefWindow.C:1454 ../src/RefWindow.C:1469
 msgid "Manage BibTeX File"
-msgstr "BiBTeX Datei verwalten"
+msgstr "BiBTeX-Datei verwalten"
 
-#: ../src/RefWindow.C:1452
+#: ../src/RefWindow.C:1470
 msgid ""
 "If you choose a file here, it will be overwritten whenever this library is "
 "saved."
@@ -876,28 +912,28 @@ msgstr ""
 "Wenn Sie hier eine Datei auswählen, wird diese bei jedem Speichern der "
 "Bibliothek überschrieben."
 
-#: ../src/RefWindow.C:1459
+#: ../src/RefWindow.C:1477
 msgid "BibTeX file:"
-msgstr "BibTeX Datei:"
+msgstr "BibTeX-Datei:"
 
-#: ../src/RefWindow.C:1480
+#: ../src/RefWindow.C:1498
 msgid "_Browse..."
 msgstr "_Durchsuchen …"
 
-#: ../src/RefWindow.C:1554
+#: ../src/RefWindow.C:1572
 msgid "Open Library"
 msgstr "Bibliothek öffnen"
 
-#: ../src/RefWindow.C:1571 ../src/RefWindow.C:1637
+#: ../src/RefWindow.C:1589 ../src/RefWindow.C:1656
 msgid "Referencer Libraries"
-msgstr "Referencer Bibliotheken"
+msgstr "Referencer-Bibliotheken"
 
-#: ../src/RefWindow.C:1628
+#: ../src/RefWindow.C:1647
 msgid "Save Library As"
-msgstr "Bibliothek speichern unter..."
+msgstr "Bibliothek speichern unter …"
 
 #. Translators: your name here!
-#: ../src/RefWindow.C:1689
+#: ../src/RefWindow.C:1708
 msgid "translator-credits"
 msgstr ""
 "Launchpad Contributions:\n"
@@ -905,34 +941,34 @@ msgstr ""
 "  Ivo P. https://launchpad.net/~pirrip.philip\n"
 "  Joachim Sauer https://launchpad.net/~saua"
 
-#: ../src/RefWindow.C:1709
+#: ../src/RefWindow.C:1724
 msgid "Showing '%1'"
-msgstr "Zeige »%1«"
+msgstr "»%1« anzeigen"
 
-#: ../src/RefWindow.C:1718
+#: ../src/RefWindow.C:1733
 msgid "Cancelling"
 msgstr "Abbrechen"
 
 #. Show a dialog containing a treeview of checkboxes for
 #. * tags, and a button for creating tags
-#: ../src/RefWindow.C:1763
+#: ../src/RefWindow.C:1778
 msgid "Tag Added Files"
 msgstr "Hinzugefügte Dateien markieren"
 
 #. "Create tag" button
-#: ../src/RefWindow.C:1801
+#: ../src/RefWindow.C:1818
 msgid "C_reate Tag..."
-msgstr "Ma_rke erzeugen..."
+msgstr "Ma_rke erzeugen …"
 
-#: ../src/RefWindow.C:1864
+#: ../src/RefWindow.C:1881
 msgid "Add Document Files"
-msgstr "Dokument Dateien hinzufügen"
+msgstr "Dokument-Dateien hinzufügen"
 
-#: ../src/RefWindow.C:1871
+#: ../src/RefWindow.C:1888
 msgid "Adding document files"
-msgstr "Dokument Dateien werden hinzugefügt"
+msgstr "Dokument-Dateien werden hinzugefügt"
 
-#: ../src/RefWindow.C:1872
+#: ../src/RefWindow.C:1889
 msgid ""
 "This process may take some time as the bibliographic information for each "
 "document is looked up."
@@ -940,155 +976,162 @@ msgstr ""
 "Dieser Vorgang kann einige Zeit in Anspruch nehmen, da die bibliographischen "
 "Informationen für jedes Dokument gesucht werden."
 
-#: ../src/RefWindow.C:1897
+#: ../src/RefWindow.C:1914
 msgid "Document"
 msgstr "Dokument"
 
-#: ../src/RefWindow.C:1898
+#: ../src/RefWindow.C:1915
 msgid "Got text"
-msgstr "Habe Text"
+msgstr "Text vorhanden"
 
-#: ../src/RefWindow.C:1899
+#: ../src/RefWindow.C:1916
 msgid "Got ID"
-msgstr "Habe ID"
+msgstr "Kennung vorhanden"
 
-#: ../src/RefWindow.C:1900
+#: ../src/RefWindow.C:1917
 msgid "Got metadata"
-msgstr "Habe Metadaten"
+msgstr "Metadaten vorhanden"
 
-#: ../src/RefWindow.C:1901
+#: ../src/RefWindow.C:1918
 msgid "Outcome"
 msgstr "Ergebnis"
 
-#: ../src/RefWindow.C:1916
+#: ../src/RefWindow.C:1935
 msgid "_Attach tags..."
-msgstr "Marken _anhängen..."
+msgstr "Marken _anhängen …"
 
-#: ../src/RefWindow.C:1944
+#: ../src/RefWindow.C:1963
 msgid "%1 of %2 documents"
 msgstr "%1 von %2 Dokumenten"
 
-#: ../src/RefWindow.C:2033 ../src/RefWindow.C:2035
+#: ../src/RefWindow.C:2052 ../src/RefWindow.C:2054
 msgid "Cancelled"
 msgstr "Abgebrochen"
 
-#: ../src/RefWindow.C:2039
+#: ../src/RefWindow.C:2058
 msgid "Finished"
 msgstr "Fertig"
 
-#: ../src/RefWindow.C:2080
+#: ../src/RefWindow.C:2100
 msgid "Add Reference with ID"
-msgstr "Referenz mit ID hinzufügen"
+msgstr "Referenz mit Kennung hinzufügen"
 
-#: ../src/RefWindow.C:2150
+#: ../src/RefWindow.C:2194
 msgid "Add Document"
 msgstr "Dokument hinzufügen"
 
-#: ../src/RefWindow.C:2181
+#: ../src/RefWindow.C:2225
 msgid "Add Folder"
 msgstr "Ordner hinzufügen"
 
-#: ../src/RefWindow.C:2218
+#: ../src/RefWindow.C:2262
 msgid "Are you sure you want to remove these %1 documents?"
-msgstr ""
-"Sind sie sicher, dass sie die %1 gewählten Dokumente entfernen wollen?"
+msgstr "Sind Sie sicher, dass Sie die %1 gewählten Dokumente entfernen wollen?"
 
-#: ../src/RefWindow.C:2220
+#: ../src/RefWindow.C:2264
 msgid ""
 "All tag associations and metadata for these documents will be permanently "
 "lost."
 msgstr ""
 "Alle Marken und Metdaten dieser Dokumente werden unwiderruflich gelöscht."
 
-#: ../src/RefWindow.C:2223
+#: ../src/RefWindow.C:2267
 msgid "Are you sure you want to remove '%1'?"
 msgstr "Sind Sie sicher, dass sie »%1« entfernen wollen?"
 
-#: ../src/RefWindow.C:2225
+#: ../src/RefWindow.C:2269
 msgid ""
 "All tag associations and metadata for the document will be permanently lost."
 msgstr ""
 "Alle Marken und Metadaten dieses Dokuments werden unwiderruflich gelöscht."
 
-#: ../src/RefWindow.C:2255
+#: ../src/RefWindow.C:2306
 msgid "Fetching metadata"
-msgstr "Hole Metadaten"
+msgstr "Metadaten werden geholt"
 
-#: ../src/RefWindow.C:2285
+#: ../src/RefWindow.C:2336
 msgid "Really rename this file to '%1'?"
 msgstr "Diese Datei wirklich in »%1« umbenennen?"
 
-#: ../src/RefWindow.C:2288
+#: ../src/RefWindow.C:2339
 msgid "Really rename these %1 files to their keys?"
 msgstr ""
 "Sollen diese %1 Dateien wirklich entsprechend ihrer Schlüssel umbenannt "
 "werden?"
 
-#: ../src/RefWindow.C:2296
+#: ../src/RefWindow.C:2347
 msgid "This action <b>cannot be undone</b>."
 msgstr "Diese Aktion <b>kann nicht rückgängig gemacht werden</b>."
 
-#: ../src/RefWindow.C:2299
+#: ../src/RefWindow.C:2350
 msgid "Rename from Key"
 msgstr "Entsprechend Schlüssel umbenennen"
 
-#: ../src/RefWindow.C:2330
+#: ../src/RefWindow.C:2381
 msgid "Are you sure you want to delete the files of these %1 documents?"
 msgstr ""
 "Sind Sie sicher, dass die Dateien dieser %1 Dokumente dauerhaft gelöscht "
 "werden sollen?"
 
-#: ../src/RefWindow.C:2332
+#: ../src/RefWindow.C:2383
 msgid ""
 "All tag associations and metadata for these documents will be permanently "
 "lost, and the files they refer to will be irretrievably deleted."
 msgstr ""
-"Alle Marken und Metadaten für diese Dokumente werden entfernt und die "
-"Dateien auf die sie verweisen werden unwiderruflich gelöscht."
+"Alle Marken und Metadaten für diese Dokumente werden entfernt. Die Dateien, "
+"auf die sie verweisen werden unwiderruflich gelöscht."
 
-#: ../src/RefWindow.C:2338
+#: ../src/RefWindow.C:2389
 msgid "Are you sure you want to delete the file of '%1'?"
 msgstr "Soll die Datei des Dokuments »%1« dauerhaft gelöscht werden?"
 
-#: ../src/RefWindow.C:2340
+#: ../src/RefWindow.C:2391
 msgid ""
 "All tag associations and metadata for the document will be permanently lost, "
 "and the file it refers to will be irretrievably deleted."
 msgstr ""
-"Alle Marken und Metadaten für dieses Dokument werden entfernt und die Datei "
-"auf die es verweist wird unwiderruflich gelöscht."
+"Alle Marken und Metadaten für dieses Dokument werden entfernt. Die Datei, auf "
+"die es verweist wird unwiderruflich gelöscht."
 
-#: ../src/RefWindow.C:2368
+#: ../src/RefWindow.C:2419
 msgid "Deleting '%1'"
-msgstr "Lösche »%1«"
+msgstr "»%1« wird gelöscht"
 
-#: ../src/RefWindow.C:2390
+#: ../src/RefWindow.C:2441
 msgid "Trying to open file '%1'"
-msgstr "Versuche Datei »%1« zu öffnen."
+msgstr "Datei »%1« wird versucht zu öffnen"
 
-#: ../src/RefWindow.C:2483
+#: ../src/RefWindow.C:2534
 msgid "Working offline"
-msgstr "Arbeite offline"
+msgstr "Offline arbeiten"
 
-#: ../src/RefWindow.C:2484
+#: ../src/RefWindow.C:2535
 msgid "Working online"
-msgstr "Arbeite online"
+msgstr "Online arbeiten"
 
-#: ../src/RefWindow.C:2553
+#: ../src/RefWindow.C:2604
 msgid "Import References"
 msgstr "Referenzen importieren"
 
-#: ../src/RefWindow.C:2576
+#: ../src/RefWindow.C:2627
 msgid "Bibliography Files"
-msgstr "Bibliographie Dateien"
+msgstr "Bibliographie-Dateien"
 
-#: ../src/RefWindow.C:2587
+#: ../src/RefWindow.C:2638
 msgid "Format:"
 msgstr "Format:"
 
-#: ../src/RefWindow.C:2684
+#: ../src/RefWindow.C:2735
 msgid "Imported %1 BibTeX references"
-msgstr "%1 BibTeX Referenzen importiert"
+msgstr "%1 BibTeX-Referenzen importiert"
+
+#: ../src/RefWindow.C:3076
+msgid "Searching..."
+msgstr "Suchen …"
+
+#: ../src/RefWindow.C:3101
+msgid "Complete"
+msgstr "Abgeschlossen"
 
 #: ../src/Transfer.C:47
 msgid "Work offline?"
@@ -1102,9 +1145,8 @@ msgid ""
 "Preferences dialog."
 msgstr ""
 "Es gab ein Problem bei der Abfrage der Metadaten, wollen Sie\n"
-"offline arbeiten? Dann werden keine weiteren Netzwerkoperationen "
-"vorgenommen, bis Sie in den Einstellungen wieder in den Online-Modus "
-"wechseln."
+"offline arbeiten? Dann werden keine weiteren Netzwerkoperationen vorgenommen, "
+"bis Sie in den Einstellungen wieder in den Online-Modus wechseln."
 
 #: ../src/Transfer.C:59
 msgid "_Stay Online"
@@ -1118,17 +1160,17 @@ msgstr "_Offline arbeiten"
 msgid "Downloading %1"
 msgstr "%1 wird heruntergeladen"
 
-#: ../src/Transfer.C:286
+#: ../src/Transfer.C:290
 msgid "Opening URI '%1' on server"
-msgstr "Öffne URI »%1« auf Server"
+msgstr "URI »%1« wird auf Server geöffnet"
 
-#: ../src/Transfer.C:311
+#: ../src/Transfer.C:315
 msgid "Reading URI '%1' on server"
-msgstr "Lese URI »%1« auf Server"
+msgstr "URI »%1« wird auf Server gelesen"
 
-#: ../src/Transfer.C:330
+#: ../src/Transfer.C:334
 msgid "Closing URI '%1' on server"
-msgstr "Schließe URI »%1« auf Server"
+msgstr "URI »%1« wird auf Server geschlossen"
 
 #: ../src/Utility.C:259
 msgid ""
@@ -1143,3 +1185,12 @@ msgstr ""
 #: ../src/Utility.C:263
 msgid "The operation underway was: \"%1\""
 msgstr "Die laufende Operation war: %1"
+
+#~ msgid "Downloaded Documents"
+#~ msgstr "Heruntergeladene Dokumente"
+
+#~ msgid "_Library Folder..."
+#~ msgstr "Bib_liotheksordner …"
+
+#~ msgid "Introduction"
+#~ msgstr "Einführung"
