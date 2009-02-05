@@ -13,6 +13,7 @@
 #include <iostream>
 
 #include <glibmm/i18n.h>
+#include <string>
 #include "ucompose.hpp"
 
 #include "Document.h"
