@@ -1094,6 +1094,8 @@ int RefWindow::createTag ()
 	hbox.pack_start (nameentry, true, true, 0);
 	nameentry.set_activates_default (true);
 	dialog.get_vbox()->pack_start (hbox, false, false, 0);
+	Gtk::Label messageLabel ("");
+	dialog.get_vbox()->pack_start (messageLabel, false, false, 0);
 	hbox.show_all ();
 	
 	bool invalid = true;
@@ -1103,6 +1105,14 @@ int RefWindow::createTag ()
 		Glib::ustring newname = nameentry.get_text ();
 		if (newname.empty()) {
 			invalid = true;
+			messageLabel.set_markup (String::ucompose(
+				"<i>%1</i>", _("Empty tag names are not valid")));
+			messageLabel.show();
+		} else if (library_->taglist_->tagExists (newname)) {
+			invalid = true;
+			messageLabel.set_markup (String::ucompose(
+				"<i>%1</i>", _("Duplicate tag names are not valid")));
+			messageLabel.show();
 		} else {
 			invalid = false;
 			newtag = library_->taglist_->newTag (newname);

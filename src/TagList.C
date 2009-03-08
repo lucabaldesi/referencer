@@ -99,4 +99,14 @@ void TagList::writeXML (Glib::ustring &out)
 	out += "</taglist>\n";
 }
 
+bool TagList::tagExists (std::string const name)
+{
+	TagMap::iterator it = tags_.begin();
+	TagMap::iterator const end = tags_.end();
+	for (; it != end; it++) {
+		if (it->second.name_ == name)
+			return true;
+	}
 
+	return false;
+}

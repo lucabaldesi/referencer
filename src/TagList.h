@@ -42,6 +42,7 @@ class TagList {
 	Glib::ustring getName (int const &uid);
 	void writeXML (Glib::ustring &out);
 	void clear () {tags_.clear (); uidCounter_ = 0;}
+	bool tagExists (std::string const name);
 
 	private:
 	TagMap tags_;
