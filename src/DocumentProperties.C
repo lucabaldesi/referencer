@@ -20,6 +20,7 @@
 #include "DocumentList.h"
 #include "DocumentTypes.h"
 #include "Preferences.h"
+#include "ThumbnailGenerator.h"
 
 #include "DocumentProperties.h"
 
@@ -30,9 +31,17 @@ DocumentProperties::DocumentProperties ()
 		Utility::findDataFile ("documentproperties.glade"));
 
 	dialog_ = (Gtk::Dialog *) xml_->get_widget ("DocumentProperties");
+
 	filechooser_ = (Gtk::FileChooserButton *) xml_->get_widget ("File");
+	filechooser_->signal_selection_changed().connect (
+			sigc::mem_fun (*this, &DocumentProperties::onFileChanged));
+
+
 	keyentry_ = (Gtk::Entry *) xml_->get_widget ("Key");
 	iconImage_ = (Gtk::Image *) xml_->get_widget ("Icon");
+	iconButton_ = (Gtk::Button *) xml_->get_widget ("IconButton");
+	iconButton_->signal_clicked().connect (
+			sigc::mem_fun (*this, &DocumentProperties::onIconButtonClicked));
 
 	crossrefbutton_ = (Gtk::Button *) xml_->get_widget ("Lookup");
 	crossrefbutton_->signal_clicked().connect(
@@ -399,7 +408,7 @@ void DocumentProperties::onPasteBibtex ()
 	DocumentList doclist;
 	int const imported = doclist.import (clipboardtext, BibUtils::FORMAT_BIBTEX);
 
-	DEBUG1 ("DocumentProperties::onPasteBibtex: Imported %1 references", imported);
+	DEBUG ("DocumentProperties::onPasteBibtex: Imported %1 references", imported);
 
 	if (imported) {
 		DocumentList::Container &docs = doclist.getDocs ();
@@ -453,3 +462,22 @@ void DocumentProperties::onTypeChanged ()
 	save (doc);
 	update (doc);
 }
+
+void DocumentProperties::onFileChanged ()
+{
+	Glib::ustring const uri = filechooser_->get_uri();
+	if (Utility::fileExists (uri)) {
+		iconImage_->set (ThumbnailGenerator::instance().getThumbnailSynchronous (uri));
+		iconButton_->set_sensitive (true);
+	} else {
+		iconImage_->set (ThumbnailGenerator::instance().getThumbnailSynchronous (uri));
+		iconButton_->set_sensitive (false);
+	}
+}
+
+void DocumentProperties::onIconButtonClicked ()
+{
+	Gnome::Vfs::url_show (filechooser_->get_uri());
+}
+
+

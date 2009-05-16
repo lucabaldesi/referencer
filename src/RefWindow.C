@@ -2171,7 +2171,7 @@ void RefWindow::onAddDocById ()
 		if (idIter == capNameToId.end()) {
 			/* Epic fail, user somehow selected a field that 
 			 * we don't remember creating */
-			DEBUG1 ("Bad displayField %1", displayField);
+			DEBUG ("Bad displayField %1", displayField);
 		}
 		PluginCapability::Identifier capId = idIter->second;
 
@@ -2179,7 +2179,7 @@ void RefWindow::onAddDocById ()
 		Glib::ustring const field = PluginCapability::getFieldName(capId);
 		if (field == "") {
 			/* A capability without a valid field name */
-			DEBUG1 ("Bad capId %1", capId);
+			DEBUG ("Bad capId %1", capId);
 		}
 
 		Glib::ustring id = entry.get_text ();
@@ -3088,7 +3088,7 @@ void RefWindow::SearchDialog::search ()
 
 	/* Retrieve search text */
 	Glib::ustring const searchTerms = searchEntry_->get_text ();
-	DEBUG1 ("Searching for '%1'", searchTerms);
+	DEBUG ("Searching for '%1'", searchTerms);
 
 	/* Retrieve choice of plugin */
 	Plugin *plugin = (*(pluginCombo_->get_active()))[pluginPtrColumn_];
@@ -3099,7 +3099,7 @@ void RefWindow::SearchDialog::search ()
 
 	/* Invoke plugin's search function */
 	Plugin::SearchResults results = plugin->doSearch(searchTerms);
-	DEBUG1 ("Searching with plugin '%1'", plugin->getShortName());
+	DEBUG ("Searching with plugin '%1'", plugin->getShortName());
 
 	/* Revoke callback */
 	_global_plugins->progressCallback_ = NULL;

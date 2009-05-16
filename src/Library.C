@@ -87,7 +87,7 @@ bool Library::readXML (Glib::ustring XMLtext)
 	try {
 		context.parse (XMLtext);
 	} catch (Glib::MarkupError const ex) {
-		DEBUG3 ("Exception on line %1, character %2: '%3'",
+		DEBUG ("Exception on line %1, character %2: '%3'",
 			context.get_line_number (), context.get_char_number (), ex.what ());
 		Utility::exceptionDialog (&ex, _("Parsing Library XML"));
 
@@ -306,7 +306,7 @@ bool Library::save (Glib::ustring const &libfilename)
 
 	Glib::ustring tmplibfilename = libfilename + ".save-tmp";
 
-	DEBUG2 ("%1 ~ %2", libfilename, tmplibfilename);
+	DEBUG ("%1 ~ %2", libfilename, tmplibfilename);
 
 	try {
 		libfile.create (tmplibfilename, Gnome::Vfs::OPEN_WRITE,
@@ -355,7 +355,7 @@ bool Library::save (Glib::ustring const &libfilename)
 		return false;
 	}
 
-	DEBUG1 ("Writing bibtex, manage_target_ = %1", manage_target_);
+	DEBUG ("Writing bibtex, manage_target_ = %1", manage_target_);
 	// Having successfully saved the library, write the bibtex if needed
 	if (!manage_target_.empty ()) {
 		// manage_target_ is either an absolute URI or a relative URI
@@ -363,7 +363,7 @@ bool Library::save (Glib::ustring const &libfilename)
 			Gnome::Vfs::Uri::make_full_from_relative (
 				libfilename,
 				manage_target_);
-		DEBUG1 ("bibtextarget = %1", bibtextarget);
+		DEBUG ("bibtextarget = %1", bibtextarget);
 
 		std::vector<Document*> docs;
 		DocumentList::Container &docrefs = doclist_->getDocs ();
@@ -393,7 +393,7 @@ void Library::writeBibtex (
 {
 	Glib::ustring tmpbibfilename = bibfilename + ".export-tmp";
 
-	DEBUG2 ("%1 ~ %2", bibfilename, tmpbibfilename);
+	DEBUG ("%1 ~ %2", bibfilename, tmpbibfilename);
 
 	Gnome::Vfs::Handle bibfile;
 

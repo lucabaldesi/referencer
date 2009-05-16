@@ -64,7 +64,7 @@ void TagList::deleteTag (int uid)
 {
 	TagMap::iterator found = tags_.find (uid);
 	if (found == tags_.end()) {
-		DEBUG1 ("TagList::deleteTag: tried to delete non-existent "
+		DEBUG ("TagList::deleteTag: tried to delete non-existent "
 			"tag %1", uid);
 	} else {
 		tags_.erase (tags_.find (uid));

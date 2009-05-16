@@ -57,7 +57,7 @@ bool ArxivPlugin::resolve (Document &doc)
 		rawtext = &Transfer::readRemoteFile (
 			_("Downloading Metadata"), messagetext, filename);
 
-		DEBUG1 ("Raw citebase:\n%1\n----", *rawtext);
+		DEBUG ("Raw citebase:\n%1\n----", *rawtext);
 	} catch (Transfer::Exception ex) {
 		Utility::exceptionDialog (&ex, _("Downloading metadata"));
 		return false;
@@ -82,8 +82,8 @@ bool ArxivPlugin::resolve (Document &doc)
 
 		// Sometimes citebase gives us an URL which is just a doi
 		Glib::ustring const url = newdoc.getBibData().extras_["Url"];
-		DEBUG1 ("url = %1", url);
-		DEBUG1 ("substr = ",  url.substr (0, 4));
+		DEBUG ("url = %1", url);
+		DEBUG ("substr = ",  url.substr (0, 4));
 		if (url.size() >= 5 && url.substr (0, 4) == Glib::ustring("doi:")) {
 			if (newdoc.getBibData().getDoi().empty()) {
 				newdoc.getBibData().setDoi (url.substr(4, url.size()));

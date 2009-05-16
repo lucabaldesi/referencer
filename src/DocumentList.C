@@ -135,7 +135,7 @@ void DocumentList::removeDoc (Document * const addr)
 		}
 	}
 
-	DEBUG1 ("Warning: DocumentList::removeDoc: couldn't find '%1' to erase it", addr);
+	DEBUG ("Warning: DocumentList::removeDoc: couldn't find '%1' to erase it", addr);
 }
 
 

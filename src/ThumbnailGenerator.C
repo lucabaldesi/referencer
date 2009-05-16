@@ -11,9 +11,17 @@ Glib::RefPtr<Gdk::Pixbuf> ThumbnailGenerator::defaultthumb_;
 Glib::RefPtr<Gdk::Pixbuf> ThumbnailGenerator::thumbframe_;
 Glib::RefPtr<Gnome::UI::ThumbnailFactory> ThumbnailGenerator::thumbfac_;
 
+ThumbnailGenerator &ThumbnailGenerator::instance ()
+{
+	static ThumbnailGenerator inst;
+
+	return inst;
+}
 
 ThumbnailGenerator::ThumbnailGenerator ()
 {
+	Glib::signal_idle().connect(
+		sigc::bind_return (sigc::mem_fun (this, &ThumbnailGenerator::run), false));
 }
 
 
@@ -70,6 +78,11 @@ void ThumbnailGenerator::mainLoop ()
 	}
 }
 
+Glib::RefPtr<Gdk::Pixbuf> ThumbnailGenerator::getThumbnailSynchronous (Glib::ustring const &file)
+{
+	return lookupThumb (file);
+}
+
 Glib::RefPtr<Gdk::Pixbuf> ThumbnailGenerator::lookupThumb (Glib::ustring const &file)
 {
 	Glib::RefPtr<Gdk::Pixbuf> thumbnail;
@@ -94,11 +107,11 @@ Glib::RefPtr<Gdk::Pixbuf> ThumbnailGenerator::lookupThumb (Glib::ustring const &
 
 		// Should we be using Gnome::UI::icon_lookup_sync?
 		if (thumbfile.empty()) {
-			DEBUG1 ("Couldn't find thumbnail:'%1'", file);
+			DEBUG ("Couldn't find thumbnail:'%1'", file);
 			if (thumbfac_->has_valid_failed_thumbnail (file, mtime)) {
-				DEBUG1 ("Has valid failed thumbnail: '%1'", file);
+				DEBUG ("Has valid failed thumbnail: '%1'", file);
 			} else {
-				DEBUG1 ("Generate thumbnail: '%1'", file);
+				DEBUG ("Generate thumbnail: '%1'", file);
 				Glib::ustring mimetype = 
 					(uri->get_file_info (Gnome::Vfs::FILE_INFO_GET_MIME_TYPE))->get_mime_type ();
 
@@ -106,7 +119,7 @@ Glib::RefPtr<Gdk::Pixbuf> ThumbnailGenerator::lookupThumb (Glib::ustring const &
 				if (thumbnail) {
 					thumbfac_->save_thumbnail (thumbnail, file, mtime);
 				} else {
-					DEBUG1 ("Failed to generate thumbnail: '%1'", file);
+					DEBUG ("Failed to generate thumbnail: '%1'", file);
 					thumbfac_->create_failed_thumbnail (file, mtime);
 				}
 			}

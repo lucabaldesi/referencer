@@ -33,6 +33,7 @@ class DocumentProperties {
 	Gtk::Entry *keyentry_;
 	Gtk::FileChooserButton *filechooser_;
 	Gtk::Image *iconImage_;
+	Gtk::Button *iconButton_;
 
 	Gtk::Button *crossrefbutton_;
 	Gtk::Button *pastebibtexbutton_;
@@ -66,6 +67,8 @@ class DocumentProperties {
 	void onDoiEntryChanged ();
 	void updateSensitivity();
 	void onTypeChanged ();
+	void onFileChanged ();
+	void onIconButtonClicked ();
 	bool ignoreTypeChanged_;
 
 	public:

@@ -326,7 +326,7 @@ Document parseBibUtils (BibUtils::fields *ref)
 					// Special case: Series in InProceedings get added as "Title" level 0
 					key = "Series";
 				} else {
-					DEBUG3 ("unexpected TITLE element %1:%2 (%3)",
+					DEBUG ("unexpected TITLE element %1:%2 (%3)",
 						key, value, ref->level[j]);
 					// Don't overwrite existing title field
 					if (!newdoc.getBibData().getTitle().empty()) {

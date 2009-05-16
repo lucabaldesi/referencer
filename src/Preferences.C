@@ -491,13 +491,13 @@ std::pair<Glib::ustring, int> Preferences::getListSort ()
 	try {
 		retval.first = confclient_->get_string (listSortColumn_.get_key());
 	} catch (Gnome::Conf::Error &err) {
-		DEBUG1 ("Got a gconf error '%1', probably a legacy config, defaulting.",
+		DEBUG ("Got a gconf error '%1', probably a legacy config, defaulting.",
 			err.what());
 
 		DEBUG ("Legacy config, setting no sort column");
 		retval.first = "";
 	}
-	DEBUG1 ("Got column '%1'", retval.first);
+	DEBUG ("Got column '%1'", retval.first);
 
 	retval.second = confclient_->get_int (listSortOrder_.get_key());
 

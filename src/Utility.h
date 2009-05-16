@@ -23,12 +23,7 @@
 #include <libgnomevfsmm.h>
 
 #include "ucompose.hpp"
-#define DEBUG(x) Utility::debug(__PRETTY_FUNCTION__, x)
-#define DEBUG1(x,a) Utility::debug(__PRETTY_FUNCTION__, String::ucompose(x,a))
-#define DEBUG2(x,a,b) Utility::debug(__PRETTY_FUNCTION__, String::ucompose(x,a,b))
-#define DEBUG3(x,a,b,c) Utility::debug(__PRETTY_FUNCTION__, String::ucompose(x,a,b,c))
-#define DEBUG4(x,a,b,c,d) Utility::debug(__PRETTY_FUNCTION__, String::ucompose(x,a,b,c,d))
-#define DEBUG5(x,a,b,c,d,e) Utility::debug(__PRETTY_FUNCTION__, String::ucompose(x,a,b,c,d,e))
+#define DEBUG(x,...) Utility::debug(__PRETTY_FUNCTION__, String::ucompose(x, ##__VA_ARGS__))
 
 namespace Utility {
 	typedef std::pair <Glib::ustring, Glib::ustring> StringPair;

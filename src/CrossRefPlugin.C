@@ -231,7 +231,7 @@ bool CrossRefPlugin::resolve (Document &doc)
 		+ Gnome::Vfs::escape_string(doc.getField("doi"))
 		+ Glib::ustring ("&noredirect=true");
 
-	DEBUG1 ("CrossRefPlugin::resolve: using url '%1'", url);
+	DEBUG ("CrossRefPlugin::resolve: using url '%1'", url);
 
 	// FIXME: even if we don't get any metadata, 
 	// an exceptionless download+parse is considered
@@ -255,7 +255,7 @@ bool CrossRefPlugin::resolve (Document &doc)
 			context.parse (xml);
 			context.end_parse ();
 		} catch (Glib::MarkupError const ex) {
-			DEBUG1 ("Markuperror while parsing:\n'''%1\n'''", xml);
+			DEBUG ("Markuperror while parsing:\n'''%1\n'''", xml);
 			//Utility::exceptionDialog (&ex, _("Parsing CrossRef XML.  The DOI could be invalid, or not known to crossref.org"));
 			success = false;
 		}
@@ -264,7 +264,7 @@ bool CrossRefPlugin::resolve (Document &doc)
 		success = false;
 	}
 
-	DEBUG1 ("resolve returning %1", success);
+	DEBUG ("resolve returning %1", success);
 	return success;
 }
 

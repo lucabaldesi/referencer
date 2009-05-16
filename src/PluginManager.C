@@ -231,7 +231,7 @@ Glib::ustring PluginManager::findDataFile (Glib::ustring const file)
 
 		Glib::RefPtr<Gnome::Vfs::Uri> uri = Gnome::Vfs::Uri::create (filename);
 
-		DEBUG1 ("Trying %1", filename);
+		DEBUG ("Trying %1", filename);
 
 		if (uri->uri_exists ())
 			return filename;

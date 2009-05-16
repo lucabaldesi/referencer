@@ -514,12 +514,12 @@ DocumentView::DocumentView (
 	std::pair<Glib::ustring, int> sortInfo = _global_prefs->getListSort ();
 	std::map<Glib::ustring, Column>::iterator columnIter = columns_.find(sortInfo.first);
 	if (columnIter != columns_.end()) {
-		DEBUG1 ("Initialising sort column to %1", sortInfo.first);
+		DEBUG ("Initialising sort column to %1", sortInfo.first);
 		docstoresort_->set_sort_column (
 				columnIter->second.modelColumn,
 				(Gtk::SortType)sortInfo.second);
 	} else {
-		DEBUG1 ("Initialising sort column to default, '%1'", defaultSortColumn);
+		DEBUG ("Initialising sort column to default, '%1'", defaultSortColumn);
 		docstoresort_->set_sort_column (
 				(columns_.find(defaultSortColumn))->second.modelColumn,
 				(Gtk::SortType)sortInfo.second);
@@ -662,11 +662,11 @@ void DocumentView::onIconsDragData (
 						dialog.hide ();
 
 						Glib::ustring destinationUri = dialog.get_uri ();
-						DEBUG1 ("Destination URI %1", destinationUri);
+						DEBUG ("Destination URI %1", destinationUri);
 
 						if (check.get_active()) {
 							folder = dialog.get_current_folder_uri();
-							DEBUG1 ("Setting library folder %1", folder);
+							DEBUG ("Setting library folder %1", folder);
 							/* Set the library download folder */
 							lib.setLibraryFolder (folder);
 						}
@@ -1465,7 +1465,7 @@ void DocumentView::addColumn (
 		action.merge = win_.uimanager_->add_ui_from_string (ui);
 	} catch (Glib::Error err) {
 		DEBUG (ui);
-		DEBUG1 ("Merge error: %1", err.what());
+		DEBUG ("Merge error: %1", err.what());
 	}
 
 	sortUI_[name] = action;
@@ -1503,14 +1503,14 @@ void DocumentView::onSortColumnChanged ()
 	if (!columnName.empty()) {
 		SortActionMap::iterator action = sortUI_.find(columnName);
 		if (action != sortUI_.end()) {
-			DEBUG1 ("Activated action for column name %1", columnName);
+			DEBUG ("Activated action for column name %1", columnName);
 			action->second.action->set_active(true);
 		} else {
-			DEBUG1 ("Failed to find UI action for column name %1", columnName);
+			DEBUG ("Failed to find UI action for column name %1", columnName);
 		}
 		_global_prefs->setListSort (columnName, order);
 	} else {
-		DEBUG1 ("Failed to resolve column id %1 to a name", column);
+		DEBUG ("Failed to resolve column id %1 to a name", column);
 	}
 }
 
@@ -1535,7 +1535,7 @@ void DocumentView::select (Document *document)
     }
 
     if (docIter == docEnd) {
-        DEBUG1 ("DocumentView::select: warning: document %1 not found", document);
+        DEBUG ("DocumentView::select: warning: document %1 not found", document);
     }
 
     Gtk::TreeModel::Path path = docstoresort_->get_path (docIter);

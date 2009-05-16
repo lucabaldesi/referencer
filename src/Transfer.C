@@ -212,7 +212,7 @@ void readCB (
 	Gnome::Vfs::FileSize reallyRead)
 {
 	transferCounter += reallyRead;
-	DEBUG2 ("Transferred %1 bytes (%2)", transferCounter, reallyRead);
+	DEBUG ("Transferred %1 bytes (%2)", transferCounter, reallyRead);
 
 	char *charbuf = (char *) buffer;
 	charbuf [reallyRead] = 0;

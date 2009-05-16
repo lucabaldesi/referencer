@@ -21,11 +21,15 @@ class ThumbnailGenerator
 	void mainLoop ();
 	Glib::RefPtr<Gdk::Pixbuf> lookupThumb (Glib::ustring const &file);
 
-	public:
 	ThumbnailGenerator ();
 	void run ();
+
+	public:
 	void registerRequest (Glib::ustring const &file, Document *doc);
 	void deregisterRequest (Document *doc);
+	Glib::RefPtr<Gdk::Pixbuf> getThumbnailSynchronous (Glib::ustring const &file);
+
+	static ThumbnailGenerator &instance ();
 };
 
 #endif

@@ -128,7 +128,7 @@ void PythonPlugin::load (std::string const &moduleName)
 			Py_DECREF (pMod_);
 			return;
 		} else {
-			DEBUG1 ("Found resolver %1", pGetFunc_);
+			DEBUG ("Found resolver %1", pGetFunc_);
 		}
 	}
 
@@ -228,7 +228,7 @@ bool PythonPlugin::doAction (Glib::ustring const function, std::vector<Document*
 {
 	/* Check the callback exists */
 	if (!PyObject_HasAttrString (pMod_, (char*)function.c_str())) {
-		DEBUG1 ("function %1 not found", function);
+		DEBUG ("function %1 not found", function);
 		return false;
 	}
 
@@ -409,7 +409,7 @@ bool PythonPlugin::resolveID (Document &doc, PluginCapability::Identifier id)
 			pArgs = Py_BuildValue ("(Os)", pDoc, "url");
 		break;
 		default:
-			DEBUG1 ("PythonPlugin::resolveID: warning, unhandled id type %1", id);
+			DEBUG ("PythonPlugin::resolveID: warning, unhandled id type %1", id);
 			return false;
 	}
 
@@ -572,7 +572,7 @@ Plugin::SearchResults PythonPlugin::doSearch (Glib::ustring const &searchTerms)
 
 Document PythonPlugin::getSearchResult (Glib::ustring const &token)
 {
-	DEBUG1 ("token '%1'", token);
+	DEBUG ("token '%1'", token);
 	/* Look up result lookup function */
 	PyObject *searchFunc = PyObject_GetAttrString (pMod_, "referencer_search_result");
 	if (!searchFunc)
@@ -587,7 +587,7 @@ Document PythonPlugin::getSearchResult (Glib::ustring const &token)
 		/* Compose Document from returned fields */
 		Document doc;
 		int itemCount = PyList_Size (pReturn);
-		DEBUG1 ("got %1 fields", itemCount);
+		DEBUG ("got %1 fields", itemCount);
 
 		PyObject *dict = pReturn;
 		/* Borrowed reference */
@@ -597,7 +597,7 @@ Document PythonPlugin::getSearchResult (Glib::ustring const &token)
 		PyObject *key, *value;
 		Py_ssize_t pos = 0;
 		while (PyDict_Next(dict, &pos, &key, &value)) {
-			DEBUG2 ("Setting %1 %2", PyString_AsString(key), PyString_AsString(value));
+			DEBUG ("Setting %1 %2", PyString_AsString(key), PyString_AsString(value));
 			doc.setField (PyString_AsString(key), PyString_AsString(value));
 		}
 

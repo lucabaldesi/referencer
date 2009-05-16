@@ -253,6 +253,11 @@ namespace String
   // a series of functions which accept a format string on the form "text %1
   // more %2 less %3" and a number of templated parameters and spits out the
   // composited string
+  inline Glib::ustring ucompose(const Glib::ustring &fmt)
+  {
+	  return fmt.c_str();
+  }
+
   template <typename T1>
   inline Glib::ustring ucompose(const Glib::ustring &fmt, const T1 &o1)
   {

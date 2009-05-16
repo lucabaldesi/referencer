@@ -232,7 +232,7 @@ Glib::ustring findDataFile (
 	}
 
 	// Fall through
-	DEBUG1 ("Utility::findDataFile: couldn't "
+	DEBUG ("Utility::findDataFile: couldn't "
 		"find file '%1'", filename);
 	return Glib::ustring();
 }
@@ -396,7 +396,7 @@ std::string escapeBibtexAccents (
 
 			int gotone = wvConvertUnicodeToLaTeX (letter, replacement);
 			if (!gotone) {
-				DEBUG1 ("escapeBibtexAccents: no replacement found for '%1'", letter);
+				DEBUG ("escapeBibtexAccents: no replacement found for '%1'", letter);
 				replacement = "*";
 			}
 
@@ -487,10 +487,10 @@ Glib::RefPtr<Gdk::Pixbuf> getThemeIcon(Glib::ustring const &iconname)
 				theme->load_icon(iconname, 96, Gtk::ICON_LOOKUP_FORCE_SVG);
 			
 			if (!pixbuf)
-				DEBUG1 ("Utility::getThemeIcon: icon '%1' failed to load", iconname);
+				DEBUG ("Utility::getThemeIcon: icon '%1' failed to load", iconname);
 				return pixbuf;
 		} else {
-			DEBUG1 ("Utility::getThemeIcon: icon '%1' no found", iconname);
+			DEBUG ("Utility::getThemeIcon: icon '%1' no found", iconname);
 		}
 	}
 
