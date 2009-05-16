@@ -232,7 +232,7 @@
               <para>Your existing bibliography files, or snippets from websites can be imported. Items from these files will be loaded and added to the currently open library.
               </para>
    	</sect3>
-   	<sect3 id="howto-add-docs-by-file">
+   	<sect3>
       <title>To add documents by Copy/Paste</title>
       <para>Choose <menuchoice><guisubmenu>Edit</guisubmenu>
               <guimenuitem>Paste BibTex</guimenuitem></menuchoice> from the menubar.
