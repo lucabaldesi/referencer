@@ -38,9 +38,13 @@ int TagList::newTag (std::string const name)
 void TagList::loadTag (std::string const name, int uid)
 {
 	Tag newtag (uid, name);
-	tags_[uid] = newtag;
-	if (uid >= uidCounter_)
-		uidCounter_ = uid + 1;
+	if (tagExists (name)) {
+		DEBUG ("Duplicate tag name '%1'", name);
+	} else {
+		tags_[uid] = newtag;
+		if (uid >= uidCounter_)
+			uidCounter_ = uid + 1;
+	}
 }
 
 
