@@ -1,4 +1,5 @@
 1.1.6:
+	- Fix mnemonic for Type field in DocumentProperties (Bug 377221)
 	- Prevent creation of duplicate tag names (Bug 339593)
 	- Include document notes in searches
 	- Plugin interface: add bibtex_to_fields utility function, 

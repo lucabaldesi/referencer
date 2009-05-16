@@ -202,6 +202,7 @@ void DocumentProperties::setupFields (Glib::ustring const &docType)
 	typeCombo_ = Gtk::manage (new Gtk::ComboBoxEntryText);
 	typeCombo_->signal_changed().connect (
 			sigc::mem_fun (*this, &DocumentProperties::onTypeChanged));
+	typeLabel->set_mnemonic_widget (*typeCombo_);
 	metadataTable->attach (*typeLabel, 0, 1, 0, 1, Gtk::FILL, Gtk::SHRINK | Gtk::FILL, 0, 0);
 	metadataTable->attach (*typeCombo_, 1, 4, 0, 1, Gtk::FILL, Gtk::SHRINK | Gtk::FILL, 0, 0);
 
