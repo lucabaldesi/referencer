@@ -219,11 +219,14 @@ bool CrossRefPlugin::resolve (Document &doc)
 				doc.getField("doi"))
 		);
 
+	Glib::ustring const username = _global_prefs->getCrossRefUsername ();
+	Glib::ustring const password = _global_prefs->getCrossRefPassword ();
+
 	Glib::ustring const url = 
 		  Glib::ustring("http://www.crossref.org/openurl/?pid=")
-		+ _global_prefs->getCrossRefUsername ()
-		+ Glib::ustring(":")
-		+ _global_prefs->getCrossRefPassword ()
+		+ username
+		+ (password.empty() ? "" : ":")
+		+ password 
 		+ Glib::ustring("&id=doi:")
 		+ Gnome::Vfs::escape_string(doc.getField("doi"))
 		+ Glib::ustring ("&noredirect=true");
