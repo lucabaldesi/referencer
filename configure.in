@@ -138,6 +138,7 @@ AC_OUTPUT(
 	data/referencer.desktop.in
 	plugins/Makefile
 	help/Makefile
+	devhelp/Makefile
 	po/Makefile.in
 	referencer.spec
 )

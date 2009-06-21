@@ -1,0 +1,9 @@
+<?xml version="1.0" standalone="no"?>
+<omf>
+  <resource>
+    <subject category="GNOME|Development|Applications"/>
+    <type>manual</type>
+    <relation seriesid="650d1c1e-5d11-11de-96f5-cf18f082eeab"/>
+    <rights type="GNU GPL" license.version="2.0" holder="John Spray"/>
+  </resource>
+</omf>

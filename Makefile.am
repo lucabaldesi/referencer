@@ -2,7 +2,7 @@
 ACLOCAL_AMFLAGS = -I m4
 
 ## Process this file with automake to produce Makefile.in
-SUBDIRS = po data libbibutils src plugins help
+SUBDIRS = po data libbibutils src plugins help devhelp
 
 EXTRA_DIST =	\
 	intltool-extract.in	\

@@ -1,0 +1,798 @@
+# German translation of the Referencer Plugin Writing Guide.
+# Mario Blättermann <mariobl@gnome.org>, 2009.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: referencer-plugins\n"
+"POT-Creation-Date: 2009-06-21 11:59+0200\n"
+"PO-Revision-Date: 2009-06-21 12:01+0100\n"
+"Last-Translator: Mario Blättermann <mariobl@gnome.org>\n"
+"Language-Team: German <gnome-de@gnome.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Poedit-Language: German\n"
+"X-Poedit-Country: GERMANY\n"
+
+#: legal.xml:2(para)
+msgid ""
+"Permission is granted to copy, distribute and/or modify this document under "
+"the terms of the GNU General Public License Version 2. You can find a copy of "
+"the GPL at this <ulink type=\"help\" url=\"ghelp:gpl\">link</ulink> or in the "
+"file COPYING distributed with this manual."
+msgstr ""
+"Das vorliegende Dokument kann gemäß den Bedingungen der GNU General Public "
+"License (GPL), Version 2 kopiert, verteilt und/oder modifiziert werden. Eine "
+"Kopie der GPL finden Sie unter diesem <ulink type=\"help\" url=\"ghelp:gpl"
+"\">Link</ulink> oder in der mit diesem Handbuch gelieferten Datei COPYING."
+
+#: referencer-plugins.xml:18(title)
+msgid "<application>Referencer</application> Plugin Writing Guide V1.1.6"
+msgstr "<application>Referencer</application> Plugin-Leitfaden V 1.1.6"
+
+#: referencer-plugins.xml:20(para)
+msgid ""
+"Referencer is a tool to help you manage your collection of documents, and to "
+"use them to generate a bibliography. This guide describes the plugin API of "
+"Referencer."
+msgstr ""
+"Referencer ist ein Werkzeug, das Ihnen bei der Verwaltung Ihrer "
+"Dokumentensammlung hilft und aus Ihren Dokumenten eine Bibliografie erstellt. "
+"Dieser Leitfaden beschreibt die Plugin-Schnittstelle von Referencer."
+
+#: referencer-plugins.xml:26(year)
+msgid "2009"
+msgstr "2009"
+
+#: referencer-plugins.xml:27(holder) referencer-plugins.xml:48(para)
+msgid "John Spray"
+msgstr "John Spray"
+
+#: referencer-plugins.xml:30(publishername)
+msgid "<application>Referencer</application> Development Team"
+msgstr "<application>Referencer</application>-Entwicklerteam"
+
+#: referencer-plugins.xml:35(firstname)
+msgid "John"
+msgstr "John"
+
+#: referencer-plugins.xml:35(surname)
+msgid "Spray"
+msgstr "Spray"
+
+#: referencer-plugins.xml:38(email)
+msgid "jcspray@icculus.org"
+msgstr "jcspray@icculus.org"
+
+#: referencer-plugins.xml:45(revnumber)
+msgid "Referencer Plugin Writing Guide V 1.1.6"
+msgstr "Referencer Plugin-Leitfaden V 1.1.6"
+
+#: referencer-plugins.xml:46(date)
+msgid "2009-06-18"
+msgstr "18. Juni 2009"
+
+#: referencer-plugins.xml:53(releaseinfo)
+msgid ""
+"This is the Plugin Writing Guide version 1.1.6 of <application>Referencer</"
+"application>."
+msgstr ""
+"Dies ist der Plugin-Leitfaden V 1.1.6 von <application>Referencer</"
+"application>."
+
+#: referencer-plugins.xml:56(title)
+msgid "Feedback"
+msgstr "Rückmeldungen"
+
+#: referencer-plugins.xml:57(para)
+msgid ""
+"To report a bug or make a suggestion regarding the <application>Referencer</"
+"application> application or this manual, please visit the <ulink url=\"http://"
+"icculus.org/referencer\" type=\"help\"><application>Referencer</application> "
+"home page</ulink>."
+msgstr ""
+"Um Fehler zu melden oder einen Vorschlag zur Anwendung "
+"<application>Referencer</application> oder zu diesem Handbuch zu machen, "
+"besuchen Sie bitte die <ulink url=\"http://icculus.org/referencer\" type="
+"\"help\"<application>Referencer</application>-Website</ulink>."
+
+#: referencer-plugins.xml:65(title)
+msgid "Introduction"
+msgstr "Einführung"
+
+#: referencer-plugins.xml:66(para)
+msgid ""
+"The <application>Referencer</application> plugin API provides a relatively "
+"painless way of adding functionality. Plugins can either add user interface "
+"entries to menus and toolbars (action plugins), or provide hooks for "
+"downloading metadata for documents (metadata plugins)."
+msgstr ""
+"Die Plugin-Schnittstelle von <application>Referencer</application> stellt "
+"einen relativ schmerzlosen Weg zum Hinzufügen neuer Funktionalität bereit. "
+"Plugins können entweder weitere Einträge zu Menüs und Werkzeugleisten der "
+"Benutzeroberfläche hinzufügen (Aktionen-Plugins) oder Hilfsfunktionen zum "
+"Herunterladen von Metadaten für Dokument bereitstellen (Metadaten-Plugins)."
+
+#: referencer-plugins.xml:72(para)
+msgid ""
+"At the time of writing, the plugin interface is new and not widely tested. "
+"Although it is not gratuitously broken there may be issues. You can ask at "
+"the <ulink url=\"http://icculus.org/referencer/contact.html\" type=\"help"
+"\">mailing list</ulink>."
+msgstr ""
+"Zum Zeitpunkt der Erstellung dieses Leitfadens ist die Plugin-Schnittstelle "
+"noch neu und noch nicht ausreichend getestet. Obwohl nicht völlig "
+"unbrauchbar, gibt es doch Schwachstellen. Informieren Sie sich darüber in der "
+"<ulink url=\"http://icculus.org/referencer/contact.html\" type=\"help"
+"\">Mailingliste</ulink>."
+
+#: referencer-plugins.xml:77(para)
+msgid ""
+"This document is written for <application>Referencer</application> v1.1.6."
+msgstr ""
+"Dieses Dokument bezieht sich auf die Version 1.1.6 von "
+"<application>Referencer</application>."
+
+#: referencer-plugins.xml:83(title)
+msgid "Installing Plugins"
+msgstr "Installieren von Plugins"
+
+#: referencer-plugins.xml:84(para)
+msgid ""
+"Plugins are python scripts. They don't have to be executable, but they do "
+"have to have a filename ending .py. At startup, <application>Referencer</"
+"application> searches several locations for plugins: ./plugins, $PREFIX/lib/"
+"referencer, and ~/.referencer/plugins."
+msgstr ""
+"Plugins sind Python-Skripte. Diese müssen nicht ausführbar sein, jedoch ist "
+"die Dateiendung .py zwingend notwendig. Beim Start sucht "
+"<application>Referencer</application> an verschiedenen Orten nach Plugins: ./"
+"plugins, $PREFIX/lib/referencer, und ~/.referencer/plugins."
+
+#: referencer-plugins.xml:91(title)
+msgid "Common API"
+msgstr "Allgemeine API"
+
+#: referencer-plugins.xml:93(title)
+msgid "Plugin info dictionary"
+msgstr "Informative Beschreibung des Plugins"
+
+#: referencer-plugins.xml:94(para)
+msgid ""
+"All plugins must contain a dictionary at file scope capped "
+"<varname>referencer_plugin_info</varname>. This provides a number of fields "
+"describing the plugin. All plugins must provide the following fields, further "
+"optional fields are listed in following sections."
+msgstr ""
+"Alle Plugins müssen eine Beschreibungsdatei im Dateiabschnitt "
+"<varname>referencer_plugin_info</varname> enthalten. Diese stellt eine Anzahl "
+"von Feldern bereit, die das Plugin beschreiben. Alle Plugins müssen zwingend "
+"die folgenden Felder bereitstellen, weitere optionale Felder werden in den "
+"folgenden Abschnitten beschrieben."
+
+#: referencer-plugins.xml:102(title)
+msgid "Plugins"
+msgstr "Plugins"
+
+#: referencer-plugins.xml:106(entry)
+msgid "Plugin Name"
+msgstr "Plugin-Name"
+
+#: referencer-plugins.xml:107(entry) referencer-plugins.xml:316(entry)
+msgid "Description"
+msgstr "Beschreibung"
+
+#: referencer-plugins.xml:112(entry)
+msgid "author"
+msgstr "author"
+
+#: referencer-plugins.xml:113(entry) referencer-plugins.xml:322(entry)
+msgid "Author's name, or comma separated list. eg. \"Bob Dole\""
+msgstr ""
+"Name des Autors oder durch Kommata getrennte Liste, z.B. \"Hans Schmidt\""
+
+#: referencer-plugins.xml:118(entry)
+msgid "version"
+msgstr "version"
+
+#: referencer-plugins.xml:119(entry) referencer-plugins.xml:328(entry)
+msgid "A version string for the plugin. eg. \"1.3.2\""
+msgstr "Eine Zeichenkette für die Version des Plugins, z.B. \"1.3.2\""
+
+#: referencer-plugins.xml:124(entry)
+msgid "longname"
+msgstr "longname"
+
+#: referencer-plugins.xml:125(entry)
+msgid "The plugin's purpose. eg. \"Format author initials\""
+msgstr "Der Zweck des Plugins, z.B. \"Format author initials\""
+
+#: referencer-plugins.xml:133(para)
+msgid "The plugin info structure might be defined like this:"
+msgstr ""
+"Die Struktur der Plugin-Informationen könnte folgendermaßen definiert werden:"
+
+#: referencer-plugins.xml:136(programlisting)
+#, no-wrap
+msgid ""
+"\n"
+"\treferencer_plugin_info =\n"
+"\t {\n"
+"\t \"author\":    \"John Spray\",\n"
+"\t \"version\":   \"1.1.2\",\n"
+"\t\"longname\": _(\"Generate keys from metadata\")\n"
+"\t}\n"
+"\t"
+msgstr ""
+"\n"
+"\treferencer_plugin_info =\n"
+"\t {\n"
+"\t \"author\":    \"John Spray\",\n"
+"\t \"version\":   \"1.1.2\",\n"
+"\t\"longname\": _(\"Generate keys from metadata\")\n"
+"\t}\n"
+"\t"
+
+#: referencer-plugins.xml:146(title)
+msgid "Utility functions"
+msgstr "Hilfsfunktionen"
+
+#: referencer-plugins.xml:147(para)
+msgid ""
+"Import the module <varname>referencer</varname> to access the following "
+"functions:"
+msgstr ""
+"Importieren Sie das Modul <varname>referencer</varname>, um auf folgende "
+"Funktionen zugreifen zu können:"
+
+#: referencer-plugins.xml:153(term)
+msgid ""
+"referencer.download(<replaceable>short desc, long desc, url</replaceable>)"
+msgstr ""
+"referencer.download(<replaceable>Kurzbeschreibung, Langbeschreibung, Adresse</"
+"replaceable>)"
+
+#: referencer-plugins.xml:155(para)
+msgid ""
+"Web download convenience function. Returns a string containing the contents "
+"of the downloaded file, or an empty string on errors. Example:"
+msgstr ""
+"Funktion zur Vereinfachung von Web-Downloads. Gibt eine Zeichenkette zurück, "
+"die den Inhalt der heruntergeladenen Datei enthält, oder eine leere "
+"Zeichenkette bei Fehlern. Beispiel:"
+
+#: referencer-plugins.xml:160(programlisting)
+#, no-wrap
+msgid ""
+"\n"
+"referencer.download(\"Downloading tripe\", \"Downloading page from\n"
+"slashdot.org\", \"http://www.slashdot.org\")\n"
+"\t\t"
+msgstr ""
+"\n"
+"referencer.download(\"Downloading tripe\", \"Downloading page from\n"
+"slashdot.org\", \"http://www.slashdot.org\")\n"
+"\t\t"
+
+#: referencer-plugins.xml:165(para)
+msgid ""
+"As well as being convenient, this function inherits the user's "
+"<application>gnome-vfs</application> proxy settings so is in general "
+"preferable where more complex http functionality is not required. In any "
+"error case, the function returns an empty string."
+msgstr ""
+"Um die Einfachheit zu gewährleisten, übernimmt diese Funktion die Proxy-"
+"Einstellungen von <application>gnome-vfs</application>, so dass sie bevorzugt "
+"werden sollte, falls keine komplexe HTTP-Funktionalität gefordert ist. Im "
+"Falle eines Fehlers gibt die Funktion stets eine leere Zeichenkette zurück."
+
+#: referencer-plugins.xml:175(term)
+msgid "referencer._(<replaceable>text</replaceable>)"
+msgstr "referencer._(<replaceable>Text</replaceable>)"
+
+#: referencer-plugins.xml:177(para)
+msgid ""
+"Translation function. You probably want to do \"from referencer import _\" in "
+"order to support localisation of user-visible strings. Any user-visible "
+"string should be expressed as _(\"Some text\")"
+msgstr ""
+"Übersetzungsfunktion. Um die Übersetzbarkeit aller für den Benutzer "
+"sichtbaren Zeichenketten zu gewährleisten, sollten Sie  \"from referencer "
+"import _\" benutzen. Jede sichtbare Zeichenkette sollte als _(\"Etwas Text\") "
+"ausgedrückt werden."
+
+#: referencer-plugins.xml:186(term)
+msgid "referencer.pref_get(<replaceable>key</replaceable>)"
+msgstr "referencer.pref_get(<replaceable>Schlüssel</replaceable>)"
+
+#: referencer-plugins.xml:188(para)
+msgid ""
+"Load a persistent configuration string. If the key is not found an empty "
+"string is returned. To avoid conflicting with other plugins, each plugin "
+"should use key names prefixed with the name of the plugin. These "
+"configuration items are stored in the GConf database along with "
+"<application>Referencer</application>'s native configuration."
+msgstr ""
+"Lädt eine persistente Konfigurationszeichenkette. Falls der Schlüssel nicht "
+"gefunden wurde, wird eine leere Zeichenkette zurückgegeben. Um Konflikte mit "
+"anderen Plugins zu vermeiden, sollte jedes Plugin Schlüsselnamen verwenden, "
+"die den Namen des Plugins als Präfix enthalten. Diese Konfigurationseinträge "
+"werden in der GConf-Datenbank zusammen mit der originalen Konfiguration von "
+"<application>Referencer</application> gespeichert."
+
+#: referencer-plugins.xml:199(term)
+msgid "referencer.pref_set(<replaceable>key, value</replaceable>)"
+msgstr "referencer.pref_set(<replaceable>Schlüssel, Wert</replaceable>)"
+
+#: referencer-plugins.xml:201(para)
+msgid "Set a persistent configuration string."
+msgstr "Setzt eine persistente Konfigurationszeichenkette."
+
+#: referencer-plugins.xml:209(title)
+msgid "<varname>document</varname> class"
+msgstr "Die <varname>document</varname>-Klasse"
+
+#: referencer-plugins.xml:210(para)
+msgid ""
+"<application>Referencer</application> exposes individual documents with the "
+"document class. This supports a limited number of getter/setter methods:"
+msgstr ""
+"<application>Referencer</application> präsentiert individuelle Dokumente über "
+"die document-Klasse. Eine begrenzte Anzahl von Getter/Setter-Methoden werden "
+"unterstützt:"
+
+#: referencer-plugins.xml:217(term)
+msgid "get_field(<replaceable>key</replaceable>)"
+msgstr "get_field(<replaceable>Schlüssel</replaceable>)"
+
+#: referencer-plugins.xml:219(para)
+msgid ""
+"Retrieve a (case-insensitive) field such as \"author\". Builtin fields are "
+"doi, title, volume, number, journal, author, year and pages. Other "
+"arbitrarily named fields may or may not exist for a document. Getting a non-"
+"existent field returns an empty string."
+msgstr ""
+"Holt ein Feld wie z.B. »author«. Groß-/Kleinschreibung wird nicht "
+"berücksichtigt. Eingebaute Felder sind »doi«, »title«, »volume«, »number«, "
+"»journal«, »author«, »year« und »pages«. Weitere Felddefinitionen können, müssen "
+"aber für ein Dokument nicht existieren. Das Holen eines nicht existierenden "
+"Feldes gibt eine leere Zeichenkette zurück."
+
+#: referencer-plugins.xml:229(term)
+msgid "set_field(<replaceable>key, value</replaceable>)"
+msgstr "set_field(<replaceable>Schlüssel, Wert</replaceable>)"
+
+#: referencer-plugins.xml:231(para)
+msgid "Set a field."
+msgstr "Legt ein Feld fest."
+
+#: referencer-plugins.xml:238(term)
+msgid "get_key()"
+msgstr "get_key()"
+
+#: referencer-plugins.xml:240(para)
+msgid ""
+"Get the key of a document. This is the short ID the user would use to "
+"reference a document in a latex paper."
+msgstr ""
+"Holt den Schlüssel des Dokuments. Dies ist die Kennung, die der Benutzer zur "
+"Referenzierung eines Dokuments in einem Latex-Dokument verwendet."
+
+#: referencer-plugins.xml:248(term)
+msgid "set_key(<replaceable>value</replaceable>)"
+msgstr "set_key(<replaceable>Wert</replaceable>)"
+
+#: referencer-plugins.xml:250(para)
+msgid "Set the key."
+msgstr "Legt den Schlüssel fest."
+
+#: referencer-plugins.xml:257(term)
+msgid "get_filename()"
+msgstr "get_filename()"
+
+#: referencer-plugins.xml:259(para)
+msgid ""
+"Get the URI (eg \"file:///home/me/A_File.pdf\") of the file associated with "
+"the document."
+msgstr ""
+"Holt die Adresse (z.B. »file:///home/ich/Eine_Datei.pdf«) der einem Dokument "
+"zugeordneten Datei."
+
+#: referencer-plugins.xml:267(term)
+msgid "set_filename(<replaceable>value</replaceable>)"
+msgstr "set_filename(<replaceable>Wert</replaceable>)"
+
+#: referencer-plugins.xml:269(para)
+msgid "Set a document's file URI to <replaceable>value</replaceable>."
+msgstr "Setzt die Adresse des Dokuments auf <replaceable>Wert</replaceable>."
+
+#: referencer-plugins.xml:276(term)
+msgid "parse_bibtex(<replaceable>value</replaceable>)"
+msgstr "parse_bibtex(<replaceable>Wert</replaceable>)"
+
+#: referencer-plugins.xml:278(para)
+msgid ""
+"Parse value as plain-text BibTex and set the document's fields accordingly."
+msgstr ""
+"Liest den Wert als Klartext-BibTex ein und füllt die Felder des Dokuments "
+"entsprechend aus."
+
+#: referencer-plugins.xml:289(title)
+msgid "Configuration dialog"
+msgstr "Konfigurationsdialog"
+
+#: referencer-plugins.xml:290(para)
+msgid ""
+"Plugins can provide a configuration user interface invoked from the "
+"preferences dialog. The configuration button in the preferences dialog is "
+"enabled if the <varname>referencer_config()</varname> plugin includes a "
+"function."
+msgstr ""
+"Plugins können eine Konfigurationsschnittstelle anbieten, die über den "
+"Einstellungsdialog aufgerufen werden kann. Der Konfigurationsknopf im "
+"Einstellungsdialog ist aktiviert, wenn das Plugin <varname>referencer_config()"
+"</varname> eine Funktion einschließt."
+
+#: referencer-plugins.xml:300(title)
+msgid "Action Plugins"
+msgstr "Aktionen-Plugins"
+
+#: referencer-plugins.xml:301(para)
+msgid ""
+"Three things are required to insert actions into the <application>Referencer</"
+"application> UI: a description of the action, a string describing location of "
+"UI elements, and a function implementing the action."
+msgstr ""
+"Drei Dinge sind zum Einfügen von Aktionen in die Benutzeroberfläche von "
+"<application>Referencer</application> notwendig: eine Beschreibung der "
+"Aktion, eine den Ort der Steuerelemente beschreibende Zeichenkette sowie eine "
+"Funktion, welche die Aktion implementiert."
+
+#: referencer-plugins.xml:306(para)
+msgid "An action is defined as a dictionary with the following fields:"
+msgstr ""
+"Eine Aktion wird in einer Beschreibung mit den folgenden Feldern definiert:"
+
+#: referencer-plugins.xml:311(title)
+msgid "Actions"
+msgstr "Aktionen"
+
+#: referencer-plugins.xml:315(entry)
+msgid "Field"
+msgstr "Feld"
+
+#: referencer-plugins.xml:321(entry)
+msgid "name"
+msgstr "name"
+
+#: referencer-plugins.xml:327(entry)
+msgid "label"
+msgstr "label"
+
+#: referencer-plugins.xml:333(entry)
+msgid "tooltip"
+msgstr "tooltip"
+
+#: referencer-plugins.xml:334(entry)
+msgid "Long description"
+msgstr "Ausführliche Beschreibung"
+
+#: referencer-plugins.xml:339(entry)
+msgid "icon"
+msgstr "icon"
+
+#: referencer-plugins.xml:340(entry)
+msgid "Filename or stock eg. \"foo.png\", eg. \"_stock:gtk-edit\"."
+msgstr "Dateiname oder Stock-Name, z.B. »foo.png«, oder »_stock:gtk-edit«."
+
+#: referencer-plugins.xml:345(entry)
+msgid "callback"
+msgstr "callback"
+
+#: referencer-plugins.xml:346(entry)
+msgid "Action Function"
+msgstr "Funktion der Aktion"
+
+#: referencer-plugins.xml:351(entry)
+msgid "sensitivity (optional)"
+msgstr "sensitivity (optional)"
+
+#: referencer-plugins.xml:352(entry)
+msgid "Sensitivity policy function"
+msgstr "Funktion zur Regelung der Empfindlichkeit"
+
+#: referencer-plugins.xml:357(entry)
+msgid "accelerator (optional)"
+msgstr "accelerator (optional)"
+
+#: referencer-plugins.xml:358(entry)
+msgid "Shortcut key, eg \"<![CDATA[<control><shift>]]>q\""
+msgstr "Tastenkürzel, z.B. \"<![CDATA[<control><shift>]]>q\""
+
+#: referencer-plugins.xml:366(para)
+msgid "An action definition might look like this:"
+msgstr "Die Definition einer Aktion könnte etwa so aussehen:"
+
+#: referencer-plugins.xml:370(programlisting)
+#, no-wrap
+msgid ""
+"\n"
+"action =\n"
+" {\n"
+"   \"name\":\"_plugin_genkey_genkey\",\n"
+"   \"label\":_(\"Generate Key\"),\n"
+"   \"tooltip\":_(\"Generate keys for the selected documents from their metadata\"),\n"
+"   \"icon\":\"_stock:gtk-edit\",\n"
+"   \"callback\":\"do_genkey\",\n"
+"   \"sensitivity\":\"sensitivity_genkey\",\n"
+"   \"accelerator\":\"<![CDATA[<control>]]>g\"\n"
+" }\n"
+"\t "
+msgstr ""
+"\n"
+"action =\n"
+" {\n"
+"   \"name\":\"_plugin_genkey_genkey\",\n"
+"   \"label\":_(\"Generate Key\"),\n"
+"   \"tooltip\":_(\"Generate keys for the selected documents from their metadata\"),\n"
+"   \"icon\":\"_stock:gtk-edit\",\n"
+"   \"callback\":\"do_genkey\",\n"
+"   \"sensitivity\":\"sensitivity_genkey\",\n"
+"   \"accelerator\":\"<![CDATA[<control>]]>g\"\n"
+" }\n"
+"\t "
+
+#: referencer-plugins.xml:383(para)
+msgid ""
+"The plugin should also create a list called "
+"<varname>referencer_plugin_actions</varname> containing all actions:"
+msgstr ""
+"Das Plugin sollte auch eine  Liste namens <varname>referencer_plugin_actions</"
+"varname> erzeugen, die alle Aktionen enthält:"
+
+#: referencer-plugins.xml:388(programlisting)
+#, no-wrap
+msgid ""
+"\n"
+"referencer_plugin_actions = [action]\n"
+"\t "
+msgstr ""
+"\n"
+"referencer_plugin_actions = [action]\n"
+"\t "
+
+#: referencer-plugins.xml:392(para)
+msgid ""
+"To place the actions in the user interface, the field \"ui\" must be added to "
+"the <varname>referencer_plugin_info</varname> dictionary. The ui value is a "
+"piece of GtkUIManager XML. This specifies UI elements as children of existing "
+"structures such as menus and toolbars. The parent structure is defined as "
+"<filename>src/referencer_ui.h</filename> in the <ulink url=\"http://hg."
+"icculus.org/jcspray/referencer/file/tip/src/referencer_ui.h\" type=\"help"
+"\"><application>Referencer</application> source code</ulink>. Here's an "
+"example of creating menu items in the <guimenu>Document</guimenu> menu and in "
+"the toolbar:"
+msgstr ""
+"Um die Aktionen in der Benutzeroberfläche zu platzieren, muss das Feld »ui« "
+"zur Beschreibung in <varname>referencer_plugin_info</varname> hinzugefügt "
+"werden. Der Wert von »ui« ist ein Stück GtkUIManager-XML. Dies legt Elemente "
+"der Benutzerschnittstelle als Kind-Elemente existierender Strukturen wie "
+"Menüs oder Werkzeugleisten fest. Die Eltern-Struktur wird als <filename>src/"
+"referencer_ui.h</filename> im <ulink url=\"http://hg.icculus.org/jcspray/"
+"referencer/file/tip/src/referencer_ui.h\" type=\"help"
+"\"><application>Referencer</application>-Quellcode</ulink> definiert. Hier "
+"ein Beispiel für die Erzeugung von Menueinträgen im Menü <guimenu>Dokument</"
+"guimenu> und in der Werkzeugleiste:"
+
+#: referencer-plugins.xml:428(programlisting)
+#, no-wrap
+msgid ""
+"\n"
+"def sensitivity_genkey (library, documents):\n"
+"    pass\n"
+"\n"
+"def do_genkey (library, documents):\n"
+"    pass\n"
+"\t "
+msgstr ""
+"\n"
+"def sensitivity_genkey (library, documents):\n"
+"    pass\n"
+"\n"
+"def do_genkey (library, documents):\n"
+"    pass\n"
+"\t "
+
+#: referencer-plugins.xml:423(para)
+msgid ""
+"The functions referenced as \"callback\" and \"sensitivity\" in the action "
+"dictionary both have the prototype <varname><replaceable>myfunction</"
+"replaceable>(<replaceable>library, documents</replaceable>)</varname> where "
+"<replaceable>documents</replaceable> is a list of <varname>referencer."
+"document</varname> and <replaceable>library</replaceable> is a unused. For "
+"example: <placeholder-1/>"
+msgstr ""
+"Die als »callback« und »sensitivity« in der Aktionsbeschreibung referenzierten "
+"Funktionen haben beide den Prototypen <varname><replaceable>Meine_Funktion</"
+"replaceable>(<replaceable>Bibliothek, Dokumente</replaceable>)</varname>, "
+"wobei <replaceable>Dokumente</replaceable> eine Liste für <varname>referencer."
+"document</varname> ist und <replaceable>Bibliothek</replaceable> ungenutzt "
+"bleibt. Beispiel: <placeholder-1/>"
+
+#: referencer-plugins.xml:436(para)
+msgid ""
+"Some plugin actions may wish to display arbitrary UI such as dialogs: this "
+"can be done using <application>PyGTK</application>. A detailed explanation of "
+"<application>PyGTK</application> would be outside the scope of this document: "
+"there are many tutorials on writing <application>PyGTK</application> "
+"applications. Note that <application>GTK</application> is already initialised "
+"by <application>Referencer</application>, so a plugin must not do any "
+"<application>GTK</application> initialisation or finalisation. For example, "
+"the following code would stand entirely alone:"
+msgstr ""
+"Einige Plugin-Aktionen erfordern die Anzeige zusätzlicher Elemente der "
+"Benutzeroberfläche wie beispielsweise Dialoge. Dies kann mittels "
+"<application>PyGTK</application> realisiert werden. Eine ausführliche "
+"Beschreibung von <application>PyGTK</application> würde den Rahmen dieses "
+"Dokuments sprengen. Es gibt zahlreiche Schritt-für-Schritt-Anleitungen zum "
+"Schreiben von <application>PyGTK</application>-Anwendungen. Beachten Sie, "
+"dass <application>GTK</application> bereits von <application>Referencer</"
+"application> initialisiert wird, daher muss sich ein Plugin nicht um die "
+"Initialisierung oder Finalisierung von <application>GTK</application> sorgen. "
+"Beispielsweise könnte der folgende Code vollständig allein stehen:"
+
+#: referencer-plugins.xml:446(programlisting)
+#, no-wrap
+msgid ""
+"\n"
+"import gobject\n"
+"import gtk\n"
+"dialog = gtk.Dialog (buttons=(\n"
+"    gtk.STOCK_CANCEL, gtk.RESPONSE_REJECT,\n"
+"    gtk.STOCK_OK, gtk.RESPONSE_ACCEPT))\n"
+"label = gtk.Label (\"Hello World\")\n"
+"dialog.vbox.pack_start (label)\n"
+"dialog.show_all ()\n"
+"response = dialog.run ()\n"
+"dialog.hide ()\n"
+"\t "
+msgstr ""
+"\n"
+"import gobject\n"
+"import gtk\n"
+"dialog = gtk.Dialog (buttons=(\n"
+"    gtk.STOCK_CANCEL, gtk.RESPONSE_REJECT,\n"
+"    gtk.STOCK_OK, gtk.RESPONSE_ACCEPT))\n"
+"label = gtk.Label (\"Hello World\")\n"
+"dialog.vbox.pack_start (label)\n"
+"dialog.show_all ()\n"
+"response = dialog.run ()\n"
+"dialog.hide ()\n"
+"\t "
+
+#: referencer-plugins.xml:459(para)
+msgid ""
+"For an example of an action plugin, have a look at <filename>plugins/genkey."
+"py</filename> in the <ulink url=\"http://hg.icculus.org/jcspray/referencer/"
+"file/tip/plugins/genkey.py\" type=\"http\"><application>Referencer</"
+"application> source code tree</ulink>."
+msgstr ""
+"Ein Beispiel eines Aktionen-Plugins finden Sie in der Datei <filename>plugins/"
+"genkey.py</filename> im <ulink url=\"http://hg.icculus.org/jcspray/referencer/"
+"file/tip/plugins/genkey.py\" type=\"http\"> Quellcode von "
+"<application>Referencer</application></ulink>."
+
+#: referencer-plugins.xml:467(title)
+msgid "Metadata Plugins"
+msgstr "Metadaten-Plugins"
+
+#: referencer-plugins.xml:468(para)
+msgid ""
+"Metadata plugins provide a function to fill out a document's metadata fields "
+"based on a document identifier."
+msgstr ""
+"Metadaten-Plugins stellen eine Funktion zum Ausfüllen der Metadaten-Felder "
+"eines Dokuments bereit, basierend auf dem Bezeichner des Dokuments."
+
+#: referencer-plugins.xml:472(para)
+msgid ""
+"To describe which identifier formats are supported, the plugin should create "
+"a list of strings called <varname>referencer_plugin_capabilities</varname>. "
+"At time of writing, the possible capabilities are \"doi\", \"pubmed\" and "
+"\"arxiv\"."
+msgstr ""
+"Um anzugeben, welche Bezeichnerformate unterstützt werden, sollte das Plugin "
+"eine Liste von Zeichenketten namens <varname>referencer_plugin_capabilities</"
+"varname> erzeugen. Zum Zeitpunkt der Erstellung dieses Leitfadens sind "
+"folgende Werte möglich: »doi«, »pubmed« und »arxiv«."
+
+#: referencer-plugins.xml:477(para)
+msgid ""
+"To do the lookup, a function <varname>resolve_metadata</varname>"
+"(<replaceable>doc, method</replaceable>) should be created. <replaceable>doc</"
+"replaceable> is the <varname>referencer.document</varname> whose fields "
+"should be filled out, and <replaceable>method</replaceable> is one of the "
+"capability strings listed in <varname>referencer_plugin_capabilities</"
+"varname>."
+msgstr ""
+"Um die Suche auszuführen, sollte eine Funktion <varname>resolve_metadata</"
+"varname>(<replaceable>Dokument, Methode</replaceable>) erzeugt werden. "
+"<replaceable>Dokument</replaceable> ist das <varname>referencer.document</"
+"varname>, dessen Felder ausgefüllt werden sollen, und <replaceable>Methode</"
+"replaceable> ist eine der in <varname>referencer_plugin_capabilities</"
+"varname> aufgelisteten die Fähigkeiten beschreibenden Zeichenketten."
+
+#: referencer-plugins.xml:483(para)
+msgid ""
+"For an example of a metadata plugin, have a look at <filename>plugins/pubmed."
+"py</filename> in the <ulink url=\"http://hg.icculus.org/jcspray/referencer/"
+"file/tip/plugins/pubmed.py\" type=\"http\"><application>Referencer</"
+"application> source code</ulink>."
+msgstr ""
+"Ein Beispiel eines Metadaten-Plugins finden Sie in der Datei "
+"<filename>plugins/pubmed.py</filename> im <ulink url=\"http://hg.icculus.org/"
+"jcspray/referencer/file/tip/plugins/pubmed.py\" type=\"http\"> Quellcode von "
+"<application>Referencer</application></ulink>."
+
+#: referencer-plugins.xml:491(title)
+msgid "About <application>Referencer</application>"
+msgstr "Info zu <application>Referencer</application>"
+
+#: referencer-plugins.xml:493(para)
+msgid ""
+"<application>Referencer</application> and this Plugin Writing guide were "
+"written by John Spray (<email>jcspray@icculus.org</email>). Some "
+"contributions to this guide came from Mario Blättermann (<email>mariobl@gnome."
+"org</email>. To find more information about <application>Referencer</"
+"application> and the most recent documentation, please visit the <ulink url="
+"\"http://icculus.org/referencer\" type=\"http\">project page</ulink>."
+msgstr ""
+"<application>Referencer</application> und dieser Plugin-Leifaden wurden von "
+"John Spray (<email>jcspray@icculus.org</email>) geschrieben. Einige Beiträge "
+"zu diesem Handbuch kamen von Mario Blättermann (<email>mariobl@gnome.org</"
+"email>. Weitere Informationen über <application>Referencer</application> "
+"sowie die aktuellste Dokumentation finden Sie auf der <ulink url=\"http://"
+"icculus.org/referencer\" type=\"http\">Projekt-Website</ulink>."
+
+#: referencer-plugins.xml:500(para)
+msgid ""
+"This program is distributed under the terms of the GNU General Public license "
+"as published by the Free Software Foundation; either version 2 of the "
+"License, or (at your option) any later version. A <ulink url=\"ghelp:gpl\" "
+"type=\"help\">copy of this license</ulink> is included with this "
+"documentation; another can be found in the file COPYING included with the "
+"source code of this program."
+msgstr ""
+"Dieses Programm ist freie Software. Sie können es unter den Bedingungen der "
+"<citetitle>GNU General Public License</citetitle>, wie von der Free Software "
+"Foundation veröffentlicht, weitergeben und/oder modifizieren, entweder gemäß "
+"Version 2 der Lizenz oder (nach Ihrer Option) jeder späteren Version. Eine "
+"<ulink url=\"ghelp:gpl\" type=\"help\">Kopie dieser Lizenz</ulink> ist in "
+"dieser Dokumentation enthalten, eine weitere in der Datei COPYING, die im "
+"Quellcode dieses Programms enthalten ist."
+
+#. Put one translator per line, in the form of NAME <EMAIL>, YEAR1, YEAR2.
+#: referencer-plugins.xml:0(None)
+msgid "translator-credits"
+msgstr "Mario Blättermann <mariobl@gnome.org>, 2009"
+
+#~ msgid "Referencer Development Team"
+#~ msgstr "Referencer-Entwicklerteam"
+
+#~ msgid "referencer._(text)"
+#~ msgstr "referencer._(text)"
+
+#~ msgid "referencer.pref_get(key)"
+#~ msgstr "referencer.pref_get(<replaceable>Schlüssel</replaceable>)"
+
+#~ msgid "get_field(key)"
+#~ msgstr "get_field(key)"
+
+#~ msgid "set_key(value)"
+#~ msgstr "set_key(value)"
+
+#~ msgid "set_filename(value)"
+#~ msgstr "set_filename(value)"
+
+#~ msgid "parse_bibtex(value)"
+#~ msgstr "parse_bibtex(value)"

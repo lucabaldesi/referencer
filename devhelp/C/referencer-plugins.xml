@@ -1,0 +1,514 @@
+<?xml version="1.0"?>
+<!DOCTYPE article PUBLIC "-//OASIS//DTD DocBook XML V4.1.2//EN" 
+"http://www.oasis-open.org/docbook/xml/4.1.2/docbookx.dtd" [
+  <!ENTITY legal SYSTEM "legal.xml">
+  <!ENTITY appversion "1.1.6">
+  <!ENTITY manrevision "1.1.6">
+  <!ENTITY date "June 2009">
+  <!ENTITY app "<application>Referencer</application>">
+  <!-- Information about the entities
+       The legal.xml file contains legal information, there is no need to edit the file. 
+       Use the appversion entity to specify the version of the application.
+       Use the manrevision entity to specify the revision number of this manual.
+       Use the date entity to specify the release date of this manual.
+       Use the app entity to specify the name of the application. -->
+]>
+<article id="index" lang="en">
+  <articleinfo>
+    <title>&app; Plugin Writing Guide V&manrevision;</title>
+    <abstract role="description">
+      <para> 
+        Referencer is a tool to help you manage your collection of documents, and to use them 
+	to generate a bibliography. This guide describes the plugin API of Referencer.
+      </para>
+    </abstract>
+    <copyright> 
+      <year>2009</year> 
+      <holder>John Spray</holder> 
+    </copyright>
+    <publisher> 
+      <publishername> &app; Development Team </publishername> 
+    </publisher> 
+    &legal;
+    <authorgroup>
+      <author role="maintainer">
+	<firstname>John</firstname> <surname>Spray</surname>
+	<affiliation>
+	  <address>
+	    <email>jcspray@icculus.org</email>
+	  </address>
+	</affiliation>
+      </author> 
+    </authorgroup>
+    <revhistory>
+      <revision>
+	<revnumber>Referencer Plugin Writing Guide V 1.1.6</revnumber>
+	<date>2009-06-18</date>
+	<revdescription>
+	  <para role="author">John Spray</para>
+	</revdescription>
+      </revision>
+    </revhistory>
+
+    <releaseinfo>This is the Plugin Writing Guide version &appversion; of &app;.
+    </releaseinfo> 
+      <legalnotice> 
+      <title>Feedback</title> 
+      <para>To report a bug or make a suggestion regarding the &app; application or
+      this manual, please visit the <ulink url="http://icculus.org/referencer"
+	  type="help">&app; home page</ulink>. 
+      </para>
+      </legalnotice>
+  </articleinfo>
+
+  <sect1 id="intro">
+    <title>Introduction</title>
+	<para>
+      	The &app; plugin API provides a relatively painless way of adding functionality. 
+	Plugins can either add user interface entries to menus and toolbars (action
+	plugins), or provide hooks for downloading metadata for documents (metadata
+	plugins).
+	</para>
+	<para>
+	At the time of writing, the plugin interface is new and not widely tested. 
+	Although it is not gratuitously broken there may be issues. You can ask at the
+        <ulink url="http://icculus.org/referencer/contact.html" type="help">mailing list</ulink>.
+	</para>
+	<para>
+   This document is written for &app; v1.1.6.
+	</para>
+      </sect1>
+      
+  <sect1 id="referencer-installing-plugins">
+    <title>Installing Plugins</title>
+	<para>
+	Plugins are python scripts. They don't have to be executable, but they do have to 
+	have a filename ending .py. At startup, &app; searches several locations
+	for plugins: ./plugins, $PREFIX/lib/referencer, and ~/.referencer/plugins.
+	</para>
+  </sect1>
+  <sect1>
+    <title>Common API</title>
+     <sect2>
+	<title>Plugin info dictionary</title>
+	<para>
+	All plugins must contain a dictionary at file scope capped 
+	<varname>referencer_plugin_info</varname>. This provides a number of fields 
+	describing the plugin. All plugins must provide the following fields, further 
+	optional fields are listed in following sections.
+	</para>
+	<para>
+      <table frame="all" id="referencer-TBL-plugin">
+	<title>Plugins</title>
+	<tgroup cols="2" align="left" colsep="1" rowsep="1">
+	  <thead>
+	    <row>
+	      <entry>Plugin Name</entry>
+	      <entry>Description</entry>
+	    </row>
+	  </thead>
+	  <tbody>
+	    <row>
+	      <entry>author</entry>
+	      <entry>
+		Author's name, or comma separated list. eg. "Bob Dole"
+	      </entry>
+	    </row>
+	    <row>
+	      <entry>version</entry>
+	      <entry>
+		A version string for the plugin. eg. "1.3.2"
+	      </entry>
+	    </row>
+	    <row>
+	      <entry>longname</entry>
+	      <entry>
+		The plugin's purpose. eg. "Format author initials"
+	      </entry>
+	    </row>
+	  </tbody>
+	</tgroup>
+      </table>
+    </para>
+	<para>
+	The plugin info structure might be defined like this:
+	</para>
+	<programlisting>
+	referencer_plugin_info =
+	 {
+	 "author":    "John Spray",
+	 "version":   "1.1.2",
+	"longname": _("Generate keys from metadata")
+	}
+	</programlisting>
+     </sect2>
+     <sect2>
+	<title>Utility functions</title>
+	<para>
+	Import the module <varname>referencer</varname> to access the following functions:
+
+	</para>
+	<variablelist>
+        <varlistentry>
+          <term>referencer.download(<replaceable>short desc, long desc, url</replaceable>)</term>
+          <listitem>
+            <para>
+            Web download convenience function.  Returns a string containing the 
+	    contents of the downloaded file, or an empty string on errors. Example:
+	    </para>
+	    <para>
+	    	<programlisting>
+referencer.download("Downloading tripe", "Downloading page from
+slashdot.org", "http://www.slashdot.org")
+		</programlisting>
+	    </para>
+	    <para>
+	    As well as being convenient, this function inherits the user's 
+	    <application>gnome-vfs</application> proxy settings so is in general 
+	    preferable where more complex http functionality is not required. 
+	    In any error case, the function returns an empty string.
+            </para>            
+          </listitem>
+        </varlistentry>
+        
+	<varlistentry>
+          <term>referencer._(<replaceable>text</replaceable>)</term>
+          <listitem>
+            <para>
+            Translation function. You probably want to do "from referencer import _" 
+	    in order to support localisation of user-visible strings. Any user-visible 
+	    string should be expressed as _("Some text")
+            </para>
+          </listitem>
+        </varlistentry>
+ 
+        <varlistentry>
+          <term>referencer.pref_get(<replaceable>key</replaceable>)</term>
+          <listitem>
+            <para>
+            Load a persistent configuration string. If the key is not found an 
+	    empty string is returned. To avoid conflicting with other plugins, 
+	    each plugin should use key names prefixed with the name of the plugin. 
+	    These configuration items are stored in the GConf database along
+	    with &app;'s native configuration.
+            </para>
+          </listitem>
+        </varlistentry>       
+
+        <varlistentry>
+          <term>referencer.pref_set(<replaceable>key, value</replaceable>)</term>
+          <listitem>
+            <para>
+              Set a persistent configuration string.
+            </para>
+          </listitem>
+        </varlistentry>
+      </variablelist>
+     </sect2>
+     <sect2>
+	<title><varname>document</varname> class</title>
+	<para>
+	&app; exposes individual documents with the document class. This supports 
+	a limited number of getter/setter methods:
+	</para>
+	<variablelist>
+
+        <varlistentry>
+          <term>get_field(<replaceable>key</replaceable>)</term>
+          <listitem>
+            <para>
+            Retrieve a (case-insensitive) field such as "author". Builtin 
+	    fields are doi, title, volume, number, journal, author, year and pages.
+	    Other arbitrarily named fields may or may not exist for a document. 
+	    Getting a non-existent field returns an empty string.
+            </para>            
+          </listitem>
+        </varlistentry>
+        
+	<varlistentry>
+          <term>set_field(<replaceable>key, value</replaceable>)</term>
+          <listitem>
+            <para>
+            Set a field.
+            </para>
+          </listitem>
+        </varlistentry>
+ 
+        <varlistentry>
+          <term>get_key()</term>
+          <listitem>
+            <para>
+            Get the key of a document. This is the short ID the user would use
+	    to reference a document in a latex paper.
+            </para>
+          </listitem>
+        </varlistentry>       
+
+        <varlistentry>
+          <term>set_key(<replaceable>value</replaceable>)</term>
+          <listitem>
+            <para>
+            Set the key. 
+            </para>
+          </listitem>
+        </varlistentry>
+
+	<varlistentry>
+          <term>get_filename()</term>
+          <listitem>
+            <para>
+            Get the URI (eg "file:///home/me/A_File.pdf") of the file
+	    associated with the document.
+            </para>
+          </listitem>
+        </varlistentry>
+ 
+	<varlistentry>
+          <term>set_filename(<replaceable>value</replaceable>)</term>
+          <listitem>
+            <para>
+	    Set a document's file URI to <replaceable>value</replaceable>.
+            </para>
+          </listitem>
+        </varlistentry>
+ 
+	<varlistentry>
+          <term>parse_bibtex(<replaceable>value</replaceable>)</term>
+          <listitem>
+            <para>
+            Parse value as plain-text BibTex and set the 
+	    document's fields accordingly.
+            </para>
+          </listitem>
+        </varlistentry>
+ 
+      </variablelist>
+	
+     </sect2>
+     <sect2>
+	<title>Configuration dialog</title>
+	<para>
+	Plugins can provide a configuration user interface invoked from the preferences 
+	dialog. The configuration button in the preferences dialog is enabled if the 
+	<varname>referencer_config()</varname> plugin includes a function.
+	</para>
+	
+     </sect2>
+  </sect1>
+
+  <sect1>
+	<title>Action Plugins</title>
+	<para>
+	Three things are required to insert actions into the &app; UI: a description 
+	of the action, a string describing location of UI elements, and a function
+	implementing the action.
+	</para>
+	<para>
+	An action is defined as a dictionary with the following fields:
+	</para>
+	<para>
+	<table frame="all" id="referencer-TBL-action-plugin">
+	<title>Actions</title>
+	<tgroup cols="2" align="left" colsep="1" rowsep="1">
+	  <thead>
+	    <row>
+	      <entry>Field</entry>
+	      <entry>Description</entry>
+	    </row>
+	  </thead>
+	  <tbody>
+	    <row>
+	      <entry>name</entry>
+	      <entry>
+		Author's name, or comma separated list. eg. "Bob Dole"
+	      </entry>
+	    </row>
+	    <row>
+	      <entry>label</entry>
+	      <entry>
+		A version string for the plugin. eg. "1.3.2"
+	      </entry>
+	    </row>
+	    <row>
+	      <entry>tooltip</entry>
+	      <entry>
+		Long description
+	      </entry>
+	    </row>
+	    <row>
+	      <entry>icon</entry>
+	      <entry>
+		Filename or stock eg. "foo.png", eg. "_stock:gtk-edit".
+	      </entry>
+	    </row>
+	    <row>
+	      <entry>callback</entry>
+	      <entry>
+		Action Function
+	      </entry>
+	    </row>
+	    <row>
+	      <entry>sensitivity (optional)</entry>
+	      <entry>
+		Sensitivity policy function
+	      </entry>
+	    </row>
+	    <row>
+	      <entry>accelerator (optional)</entry>
+	      <entry>
+		Shortcut key, eg "<![CDATA[<control><shift>]]>q"
+	      </entry>
+	    </row>
+	  </tbody>
+	</tgroup>
+      </table>
+	</para>
+	<para>
+	An action definition might look like this:
+	</para>
+	<para>
+	 <programlisting>
+action =
+ {
+   "name":"_plugin_genkey_genkey",
+   "label":_("Generate Key"),
+   "tooltip":_("Generate keys for the selected documents from their metadata"),
+   "icon":"_stock:gtk-edit",
+   "callback":"do_genkey",
+   "sensitivity":"sensitivity_genkey",
+   "accelerator":"<![CDATA[<control>]]>g"
+ }
+	 </programlisting>
+	</para>
+	<para>	                                        
+	The plugin should also create a list called <varname>referencer_plugin_actions</varname> 
+	containing all actions:
+	</para>
+	<para>
+	 <programlisting>
+referencer_plugin_actions = [action]
+	 </programlisting>
+	</para>
+	<para>
+	To place the actions in the user interface, the field "ui" must be added to the
+	<varname>referencer_plugin_info</varname> dictionary.  The ui value is a piece 
+	of GtkUIManager XML. This specifies UI elements as children of existing structures 
+	such as menus and toolbars. The parent structure is defined as <filename>src/referencer_ui.h</filename> 
+	in the <ulink url="http://hg.icculus.org/jcspray/referencer/file/tip/src/referencer_ui.h" type="help">&app; source code</ulink>. 
+	Here's an example of creating menu items in the <guimenu>Document</guimenu> menu and in the toolbar:
+	</para>
+	<para>
+	 <programlisting><![CDATA[
+<ui>
+ <menubar name='MenuBar'>
+  <menu action='DocMenu'>
+   <placeholder name='PluginDocMenuActions'>
+     <menuitem action='_plugin_genkey_genkey'/>
+   </placeholder>
+  </menu>
+ </menubar>
+ <toolbar name='ToolBar'>
+  <placeholder name='PluginToolBarActions'>
+   <toolitem action='_plugin_genkey_genkey'/>
+  </placeholder>
+ </toolbar>
+ <popup name='DocPopup'>
+  <placeholder name='PluginDocPopupActions'>
+   <menuitem action='_plugin_genkey_genkey'/>
+  </placeholder>
+ </popup>
+</ui>
+	 ]]></programlisting>
+	</para>
+	<para>
+	The functions referenced as "callback" and "sensitivity" in the action 
+	dictionary both have the prototype <varname><replaceable>myfunction</replaceable>(<replaceable>library, documents</replaceable>)</varname> 
+	where <replaceable>documents</replaceable> is a list of <varname>referencer.document</varname> and
+	<replaceable>library</replaceable> is a unused. For example:
+	 <programlisting>
+def sensitivity_genkey (library, documents):
+    pass
+
+def do_genkey (library, documents):
+    pass
+	 </programlisting>
+	</para>
+	<para>
+	Some plugin actions may wish to display arbitrary UI such as dialogs: this can be
+	done using <application>PyGTK</application>. A detailed explanation of 
+	<application>PyGTK</application> would be outside the scope of this document: there are 
+	many tutorials on writing <application>PyGTK</application> applications. Note that 
+	<application>GTK</application> is already initialised by &app;, so a plugin must not do any
+	<application>GTK</application> initialisation or finalisation. For example, the following 
+	code would stand entirely alone:
+	</para>
+	<para>
+	 <programlisting>
+import gobject
+import gtk
+dialog = gtk.Dialog (buttons=(
+    gtk.STOCK_CANCEL, gtk.RESPONSE_REJECT,
+    gtk.STOCK_OK, gtk.RESPONSE_ACCEPT))
+label = gtk.Label ("Hello World")
+dialog.vbox.pack_start (label)
+dialog.show_all ()
+response = dialog.run ()
+dialog.hide ()
+	 </programlisting>
+	</para>
+	<para>
+	For an example of an action plugin, have a look at <filename>plugins/genkey.py</filename> in the
+	<ulink url="http://hg.icculus.org/jcspray/referencer/file/tip/plugins/genkey.py" type="http">&app; 
+	source code tree</ulink>.
+	</para>
+  </sect1>
+
+  <sect1>
+	<title>Metadata Plugins</title>
+	<para>
+	Metadata plugins provide a function to fill out a document's metadata fields
+	based on a document identifier.
+	</para>
+	<para>
+	To describe which identifier formats are supported, the plugin should create
+        a list of strings called <varname>referencer_plugin_capabilities</varname>. 
+	At time of writing, the possible capabilities are "doi", "pubmed" and "arxiv".
+	</para>
+	<para>
+	To do the lookup, a function <varname>resolve_metadata</varname>(<replaceable>doc, method</replaceable>) 
+	should be created. <replaceable>doc</replaceable> is the <varname>referencer.document</varname> whose fields 
+	should be filled out, and <replaceable>method</replaceable> is one of the capability strings 
+	listed in <varname>referencer_plugin_capabilities</varname>.
+	</para>
+	<para>
+	For an example of a metadata plugin, have a look at <filename>plugins/pubmed.py</filename>
+	in the <ulink url="http://hg.icculus.org/jcspray/referencer/file/tip/plugins/pubmed.py" type="http">&app; 
+	source code</ulink>.
+	</para>
+  </sect1>
+
+  <sect1 id="referencer-plugins-about">
+    <title>About &app;</title>
+
+    <para>
+     &app; and this Plugin Writing guide were written by John Spray (<email>jcspray@icculus.org</email>).
+     Some contributions to this guide came from Mario Blättermann 
+     (<email>mariobl@gnome.org</email>. To find more information about
+      &app; and the most recent documentation, please visit the <ulink url="http://icculus.org/referencer" type="http">project
+     page</ulink>.
+    </para>
+    <para>
+      This program is distributed under the terms of the GNU General Public license as published
+      by the Free Software Foundation; either version 2 of the License, or (at your option) any
+      later version. A <ulink url="ghelp:gpl" type="help">copy of this license</ulink>
+      is included with this documentation; another can be found in the file
+      COPYING included with the source code of this program.
+     </para>
+  </sect1>
+
+</article>
+
+
+
+
+
