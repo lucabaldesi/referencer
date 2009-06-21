@@ -2164,6 +2164,28 @@ void debug (Glib::ustring tag, Glib::ustring msg)
 	std::cerr << "\t" << localised << "\n";
 }
 
+/* [bert] Added this function to remove leading "a", "an" or "the"
+ * from an English string, for comparison purposes.
+ */
+Glib::ustring removeLeadingArticle(Glib::ustring const &str)
+{
+  Glib::ustring::size_type p;
+
+  /* See if the string starts with "A" "An", or "The". If so, remove
+   * this text from the string.
+   */
+  p = str.find(' ');
+  if (p != Glib::ustring::npos) {
+    Glib::ustring firstword = str.substr(0, p);
+    if (firstword.compare(_("A")) == 0 ||
+	firstword.compare(_("An")) == 0 ||
+	firstword.compare(_("The")) == 0) {
+      return str.substr(p); // Return string with leading article removed.
+    }
+  }
+  return str;			// Return the string unmodified by default.
+}
+
 }
 
 TextDialog::TextDialog (

@@ -316,6 +316,32 @@ DocumentView::~DocumentView ()
 }
 
 
+/* [bert] This is a special little comparison function for titles. The
+ * idea is to remove leading articles ("a", "an", or "the") from the
+ * title before performing the comparison. This is relatively easy in
+ * English, but might be harder (or inappropriate) in other languages.
+ */
+int DocumentView::sortTitles (
+	const Gtk::TreeModel::iterator& a,
+	const Gtk::TreeModel::iterator& b)
+{
+  // This callback should return
+  //  * -1 if a compares before b
+  //  *  0 if they compare equal
+  //  *  1 if a compares after b
+
+  Gtk::TreeModelColumn<Glib::ustring> col;
+
+  /* It really seems like there should be an easier way to get at the
+   * data to be sorted on.
+   */
+  col = columns_.find("title")->second.modelColumn;
+  Glib::ustring a_title = Utility::removeLeadingArticle((*a)[col]);
+  Glib::ustring b_title = Utility::removeLeadingArticle((*b)[col]);
+
+  return a_title.compare(b_title);
+}
+
 DocumentView::DocumentView (
 	RefWindow &refwin,
 	Library &lib,
@@ -511,6 +537,12 @@ DocumentView::DocumentView (
 	 * Sorting
 	 * (This isn't done at model construction because it needs to be after populateColumns)
 	 */
+
+	/* [bert] - Insert the specialized sort function for the title
+	 */
+	Gtk::TreeModelColumn<Glib::ustring> col = columns_.find("title")->second.modelColumn;
+	docstoresort_->set_sort_func(col, sigc::mem_fun(*this, &DocumentView::sortTitles));
+
 	std::pair<Glib::ustring, int> sortInfo = _global_prefs->getListSort ();
 	std::map<Glib::ustring, Column>::iterator columnIter = columns_.find(sortInfo.first);
 	if (columnIter != columns_.end()) {

@@ -233,6 +233,15 @@ void DocumentProperties::setupFields (Glib::ustring const &docType)
 		Gtk::Label *label = Gtk::manage (new Gtk::Label (it->displayName_ + ":", Gtk::ALIGN_LEFT, Gtk::ALIGN_CENTER, false));
 		Gtk::Entry *entry = Gtk::manage (new Gtk::Entry ());
 
+		/* [bert] Minor change to actually implement and register
+		 * a callback for changes to the DOI field. This is a bit
+		 * ugly here since it assumes we know whether DOI is 
+		 * required or not.
+		 */
+		if (it->internalName_ == "doi") {
+		  entry->signal_changed().connect(sigc::mem_fun(*this, &DocumentProperties::onDoiEntryChanged));
+		}
+
 		fieldEntries_[it->internalName_] = entry;
 
 		metadataTable->attach (*label, 0, 1, row, row + 1, Gtk::FILL | Gtk::EXPAND, Gtk::SHRINK | Gtk::FILL, 0, 0);
@@ -380,6 +389,14 @@ void DocumentProperties::updateSensitivity()
 	Document doc;
 	save (doc);
 	crossrefbutton_->set_sensitive (doc.canGetMetadata ());
+}
+
+/* [bert] Provided a trivial implementation for this function.
+ * TODO: Possibly parse the text to see if it is a well-formed DOI?
+ */
+void DocumentProperties::onDoiEntryChanged() 
+{
+  updateSensitivity ();
 }
 
 void DocumentProperties::onExtraFieldEdited (const Glib::ustring& path, const Glib::ustring& text)

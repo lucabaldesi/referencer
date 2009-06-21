@@ -1,4 +1,6 @@
 1.1.6:
+	- Don't attempt to retrieve text for non-pdf files
+	- Improved search (Robert Vincent)
 	- Strip leading tokens from DOIs (Bug 385913)
 	- Clickable document icon in DocumentProperties
 	- Support complimentary crossref accounts (Bug 373342)

@@ -109,6 +109,11 @@ namespace Utility {
 	Glib::ustring trimWhiteSpace (Glib::ustring const &str);
 	Glib::ustring trimLeadingString (Glib::ustring const &str, Glib::ustring const &leader);
 	void debug (Glib::ustring tag, Glib::ustring msg);
+
+	/* [bert] Added this function to remove leading "a", "an" or
+	 * "the" from an English string, for comparison purposes.
+	 */
+	Glib::ustring removeLeadingArticle(Glib::ustring const &str);
 }
 
 class TextDialog : public Gtk::Dialog

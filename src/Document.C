@@ -452,8 +452,11 @@ bool Document::readPDF ()
 		return false;
 	}
 
-	GError *error = NULL;
+	Glib::ustring mimeType = Gnome::Vfs::Uri::create (filename_)->get_file_info(Gnome::Vfs::FILE_INFO_GET_MIME_TYPE)->get_mime_type(); 
+	if (mimeType != "application/pdf")
+		return false;
 
+	GError *error = NULL;
 	PopplerDocument *popplerdoc = poppler_document_new_from_file (filename_.c_str(), NULL, &error);
 	if (popplerdoc == NULL) {
 		DEBUG ("Document::readPDF: Failed to load '%1'", filename_);
@@ -536,8 +539,61 @@ bool Document::canGetMetadata ()
 }
 
 
+/* [bert] hack this to handle searches with a space like iTunes. For
+ * now we just treat the whole search string as the boolean "AND" of
+ * each individual component, and check the whole string against each
+ * document.
+ *
+ * A better way to do this would be to change the whole search
+ * procedure to narrow the search progressively by term, so that
+ * additional terms search only through an already-filtered list.
+ * But this would require changing higher-level code, for example, 
+ * the DocumentView::isVisible() method that calls this function would
+ * have to change substantially.
+ */
+
 bool Document::matchesSearch (Glib::ustring const &search)
 {
+  /* This is a bit of a hack, I guess, but it's a low-impact way of 
+   * implementing the change. If the search term contains a space, I 
+   * iteratively decompose it into substrings and pass those onto
+   * this function. If anything doesn't match, we return a failure.
+   */
+  if (search.find(' ') != Glib::ustring::npos) {
+    Glib::ustring::size_type p1 = 0;
+    Glib::ustring::size_type p2;
+
+    do {
+
+      /* Find the next space in the string, if any.
+       */
+      p2 = search.find(' ', p1);
+
+      /* Extract the appropriate substring.
+       */
+      Glib::ustring const searchTerm = search.substr(p1, p2);
+
+      /* If the term is empty, ignore it and move on. It might just be a 
+       * trailing or duplicate space character.
+       */
+      if (searchTerm.empty()) {
+	break;
+      }
+
+      /* Now that we have the substring, which is guaranteed to be
+       * free of spaces, we can pass it recursively into this function.
+       * If the term does NOT match, fail the entire comparison right away.
+       */
+      if (!matchesSearch(searchTerm)) {
+	return false;
+      }
+
+      p1 = p2 + 1;		/* +1 to skip over the space */
+
+    } while (p2 != Glib::ustring::npos); /* Terminate at end of string */
+    return true;		/* All matched, so OK. */
+  }
+
 	Glib::ustring const searchNormalised = search.casefold();
 
 	FieldMap fields = getFields ();

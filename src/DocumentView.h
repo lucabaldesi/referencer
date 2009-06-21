@@ -189,4 +189,7 @@ class DocumentView : public Gtk::VBox
 		Gtk::TreeModelColumn<Glib::ustring> &modelCol,
 		bool const expand,
 		bool const ellipsize);
+
+	int sortTitles(const Gtk::TreeModel::iterator& a,
+		       const Gtk::TreeModel::iterator& b);
 };
