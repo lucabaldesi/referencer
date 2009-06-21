@@ -107,6 +107,7 @@ namespace Utility {
 		Gtk::SelectionData const &sel);
 
 	Glib::ustring trimWhiteSpace (Glib::ustring const &str);
+	Glib::ustring trimLeadingString (Glib::ustring const &str, Glib::ustring const &leader);
 	void debug (Glib::ustring tag, Glib::ustring msg);
 }
 

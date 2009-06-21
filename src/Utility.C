@@ -2124,6 +2124,17 @@ Glib::ustring trimWhiteSpace (Glib::ustring const &str)
 			pos2 == Glib::ustring::npos ? str.length() - 1 : pos2 - pos1 + 1);
 }
 
+
+Glib::ustring trimLeadingString (Glib::ustring const &str, Glib::ustring const &leader)
+{
+	if (str.find(leader) == 0) {
+		return str.substr(leader.length(), str.length() - leader.length());
+	} else {
+		return str;
+	}
+}
+
+
 /*
  * Print a debug message, handling unprintable characters gracefully
  */

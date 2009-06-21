@@ -1,4 +1,5 @@
 1.1.6:
+	- Strip leading tokens from DOIs (Bug 385913)
 	- Clickable document icon in DocumentProperties
 	- Support complimentary crossref accounts (Bug 373342)
 	- Fix mnemonic for Type field in DocumentProperties (Bug 377221)

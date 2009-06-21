@@ -2172,6 +2172,7 @@ void RefWindow::onAddDocById ()
 			/* Epic fail, user somehow selected a field that 
 			 * we don't remember creating */
 			DEBUG ("Bad displayField %1", displayField);
+			return;
 		}
 		PluginCapability::Identifier capId = idIter->second;
 
@@ -2184,6 +2185,14 @@ void RefWindow::onAddDocById ()
 
 		Glib::ustring id = entry.get_text ();
 		id = Utility::trimWhiteSpace (id);
+
+		if (capId == PluginCapability::DOI) {
+			// Strip some common leading parts of DOIs
+			id = Utility::trimLeadingString (id, "http://dx.doi.org/");
+			id = Utility::trimLeadingString (id, "dx.doi.org/");
+			id = Utility::trimLeadingString (id, "doi:");
+			id = Utility::trimLeadingString (id, "doi: ");
+		}
 
 		newdoc->setField (field, id);
 
