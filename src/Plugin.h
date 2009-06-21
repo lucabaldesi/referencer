@@ -6,6 +6,7 @@
 
 #include <gtkmm.h>
 #include <vector>
+#include <stdint.h>
 
 class PluginCapability
 {
