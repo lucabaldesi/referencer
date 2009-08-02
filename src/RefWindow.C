@@ -463,10 +463,6 @@ void RefWindow::constructMenu ()
 		"DocProperties", Gtk::Stock::PROPERTIES), Gtk::AccelKey ("<control>e"),
   	sigc::mem_fun(*this, &RefWindow::onDocProperties));
 
-	actiongroup_->add( Gtk::Action::create(
-		    "Search", Gtk::Stock::FIND, _("Search...")), Gtk::AccelKey ("<control>x"),
-		sigc::mem_fun(*this, &RefWindow::onSearch));
-
 	actiongroup_->add ( Gtk::Action::create("TaggerMenuAction", _("_Tags")) );
 	//actiongroup_->get_action("TaggerMenuAction")->set_property("hide_if_empty", false);
 
@@ -505,6 +501,23 @@ void RefWindow::constructMenu ()
 
 	/* From referencer_ui.h */
 	uimanager_->add_ui_from_string (referencer_ui);
+
+	if (SearchDialog::pluginsExist()) {
+		actiongroup_->add( Gtk::Action::create(
+					"Search", Gtk::Stock::FIND, _("Search...")), Gtk::AccelKey ("<control>x"),
+				sigc::mem_fun(*this, &RefWindow::onSearch));
+
+
+		uimanager_->add_ui_from_string ("<ui>"
+				"<menubar name='MenuBar'>"
+				"<menu action='ToolsMenu' name='ToolsMenu'>"
+				"  <placeholder name='PluginToolsActions'>"
+				"    <menuitem action='Search'/>"
+				"  </placeholder>"
+				"</menu>"
+				"</menubar>"
+				"</ui>");
+	}
 
 	window_->add_accel_group (uimanager_->get_accel_group ());
 }
@@ -3175,6 +3188,22 @@ void RefWindow::SearchDialog::addSelected ()
 	documentView_.addDoc (library_.doclist_->insertDoc(newdoc));
 }
 
+bool RefWindow::SearchDialog::pluginsExist ()
+{
+	bool pluginsExist = false;
+
+	/* Retrieve list of usable search plugins */
+	PluginManager::PluginList plugins = _global_plugins->getEnabledPlugins ();
+	PluginManager::PluginList::const_iterator pluginIter = plugins.begin();
+	PluginManager::PluginList::const_iterator const pluginEnd = plugins.end();
+	for (; pluginIter != pluginEnd; pluginIter++) {
+		if ((*pluginIter)->canSearch()) {
+			pluginsExist = true;
+		}
+	}
+
+	return pluginsExist;
+}
 
 
 

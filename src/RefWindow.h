@@ -205,6 +205,8 @@ class RefWindow {
 			static bool progressCallback (void *ptr);
 			bool progress ();
 
+			static bool pluginsExist ();
+
 			private:
 			Library &library_;
 			DocumentView &documentView_;
