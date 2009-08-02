@@ -110,7 +110,7 @@ def text_output(xml):
 	return output2
 
 
-def referencer_search (search_text):
+def referencer_search_TEST (search_text):
 	email='referencer@icculus.org'
    	tool='Referencer'
 	database='pubmed'
@@ -186,7 +186,7 @@ def referencer_search (search_text):
 
 	return results
 
-def referencer_search_result (token):
+def referencer_search_result_TEST (token):
 	data = get_citation_from_pmid(token)
 	fields = text_output(data)
 
