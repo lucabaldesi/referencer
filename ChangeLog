@@ -1,4 +1,5 @@
 1.1.6:
+	- Include document key when searching
 	- Don't attempt to retrieve text for non-pdf files
 	- Improved search (Robert Vincent)
 	- Strip leading tokens from DOIs (Bug 385913)
