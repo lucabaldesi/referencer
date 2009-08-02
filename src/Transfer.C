@@ -11,6 +11,7 @@
 
 
 #include <iostream>
+#include <stdint.h>
 
 #include <libgnomeuimm.h>
 #include <libgnomevfsmm.h>
