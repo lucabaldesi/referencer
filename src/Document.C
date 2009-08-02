@@ -554,60 +554,63 @@ bool Document::canGetMetadata ()
 
 bool Document::matchesSearch (Glib::ustring const &search)
 {
-  /* This is a bit of a hack, I guess, but it's a low-impact way of 
-   * implementing the change. If the search term contains a space, I 
-   * iteratively decompose it into substrings and pass those onto
-   * this function. If anything doesn't match, we return a failure.
-   */
-  if (search.find(' ') != Glib::ustring::npos) {
-    Glib::ustring::size_type p1 = 0;
-    Glib::ustring::size_type p2;
+    /* This is a bit of a hack, I guess, but it's a low-impact way of 
+     * implementing the change. If the search term contains a space, I 
+     * iteratively decompose it into substrings and pass those onto
+     * this function. If anything doesn't match, we return a failure.
+     */
+    if (search.find(' ') != Glib::ustring::npos) {
+        Glib::ustring::size_type p1 = 0;
+        Glib::ustring::size_type p2;
 
-    do {
+        do {
 
-      /* Find the next space in the string, if any.
-       */
-      p2 = search.find(' ', p1);
+            /* Find the next space in the string, if any.
+             */
+            p2 = search.find(' ', p1);
 
-      /* Extract the appropriate substring.
-       */
-      Glib::ustring const searchTerm = search.substr(p1, p2);
+            /* Extract the appropriate substring.
+             */
+            Glib::ustring const searchTerm = search.substr(p1, p2);
 
-      /* If the term is empty, ignore it and move on. It might just be a 
-       * trailing or duplicate space character.
-       */
-      if (searchTerm.empty()) {
-	break;
-      }
+            /* If the term is empty, ignore it and move on. It might just be a 
+             * trailing or duplicate space character.
+             */
+            if (searchTerm.empty()) {
+                break;
+            }
 
-      /* Now that we have the substring, which is guaranteed to be
-       * free of spaces, we can pass it recursively into this function.
-       * If the term does NOT match, fail the entire comparison right away.
-       */
-      if (!matchesSearch(searchTerm)) {
-	return false;
-      }
+            /* Now that we have the substring, which is guaranteed to be
+             * free of spaces, we can pass it recursively into this function.
+             * If the term does NOT match, fail the entire comparison right away.
+             */
+            if (!matchesSearch(searchTerm)) {
+                return false;
+            }
 
-      p1 = p2 + 1;		/* +1 to skip over the space */
+            p1 = p2 + 1;		/* +1 to skip over the space */
 
-    } while (p2 != Glib::ustring::npos); /* Terminate at end of string */
-    return true;		/* All matched, so OK. */
-  }
+        } while (p2 != Glib::ustring::npos); /* Terminate at end of string */
+        return true;		/* All matched, so OK. */
+    }
 
-	Glib::ustring const searchNormalised = search.casefold();
+    Glib::ustring const searchNormalised = search.casefold();
 
-	FieldMap fields = getFields ();
-	FieldMap::iterator fieldIter = fields.begin ();
-	FieldMap::iterator const fieldEnd = fields.end ();
-	for (; fieldIter != fieldEnd; ++fieldIter) {
-		if (fieldIter->second.casefold().find(searchNormalised) != Glib::ustring::npos)
-			return true;
-	}
+    FieldMap fields = getFields ();
+    FieldMap::iterator fieldIter = fields.begin ();
+    FieldMap::iterator const fieldEnd = fields.end ();
+    for (; fieldIter != fieldEnd; ++fieldIter) {
+        if (fieldIter->second.casefold().find(searchNormalised) != Glib::ustring::npos)
+            return true;
+    }
 
-	if (notes_.casefold().find(searchNormalised) != Glib::ustring::npos)
-		return true;
+    if (notes_.casefold().find(searchNormalised) != Glib::ustring::npos)
+        return true;
 
-	return false;
+    if (key_.casefold().find(searchNormalised) != Glib::ustring::npos)
+        return true;
+
+    return false;
 }
 
 /*
