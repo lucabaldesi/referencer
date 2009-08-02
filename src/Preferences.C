@@ -79,13 +79,13 @@ Preferences::Preferences ()
 
 	confclient_->add_dir (
 		CONF_PATH,
-		Gnome::Conf::CLIENT_PRELOAD_ONELEVEL);
+		Gnome::Conf::CLIENT_PRELOAD_NONE);
 	confclient_->add_dir (
 		"/system/http_proxy",
-		Gnome::Conf::CLIENT_PRELOAD_ONELEVEL);
+		Gnome::Conf::CLIENT_PRELOAD_NONE);
 	confclient_->add_dir (
 		"/system/proxy",
-		Gnome::Conf::CLIENT_PRELOAD_ONELEVEL);
+		Gnome::Conf::CLIENT_PRELOAD_NONE);
 
 	confclient_->notify_add (
 		CONF_PATH,
@@ -125,7 +125,9 @@ Preferences::Preferences ()
 	/*
 	 * Plugins
 	 */
+	std::cerr << "'" << confclient_->get_entry ("/rhubarb/crumble").get_key() << "'\n";
 	disabledPlugins_ = confclient_->get_entry (CONF_PATH "/disabledplugins");
+	std::cerr << "'" << disabledPlugins_.get_key() << "'\n";
 	Gnome::Conf::SListHandle_ValueString disable =
 		confclient_->get_string_list (disabledPlugins_.get_key ());
 

@@ -1,4 +1,5 @@
 1.1.6:
+	- Work around gconf bug (gnome #586532)
 	- Include document key when searching
 	- Don't attempt to retrieve text for non-pdf files
 	- Improved search (Robert Vincent)
