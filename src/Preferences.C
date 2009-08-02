@@ -125,9 +125,7 @@ Preferences::Preferences ()
 	/*
 	 * Plugins
 	 */
-	std::cerr << "'" << confclient_->get_entry ("/rhubarb/crumble").get_key() << "'\n";
 	disabledPlugins_ = confclient_->get_entry (CONF_PATH "/disabledplugins");
-	std::cerr << "'" << disabledPlugins_.get_key() << "'\n";
 	Gnome::Conf::SListHandle_ValueString disable =
 		confclient_->get_string_list (disabledPlugins_.get_key ());
 
