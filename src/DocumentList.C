@@ -51,6 +51,17 @@ Document* DocumentList::newDocUnnamed ()
 	return &(docs_.back());
 }
 
+Glib::ustring DocumentList::sanitizedKey (
+	Glib::ustring const &key)
+{
+	Glib::ustring sanitizedKey = Glib::ustring(key);
+	Glib::ustring::size_type invalidchar; 
+	while ((invalidchar = sanitizedKey.find_first_of(",")) != Glib::ustring::npos) {
+		sanitizedKey.replace(invalidchar, 1, "_");
+	}
+
+	return sanitizedKey;
+}
 
 Glib::ustring DocumentList::uniqueKey (
 	Glib::ustring const &basename)

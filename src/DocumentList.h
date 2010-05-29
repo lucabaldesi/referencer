@@ -46,6 +46,8 @@ class DocumentList {
 	Glib::ustring uniqueKey (
 		Glib::ustring const &basename,
 		Document const *exclusion);
+	Glib::ustring sanitizedKey (
+		Glib::ustring const &key);
 
 	void removeDoc (Document* const addr);
 	void loadDoc (

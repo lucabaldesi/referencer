@@ -104,7 +104,9 @@ class Document {
 	FieldMap getFields ();
 	void clearFields ();
 
-	static Glib::ustring keyReplaceDialog (Glib::ustring const &, Glib::ustring const &);
+	static Glib::ustring keyReplaceDialogNotUnique (Glib::ustring const &, Glib::ustring const &);
+	static Glib::ustring keyReplaceDialogInvalidChars (Glib::ustring const &, Glib::ustring const &);
+	static Glib::ustring keyReplaceDialog (Glib::ustring const &, Glib::ustring const &, const char *);
 };
 
 #endif

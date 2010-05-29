@@ -1426,9 +1426,13 @@ void DocumentView::onColumnEdited (
 		Glib::ustring newText = enteredText;
 
 		if (columnName.lowercase() == "key") {
+			Glib::ustring sanitizedKey = lib_.doclist_->sanitizedKey (newText);
+			if (sanitizedKey != newText)
+				newText = Document::keyReplaceDialogInvalidChars(newText, sanitizedKey);
+
 			Glib::ustring unique = lib_.doclist_->uniqueKey (newText, doc);
 			if (unique != newText)
-				newText = Document::keyReplaceDialog (newText, unique);
+				newText = Document::keyReplaceDialogNotUnique (newText, unique);
 		}
 
 		(*iter)[col] = newText;

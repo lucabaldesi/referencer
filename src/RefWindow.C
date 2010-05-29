@@ -2483,12 +2483,21 @@ void RefWindow::openProperties (Document *doc)
 {
 	if (doc) {
 		if (docpropertiesdialog_->show (doc)) {
+			{
+			/* Check for invalid characters in key */
+			Glib::ustring key = doc->getKey ();
+			Glib::ustring sanitizedKey = library_->doclist_->sanitizedKey (key);
+			if (key != sanitizedKey)
+				doc->setKey (Document::keyReplaceDialogInvalidChars(key, sanitizedKey));
+			}
 
+			{
 			/* Check for dupe keys */
 			Glib::ustring key = doc->getKey ();
 			Glib::ustring uniqueKey = library_->doclist_->uniqueKey (key, doc);
 			if (key != uniqueKey)
-				doc->setKey (Document::keyReplaceDialog (key, uniqueKey));
+				doc->setKey (Document::keyReplaceDialogNotUnique (key, uniqueKey));
+			}
 
 			setDirty (true);
 			docview_->updateDoc (doc);

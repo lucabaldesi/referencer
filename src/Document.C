@@ -82,16 +82,34 @@ Document::Document (
 	relfilename_ = relfilename;
 }
 
-Glib::ustring Document::keyReplaceDialog (
+Glib::ustring Document::keyReplaceDialogNotUnique (
 	Glib::ustring const &original,
 	Glib::ustring const &replacement)
+{
+	return keyReplaceDialog(original, replacement,
+		_("The chosen key conflicts with an "
+			"existing one.  Replace '%1' with '%2'?"));
+}
+
+Glib::ustring Document::keyReplaceDialogInvalidChars (
+	Glib::ustring const &original,
+	Glib::ustring const &replacement)
+{
+	return keyReplaceDialog(original, replacement,
+		_("The chosen key contained invalid characters."
+			"  Replace '%1' with '%2'?"));
+}
+
+Glib::ustring Document::keyReplaceDialog (
+	Glib::ustring const &original,
+	Glib::ustring const &replacement,
+	const char *message_text)
 {
 	Glib::ustring message = String::ucompose (
 		"<big><b>%1</b></big>\n\n%2",
 		_("Key naming conflict"),
 		String::ucompose (
-			_("The chosen key conflicts with an "
-			"existing one.  Replace '%1' with '%2'?"),
+			message_text,
 			original, replacement));
 
 	Gtk::MessageDialog dialog (message, true, Gtk::MESSAGE_QUESTION, Gtk::BUTTONS_NONE, true);
