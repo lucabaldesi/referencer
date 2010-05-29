@@ -67,15 +67,17 @@ def do_genkey (library, documents):
 	dialog = gtk.Dialog (buttons=(gtk.STOCK_CANCEL, gtk.RESPONSE_REJECT, gtk.STOCK_OK, gtk.RESPONSE_ACCEPT))
 	dialog.set_has_separator (False)
 	dialog.vbox.set_spacing (6)
+	dialog.set_default_response(gtk.RESPONSE_ACCEPT)
 	hbox = gtk.HBox (spacing=6)
 	label = gtk.Label ("Key format:")
 	entry = gtk.Entry ()
 	entry.set_text (format)
+	entry.set_activates_default(True)
 	dialog.vbox.pack_start (hbox)
 	hbox.pack_start (label)
 	hbox.pack_start (entry)
 	
-	label = gtk.Label ("Markers:\n\t%y = two-digit year\n\t%Y = four-digit year\n\t%a = first author's surname")
+	label = gtk.Label ("Markers:\n\t%y = two-digit year\n\t%Y = four-digit year\n\t%a = first author's surname\n\t%t = title without spaces\n\t%w = first meaningful word of title")
 	dialog.vbox.pack_start (label)
 
 	dialog.show_all ()
@@ -91,20 +93,24 @@ def do_genkey (library, documents):
 		author = document.get_field ("author")
 		author = author.split("and")[0].split(",")[0].split(" ")[0]
 		year = document.get_field ("year")
+		title = document.get_field ("title")
+		title = title.replace(':', '').replace('-', '')
+		title_capitalized = "".join([w[0].upper()+w[1:] for w in title.split()])
+		first_word = [w for w in title.split() if 
+			w.lower() not in ('a', 'an', 'the')][0]
+		title = title.replace(' ', '')
 
+		shortYear = year
 		if len(year) == 4:
 			shortYear = year[2:4]
 
-		if (len(author) > 0):
-			# replace %y with shortYear
-			# replace %Y with year
-			# replace %a with first author's last name
-			key = format
-			key = key.replace ("%y", shortYear)
-			key = key.replace ("%Y", year)
-			key = key.replace ("%a", author)
-		else:
-			key = document.get_key ()
+		key = format
+		key = key.replace ("%y", shortYear)
+		key = key.replace ("%Y", year)
+		key = key.replace ("%a", author)
+		key = key.replace ("%t", title)
+		key = key.replace ("%T", title_capitalized)
+		key = key.replace ("%w", first_word)
 
 		# Make the key unique within this document set
 		append = "b"
