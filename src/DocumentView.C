@@ -1167,20 +1167,20 @@ void DocumentView::updateVisible ()
 	}
 	ignoreSelectionChanged_ = false;
 
-    //Scroll to the currently selected document, if any
+	//Scroll to the currently selected document, if any
 	Gtk::TreePath selpath;
-    if (uselistview_) {
+	if (uselistview_) {
 		Gtk::TreeSelection::ListHandle_Path paths =
 			docslistselection_->get_selected_rows ();
 		if (paths.size () > 0)
 			selpath = (*paths.begin());
-	    docslistview_->scroll_to_row (selpath);
+		docslistview_->scroll_to_row (selpath);
 	} else {
 		Gtk::IconView::ArrayHandle_TreePaths paths =
 			docsiconview_->get_selected_items ();
 		if (paths.size () > 0)
 			selpath = (*paths.begin());
-	    docsiconview_->scroll_to_path (selpath, true, 0.5, 0.0);
+		docsiconview_->scroll_to_path (selpath, true, 0.5, 0.0);
 	}
 
 	docSelectionChanged ();
