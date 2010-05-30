@@ -1105,7 +1105,7 @@ void DocumentView::loadRow (
 
 	(*item)[doccaptioncol_] = String::ucompose (
 		// Translators: this is the format for the document captions
-		_("<span size='xx-small'> </span>\n<small>%1</small>\n<b>%2</b>\n%3\n<i>%4</i>"),
+		_("<span size='xx-small'> </span>\n<small>%1</small>\n<b>%2</b>\n%3 <i>%4</i>"),
 		Glib::Markup::escape_text (key),
 		Glib::Markup::escape_text (title),
 		Glib::Markup::escape_text (year),

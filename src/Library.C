@@ -212,18 +212,7 @@ bool Library::load (Glib::ustring const &libfilename)
 
 	progress.update (0.2);
 
-
-	// Resolve relative paths
-	// ======================
-
-	typedef enum {
-		NONE,
-		ORIG_LOC,
-		NEW_LOC
-	} ambiguouschoice;
-
-	ambiguouschoice ambiguous_action_all = NONE;
-
+	// Set filename_ on document based on relfilename
 	int i = 0;
 	DocumentList::Container &docs = doclist_->getDocs ();
 	DocumentList::Container::iterator docit = docs.begin ();
@@ -231,65 +220,13 @@ bool Library::load (Glib::ustring const &libfilename)
 	for (; docit != docend; ++docit) {
 		progress.update (0.2 + ((double)(i++) / (double)docs.size ()) * 0.8);
 
-		Glib::ustring const absfilename = docit->getFileName();
-
-		Glib::ustring relfilename;
 		if (!docit->getRelFileName().empty()) {
-			relfilename = Glib::build_filename (
+			Glib::ustring full_filename;
+			full_filename = Glib::build_filename (
 				Glib::path_get_dirname (libfilename),
 				docit->getRelFileName());
-		}
-		
-		bool const absexists = Utility::fileExists (absfilename);
-		bool const relexists = Utility::fileExists (relfilename);
-
-		if (!absexists && relexists) {
-			docit->setFileName (relfilename);
-		} else if (absexists && relexists && relfilename != absfilename) {
-			ambiguouschoice action = ambiguous_action_all;
-			if (action == NONE) {
-				// Put up some UI to ask the user which one they want
-				Glib::ustring const shortname =
-					Gnome::Vfs::Uri::create (absfilename)->extract_short_name ();
-
-				Glib::ustring const message =
-					String::ucompose (
-						"<b><big>%1</big></b>\n\n%2",
-						_("Document location ambiguity"),
-						String::ucompose (
-							_("The file '%1' exists in two locations:\n"
-							"\tOriginal: <b>%2</b>\n\tNew: <b>%3</b>\n\n"
-							"Do you want to keep the original location, or update it "
-							"to the new one?"
-							),
-							shortname,
-							Gnome::Vfs::Uri::format_for_display (absfilename),
-							Gnome::Vfs::Uri::format_for_display (relfilename)
-						)
-					);
-
-				Gtk::MessageDialog dialog (
-					message, true,
-					Gtk::MESSAGE_QUESTION, Gtk::BUTTONS_NONE,
-					true);
-
-				Gtk::CheckButton applytoall (_("Apply choice to all ambiguous locations"));
-				dialog.get_vbox ()->pack_start (applytoall, 0, false, false);
-				applytoall.show ();
-
-				dialog.add_button (_("Keep _Original"), ORIG_LOC);
-				dialog.add_button (_("Use _New"), NEW_LOC);
-				dialog.set_default_response (ORIG_LOC);
-
-				action = (ambiguouschoice) dialog.run ();
-				if (applytoall.get_active ()) {
-					ambiguous_action_all = action;
-				}
-			}
-
-			if (action == NEW_LOC) {
-				docit->setFileName (relfilename);
-			}
+			DEBUG (String::ucompose ("Filename_ set to: %1 ", full_filename));
+			docit->setFileName(full_filename);
 		}
 	}
 
@@ -322,9 +259,7 @@ bool Library::save (Glib::ustring const &libfilename)
 	DocumentList::Container::iterator docit = docs.begin ();
 	DocumentList::Container::iterator const docend = docs.end ();
 	for (; docit != docend; ++docit) {
-		if (Utility::fileExists (docit->getFileName())) {
-			docit->updateRelFileName (libfilename);
-		}
+		docit->updateRelFileName (libfilename);
 	}
 	DEBUG ("Done.");
 
