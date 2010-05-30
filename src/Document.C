@@ -422,8 +422,6 @@ using Glib::Markup::escape_text;
 void Document::writeXML (Glib::ustring &out)
 {
 	out += "  <doc>\n";
-	out += "    <filename>" + escape_text(getFileName())
-		+ "</filename>\n";
 	out += "    <relative_filename>" + escape_text(getRelFileName())
 		+ "</relative_filename>\n";
 	out += "    <key>" + escape_text(getKey())
