@@ -1089,27 +1089,42 @@ void DocumentView::loadRow (
 
 	Glib::ustring title = Utility::wrap (doc->getField ("title"), 35, 1, false);
 	Glib::ustring authors =	Utility::firstAuthor(doc->getField("author"));
+	Glib::ustring etal = "";
 	authors = Utility::strip (authors, "{");
 	authors = Utility::strip (authors, "}");
+	Glib::ustring::size_type n = doc->getField("author").find (" and");
+	if (n != Glib::ustring::npos)
+		etal = " et al.";
+	
+
 	Glib::ustring key = doc->getKey();
 	Glib::ustring year = doc->getField("year");
+	Glib::ustring align = "\n";
 
+
+	if (year.empty() and authors.empty())
+		align = "";
+	if (year == "")
+		authors = String::ucompose ("%1%2 ", authors, etal);
+	else
+		authors = String::ucompose (" %1%2 ", authors, etal);
 	if (title.empty())
 		title = " ";
 	if (authors.empty())
-		authors = " ";
+		authors = "";
 	if (key.empty())
 		key = " ";
 	if (year.empty())
-		year = " ";
+		year = "";
 
 	(*item)[doccaptioncol_] = String::ucompose (
 		// Translators: this is the format for the document captions
-		_("<span size='xx-small'> </span>\n<small>%1</small>\n<b>%2</b>\n%3 <i>%4</i>"),
+		_("<small>%1</small>\n<b>%2</b>\n%3<i>%4</i>%5"),
 		Glib::Markup::escape_text (key),
 		Glib::Markup::escape_text (title),
 		Glib::Markup::escape_text (year),
-		Glib::Markup::escape_text (authors));
+		Glib::Markup::escape_text (authors),
+		align);
 }
 
 /*
