@@ -225,7 +225,6 @@ bool Library::load (Glib::ustring const &libfilename)
 			full_filename = Glib::build_filename (
 				Glib::path_get_dirname (libfilename),
 				docit->getRelFileName());
-			DEBUG (String::ucompose ("Filename_ set to: %1 ", full_filename));
 			docit->setFileName(full_filename);
 		}
 	}
