@@ -405,7 +405,7 @@ DocumentView::DocumentView (
 		NULL);
 
 	Gtk::CellRendererText *textcell = new Gtk::CellRendererText ();
-	//textcell->property_width_chars() = 32;
+	textcell->property_width_chars() = 32;
 	//textcell->property_wrap_width() = 32;
 /* FIXME: guesstimate of which version.  It's something >=2.10 */
 #if GTK_VERSION_GE(2,12)
@@ -436,7 +436,7 @@ DocumentView::DocumentView (
 	icons->set_columns (-1);
 
 	icons->set_orientation (Gtk::ORIENTATION_HORIZONTAL);
-	//icons->set_item_width (256);
+	icons->set_item_width (70);
 
 	std::vector<Gtk::TargetEntry> dragtypes;
 	Gtk::TargetEntry target;
@@ -1092,6 +1092,7 @@ void DocumentView::loadRow (
 	Glib::ustring etal = "";
 	authors = Utility::strip (authors, "{");
 	authors = Utility::strip (authors, "}");
+	authors = Utility::wrap (authors, 33, 1, false);
 	Glib::ustring::size_type n = doc->getField("author").find (" and");
 	if (n != Glib::ustring::npos)
 		etal = " et al.";
