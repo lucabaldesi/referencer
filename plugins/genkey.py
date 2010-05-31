@@ -94,7 +94,8 @@ def do_genkey (library, documents):
 		author = author.split("and")[0].split(",")[0].split(" ")[0]
 		year = document.get_field ("year")
 		title = document.get_field ("title")
-		title = title.replace(':', '').replace('-', '')
+        for c in ":-[]{},+/*":
+    		title = title.replace(c, '')
 		title_capitalized = "".join([w[0].upper()+w[1:] for w in title.split()])
 		first_word = [w for w in title.split() if 
 			w.lower() not in ('a', 'an', 'the')][0]
