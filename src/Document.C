@@ -169,8 +169,7 @@ Glib::ustring Document::generateKey ()
 
 		name = authors + year;
 	} else if (!filename_.empty ()) {
-		Glib::ustring filename = Gnome::Vfs::unescape_string_for_display (
-			Glib::path_get_basename (filename_));
+		Glib::ustring filename = Gio::File::create_for_uri(filename_)->query_info()->get_display_name();
 
 		Glib::ustring::size_type periodpos = filename.find_last_of (".");
 		if (periodpos != std::string::npos) {
@@ -468,8 +467,8 @@ bool Document::readPDF ()
 		return false;
 	}
 
-	Glib::ustring mimeType = Gnome::Vfs::Uri::create (filename_)->get_file_info(Gnome::Vfs::FILE_INFO_GET_MIME_TYPE)->get_mime_type(); 
-	if (mimeType != "application/pdf")
+	std::string contentType = Gio::File::create_for_uri(filename_)->query_info("standard::content-type")->get_content_type();
+	if (contentType != "application/pdf")
 		return false;
 
 	GError *error = NULL;
@@ -697,12 +696,11 @@ void Document::renameFromKey ()
 	if (getFileName().empty () || getKey().empty ())
 		return;
 
-	Glib::RefPtr<Gnome::Vfs::Uri> olduri = Gnome::Vfs::Uri::create (getFileName());
+	Glib::RefPtr<Gio::File> oldfile = Gio::File::create_for_uri(getFileName());
 
-	Glib::ustring shortname = olduri->extract_short_name ();
+	Glib::ustring shortname = oldfile->query_info()->get_display_name();
 	DEBUG ("Shortname = %1", shortname);
-	Glib::ustring dirname = olduri->extract_dirname ();
-	DEBUG ("Dirname = %1", dirname);
+	Glib::RefPtr<Gio::File> parentdir = oldfile->get_parent();
 
 	Glib::ustring::size_type pos = shortname.rfind (".");
 	Glib::ustring extension = "";
@@ -712,21 +710,16 @@ void Document::renameFromKey ()
 	Glib::ustring newfilename = getKey() + extension;
 	DEBUG ("Newfilename = %1", newfilename);
 
-	//Glib::RefPtr<Gnome::Vfs::Uri> newuri = Gnome::Vfs::Uri::create (newfilename);
-	Glib::RefPtr<Gnome::Vfs::Uri> newuri =
-		Gnome::Vfs::Uri::create (dirname)->append_file_name (newfilename);
+	Glib::RefPtr<Gio::File> newfile = parentdir->get_child(newfilename);
 
 	try {
-		Gnome::Vfs::Handle::move (
-			olduri,
-			newuri,
-			false /*force replace*/);
-		setFileName (newuri->to_string ());
-	} catch (Gnome::Vfs::exception &ex) {
+		oldfile->move(newfile);
+		setFileName (newfile->get_uri ());
+	} catch (Gio::Error &ex) {
 		Utility::exceptionDialog (&ex,
 			String::ucompose (_("Moving '%1' to '%2'"),
-				olduri->to_string (),
-				newuri->to_string ())
+				oldfile->get_uri (),
+				newfile->get_uri ())
 			);
 	}
 }

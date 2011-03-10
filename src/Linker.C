@@ -1,11 +1,6 @@
 
-#include <iostream>
-
 #include <gtkmm.h>
-
-#include <libgnomevfsmm.h>
 #include <glibmm/i18n.h>
-
 
 #include "Document.h"
 #include "DocumentView.h"
@@ -70,7 +65,7 @@ bool DoiLinker::canLink (Document const *doc)
 void DoiLinker::doLink (Document *doc)
 {
 	Glib::ustring url = Glib::ustring("http://dx.doi.org/") + doc->getField("doi");
-	Gnome::Vfs::url_show (url);
+	Gio::AppInfo::launch_default_for_uri (url);
 }
 
 Glib::ustring DoiLinker::getLabel ()
@@ -89,7 +84,7 @@ bool ArxivLinker::canLink (Document const *doc)
 void ArxivLinker::doLink (Document *doc)
 {
 	Glib::ustring url = Glib::ustring("http://arxiv.org/abs/") + doc->getField ("eprint");
-	Gnome::Vfs::url_show (url);
+	Gio::AppInfo::launch_default_for_uri (url);
 }
 
 
@@ -110,7 +105,7 @@ bool UrlLinker::canLink (Document const *doc)
 void UrlLinker::doLink (Document *doc)
 {
 	Glib::ustring url = doc->getField("url");
-	Gnome::Vfs::url_show (url);
+	Gio::AppInfo::launch_default_for_uri (url);
 }
 
 Glib::ustring UrlLinker::getLabel ()
@@ -130,7 +125,7 @@ void PubmedLinker::doLink (Document *doc)
 {
 	Glib::ustring url = Glib::ustring ("http://www.ncbi.nlm.nih.gov/pubmed/") + doc->getField("pmid");
 
-	Gnome::Vfs::url_show (url);
+	Gio::AppInfo::launch_default_for_uri (url);
 }
 
 Glib::ustring PubmedLinker::getLabel ()
@@ -170,11 +165,11 @@ void GoogleLinker::doLink (Document *doc)
 	}
 
 
-	Glib::ustring escaped = Gnome::Vfs::escape_string (searchTerm);
+	Glib::ustring escaped = Glib::uri_escape_string (searchTerm);
 	DEBUG (escaped);
 	Glib::ustring url = Glib::ustring ("http://scholar.google.co.uk/scholar?q=") + escaped + Glib::ustring("&btnG=Search");
 
-	Gnome::Vfs::url_show (url);
+	Gio::AppInfo::launch_default_for_uri (url);
 }
 
 Glib::ustring GoogleLinker::getLabel ()

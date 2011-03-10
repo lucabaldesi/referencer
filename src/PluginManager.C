@@ -229,11 +229,11 @@ Glib::ustring PluginManager::findDataFile (Glib::ustring const file)
 			filename = Glib::get_current_dir () + filename.substr (1, filename.length());
 		}
 
-		Glib::RefPtr<Gnome::Vfs::Uri> uri = Gnome::Vfs::Uri::create (filename);
+		Glib::RefPtr<Gio::File> uri = Gio::File::create_for_path (filename);
 
 		DEBUG ("Trying %1", filename);
 
-		if (uri->uri_exists ())
+		if (uri->query_exists ())
 			return filename;
 	}
 

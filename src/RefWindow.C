@@ -2610,7 +2610,8 @@ void RefWindow::updateTitle ()
 	if (openedlib_.empty ()) {
 		filename = _("Unnamed Library");
 	} else {
-		filename = Gnome::Vfs::unescape_string_for_display (Glib::path_get_basename (openedlib_));
+		filename = Gio::File::create_for_uri(openedlib_)->query_info("standard::display-name")->get_display_name();
+		
 		Glib::ustring::size_type pos = filename.find (".reflib");
 		if (pos != Glib::ustring::npos) {
 			filename = filename.substr (0, pos);

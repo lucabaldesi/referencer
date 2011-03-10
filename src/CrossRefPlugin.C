@@ -228,7 +228,7 @@ bool CrossRefPlugin::resolve (Document &doc)
 		+ (password.empty() ? "" : ":")
 		+ password 
 		+ Glib::ustring("&id=doi:")
-		+ Gnome::Vfs::escape_string(doc.getField("doi"))
+		+ Glib::uri_escape_string(doc.getField("doi"))
 		+ Glib::ustring ("&noredirect=true");
 
 	DEBUG ("CrossRefPlugin::resolve: using url '%1'", url);

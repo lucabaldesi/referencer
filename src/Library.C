@@ -13,7 +13,6 @@
 #include <iostream>
 #include <cstring>
 
-#include <libgnomevfsmm.h>
 #include <glibmm/i18n.h>
 
 #include "TagList.h"
@@ -161,48 +160,46 @@ bool Library::libraryFolderDialog ()
 // True on success
 bool Library::load (Glib::ustring const &libfilename)
 {
-	Gnome::Vfs::Handle libfile;
-
-	Glib::RefPtr<Gnome::Vfs::Uri> liburi = Gnome::Vfs::Uri::create (libfilename);
+	Glib::RefPtr<Gio::File> libfile = Gio::File::create_for_uri (libfilename);
+	Glib::RefPtr<Gio::FileInfo> fileinfo = libfile->query_info ();
+	Glib::RefPtr<Gio::FileInputStream> libfile_is;
 
 	Progress progress (tagwindow_);
 
 	progress.start (String::ucompose (
 		_("Opening %1"),
-		liburi->extract_short_name ()));
+		fileinfo->get_display_name ()));
 
 	try {
-		libfile.open (libfilename, Gnome::Vfs::OPEN_READ);
-	} catch (const Gnome::Vfs::exception ex) {
+		libfile_is = libfile->read();
+	} catch (const Gio::Error ex) {
 		Utility::exceptionDialog (&ex, "opening library '"
-			+ Gnome::Vfs::Uri::format_for_display (libfilename) + "'");
+			+ libfile->get_parse_name() + "'");
 		return false;
 	}
 
-	Glib::RefPtr<Gnome::Vfs::FileInfo> fileinfo;
-	fileinfo = libfile.get_file_info ();
-
 	char *buffer = (char *) malloc (sizeof(char) * (fileinfo->get_size() + 1));
+	gsize bytes_read = 0;
 	if (!buffer) {
 		DEBUG ("Warning: RefWindow::loadLibrary: couldn't allocate buffer");
 		return false;
 	}
 
 	try {
-		libfile.read (buffer, fileinfo->get_size());
-	} catch (const Gnome::Vfs::exception ex) {
+		libfile_is->read_all (buffer, fileinfo->get_size(), bytes_read);
+	} catch (const Gio::Error ex) {
 		Utility::exceptionDialog (&ex, "reading library '"
-			+ Gnome::Vfs::Uri::format_for_display (libfilename) + "'");
+			+ libfile->get_parse_name() + "'");
 		free (buffer);
 		return false;
 	}
-	buffer[fileinfo->get_size()] = 0;
+	buffer[bytes_read] = 0;
 
 	progress.update (0.1);
 
 	Glib::ustring rawtext = buffer;
 	free (buffer);
-	libfile.close ();
+	libfile_is->close();
 
 	DEBUG ("Reading XML...");
 	if (!readXML (rawtext)) {
@@ -238,20 +235,9 @@ bool Library::load (Glib::ustring const &libfilename)
 // True on success
 bool Library::save (Glib::ustring const &libfilename)
 {
-	Gnome::Vfs::Handle libfile;
-
-	Glib::ustring tmplibfilename = libfilename + ".save-tmp";
-
-	DEBUG ("%1 ~ %2", libfilename, tmplibfilename);
-
-	try {
-		libfile.create (tmplibfilename, Gnome::Vfs::OPEN_WRITE,
-			false, Gnome::Vfs::PERM_USER_READ | Gnome::Vfs::PERM_USER_WRITE);
-	} catch (const Gnome::Vfs::exception ex) {
-		Utility::exceptionDialog (&ex, "opening file '" + tmplibfilename + "'");
-		return false;
-	}
-
+	DEBUG ("Saving to %1", libfilename);
+	
+	Glib::RefPtr<Gio::File> libfile = Gio::File::create_for_uri (libfilename);
 
 	DEBUG ("Updating relative filenames...");
 	DocumentList::Container &docs = doclist_->getDocs ();
@@ -267,25 +253,10 @@ bool Library::save (Glib::ustring const &libfilename)
 	DEBUG ("Done.");
 
 	try {
-		libfile.write (rawtext.c_str(), strlen(rawtext.c_str()));
-	} catch (const Gnome::Vfs::exception ex) {
-		Utility::exceptionDialog (&ex, "writing to file '" + tmplibfilename + "'");
-		return false;
-	}
-
-	try {
-	    libfile.close ();
-	} catch (const Gnome::Vfs::exception ex) {
-		Utility::exceptionDialog (&ex, "Closing file '" + tmplibfilename + "'");
-		return false;
-	}
-
-	// Forcefully move our tmp file into its real position
-	try {
-		Gnome::Vfs::Handle::move (tmplibfilename, libfilename, true);
-	} catch (const Gnome::Vfs::exception ex) {
-		Utility::exceptionDialog (&ex, "moving '"
-			+ tmplibfilename + "' to '" + libfilename + "'");
+		std::string new_etag;
+		libfile->replace_contents (rawtext, "", new_etag);
+	} catch (const Gio::Error ex) {
+		Utility::exceptionDialog (&ex, "replacing contents of file '" + libfilename + "'");
 		return false;
 	}
 
@@ -293,11 +264,13 @@ bool Library::save (Glib::ustring const &libfilename)
 	// Having successfully saved the library, write the bibtex if needed
 	if (!manage_target_.empty ()) {
 		// manage_target_ is either an absolute URI or a relative URI
-		Glib::ustring const bibtextarget =
-			Gnome::Vfs::Uri::make_full_from_relative (
-				libfilename,
-				manage_target_);
-		DEBUG ("bibtextarget = %1", bibtextarget);
+		Glib::ustring bibtextarget_uri;
+		if (Glib::uri_parse_scheme(manage_target_) != "") //absolute URI
+			bibtextarget_uri = manage_target_;
+		else
+			bibtextarget_uri = libfile->get_parent()->resolve_relative_path(manage_target_)->get_uri();
+
+		DEBUG ("bibtextarget_uri = %1", bibtextarget_uri);
 
 		std::vector<Document*> docs;
 		DocumentList::Container &docrefs = doclist_->getDocs ();
@@ -307,9 +280,9 @@ bool Library::save (Glib::ustring const &libfilename)
 			docs.push_back(&(*it));
 		}
 		try {
-		    writeBibtex (bibtextarget, docs, manage_braces_, manage_utf8_);
+		    writeBibtex (bibtextarget_uri, docs, manage_braces_, manage_utf8_);
 		} catch (Glib::Exception const &ex) {
-			Utility::exceptionDialog (&ex, "writing bibtex to " + bibtextarget);
+			Utility::exceptionDialog (&ex, "writing bibtex to " + bibtextarget_uri);
 			return false;
 		}
 	}
@@ -320,25 +293,14 @@ bool Library::save (Glib::ustring const &libfilename)
 
 
 void Library::writeBibtex (
-	Glib::ustring const &bibfilename,
+	Glib::ustring const &biburi,
 	std::vector<Document*> const &docs,
 	bool const usebraces,
 	bool const utf8)
 {
-	Glib::ustring tmpbibfilename = bibfilename + ".export-tmp";
+	DEBUG ("Writing BibTex to %1", biburi);
 
-	DEBUG ("%1 ~ %2", bibfilename, tmpbibfilename);
-
-	Gnome::Vfs::Handle bibfile;
-
-	try {
-		bibfile.create (tmpbibfilename, Gnome::Vfs::OPEN_WRITE,
-			false, Gnome::Vfs::PERM_USER_READ | Gnome::Vfs::PERM_USER_WRITE);
-	} catch (const Gnome::Vfs::exception ex) {
-		DEBUG ("exception in create " + ex.what());
-		Utility::exceptionDialog (&ex, "opening BibTex file");
-		return;
-	}
+	Glib::RefPtr<Gio::File> bibfile = Gio::File::create_for_uri (biburi);
 
 	std::ostringstream bibtext;
 
@@ -349,20 +311,10 @@ void Library::writeBibtex (
 	}
 
 	try {
-		bibfile.write (bibtext.str().c_str(), strlen(bibtext.str().c_str()));
-	} catch (const Gnome::Vfs::exception ex) {
+		std::string new_etag;
+		bibfile->replace_contents (bibtext.str(), "", new_etag);
+	} catch (const Gio::Error ex) {
 		Utility::exceptionDialog (&ex, "writing to BibTex file");
-		bibfile.close ();
-		return;
-	}
-
-	bibfile.close ();
-
-	try {
-	    // Forcefully move our tmp file into its real position
-	    Gnome::Vfs::Handle::move (tmpbibfilename, bibfilename, true);
-	} catch (Glib::Exception const &ex) {
-		Utility::exceptionDialog (&ex, "moving bibtex file from " + tmpbibfilename + " to " + bibfilename);
 		return;
 	}
 }
