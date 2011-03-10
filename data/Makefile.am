@@ -9,7 +9,8 @@ resources_DATA = \
 		 referencer.svg \
 		 tag.svg \
 		 unknown-document.png \
-		 crossref.glade
+		 crossref.glade \
+		 libraryfolder.glade
 
 desktopdir       = $(datadir)/applications
 desktop_in_files = referencer.desktop.in
