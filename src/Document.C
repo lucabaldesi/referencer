@@ -372,11 +372,11 @@ Glib::ustring Document::printBibtex (
 	writeBibKey (out, "author",  bib_.getAuthors(), false, utf8);
 	writeBibKey (out, "title",   bib_.getTitle(), useBraces, utf8);
 	writeBibKey (out, "journal", bib_.getJournal(), useBraces, utf8);
-	writeBibKey (out, "volume",  bib_.getVolume(), useBraces, utf8);
-	writeBibKey (out, "number",  bib_.getIssue(), useBraces, utf8);
-	writeBibKey (out, "pages",   bib_.getPages(), useBraces, utf8);
-	writeBibKey (out, "year",    bib_.getYear(), useBraces, utf8);
-	writeBibKey (out, "doi",    bib_.getDoi(), useBraces, utf8);
+	writeBibKey (out, "volume",  bib_.getVolume(), false, utf8);
+	writeBibKey (out, "number",  bib_.getIssue(), false, utf8);
+	writeBibKey (out, "pages",   bib_.getPages(), false, utf8);
+	writeBibKey (out, "year",    bib_.getYear(), false, utf8);
+	writeBibKey (out, "doi",    bib_.getDoi(), false, utf8);
 
 	out << "}\n\n";
 
@@ -412,11 +412,11 @@ void Document::writeBibtex (
 	writeBibKey (out, "author",  bib_.getAuthors(), false, utf8);
 	writeBibKey (out, "title",   bib_.getTitle(), usebraces, utf8);
 	writeBibKey (out, "journal", bib_.getJournal(), usebraces, utf8);
-	writeBibKey (out, "volume",  bib_.getVolume(), usebraces, utf8);
-	writeBibKey (out, "number",  bib_.getIssue(), usebraces, utf8);
-	writeBibKey (out, "pages",   bib_.getPages(), usebraces, utf8);
-	writeBibKey (out, "year",    bib_.getYear(), usebraces, utf8);
-	writeBibKey (out, "doi",    bib_.getDoi(), usebraces, utf8);
+	writeBibKey (out, "volume",  bib_.getVolume(), false, utf8);
+	writeBibKey (out, "number",  bib_.getIssue(), false, utf8);
+	writeBibKey (out, "pages",   bib_.getPages(), false, utf8);
+	writeBibKey (out, "year",    bib_.getYear(), false, utf8);
+	writeBibKey (out, "doi",    bib_.getDoi(), false, utf8);
 	
 	if (tagUids_.size () > 0) {
 		out << "\ttags = \"";
