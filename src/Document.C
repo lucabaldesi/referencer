@@ -503,7 +503,11 @@ bool Document::readPDF ()
 			textdump += poppler_page_get_text (page, rect);
 		#else
 			#warning Using poppler >= 0.6
-			textdump += poppler_page_get_text (page, POPPLER_SELECTION_GLYPH, rect);
+			#ifdef HAVE_POPPLER_PAGE_GET_SELECTED_TEXT
+				textdump += poppler_page_get_text (page);
+			#else
+				textdump += poppler_page_get_text (page, POPPLER_SELECTION_GLYPH, rect);
+			#endif
 		#endif
 
 		poppler_rectangle_free (rect);

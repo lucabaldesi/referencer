@@ -49,12 +49,14 @@ AC_CHECK_LIB(boost_regex, [main], , [
 AC_CHECK_HEADERS(boost/regex.hpp)
 AC_SUBST(DEPS_CFLAGS)
 AC_SUBST(DEPS_LIBS)
+LIBS="$LIBS $DEPS_LIBS"
 
 dnl Special case for poppler-glib < 0.6
 case $($PKG_CONFIG --modversion poppler-glib) in
 	0.5.*)
 		AC_DEFINE(OLD_POPPLER,"1","Using poppler < 0.6");;
 esac
+AC_CHECK_FUNCS([poppler_page_get_selected_text])
 
 
 dnl I18n
