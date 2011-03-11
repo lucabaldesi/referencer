@@ -704,7 +704,7 @@ void RefWindow::populateTagList ()
 
 		Gtk::TreeModel::iterator item = tagstore_->append();
 		(*item)[taguidcol_] = uid;
-		(*item)[tagnamecol_] = name;
+		(*item)[tagnamecol_] = Glib::Markup::escape_text(name);
 		(*item)[tagfontcol_] = Pango::FontDescription();
 
 		/* Create tag actions */
