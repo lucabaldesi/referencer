@@ -34,6 +34,7 @@ int main (int argc, char **argv)
 		Gnome::UI::module_info_get(), argc, argv);
 
 	Gnome::Vfs::init ();
+	Gio::init ();
 
 	gdk_threads_init ();
 

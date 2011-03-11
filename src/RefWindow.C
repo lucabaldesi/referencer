@@ -1741,8 +1741,8 @@ void RefWindow::onIntroduction ()
 {
 	Glib::ustring const uri = "ghelp:referencer";
 	try {
-		Gnome::Vfs::url_show (uri);
-	} catch (Gnome::Vfs::exception &ex) {
+		Gio::AppInfo::launch_default_for_uri (uri);
+	} catch (Glib::Exception &ex) {
 		Utility::exceptionDialog (&ex,
 			String::ucompose(_("Showing '%1'"), uri));
 	}
@@ -2466,12 +2466,13 @@ void RefWindow::onOpenDoc ()
 	for (; it != end ; ++it) {
 		if (!(*it)->getFileName().empty()) {
 			try {
-				Gnome::Vfs::url_show ((*it)->getFileName());
-			} catch (const Gnome::Vfs::exception ex) {
+				Gio::AppInfo::launch_default_for_uri ((*it)->getFileName());
+			} catch (Glib::Exception &ex) {
+				Glib::ustring file_display_name = Gio::File::create_for_uri((*it)->getFileName())->query_info()->get_display_name();
 				Utility::exceptionDialog (&ex,
 					String::ucompose (
 						_("Trying to open file '%1'"),
-						Gnome::Vfs::unescape_string ((*it)->getFileName())));
+						file_display_name));
 				return;
 			}
 		}
