@@ -153,8 +153,6 @@ void DocumentProperties::update (Document &doc)
 				break;
 			}
 		}
-
-		//typeCombo_->set_active_text (type.bibtexName_);
 	} else {
 		Gtk::TreeModel::Row row = *(typecombostore_->append());
 		row[typelabelcol_] = doc.getBibData().getType();
