@@ -71,7 +71,6 @@ DocumentTypeManager::DocumentTypeManager () {
 	/*
 	addField (article, "month", false);
 	addField (article, "note", false);
-	addField (article, "key", false);
 	*/
 	registerType (article);
 
@@ -90,7 +89,6 @@ DocumentTypeManager::DocumentTypeManager () {
 	/*
 	addField (book, "month", false);
 	addField (book, "note", false);
-	addField (book, "key", false);
 	*/
 	registerType (book);
 
@@ -108,7 +106,6 @@ DocumentTypeManager::DocumentTypeManager () {
 	/*
 	addField (inproceedings, "month", false);
 	addField (inproceedings, "note", false);
-	addField (inproceedings, "key", false);
 	*/
 	registerType (inproceedings);
 
@@ -119,7 +116,6 @@ DocumentTypeManager::DocumentTypeManager () {
 	addField (misc, "month", false);
 	addField (misc, "year", false);
 	addField (misc, "note", false);
-	addField (misc, "key", false);
 	addField (misc, "doi", false);
 	registerType (misc);
 	
@@ -129,7 +125,6 @@ DocumentTypeManager::DocumentTypeManager () {
 	addField (unpublished, "note", true);
 	addField (unpublished, "month", false);
 	addField (unpublished, "year", false);
-	addField (unpublished, "key", false);
 	addField (unpublished, "doi", false);
 	registerType (unpublished);
 
@@ -141,7 +136,6 @@ DocumentTypeManager::DocumentTypeManager () {
 	addField (mastersthesis, "address", false);
 	addField (mastersthesis, "note", false);
 	addField (mastersthesis, "month", false);
-	addField (mastersthesis, "key", false);
 	addField (mastersthesis, "doi", false);
 	registerType (mastersthesis);
 
@@ -153,7 +147,6 @@ DocumentTypeManager::DocumentTypeManager () {
 	addField (phdthesis, "address", false);
 	addField (phdthesis, "note", false);
 	addField (phdthesis, "month", false);
-	addField (phdthesis, "key", false);
 	addField (phdthesis, "doi", false);	
 	registerType (phdthesis);
 
@@ -166,7 +159,6 @@ DocumentTypeManager::DocumentTypeManager () {
 	addField (proceedings, "address", false);
 	addField (proceedings, "month", false);
 	addField (proceedings, "note", false);
-	addField (proceedings, "key", false);
 	addField (proceedings, "doi", false);	
 	registerType (proceedings);
 
@@ -178,7 +170,6 @@ DocumentTypeManager::DocumentTypeManager () {
 	addField (conference, "month", false);
 	addField (conference, "year", false);
 	addField (conference, "note", false);
-	addField (conference, "key", false);
 	addField (conference, "doi", false);	
 	registerType (conference);
 
@@ -196,7 +187,6 @@ DocumentTypeManager::DocumentTypeManager () {
 	addField (inbook, "edition", false);
 	addField (inbook, "month", false);
 	addField (inbook, "note", false);
-	addField (inbook, "key", false);
 	addField (inbook, "doi", false);
 	registerType (inbook);
 
@@ -208,7 +198,6 @@ DocumentTypeManager::DocumentTypeManager () {
 	addField (booklet, "month", false);
 	addField (booklet, "year", false);
 	addField (booklet, "note", false);
-	addField (booklet, "key", false);
 	addField (booklet, "doi", false);
 	registerType (booklet);
 
@@ -224,7 +213,6 @@ DocumentTypeManager::DocumentTypeManager () {
 	addField (incollection, "address", false);
 	addField (incollection, "month", false);
 	addField (incollection, "note", false);
-	addField (incollection, "key", false);
 	addField (incollection, "doi", false);
 	registerType (incollection);
 
@@ -237,7 +225,6 @@ DocumentTypeManager::DocumentTypeManager () {
 	addField (manual, "month", false);
 	addField (manual, "year", false);
 	addField (manual, "note", false);
-	addField (manual, "key", false);
 	addField (manual, "doi", false);
 	registerType (manual);
 
@@ -251,7 +238,6 @@ DocumentTypeManager::DocumentTypeManager () {
 	addField (techreport, "address", false);
 	addField (techreport, "month", false);
 	addField (techreport, "note", false);
-	addField (techreport, "key", false);
 	addField (techreport, "doi", false);
 	registerType (techreport);
 

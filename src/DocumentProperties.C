@@ -81,8 +81,13 @@ DocumentProperties::DocumentProperties ()
 	extrafieldsstore_ = Gtk::ListStore::create (cols_);
 
 	extrafieldsview_->set_model (extrafieldsstore_);
-	extrafieldsview_->append_column ("Name", extrakeycol_);
-	extrafieldsview_->append_column_editable ("Value", extravalcol_);
+	extrafieldsview_->append_column (_("Name"), extrakeycol_);
+	extrafieldsview_->append_column_editable (_("Value"), extravalcol_);
+
+
+	typecombocols_.add (typebibtexnamecol_);
+	typecombocols_.add (typelabelcol_);
+	typecombostore_ = Gtk::ListStore::create (typecombocols_);
 
 	// looks like watch for a cell-renderer is the only way 
 	// to get information that the cell(s) changed 
@@ -93,6 +98,8 @@ DocumentProperties::DocumentProperties ()
 		sigc::mem_fun (*this, &DocumentProperties::onExtraFieldEdited));
 
 	ignoreTypeChanged_ = false;
+
+	typeManager_ = DocumentTypeManager();
 }
 
 
@@ -123,7 +130,6 @@ bool DocumentProperties::show (Document *doc)
 		return false;
 }
 
-DocumentTypeManager typeManager;
 
 void DocumentProperties::update (Document &doc)
 {
@@ -136,12 +142,23 @@ void DocumentProperties::update (Document &doc)
 	bool const ignore = ignoreTypeChanged_;
 
 	ignoreTypeChanged_ = true;
-	if (typeManager.getTypes().find(doc.getBibData().getType()) != typeManager.getTypes().end()) {
-		DocumentType type = typeManager.getTypes()[doc.getBibData().getType()];
-		typeCombo_->set_active_text (type.bibtexName_);
+	if (typeManager_.getTypes().find(doc.getBibData().getType()) != typeManager_.getTypes().end()) {
+		DocumentType type = typeManager_.getTypes()[doc.getBibData().getType()];
+
+		Gtk::ListStore::iterator it = typecombostore_->children().begin ();
+		Gtk::ListStore::iterator const end = typecombostore_->children().end ();
+		for (; it != end; ++it) {
+			if ((*it)[typebibtexnamecol_] == type.bibtexName_) {
+				typeCombo_->set_active(it);
+				break;
+			}
+		}
+
+		//typeCombo_->set_active_text (type.bibtexName_);
 	} else {
-		typeCombo_->append_text (doc.getBibData().getType());
-		typeCombo_->set_active_text (doc.getBibData().getType());
+		Gtk::TreeModel::Row row = *(typecombostore_->append());
+		row[typelabelcol_] = doc.getBibData().getType();
+		row[typebibtexnamecol_] = doc.getBibData().getType();
 	}
 	ignoreTypeChanged_ = ignore;
 
@@ -172,7 +189,7 @@ void DocumentProperties::save (Document &doc)
 	doc.setFileName (filename);
 	doc.setKey (keyentry_->get_text ());
 
-	doc.getBibData().setType (typeCombo_->get_active_text ());
+	doc.getBibData().setType ((*(typeCombo_->get_active()))[typebibtexnamecol_] );
 
 	doc.clearFields ();
 	FieldEntryMap::iterator entry = fieldEntries_.begin();
@@ -198,7 +215,7 @@ void DocumentProperties::setupFields (Glib::ustring const &docType)
 		metadataBox->children().erase(metadataBox->children().begin());
 	}
 
-	DocumentType type = typeManager.getType (docType);
+	DocumentType type = typeManager_.getType (docType);
 
 	int const nRows = type.requiredFields_.size() + type.optionalFields_.size();
 	Gtk::Table *metadataTable = new Gtk::Table (nRows, 4, false);
@@ -208,18 +225,31 @@ void DocumentProperties::setupFields (Glib::ustring const &docType)
 	fieldEntries_.clear ();
 
 	Gtk::Label *typeLabel = Gtk::manage (new Gtk::Label (_("_Type:"), Gtk::ALIGN_LEFT, Gtk::ALIGN_CENTER, true));
-	typeCombo_ = Gtk::manage (new Gtk::ComboBoxEntryText);
-	typeCombo_->signal_changed().connect (
-			sigc::mem_fun (*this, &DocumentProperties::onTypeChanged));
+	
+	if (typecombochanged_)
+		typecombochanged_.disconnect();
+
+	typeCombo_ = Gtk::manage (new Gtk::ComboBox);
+	typeCombo_->set_model(typecombostore_);
+	typeCombo_->pack_start(typelabelcol_, true);
+	typeCombo_->pack_start(typebibtexnamecol_, false);
+
 	typeLabel->set_mnemonic_widget (*typeCombo_);
 	metadataTable->attach (*typeLabel, 0, 1, 0, 1, Gtk::FILL, Gtk::SHRINK | Gtk::FILL, 0, 0);
 	metadataTable->attach (*typeCombo_, 1, 4, 0, 1, Gtk::FILL, Gtk::SHRINK | Gtk::FILL, 0, 0);
 
-	for (DocumentTypeManager::TypesMap::iterator it = typeManager.getTypes().begin();
-			it != typeManager.getTypes().end();
+	typecombostore_->clear();
+	for (DocumentTypeManager::TypesMap::iterator it = typeManager_.getTypes().begin();
+			it != typeManager_.getTypes().end();
 			++it) {
-		typeCombo_->append_text ((*it).second.bibtexName_);
+
+		Gtk::TreeModel::Row row = *(typecombostore_->append());
+		row[typelabelcol_] = (*it).second.displayName_;
+		row[typebibtexnamecol_] = (*it).second.bibtexName_;
 	}
+
+	typecombochanged_ = typeCombo_->signal_changed().connect (
+			sigc::mem_fun (*this, &DocumentProperties::onTypeChanged));
 
 	int row = 1;
 	for (
@@ -473,6 +503,7 @@ void DocumentProperties::onClear ()
 
 void DocumentProperties::onTypeChanged ()
 {
+	DEBUG("onTypeChanged called, ignoreTypeChanged = %1", ignoreTypeChanged_);
 	if (ignoreTypeChanged_)
 		return;
 	Document doc;

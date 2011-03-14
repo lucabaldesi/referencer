@@ -19,6 +19,7 @@
 #include <gtkmm.h>
 
 #include "CaseFoldCompare.h"
+#include "DocumentTypes.h"
 
 class Document;
 
@@ -44,7 +45,12 @@ class DocumentProperties {
 	Gtk::TreeView *extrafieldsview_;
 	Glib::RefPtr<Gtk::TreeSelection> extrafieldssel_;
 
-	Gtk::ComboBoxEntryText *typeCombo_;
+	Gtk::ComboBox *typeCombo_;
+	Gtk::TreeModelColumn<Glib::ustring> typelabelcol_;
+	Gtk::TreeModelColumn<Glib::ustring> typebibtexnamecol_;
+	Gtk::TreeModel::ColumnRecord typecombocols_;
+	Glib::RefPtr< Gtk::ListStore > typecombostore_;
+	sigc::connection typecombochanged_;
 	typedef std::map <Glib::ustring, Gtk::Entry*, casefoldCompare> FieldEntryMap;
 	FieldEntryMap fieldEntries_;
 
@@ -70,6 +76,7 @@ class DocumentProperties {
 	void onFileChanged ();
 	void onIconButtonClicked ();
 	bool ignoreTypeChanged_;
+	DocumentTypeManager typeManager_;
 
 	public:
 		bool show (Document *doc);
