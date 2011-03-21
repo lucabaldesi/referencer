@@ -15,7 +15,6 @@
 
 #include <utility>
 
-#include <libglademm.h>
 #include <gtkmm.h>
 #include <gconfmm.h>
 
@@ -24,7 +23,7 @@
 
 class Preferences {
 private:
-	Glib::RefPtr<Gnome::Glade::Xml> xml_;
+	Glib::RefPtr<Gtk::Builder> xml_;
 
 	/*
 	 * Plugins

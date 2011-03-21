@@ -97,10 +97,11 @@ Preferences::Preferences ()
 		"/system/proxy",
 		sigc::mem_fun (*this, &Preferences::onConfChange));
 
-	xml_ = Gnome::Glade::Xml::create (
-		Utility::findDataFile ("preferences.glade"));
+	xml_ = Gtk::Builder::create_from_file 
+			(Utility::findDataFile ("preferences.ui"));
 
-	dialog_ = (Gtk::Dialog *) xml_->get_widget ("Preferences");
+
+	xml_->get_widget ("Preferences", dialog_);
 
 	xml_->get_widget ("ProxyHost", proxyhostentry_);
 	xml_->get_widget ("ProxyPort", proxyportspin_);
@@ -129,10 +130,10 @@ Preferences::Preferences ()
 	Gnome::Conf::SListHandle_ValueString disable =
 		confclient_->get_string_list (disabledPlugins_.get_key ());
 
-	configureButton_ = (Gtk::Button*) xml_->get_widget ("PluginConfigure");
+	xml_->get_widget ("PluginConfigure", configureButton_);
 	configureButton_->signal_clicked().connect (
 		sigc::mem_fun (*this, &Preferences::onPluginConfigure));
-	aboutButton_ =     (Gtk::Button*) xml_->get_widget ("PluginAbout");
+	xml_->get_widget ("PluginAbout", aboutButton_);
 	aboutButton_->signal_clicked().connect (
 		sigc::mem_fun (*this, &Preferences::onPluginAbout));
 

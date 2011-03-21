@@ -27,39 +27,39 @@
 
 DocumentProperties::DocumentProperties ()
 {
-	xml_ = Gnome::Glade::Xml::create (
-		Utility::findDataFile ("documentproperties.glade"));
+	xml_ =  Gtk::Builder::create_from_file 
+		(Utility::findDataFile ("documentproperties.ui"));
 
-	dialog_ = (Gtk::Dialog *) xml_->get_widget ("DocumentProperties");
+	xml_->get_widget ("DocumentProperties", dialog_);
 
-	filechooser_ = (Gtk::FileChooserButton *) xml_->get_widget ("File");
+	xml_->get_widget ("File", filechooser_);
 	filechooser_->signal_selection_changed().connect (
 			sigc::mem_fun (*this, &DocumentProperties::onFileChanged));
 
 
-	keyentry_ = (Gtk::Entry *) xml_->get_widget ("Key");
-	iconImage_ = (Gtk::Image *) xml_->get_widget ("Icon");
-	iconButton_ = (Gtk::Button *) xml_->get_widget ("IconButton");
+	xml_->get_widget ("Key", keyentry_);
+	xml_->get_widget ("Icon", iconImage_);
+	xml_->get_widget ("IconButton", iconButton_);
 	iconButton_->signal_clicked().connect (
 			sigc::mem_fun (*this, &DocumentProperties::onIconButtonClicked));
 
-	crossrefbutton_ = (Gtk::Button *) xml_->get_widget ("Lookup");
+	xml_->get_widget ("Lookup", crossrefbutton_);
 	crossrefbutton_->signal_clicked().connect(
 		sigc::mem_fun (*this, &DocumentProperties::onMetadataLookup));
 
-	pastebibtexbutton_ = (Gtk::Button *) xml_->get_widget ("PasteBibtex");
+	xml_->get_widget ("PasteBibtex", pastebibtexbutton_);
 	pastebibtexbutton_->signal_clicked().connect(
 		sigc::mem_fun (*this, &DocumentProperties::onPasteBibtex));
 
-	Gtk::Button *clearButton = (Gtk::Button *) xml_->get_widget ("Clear");
+ 	Gtk::Button *clearButton;
+	xml_->get_widget ("Clear", clearButton);
 	clearButton->signal_clicked().connect (
 		sigc::mem_fun (*this, &DocumentProperties::onClear));
 
-	extrafieldsexpander_ =
-		(Gtk::Expander *) xml_->get_widget ("ExtraFieldsExpander");
-	newextrafieldbutton_ = (Gtk::Button *) xml_->get_widget ("NewExtraField");
-	deleteextrafieldbutton_ = (Gtk::Button *) xml_->get_widget ("DeleteExtraField");
-	editextrafieldbutton_ = (Gtk::Button *) xml_->get_widget ("EditExtraField");
+	xml_->get_widget ("ExtraFieldsExpander", extrafieldsexpander_);
+	xml_->get_widget ("NewExtraField", newextrafieldbutton_);
+	xml_->get_widget ("DeleteExtraField", deleteextrafieldbutton_);
+	xml_->get_widget ("EditExtraField", editextrafieldbutton_);
 
 	newextrafieldbutton_->signal_clicked ().connect (
 		sigc::mem_fun (*this, &DocumentProperties::onNewExtraField));
@@ -70,7 +70,7 @@ DocumentProperties::DocumentProperties ()
 	editextrafieldbutton_->signal_clicked ().connect (
 		sigc::mem_fun (*this, &DocumentProperties::onEditExtraField));
 
-	extrafieldsview_ = (Gtk::TreeView *) xml_->get_widget ("ExtraFields");
+	xml_->get_widget ("ExtraFields", extrafieldsview_);
 	cols_.add (extrakeycol_);
 	cols_.add (extravalcol_);
 
@@ -208,7 +208,8 @@ void DocumentProperties::save (Document &doc)
 
 void DocumentProperties::setupFields (Glib::ustring const &docType)
 {
-	Gtk::VBox *metadataBox = (Gtk::VBox *) xml_->get_widget ("MetadataBox");
+	Gtk::VBox *metadataBox;
+  xml_->get_widget ("MetadataBox", metadataBox);
 	if (metadataBox->children().size()) {
 		metadataBox->children().erase(metadataBox->children().begin());
 	}

@@ -17,7 +17,6 @@
 #include <map>
 
 #include <gtkmm.h>
-#include <libglademm.h>
 
 #include "Plugin.h"
 
@@ -216,7 +215,7 @@ class RefWindow {
 			void updateSensitivity ();
 			void resultActivated (const Gtk::TreePath &path, Gtk::TreeViewColumn * col);
 
-			Glib::RefPtr<Gnome::Glade::Xml> xml_;
+			Glib::RefPtr<Gtk::Builder> xml_;
 
 			Gtk::Dialog *dialog_;
 			Gtk::Button *searchButton_;

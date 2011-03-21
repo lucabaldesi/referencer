@@ -155,7 +155,7 @@ CrossRefPlugin::CrossRefPlugin () {
 	loaded_ = true;
 	cap_.add(PluginCapability::DOI);
 
-	xml_ = Gnome::Glade::Xml::create (Utility::findDataFile ("crossref.glade"));
+	xml_ = Gtk::Builder::create_from_file (Utility::findDataFile ("crossref.ui"));
 
 	xml_->get_widget ("Crossref", dialog_);
 	xml_->get_widget ("Username", usernameEntry_);

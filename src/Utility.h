@@ -19,7 +19,6 @@
 #include <sstream>
 
 #include <gtkmm.h>
-#include <libglademm.h>
 #include <libgnomevfsmm.h>
 
 #include "ucompose.hpp"

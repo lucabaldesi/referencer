@@ -3,7 +3,7 @@
 #ifndef CROSSREFPLUGIN_H
 #define CROSSREFPLUGIN_H
 
-#include <libglademm.h>
+
 
 #include "Plugin.h"
 
@@ -25,7 +25,7 @@ class CrossRefPlugin : public Plugin
 	private:
 		bool ignoreChanges_;
 		void onPrefsChanged ();
-		Glib::RefPtr<Gnome::Glade::Xml> xml_;
+		Glib::RefPtr<Gtk::Builder> xml_;
 		Gtk::Dialog *dialog_;
 		Gtk::Entry  *usernameEntry_;
 		Gtk::Entry  *passwordEntry_;

@@ -3004,8 +3004,8 @@ void RefWindow::onPluginRun (Glib::ustring const function, Plugin* plugin)
 RefWindow::SearchDialog::SearchDialog (Library &library, DocumentView &view)
 	: library_(library),documentView_(view)
 {
-	xml_ = Gnome::Glade::Xml::create (
-		Utility::findDataFile ("search.glade"));
+	xml_ = Gtk::Builder::create_from_file (
+		Utility::findDataFile ("search.ui"));
 	
 	xml_->get_widget ("SearchDialog", dialog_);
 	xml_->get_widget ("Find", searchButton_);

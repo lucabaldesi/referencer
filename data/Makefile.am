@@ -1,16 +1,16 @@
 resourcesdir   = $(pkgdatadir)
 resources_DATA = \
-		 documentproperties.glade \
-		 preferences.glade \
-		 search.glade \
+		 documentproperties.ui \
+		 preferences.ui \
+		 search.ui \
 		 introduction.html \
 		 main.css \
 		 thumbnail_frame.png \
 		 referencer.svg \
 		 tag.svg \
 		 unknown-document.png \
-		 crossref.glade \
-		 libraryfolder.glade
+		 crossref.ui \
+		 libraryfolder.ui
 
 desktopdir       = $(datadir)/applications
 desktop_in_files = referencer.desktop.in

@@ -124,17 +124,17 @@ void Library::clear ()
  */
 bool Library::libraryFolderDialog ()
 {
-	Glib::RefPtr<Gnome::Glade::Xml> xml = Gnome::Glade::Xml::create (
-			Utility::findDataFile ("libraryfolder.glade"));
+	Glib::RefPtr<Gtk::Builder> xml = Gtk::Builder::create_from_file 
+		(Utility::findDataFile ("libraryfolder.ui"));
 
-	Gtk::FileChooserButton *location =
-		(Gtk::FileChooserButton *) xml->get_widget ("Location");
+	Gtk::FileChooserButton *location;
+		xml->get_widget ("Location", location);
 
-	Gtk::CheckButton *monitor =
-		(Gtk::CheckButton *) xml->get_widget ("AutomaticallyAddDocuments");
+	Gtk::CheckButton *monitor;
+		xml->get_widget ("AutomaticallyAddDocuments", monitor);
 
-	Gtk::Dialog *dialog = 
-		(Gtk::Dialog *) xml->get_widget ("LibraryFolder");
+	Gtk::Dialog *dialog;
+		xml->get_widget ("LibraryFolder", dialog);
  
 	bool oldMonitorState = library_folder_monitor_;
 	Glib::ustring const oldFolder = library_folder_uri_;

@@ -15,7 +15,6 @@
 
 #include <map>
 
-#include <libglademm.h>
 #include <gtkmm.h>
 
 #include "CaseFoldCompare.h"
@@ -25,7 +24,7 @@ class Document;
 
 class DocumentProperties {
 	private:
-	Glib::RefPtr<Gnome::Glade::Xml> xml_;
+	Glib::RefPtr<Gtk::Builder> xml_;
 
 	/*
 	 * Local working copy

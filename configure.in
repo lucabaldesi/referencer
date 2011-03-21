@@ -32,11 +32,10 @@ AC_PROG_RANLIB
 dnl Checks for libraries.
 PKG_CHECK_MODULES(DEPS, [
 			libgnomeuimm-2.6 >= 2.12.0
-			gtkmm-2.4 >= 2.8.0
+			gtkmm-2.4 >= 2.12.0
 dnl TODO: make dbus-glib and tracker optional
 dnl			dbus-glib-1 >= 0.74
 dnl			tracker >= 0.6.3
-			libglademm-2.4 >= 2.6.0
 			gconfmm-2.6 >= 2.12.0
 			gnome-vfsmm-2.6 >= 2.12.0
 			poppler-glib >= 0.5.0			

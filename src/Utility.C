@@ -205,8 +205,6 @@ Glib::ustring ensureExtension (
 Glib::ustring findDataFile (
 	Glib::ustring const &filename)
 {
-	Glib::RefPtr<Gnome::Glade::Xml> xml;
-
 	Glib::ustring localfile;
 	if (Glib::path_is_absolute (filename)) {
 		localfile = filename;
