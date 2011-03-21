@@ -1,0 +1,33 @@
+./src/referencer
+
+# ignore autotool generated files
+**/Makefile
+**/Makefile.in
+RE:config.(h|log|status|h.in)
+configure
+depcomp
+missing
+install-sh
+mkinstalldirs
+gnome-doc-utils.make
+stamp-h1
+
+# various generated files
+*.gmo
+autom4te.cache
+tags
+**/.deps
+referencer.spec
+*.omf
+./intltool-*
+data/referencer.desktop
+data/referencer.desktop.in
+*.mo
+m4/gnome-doc-utils.m4
+m4/intltool.m4
+po/.intltool-merge-cache
+po/POTFILES
+po/stamp-it
+help/*/referencer.xml
+devhelp/*/referencer-plugins.xml
+aclocal.m4
