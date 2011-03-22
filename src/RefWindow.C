@@ -25,7 +25,6 @@
 #include "DocumentProperties.h"
 #include "DocumentView.h"
 #include "Library.h"
-#include "LibraryParser.h"
 #include "Plugin.h"
 #include "Preferences.h"
 #include "Progress.h"
@@ -584,7 +583,7 @@ void RefWindow::updateTagSizes ()
 {
 	std::map <int, int> tagusecounts;
 
-	DocumentList::Container &docrefs = library_->doclist_->getDocs ();
+	DocumentList::Container &docrefs = library_->getDocList()->getDocs ();
 	int const doccount = docrefs.size ();
 	DocumentList::Container::iterator docit = docrefs.begin();
 	DocumentList::Container::iterator const docend = docrefs.end();
@@ -603,7 +602,7 @@ void RefWindow::updateTagSizes ()
 	 * useful data structure. */
 	typedef std::map<Glib::ustring, std::pair<int, int> > SensibleMap;
 	std::map<Glib::ustring, std::pair<int, int> > sensibleTags;
-	TagList::TagMap allTags = library_->taglist_->getTags();
+	TagList::TagMap allTags = library_->getTagList()->getTags();
 	TagList::TagMap::iterator sensibleIter = allTags.begin();
 	TagList::TagMap::iterator const sensibleEnd = allTags.end();
 	for (; sensibleIter != sensibleEnd; ++sensibleIter) {
@@ -689,7 +688,7 @@ void RefWindow::populateTagList ()
 	 * useful data structure. */
 	typedef std::map<Glib::ustring, int > SensibleMap;
 	SensibleMap sensibleTags;
-	TagList::TagMap allTags = library_->taglist_->getTags();
+	TagList::TagMap allTags = library_->getTagList()->getTags();
 	TagList::TagMap::iterator sensibleIter = allTags.begin();
 	TagList::TagMap::iterator const sensibleEnd = allTags.end();
 	for (; sensibleIter != sensibleEnd; ++sensibleIter)
@@ -851,7 +850,7 @@ void RefWindow::tagNameEdited (
 	/* Update name in tag bar */
 	(*iter)[tagnamecol_] = newname;
 	/* Update name in tag store */
-	library_->taglist_->renameTag ((*iter)[taguidcol_], newname);
+	library_->getTagList()->renameTag ((*iter)[taguidcol_], newname);
 
 	/* Update name in tag action */
 	taggerUI_[(*iter)[taguidcol_]].action->property_label() = newname;
@@ -1121,14 +1120,14 @@ int RefWindow::createTag ()
 			messageLabel.set_markup (String::ucompose(
 				"<i>%1</i>", _("Empty tag names are not valid")));
 			messageLabel.show();
-		} else if (library_->taglist_->tagExists (newname)) {
+		} else if (library_->getTagList()->tagExists (newname)) {
 			invalid = true;
 			messageLabel.set_markup (String::ucompose(
 				"<i>%1</i>", _("Duplicate tag names are not valid")));
 			messageLabel.show();
 		} else {
 			invalid = false;
-			newtag = library_->taglist_->newTag (newname);
+			newtag = library_->getTagList()->newTag (newname);
 			populateTagList();
 		}
 
@@ -1215,9 +1214,9 @@ void RefWindow::onDeleteTag ()
 	for (; uidit != uidend; ++uidit) {
 		DEBUG (String::ucompose ("really deleting %1", *uidit));
 		// Take it off any docs
-		library_->doclist_->clearTag(*uidit);
+		library_->getDocList()->clearTag(*uidit);
 		// Remove it from the tag list
-		library_->taglist_->deleteTag (*uidit);
+		library_->getTagList()->deleteTag (*uidit);
 	}
 
 	if (uidstodelete.size() > 0) {
@@ -1312,7 +1311,7 @@ void RefWindow::onExportBibtex ()
 		if (selectedonly) {
 			docs = docview_->getSelectedDocs ();
 		} else {
-			DocumentList::Container &docrefs = library_->doclist_->getDocs ();
+			DocumentList::Container &docrefs = library_->getDocList()->getDocs ();
 			DocumentList::Container::iterator it = docrefs.begin();
 			DocumentList::Container::iterator const end = docrefs.end();
 			for (; it != end; it++) {
@@ -1381,7 +1380,7 @@ void RefWindow::onNotesExport ()
 		if (selectedonly) {
 			docs = docview_->getSelectedDocs ();
 		} else {
-			DocumentList::Container &docrefs = library_->doclist_->getDocs ();
+			DocumentList::Container &docrefs = library_->getDocList()->getDocs ();
 			DocumentList::Container::iterator it = docrefs.begin();
 			DocumentList::Container::iterator const end = docrefs.end();
 			for (; it != end; it++) {
@@ -1878,7 +1877,7 @@ std::vector<int> RefWindow::TaggerDialog::tagPrompt ()
 
 void RefWindow::onAddDocFilesTag (std::vector<Document*> &docs)
 {
-	TaggerDialog dialog (this, library_->taglist_);
+	TaggerDialog dialog (this, library_->getTagList());
 	std::vector<int> tags = dialog.tagPrompt ();
 
 	std::vector<int>::iterator tagIter = tags.begin ();
@@ -1994,7 +1993,7 @@ void RefWindow::addDocFiles (std::vector<Glib::ustring> const &filenames)
 			DEBUG ("Ooh, a remote uri\n");
 		}
 
-		Document *newdoc = library_->doclist_->newDocWithFile(*it);
+		Document *newdoc = library_->getDocList()->newDocWithFile(*it);
 		bool added = false;
 		bool gotMetadata = false;
 		bool gotText = false;
@@ -2011,7 +2010,7 @@ void RefWindow::addDocFiles (std::vector<Glib::ustring> const &filenames)
 
 			// Generate a Zoidberg99 type key
 			newdoc->setKey (
-				library_->doclist_->uniqueKey (
+				library_->getDocList()->uniqueKey (
 					newdoc->generateKey ()));
 			
 			// If we did not succeed in getting a title, use the filename
@@ -2105,13 +2104,13 @@ void RefWindow::addDocFiles (std::vector<Glib::ustring> const &filenames)
 void RefWindow::onAddDocUnnamed ()
 {
 	setDirty (true);
-	Document *newdoc = library_->doclist_->newDocUnnamed ();
-	newdoc->setKey (library_->doclist_->uniqueKey (newdoc->generateKey ()));
+	Document *newdoc = library_->getDocList()->newDocUnnamed ();
+	newdoc->setKey (library_->getDocList()->uniqueKey (newdoc->generateKey ()));
 	if (docpropertiesdialog_->show (newdoc)) {
 		docview_->addDoc (newdoc);
 		updateStatusBar ();
 	} else {
-		library_->doclist_->removeDoc (newdoc);
+		library_->getDocList()->removeDoc (newdoc);
 	}
 }
 
@@ -2176,7 +2175,7 @@ void RefWindow::onAddDocById ()
 
 	if (dialog.run () == Gtk::RESPONSE_ACCEPT) {
 		setDirty (true);
-		Document *newdoc = library_->doclist_->newDocUnnamed ();
+		Document *newdoc = library_->getDocList()->newDocUnnamed ();
 
 		/* Look up selection to capability ID */
 		Glib::ustring displayField = combo.get_active_text ();
@@ -2210,7 +2209,7 @@ void RefWindow::onAddDocById ()
 		newdoc->setField (field, id);
 
 		newdoc->getMetaData ();
-		newdoc->setKey (library_->doclist_->uniqueKey (newdoc->generateKey ()));
+		newdoc->setKey (library_->getDocList()->uniqueKey (newdoc->generateKey ()));
 
 		docview_->addDoc (newdoc);
 		updateStatusBar ();
@@ -2319,7 +2318,7 @@ void RefWindow::onRemoveDoc ()
 	for (; it != end; it++) {
 		DEBUG (String::ucompose ("RefWindow::onRemoveDoc: removeDoc on '%1'", *it));
 		docview_->removeDoc (*it);
-		library_->doclist_->removeDoc(*it);
+		library_->getDocList()->removeDoc(*it);
 	}
 
 	setDirty (true);
@@ -2445,7 +2444,7 @@ void RefWindow::onDeleteDoc ()
 		try {
 			Utility::deleteFile ((*it)->getFileName ());
 			docview_->removeDoc (*it);
-			library_->doclist_->removeDoc(*it);
+			library_->getDocList()->removeDoc(*it);
 		} catch (Glib::Exception &ex) {
 			Utility::exceptionDialog (&ex,
 				String::ucompose (_("Deleting '%1'"), (*it)->getFileName ()));
@@ -2487,7 +2486,7 @@ void RefWindow::openProperties (Document *doc)
 			{
 			/* Check for invalid characters in key */
 			Glib::ustring key = doc->getKey ();
-			Glib::ustring sanitizedKey = library_->doclist_->sanitizedKey (key);
+			Glib::ustring sanitizedKey = library_->getDocList()->sanitizedKey (key);
 			if (key != sanitizedKey)
 				doc->setKey (Document::keyReplaceDialogInvalidChars(key, sanitizedKey));
 			}
@@ -2495,7 +2494,7 @@ void RefWindow::openProperties (Document *doc)
 			{
 			/* Check for dupe keys */
 			Glib::ustring key = doc->getKey ();
-			Glib::ustring uniqueKey = library_->doclist_->uniqueKey (key, doc);
+			Glib::ustring uniqueKey = library_->getDocList()->uniqueKey (key, doc);
 			if (key != uniqueKey)
 				doc->setKey (Document::keyReplaceDialogNotUnique (key, uniqueKey));
 			}
@@ -2718,7 +2717,7 @@ void RefWindow::onImport ()
 				format = BibUtils::FORMAT_UNKNOWN;
 		}
 
-		library_->doclist_->importFromFile (filename, format);
+		library_->getDocList()->importFromFile (filename, format);
 
 
 		populateTagList ();
@@ -2760,7 +2759,7 @@ void RefWindow::onPasteBibtex (GdkAtom selection)
 */
 
 	int imported =
-		library_->doclist_->import (clipboardtext, BibUtils::FORMAT_BIBTEX);
+		library_->getDocList()->import (clipboardtext, BibUtils::FORMAT_BIBTEX);
 
 	DEBUG (String::ucompose ("Imported %1 references", imported));
 
@@ -2928,8 +2927,8 @@ void RefWindow::docSelectionChanged ()
 
 	/* Update tagger Actions */
 	ignoreTaggerActionToggled_ = true;
-	for (TagList::TagMap::iterator tagit = library_->taglist_->getTags().begin();
-	     tagit != library_->taglist_->getTags().end(); ++tagit) {
+	for (TagList::TagMap::iterator tagit = library_->getTagList()->getTags().begin();
+	     tagit != library_->getTagList()->getTags().end(); ++tagit) {
 		Glib::RefPtr<Gtk::ToggleAction> action = taggerUI_[(*tagit).second.uid_].action;
 		DocumentView::SubSet state = docview_->selectedDocsHaveTag ((*tagit).second.uid_);
 
@@ -3193,10 +3192,10 @@ void RefWindow::SearchDialog::addSelected ()
 	if (newdoc.getField("key") == "") {
 		newdoc.setField(
 				"key",
-				library_.doclist_->uniqueKey(newdoc.generateKey(), NULL));
+				library_.getDocList()->uniqueKey(newdoc.generateKey(), NULL));
 	}
 
-	documentView_.addDoc (library_.doclist_->insertDoc(newdoc));
+	documentView_.addDoc (library_.getDocList()->insertDoc(newdoc));
 }
 
 bool RefWindow::SearchDialog::pluginsExist ()

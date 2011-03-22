@@ -14,6 +14,7 @@
 #define DOCUMENT_H
 
 #include <glibmm.h>
+#include <libxml/xmlwriter.h>
 
 #include "BibData.h"
 
@@ -48,6 +49,14 @@ class Document {
 		Glib::ustring const &key,
 		std::vector<int> const &tagUids,
 		BibData const &bib);
+        /**
+         * Creates a document by extracting information from the provided XML
+         * node.
+         * @param docNode the XML DOM node representing the element that
+         * contains information about the document, such as the title, authors,
+         * filename etc.
+         */
+        Document(xmlNodePtr docNode);
 	Glib::ustring const & getKey() const;
 	Glib::ustring const & getFileName() const;
 	// RelFileName is NOT kept up to date in general, it's
@@ -56,6 +65,14 @@ class Document {
 	void setFileName (Glib::ustring const &filename);
 	void updateRelFileName (Glib::ustring const &libfilename);
 	void setKey (Glib::ustring const &key);
+	/**
+	 * <p>Sets the relative path to the file as is.</p>
+	 * <p>This function is used when loading stored documents from the 'reflib'
+	 * library XML file.</p>
+	 */
+	void setRelFileName(const Glib::ustring& relFileName) {
+		this->relfilename_ = relFileName;
+	}
 	
 	//Notes set and get
 	Glib::ustring const & getNotes() const;
@@ -84,7 +101,14 @@ class Document {
 		bool const useBraces,
 		bool const utf8);
 		
-	void writeXML (Glib::ustring &out);
+	void writeXML (xmlTextWriterPtr writer);
+        /**
+         * Extracts document data from the given XML DOM node.
+         * @param docNode the \c document node from the parsed library XML file.
+         * It contains information about the document such as authors, title,
+         * filename etc.
+         */
+        void readXML(xmlNodePtr docNode);
 	bool readPDF ();
 	bool getMetaData ();
 	void renameFromKey ();

@@ -1,4 +1,3 @@
-
 /*
  * Referencer is released under the GNU General Public License v2
  * See the COPYING file for licensing details.
@@ -8,14 +7,11 @@
  *
  */
 
-
-
-
 #include <iostream>
 #include <sstream>
 
-#include <glibmm/markup.h>
 #include <glibmm/i18n.h>
+#include <libxml/xmlwriter.h>
 #include "ucompose.hpp"
 #include <poppler.h>
 
@@ -30,9 +26,8 @@
 #include "ThumbnailGenerator.h"
 #include "Utility.h"
 
-
 #include "Document.h"
-
+#include "Library.h"
 
 const Glib::ustring Document::defaultKey_ = _("Unnamed");
 Glib::RefPtr<Gdk::Pixbuf> Document::loadingthumb_;
@@ -64,7 +59,6 @@ Document::Document ()
 	setupThumbnail ();
 }
 
-
 Document::Document (
 	Glib::ustring const &filename,
 	Glib::ustring const &relfilename,
@@ -80,6 +74,11 @@ Document::Document (
 	tagUids_ = tagUids;
 	bib_ = bib;
 	relfilename_ = relfilename;
+}
+
+Document::Document(xmlNodePtr docNode) 
+{
+    readXML(docNode);
 }
 
 Glib::ustring Document::keyReplaceDialogNotUnique (
@@ -333,7 +332,6 @@ bool Document::hasTag(int uid)
 
 using Utility::writeBibKey;
 
-
 /**
  * Temporarily duplicating functionality in printBibtex and 
  * writeBibtex -- the difference is that writeBibtex requires a 
@@ -425,7 +423,7 @@ void Document::writeBibtex (
 		for (; tagit != tagend; ++tagit) {
 			if (tagit != tagUids_.begin ())
 				out << ", ";
-			out << lib.taglist_->getName (*tagit);
+			out << lib.getTagList()->getName(*tagit);
 		}
 		out << "\"\n";
 	}
@@ -433,32 +431,61 @@ void Document::writeBibtex (
 	out << "}\n\n";
 }
 
+void Document::writeXML(xmlTextWriterPtr writer) {
+    xmlTextWriterStartElement(writer, BAD_CAST LIB_ELEMENT_DOC);
 
-using Glib::Markup::escape_text;
-
-void Document::writeXML (Glib::ustring &out)
-{
-	out += "  <doc>\n";
-	out += "    <relative_filename>" + escape_text(getRelFileName())
-		+ "</relative_filename>\n";
-	out += "    <key>" + escape_text(getKey())
-		+ "</key>\n";
-	out += "    <notes>" + escape_text(getNotes())
-		+ "</notes>\n";
+    xmlTextWriterWriteElement(writer, BAD_CAST LIB_ELEMENT_DOC_REL_FILENAME, BAD_CAST getRelFileName().c_str());
+    xmlTextWriterWriteElement(writer, BAD_CAST LIB_ELEMENT_DOC_KEY, BAD_CAST getKey().c_str());
+    xmlTextWriterWriteElement(writer, BAD_CAST LIB_ELEMENT_DOC_NOTES, BAD_CAST getNotes().c_str());
 
 	std::vector<int> docvec = getTags();
-	for (std::vector<int>::iterator it = docvec.begin();
-		   it != docvec.end(); ++it) {
-		std::ostringstream stream;
-		stream << (*it);
-		out += "    <tagged>" + stream.str() + "</tagged>\n";
+    for (std::vector<int>::iterator it = docvec.begin(); it != docvec.end(); ++it) {
+        xmlTextWriterWriteFormatElement(writer, BAD_CAST LIB_ELEMENT_DOC_TAG, "%d", (*it));
 	}
 
-	getBibData().writeXML (out);
+    getBibData().writeXML(writer);
 
-	out += "  </doc>\n";
+    xmlTextWriterEndElement(writer);
 }
 
+void Document::readXML(xmlNodePtr docNode) {
+    for (xmlNodePtr child = xmlFirstElementChild(docNode); child; child
+            = xmlNextElementSibling(child)) {
+        if (nodeNameEq(child, LIB_ELEMENT_DOC_TAG)) {
+            SET_FROM_NODE_MAP(setTag, child, atoi);
+        } else if (nodeNameEq(child, LIB_ELEMENT_DOC_REL_FILENAME)) {
+            SET_FROM_NODE(setRelFileName, child);
+        } else if (nodeNameEq(child, LIB_ELEMENT_DOC_KEY)) {
+            SET_FROM_NODE(setKey, child);
+        } else if (nodeNameEq(child, LIB_ELEMENT_DOC_NOTES)) {
+            SET_FROM_NODE(setNotes, child);
+        } else if (nodeNameEq(child, LIB_ELEMENT_DOC_BIB_AUTHORS)) {
+            SET_FROM_NODE(getBibData().setAuthors, child);
+        } else if (nodeNameEq(child, LIB_ELEMENT_DOC_BIB_DOI)) {
+            SET_FROM_NODE(getBibData().setDoi, child);
+        } else if (nodeNameEq(child, LIB_ELEMENT_DOC_BIB_EXTRA)) {
+            char* extraKey = STR xmlGetProp(child, XSTR LIB_ELEMENT_DOC_BIB_EXTRA_KEY);
+            char* extraText = STR xmlNodeGetContent(child);
+            getBibData().addExtra(extraKey, extraText);
+            xmlFree(extraKey);
+            xmlFree(extraText);
+        } else if (nodeNameEq(child, LIB_ELEMENT_DOC_BIB_JOURNAL)) {
+            SET_FROM_NODE(getBibData().setJournal, child);
+        } else if (nodeNameEq(child, LIB_ELEMENT_DOC_BIB_NUMBER)) {
+            SET_FROM_NODE(getBibData().setIssue, child);
+        } else if (nodeNameEq(child, LIB_ELEMENT_DOC_BIB_PAGES)) {
+            SET_FROM_NODE(getBibData().setPages, child);
+        } else if (nodeNameEq(child, LIB_ELEMENT_DOC_BIB_TITLE)) {
+            SET_FROM_NODE(getBibData().setTitle, child);
+        } else if (nodeNameEq(child, LIB_ELEMENT_DOC_BIB_TYPE)) {
+            SET_FROM_NODE(getBibData().setType, child);
+        } else if (nodeNameEq(child, LIB_ELEMENT_DOC_BIB_VOLUME)) {
+            SET_FROM_NODE(getBibData().setVolume, child);
+        } else if (nodeNameEq(child, LIB_ELEMENT_DOC_BIB_YEAR)) {
+            SET_FROM_NODE(getBibData().setYear, child);
+        }
+    }
+}
 
 bool Document::readPDF ()
 {

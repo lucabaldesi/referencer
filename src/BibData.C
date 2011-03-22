@@ -14,12 +14,14 @@
 #include <time.h>
 #include <boost/regex.hpp>
 #include <glibmm/i18n.h>
+#include <libxml/xmlwriter.h>
 #include "ucompose.hpp"
 
 #include "Transfer.h"
 #include "Preferences.h"
 
 #include "BibData.h"
+#include "Library.h"
 
 Glib::ustring BibData::default_document_type;
 
@@ -100,27 +102,25 @@ void BibData::clearExtras ()
 	extras_.clear ();
 }
 
-
-using Glib::Markup::escape_text;
-
-void BibData::writeXML (Glib::ustring &out)
+void BibData::writeXML (xmlTextWriterPtr writer)
 {
-	out += "    <bib_type>" + escape_text(type_) + "</bib_type>\n";
-	out += "    <bib_doi>" + escape_text(doi_) + "</bib_doi>\n";
-	out += "    <bib_title>" + escape_text(title_) + "</bib_title>\n";
-	out += "    <bib_authors>" + escape_text(authors_) + "</bib_authors>\n";
-	out += "    <bib_journal>" + escape_text(journal_) + "</bib_journal>\n";
-	out += "    <bib_volume>" + escape_text(volume_) + "</bib_volume>\n";
-	out += "    <bib_number>" + escape_text(issue_) + "</bib_number>\n";
-	out += "    <bib_pages>" + escape_text(pages_) + "</bib_pages>\n";
-	out += "    <bib_year>" + escape_text(year_) + "</bib_year>\n";
+	xmlTextWriterWriteElement(writer, BAD_CAST LIB_ELEMENT_DOC_BIB_TYPE, BAD_CAST type_.c_str());
+	xmlTextWriterWriteElement(writer, BAD_CAST LIB_ELEMENT_DOC_BIB_DOI, BAD_CAST doi_.c_str());
+	xmlTextWriterWriteElement(writer, BAD_CAST LIB_ELEMENT_DOC_BIB_TITLE, BAD_CAST title_.c_str());
+	xmlTextWriterWriteElement(writer, BAD_CAST LIB_ELEMENT_DOC_BIB_AUTHORS, BAD_CAST authors_.c_str());
+	xmlTextWriterWriteElement(writer, BAD_CAST LIB_ELEMENT_DOC_BIB_JOURNAL, BAD_CAST journal_.c_str());
+	xmlTextWriterWriteElement(writer, BAD_CAST LIB_ELEMENT_DOC_BIB_VOLUME, BAD_CAST volume_.c_str());
+	xmlTextWriterWriteElement(writer, BAD_CAST LIB_ELEMENT_DOC_BIB_NUMBER, BAD_CAST issue_.c_str());
+	xmlTextWriterWriteElement(writer, BAD_CAST LIB_ELEMENT_DOC_BIB_PAGES, BAD_CAST pages_.c_str());
+	xmlTextWriterWriteElement(writer, BAD_CAST LIB_ELEMENT_DOC_BIB_YEAR, BAD_CAST year_.c_str());
 
 	ExtrasMap::iterator it = extras_.begin ();
 	ExtrasMap::iterator const end = extras_.end ();
 	for (; it != end; ++it) {
-		out += "    <bib_extra key=\""
-		    + escape_text((*it).first) + "\">"
-		    + escape_text((*it).second) + "</bib_extra>\n";
+		xmlTextWriterStartElement(writer, BAD_CAST LIB_ELEMENT_DOC_BIB_EXTRA);
+		xmlTextWriterWriteAttribute(writer, BAD_CAST LIB_ELEMENT_DOC_BIB_EXTRA_KEY, BAD_CAST (*it).first.c_str());
+		xmlTextWriterWriteString(writer, BAD_CAST (*it).second.c_str());
+		xmlTextWriterEndElement(writer);
 	}
 }
 
