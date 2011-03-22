@@ -15,8 +15,10 @@
 #include <fstream>
 
 #include <gtkmm.h>
+#include <giomm/file.h>
+#include <giomm/appinfo.h>
+#include <giomm/error.h>
 #include <libgnomeuimm.h>
-#include <libgnomevfsmm.h>
 #include <glibmm/i18n.h>
 #include "ucompose.hpp"
 
@@ -58,7 +60,11 @@ RefWindow::RefWindow ()
 		setOpenedLib (libfile);
 		populateTagList ();
 		docview_->populateDocStore ();
-		addfolder_ = Gnome::Vfs::get_local_path_from_uri(library_->getLibraryFolder());
+		
+		Glib::RefPtr<Gio::File> uri =
+		Gio::File::create_for_uri (library_->getLibraryFolder ());
+		addfolder_ = uri->get_path ();
+
 	} else {
 		onNewLibrary ();
 	}
@@ -1503,8 +1509,10 @@ void RefWindow::onManageBibtex ()
 	hbox.pack_start (urientry);
 
 	DEBUG (String::ucompose ("Got bibtextarget = %1", library_->getBibtexTarget()));
-	Glib::ustring bibfilename =
-		Gnome::Vfs::get_local_path_from_uri (library_->getBibtexTarget ());
+	Glib::RefPtr<Gio::File> uri =
+  	Gio::File::create_for_uri (library_->getBibtexTarget () );
+  Glib::ustring bibfilename = uri->get_path ();
+
 	DEBUG (String::ucompose ("Got absolute path = %1", bibfilename));
 	// Did we fail?  (if so then it's a relative path)
 	if (bibfilename.empty ()) {
@@ -1550,7 +1558,8 @@ void RefWindow::onManageBibtex ()
 
 	Glib::ustring newtarget;
 	if (Glib::path_is_absolute (newfilename)) {
-		newtarget = Gnome::Vfs::get_uri_from_local_path (newfilename);
+		Glib::RefPtr<Gio::File> uri = Gio::File::create_for_uri (newfilename);
+    	newtarget = uri->get_path();
 	} else {
 		newtarget = Gnome::Vfs::escape_string (newfilename);
 	}
@@ -1636,7 +1645,9 @@ void RefWindow::onOpenLibrary ()
 
 			updateStatusBar ();
 			setOpenedLib (libfile);
-			addfolder_ = Gnome::Vfs::get_local_path_from_uri(library_->getLibraryFolder());
+			Glib::RefPtr<Gio::File> uri =
+      	Gio::File::create_for_uri (library_->getLibraryFolder());
+      addfolder_ = uri->get_path ();
 		} else {
 			//library_->load would have shown an exception error dialog
 		}
@@ -1740,11 +1751,11 @@ void RefWindow::onAbout ()
 void RefWindow::onIntroduction ()
 {
 	Glib::ustring const uri = "ghelp:referencer";
-	try {
-		Gio::AppInfo::launch_default_for_uri (uri);
-	} catch (Glib::Exception &ex) {
-		Utility::exceptionDialog (&ex,
-			String::ucompose(_("Showing '%1'"), uri));
+	if (Gio::AppInfo::launch_default_for_uri (uri) == false){
+    Gio::Error* ex = new Gio::Error(Gio::Error::FAILED, "Unable to open"
+    	"default application");
+    Utility::exceptionDialog (ex,
+    String::ucompose(_("Showing '%1'"), uri));
 	}
 }
 
@@ -1988,7 +1999,7 @@ void RefWindow::addDocFiles (std::vector<Glib::ustring> const &filenames)
 		while (Gnome::Main::events_pending())
 			Gnome::Main::iteration ();
 
-		Glib::RefPtr<Gnome::Vfs::Uri> uri = Gnome::Vfs::Uri::create (*it);
+    Glib::RefPtr<Gio::File> uri = Gio::File::create_for_uri (*it);
 		if (!Utility::uriIsFast (uri)) {
 			// Should prompt the user to download the file
 			DEBUG ("Ooh, a remote uri\n");

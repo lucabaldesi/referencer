@@ -18,6 +18,7 @@
 #include <vector>
 #include <sstream>
 
+#include <giomm/file.h>
 #include <gtkmm.h>
 #include <libgnomevfsmm.h>
 
@@ -41,7 +42,7 @@ namespace Utility {
 		Glib::ustring const &ex);
 
 	bool uriIsFast (
-		Glib::RefPtr<Gnome::Vfs::Uri> uri);
+		Glib::RefPtr<Gio::File> uri);
 
 	StringPair twoWaySplit (
 		Glib::ustring const &str,
@@ -113,7 +114,10 @@ namespace Utility {
 	 * "the" from an English string, for comparison purposes.
 	 */
 	Glib::ustring removeLeadingArticle(Glib::ustring const &str);
+
+  	time_t timeValToPosix(Glib::TimeVal time_val);
 }
+
 
 class TextDialog : public Gtk::Dialog
 {

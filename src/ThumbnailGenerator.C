@@ -87,10 +87,13 @@ Glib::RefPtr<Gdk::Pixbuf> ThumbnailGenerator::lookupThumb (Glib::ustring const &
 {
 	Glib::RefPtr<Gdk::Pixbuf> thumbnail;
 
-	Glib::RefPtr<Gnome::Vfs::Uri> uri = Gnome::Vfs::Uri::create (file);
-	if (!file.empty () && Utility::uriIsFast (uri) && uri->uri_exists()) {
-		Glib::RefPtr<Gnome::Vfs::FileInfo> fileinfo = uri->get_file_info ();
-		time_t mtime = fileinfo->get_modification_time ();
+	Glib::RefPtr<Gio::File> uri = Gio::File::create_for_uri (file);
+	if (!file.empty () && Utility::uriIsFast (uri) && uri->query_exists()) {
+    	Glib::RefPtr<Gio::FileInfo> fileinfo = uri->query_info ();
+		/* We need to convert GtimeVal to time_t because it's required
+    	*  by ThumbnailFactory
+      	*/
+        time_t mtime = Utility::timeValToPosix (fileinfo->modification_time ());
 
 		if (!thumbfac_)
 			thumbfac_ = Gnome::UI::ThumbnailFactory::create (Gnome::UI::THUMBNAIL_SIZE_NORMAL);
@@ -112,8 +115,7 @@ Glib::RefPtr<Gdk::Pixbuf> ThumbnailGenerator::lookupThumb (Glib::ustring const &
 				DEBUG ("Has valid failed thumbnail: '%1'", file);
 			} else {
 				DEBUG ("Generate thumbnail: '%1'", file);
-				Glib::ustring mimetype = 
-					(uri->get_file_info (Gnome::Vfs::FILE_INFO_GET_MIME_TYPE))->get_mime_type ();
+				Glib::ustring mimetype = fileinfo->get_content_type ();
 
 				thumbnail = thumbfac_->generate_thumbnail (file, mimetype);
 				if (thumbnail) {

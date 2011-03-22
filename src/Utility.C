@@ -30,6 +30,8 @@
 // The gtkmm in Ubuntu 6.04 doesn't seem to get this in <gtkmm.h>
 #include <gtkmm/icontheme.h>
 #include <glibmm/i18n.h>
+#include <giomm/file.h>
+
 #include "ucompose.hpp"
 
 #include <iostream>
@@ -147,9 +149,9 @@ bool hasExtension (
 
 
 bool uriIsFast (
-	Glib::RefPtr<Gnome::Vfs::Uri> uri)
+	Glib::RefPtr<Gio::File> uri)
 {
-	Glib::ustring const scheme = uri->get_scheme ();
+  Glib::ustring const scheme = uri->get_uri_scheme ();
 	if (scheme == "file" || scheme == "smb") {
 		return true;
 	} else {
@@ -2182,6 +2184,23 @@ Glib::ustring removeLeadingArticle(Glib::ustring const &str)
     }
   }
   return str;			// Return the string unmodified by default.
+}
+
+/* 
+ * Converts a Glib::TimeVal date to POSIX time
+ */
+time_t timeValToPosix(Glib::TimeVal time_val)
+{
+  Glib::ustring time_str = time_val.as_iso8601 ();
+    const char* time_cstr = time_str.c_str ();
+
+    /* We need to create a tm strcut from a iso8601 C string and create a 
+   	 * timestamp from it
+     */
+    struct tm ctime;
+    strptime(time_cstr, "%FT%T%z", &ctime);
+
+    return mktime(&ctime);
 }
 
 }
