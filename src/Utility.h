@@ -21,11 +21,78 @@
 #include <giomm/file.h>
 #include <gtkmm.h>
 #include <libgnomevfsmm.h>
+#include <libxml/xmlstring.h>
 
 #include "ucompose.hpp"
 #define DEBUG(x,...) Utility::debug(__PRETTY_FUNCTION__, String::ucompose(x, ##__VA_ARGS__))
 
+#define DELETE(x)			{ if (x) { delete x; } }
+#define DELETE_AND_NULL(x) 	{ if (x) { delete x; x = NULL; } }
+
+/**
+ * This cast is similar to <tt>BAD_CAST</tt> in libxml. It is intended as a
+ * shorthand for casts from <tt>char*</tt> to <tt>xmlChar*</tt>.
+ */
+#define XSTR   (xmlChar*)
+
+/**
+ * This cast is similar to <tt>BAD_CAST</tt> in libxml. It is intended as a
+ * shorthand for casts from <tt>char*</tt> to <tt>const xmlChar*</tt>.
+ */
+#define CXSTR   (const xmlChar*)
+
+/**
+ * This cast is similar to \ref CXSTR. It is intended to be used for casts from
+ * <tt>xmlChar*</tt> to <tt>const char*</tt>.
+ */
+#define CSTR   (const char*)
+
+/**
+ * This cast is similar to \ref CXSTR. It is intended to be used for casts from
+ * <tt>xmlChar*</tt> to <tt>char*</tt>.
+ */
+#define STR   (char*)
+
+/**
+ * This is a helper macro for getting a string from a node in libxml, maps it
+ * with the given \c mapFunc before it assings it to some target variable.
+ * Afterwards it frees the string (using libxml's \c xmlFree function).
+ */
+#define COPY_NODE_MAP(target, source, mapFunc) { char* __tmp_str = STR xmlNodeGetContent(source); target = mapFunc(__tmp_str); xmlFree(__tmp_str); }
+
+/**
+ * This is a helper macro for getting a string from a node in libxml, maps it
+ * with the given \c mapFunc before it assings it via some setter function.
+ * Afterwards it frees the string (using libxml's \c xmlFree function).
+ */
+#define SET_FROM_NODE_MAP(setFunc, source, mapFunc) { char* __tmp_str = STR xmlNodeGetContent(source); setFunc(mapFunc(__tmp_str)); xmlFree(__tmp_str); }
+
+/**
+ * This is a helper macro for getting a string from a node in libxml. It then
+ * assings the string via some setter function. Afterwards it frees the string
+ * (using libxml's \c xmlFree function).
+ */
+#define SET_FROM_NODE(setFunc, source) { char* __tmp_str = STR xmlNodeGetContent(source); setFunc(__tmp_str); xmlFree(__tmp_str); }
+
+/**
+ * This is a helper macro for getting a string from the parsed XML, assigning it
+ * to some variable and freeing it afterwards.
+ */
+#define COPY_NODE(target, source) { char* __tmp_str = STR xmlNodeGetContent(source); target = __tmp_str; xmlFree(__tmp_str); }
+
 namespace Utility {
+
+    /**
+     * A shorthand for <tt>const xmlChar*</tt>.
+     */
+    typedef const xmlChar* cxStr;
+
+    /**
+     * A shorthand for <tt>xmlChar*</tt>.
+     */
+    typedef xmlChar* xStr;
+
+
 	typedef std::pair <Glib::ustring, Glib::ustring> StringPair;
 
 	Glib::ustring wrap (

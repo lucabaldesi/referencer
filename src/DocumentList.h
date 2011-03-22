@@ -16,6 +16,7 @@
 #include <gtkmm.h>
 #include <sstream>
 #include <list>
+#include <libxml/xmlwriter.h>
 
 #include "BibUtils.h"
 
@@ -59,7 +60,7 @@ class DocumentList {
 		BibData const &bib);
 	void print ();
 	void clearTag (int uid);
-	void writeXML (Glib::ustring &out);
+	void writeXML (xmlTextWriterPtr writer);
 	void clear () {docs_.clear ();}
 
 	int importFromFile (Glib::ustring const &filename, BibUtils::Format format);

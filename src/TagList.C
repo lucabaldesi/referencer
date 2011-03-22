@@ -12,12 +12,13 @@
 
 #include <iostream>
 #include <sstream>
+#include <libxml/xmlwriter.h>
 
 #include "TagList.h"
 #include "Utility.h"
+#include "Library.h"
 
-Tag::Tag (int const uid, std::string const name)
-{
+Tag::Tag(int const uid, const std::string& name) {
 	uid_ = uid;
 	name_ = name;
 }
@@ -27,29 +28,22 @@ TagList::TagMap& TagList::getTags ()
 	return tags_;
 }
 
-int TagList::newTag (std::string const name)
-{
-	Tag newtag (uidCounter_, name);
-	tags_[newtag.uid_] = newtag;
+int TagList::newTag(const std::string& name) {
+    tags_[uidCounter_] = Tag(uidCounter_, name);
 	return uidCounter_++;
 }
 
-
-void TagList::loadTag (std::string const name, int uid)
-{
-	Tag newtag (uid, name);
-	if (tagExists (name)) {
-		DEBUG ("Duplicate tag name '%1'", name);
+void TagList::loadTag(const std::string& name, int uid) {
+    if (tagExists(name)) {
+        DEBUG("Duplicate tag name '%1'", name);
 	} else {
-		tags_[uid] = newtag;
+        tags_[uid] = Tag(uid, name);
 		if (uid >= uidCounter_)
 			uidCounter_ = uid + 1;
 	}
 }
 
-
-void TagList::renameTag (int uid, Glib::ustring newname)
-{
+void TagList::renameTag(int uid, const std::string& newname) {
 	tags_[uid].name_ = newname;
 }
 
@@ -75,36 +69,25 @@ void TagList::deleteTag (int uid)
 	}
 }
 
-
-Glib::ustring TagList::getName (int const &uid)
-{
+std::string TagList::getName(int uid) {
 	return tags_[uid].name_;
 }
 
-
-using Glib::Markup::escape_text;
-
-
-void TagList::writeXML (Glib::ustring &out)
-{
-	out += "<taglist>\n";
+void TagList::writeXML(xmlTextWriterPtr writer) {
+    xmlTextWriterStartElement(writer, CXSTR LIB_ELEMENT_TAGLIST);
 	TagMap::iterator it = tags_.begin();
 	TagMap::iterator const end = tags_.end();
 
 	for (; it != end; it++) {
-		std::ostringstream num;
-		num << (*it).second.uid_;
-
-		out += "  <tag>\n";
-		out += "    <uid>" + num.str() + "</uid>\n";
-		out += "    <name>" + escape_text((*it).second.name_) + "</name>\n";
-		out += "  </tag>\n";
+        xmlTextWriterStartElement(writer, CXSTR LIB_ELEMENT_TAG);
+        xmlTextWriterWriteFormatElement(writer, CXSTR LIB_ELEMENT_TAG_UID, "%d", (*it).second.uid_);
+        xmlTextWriterWriteElement(writer, CXSTR LIB_ELEMENT_TAG_NAME, CXSTR(*it).second.name_.c_str());
+        xmlTextWriterEndElement(writer);
 	}
-	out += "</taglist>\n";
+    xmlTextWriterEndElement(writer);
 }
 
-bool TagList::tagExists (std::string const name)
-{
+bool TagList::tagExists(const std::string& name) {
 	TagMap::iterator it = tags_.begin();
 	TagMap::iterator const end = tags_.end();
 	for (; it != end; it++) {

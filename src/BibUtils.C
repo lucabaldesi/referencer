@@ -126,19 +126,19 @@ std::string formatType (fields *info)
 	int const type = bibtexout_type (info);
 
 	typenames types[] = {
-		{ TYPE_ARTICLE, "Article" },
-		{ TYPE_INBOOK, "Inbook" },
-		{ TYPE_PROCEEDINGS, "Proceedings" },
-		{ TYPE_INPROCEEDINGS, "InProceedings" },
-		{ TYPE_BOOK, "Book" },
-		{ TYPE_PHDTHESIS, "PhdThesis" },
-		{ TYPE_MASTERSTHESIS, "MastersThesis" },
-		{ TYPE_REPORT, "TechReport" },
-		{ TYPE_MANUAL, "Manual" },
-		{ TYPE_COLLECTION, "Collection" },
-		{ TYPE_INCOLLECTION, "InCollection" },
-		{ TYPE_UNPUBLISHED, "Unpublished" },
-		{ TYPE_MISC, "Misc" } };
+		{ TYPE_ARTICLE, (char*)"Article" },
+		{ TYPE_INBOOK, (char*)"Inbook" },
+		{ TYPE_PROCEEDINGS, (char*)"Proceedings" },
+		{ TYPE_INPROCEEDINGS, (char*)"InProceedings" },
+		{ TYPE_BOOK, (char*)"Book" },
+		{ TYPE_PHDTHESIS, (char*)"PhdThesis" },
+		{ TYPE_MASTERSTHESIS, (char*)"MastersThesis" },
+		{ TYPE_REPORT, (char*)"TechReport" },
+		{ TYPE_MANUAL, (char*)"Manual" },
+		{ TYPE_COLLECTION, (char*)"Collection" },
+		{ TYPE_INCOLLECTION, (char*)"InCollection" },
+		{ TYPE_UNPUBLISHED, (char*)"Unpublished" },
+		{ TYPE_MISC, (char*)"Misc" } };
 
 	int i, ntypes = sizeof( types ) / sizeof( types[0] );
 	char *s = NULL;
@@ -159,8 +159,8 @@ std::string formatTitle (BibUtils::fields *ref, int level)
 	int kmain;
 	int ksub;
 
-	kmain = fields_find (ref, "TITLE", level);
-	ksub = fields_find (ref, "SUBTITLE", level);
+	kmain = fields_find (ref, (char*)"TITLE", level);
+	ksub = fields_find (ref, (char*)"SUBTITLE", level);
 
 	std::string title;
 
@@ -276,9 +276,9 @@ Document parseBibUtils (BibUtils::fields *ref)
 	else if ( type==TYPE_BOOK || type==TYPE_COLLECTION || type==TYPE_PROCEEDINGS )
 		newdoc.getBibData().addExtra ("Series", formatTitle (ref, 1));
 
-	std::string authors = formatPeople (ref, "AUTHOR", "CORPAUTHOR", 0);
-	std::string editors = formatPeople (ref, "EDITOR", "CORPEDITOR", -1);
-	std::string translators = formatPeople (ref, "TRANSLATOR", "CORPTRANSLATOR", -1);
+	std::string authors = formatPeople (ref, (char*)"AUTHOR", (char*)"CORPAUTHOR", 0);
+	std::string editors = formatPeople (ref, (char*)"EDITOR", (char*)"CORPEDITOR", -1);
+	std::string translators = formatPeople (ref, (char*)"TRANSLATOR", (char*)"CORPTRANSLATOR", -1);
 	newdoc.getBibData().setAuthors (authors);
 	if (!editors.empty ()) {
 		newdoc.getBibData().addExtra ("Editor", editors);

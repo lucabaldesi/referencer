@@ -1290,7 +1290,7 @@ void DocumentView::populateDocStore ()
 	// This is our notification that something about the documentlist
 	// has changed, including its length, so update dependent sensitivities:
 	win_.actiongroup_->get_action("ExportBibtex")
-		->set_sensitive (lib_.doclist_->size() > 0);
+		->set_sensitive (lib_.getDocList()->size() > 0);
 	// Save initial selection
 	Gtk::TreePath initialpath;
 	if (uselistview_) {
@@ -1308,7 +1308,7 @@ void DocumentView::populateDocStore ()
 	docstore_->clear ();
 
 	// Populate from library_->doclist_
-	DocumentList::Container& docvec = lib_.doclist_->getDocs();
+	DocumentList::Container& docvec = lib_.getDocList()->getDocs();
 	DocumentList::Container::iterator docit = docvec.begin();
 	DocumentList::Container::iterator const docend = docvec.end();
 	for (; docit != docend; ++docit) {
@@ -1445,11 +1445,11 @@ void DocumentView::onColumnEdited (
 		Glib::ustring newText = enteredText;
 
 		if (columnName.lowercase() == "key") {
-			Glib::ustring sanitizedKey = lib_.doclist_->sanitizedKey (newText);
+			Glib::ustring sanitizedKey = lib_.getDocList()->sanitizedKey (newText);
 			if (sanitizedKey != newText)
 				newText = Document::keyReplaceDialogInvalidChars(newText, sanitizedKey);
 
-			Glib::ustring unique = lib_.doclist_->uniqueKey (newText, doc);
+			Glib::ustring unique = lib_.getDocList()->uniqueKey (newText, doc);
 			if (unique != newText)
 				newText = Document::keyReplaceDialogNotUnique (newText, unique);
 		}

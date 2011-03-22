@@ -17,11 +17,13 @@
 #include <giomm/inputstream.h>
 #include <giomm/file.h>
 #include <glibmm/i18n.h>
+#include <libxml/xmlwriter.h>
 #include "ucompose.hpp"
 
 #include "Utility.h"
 #include "DocumentList.h"
 #include "Document.h"
+#include "Library.h"
 
 DocumentList::Container& DocumentList::getDocs ()
 {
@@ -179,15 +181,15 @@ void DocumentList::clearTag (int uid)
 }
 
 
-void DocumentList::writeXML (Glib::ustring &out)
+void DocumentList::writeXML (xmlTextWriterPtr writer)
 {
-	out += "<doclist>\n";
+	xmlTextWriterStartElement(writer, BAD_CAST LIB_ELEMENT_DOCLIST);
 	Container::iterator it = docs_.begin();
 	Container::iterator const end = docs_.end();
 	for (; it != end; it++) {
-		(*it).writeXML (out);
+		(*it).writeXML (writer);
 	}
-	out += "</doclist>\n";
+	xmlTextWriterEndElement(writer);
 }
 
 

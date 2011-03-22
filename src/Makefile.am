@@ -45,7 +45,6 @@ referencer_SOURCES =	\
 	icon-entry.h \
 	Library.C \
 	Library.h \
-	LibraryParser.h \
 	Linker.C \
 	Linker.h \
 	main.C \

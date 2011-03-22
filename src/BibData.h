@@ -18,6 +18,7 @@
 #include <functional>
 
 #include <gtkmm.h>
+#include <libxml/xmlwriter.h>
 
 #include "CaseFoldCompare.h"
 
@@ -41,7 +42,7 @@ class BibData {
 
 	static Glib::ustring &getDefaultDocType ();
 
-	void writeXML (Glib::ustring &out);
+	void writeXML (xmlTextWriterPtr writer);
 	void print () const;
 	void clear ();
 

@@ -16,13 +16,16 @@
 #include <string>
 #include <map>
 #include <sstream>
-#include <gtkmm.h>
-
+#include <libxml/xmlwriter.h>
 
 class Tag {
 	public:
-	Tag (int const uid, std::string const name);
-	Tag () {};
+    Tag(int uid, const std::string& name);
+
+    Tag() {
+    }
+
+public:
 	int uid_;
 	std::string name_;
 };
@@ -30,19 +33,29 @@ class Tag {
 class TagList {
 	public:
 	typedef std::map<int, Tag> TagMap;
+
 	TagList() {
 		uidCounter_ = 0;
 	}
-	void print ();
-	TagMap& getTags ();
-	int newTag (std::string const name);
-	void loadTag (std::string const name, int uid);
-	void renameTag (int uid, Glib::ustring newname);
-	void deleteTag (int uid);
-	Glib::ustring getName (int const &uid);
-	void writeXML (Glib::ustring &out);
-	void clear () {tags_.clear (); uidCounter_ = 0;}
-	bool tagExists (std::string const name);
+    void print();
+    TagMap& getTags();
+    int newTag(const std::string& name);
+    void loadTag(const std::string& name, int uid);
+    void renameTag(int uid, const std::string& newname);
+    void deleteTag(int uid);
+    std::string getName(int uid);
+    /**
+     * Dumps this tag list's data into an XML document.
+     * @param writer the XML writer, which actually does all the XML writing and
+     * formatting.
+     */
+    void writeXML(xmlTextWriterPtr writer);
+
+    void clear() {
+        tags_.clear();
+        uidCounter_ = 0;
+    }
+    bool tagExists(const std::string& name);
 
 	private:
 	TagMap tags_;
