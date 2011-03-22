@@ -512,7 +512,8 @@ void deleteFile (
 	Glib::ustring const &target_uri_str)
 {
 	// Caller is responsible for catching Gnome::Vfs exceptions
-	Gnome::Vfs::Handle::unlink (target_uri_str);
+	Glib::RefPtr<Gio::File> file = Gio::File::create_for_uri(target_uri_str);
+    file->remove();
 }
 
 

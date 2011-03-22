@@ -160,7 +160,7 @@ bool Library::libraryFolderDialog ()
 // True on success
 bool Library::load (Glib::ustring const &libfilename)
 {
-	Glib::RefPtr<Gio::File> libfile = Gio::File::create_for_uri (libfilename);
+ 	Glib::RefPtr<Gio::File> libfile = Gio::File::create_for_uri (libfilename);
 	Glib::RefPtr<Gio::FileInfo> fileinfo = libfile->query_info ();
 	Glib::RefPtr<Gio::FileInputStream> libfile_is;
 
