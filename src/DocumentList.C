@@ -14,7 +14,8 @@
 #include <iostream>
 #include <sstream>
 
-#include <libgnomevfsmm.h>
+#include <giomm/inputstream.h>
+#include <giomm/file.h>
 #include <glibmm/i18n.h>
 #include "ucompose.hpp"
 
@@ -196,22 +197,22 @@ int DocumentList::importFromFile (
 	BibUtils::Format format)
 {
 	std::string rawtext;
-	Gnome::Vfs::Handle importfile;
 
-	Glib::RefPtr<Gnome::Vfs::Uri> liburi = Gnome::Vfs::Uri::create (filename);
+	Glib::RefPtr<Gio::InputStream> importfile;
+    Glib::RefPtr<Gio::File> liburi = Gio::File::create_for_uri (filename);
 
 	try {
-		importfile.open (filename, Gnome::Vfs::OPEN_READ);
-	} catch (const Gnome::Vfs::exception ex) {
+		importfile = liburi->read ();
+	} catch (const Gio::Error ex) {
 		Utility::exceptionDialog (&ex,
-			String::ucompose (
+		                          String::ucompose (
 				_("Opening file '%1'"),
 				Glib::filename_to_utf8 (filename)));
 		return false;
 	}
 
-	Glib::RefPtr<Gnome::Vfs::FileInfo> fileinfo;
-	fileinfo = importfile.get_file_info ();
+	Glib::RefPtr<Gio::FileInfo> fileinfo;
+    fileinfo = liburi->query_info ();
 
 	char *buffer = (char *) malloc (sizeof(char) * (fileinfo->get_size() + 1));
 	if (!buffer) {
@@ -220,8 +221,8 @@ int DocumentList::importFromFile (
 	}
 
 	try {
-		importfile.read (buffer, fileinfo->get_size());
-	} catch (const Gnome::Vfs::exception ex) {
+		importfile->read (buffer, fileinfo->get_size());
+	} catch (const Gio::Error ex) {
 		Utility::exceptionDialog (&ex,
 			String::ucompose (
 				_("Reading file '%1'"),
@@ -234,7 +235,7 @@ int DocumentList::importFromFile (
 	rawtext = buffer;
 	
 	free (buffer);
-	importfile.close ();
+	importfile->close ();
 
 	Glib::ustring utf8text = rawtext;
 	if (!utf8text.validate()) {
