@@ -13,7 +13,9 @@
 #include <gtk/gtk.h>
 #include <gtkmm.h>
 #include <glibmm/i18n.h>
-#include <libgnomevfsmm.h>
+#include <giomm/file.h>
+#include <giomm/fileinfo.h>
+#include <giomm/error.h>
 
 #include "Document.h"
 #include "DocumentList.h"
@@ -631,7 +633,8 @@ void DocumentView::onIconsDragData (
 	urilist::iterator const end = uris.end ();
 	for (; it != end; ++it) {
 		bool is_dir = false;
-		Glib::RefPtr<Gnome::Vfs::Uri> uri = Gnome::Vfs::Uri::create (*it);
+    	Glib::RefPtr<Gio::File> uri = Gio::File::create_for_uri (*it);
+
 
 #if 0
 		if (!Utility::uriIsFast (uri)) {
@@ -716,17 +719,17 @@ void DocumentView::onIconsDragData (
 #endif
 		{
 			// It's a local file, see if it's a directory
-			Glib::RefPtr<Gnome::Vfs::FileInfo> info;
+			Glib::RefPtr<Gio::FileInfo> info;
 			try {
-				info = uri->get_file_info ();
-			} catch (const Gnome::Vfs::exception ex) {
+				info = uri->query_info ();
+			} catch (const Gio::Error ex) {
 				Utility::exceptionDialog (&ex,
 					String::ucompose (
 						_("Getting info for file '%1'"),
-						uri->to_string ()));
+						uri->get_uri ()));
 				return;
 			}
-			is_dir = info->get_type() == Gnome::Vfs::FILE_TYPE_DIRECTORY;
+			is_dir = info->get_file_type () == Gio::FILE_TYPE_DIRECTORY;
 
 			if (is_dir) {
 				std::vector<Glib::ustring> morefiles = Utility::recurseFolder (*it);
