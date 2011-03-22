@@ -1510,7 +1510,7 @@ void RefWindow::onManageBibtex ()
 	DEBUG (String::ucompose ("Got bibtextarget = %1", library_->getBibtexTarget()));
 	Glib::RefPtr<Gio::File> uri =
   	Gio::File::create_for_uri (library_->getBibtexTarget () );
-  Glib::ustring bibfilename = uri->get_path ();
+    Glib::ustring bibfilename = uri->get_path ();
 
 	DEBUG (String::ucompose ("Got absolute path = %1", bibfilename));
 	// Did we fail?  (if so then it's a relative path)
@@ -1645,8 +1645,8 @@ void RefWindow::onOpenLibrary ()
 			updateStatusBar ();
 			setOpenedLib (libfile);
 			Glib::RefPtr<Gio::File> uri =
-      	Gio::File::create_for_uri (library_->getLibraryFolder());
-      addfolder_ = uri->get_path ();
+      		Gio::File::create_for_uri (library_->getLibraryFolder());
+            addfolder_ = uri->get_path ();
 		} else {
 			//library_->load would have shown an exception error dialog
 		}
@@ -1998,7 +1998,7 @@ void RefWindow::addDocFiles (std::vector<Glib::ustring> const &filenames)
 		while (Gnome::Main::events_pending())
 			Gnome::Main::iteration ();
 
-    Glib::RefPtr<Gio::File> uri = Gio::File::create_for_uri (*it);
+    	Glib::RefPtr<Gio::File> uri = Gio::File::create_for_uri (*it);
 		if (!Utility::uriIsFast (uri)) {
 			// Should prompt the user to download the file
 			DEBUG ("Ooh, a remote uri\n");

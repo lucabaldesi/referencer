@@ -151,7 +151,7 @@ bool hasExtension (
 bool uriIsFast (
 	Glib::RefPtr<Gio::File> uri)
 {
-  Glib::ustring const scheme = uri->get_uri_scheme ();
+  	Glib::ustring const scheme = uri->get_uri_scheme ();
 	if (scheme == "file" || scheme == "smb") {
 		return true;
 	} else {
