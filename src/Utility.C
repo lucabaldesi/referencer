@@ -217,16 +217,16 @@ Glib::ustring findDataFile (
 			localfile, filename);
 	}
 
-	Glib::RefPtr<Gnome::Vfs::Uri> uri =
-		Gnome::Vfs::Uri::create (localfile);
+	Glib::RefPtr<Gio::File> uri =
+    Gio::File::create_for_path (localfile);
 
-	if (uri->uri_exists ()) {
+	if (uri->query_exists ()) {
 		return localfile;
 	} else {
 		Glib::ustring const installedfile =
 			Glib::build_filename (DATADIR, filename);
-		uri = Gnome::Vfs::Uri::create (installedfile);
-		if (uri->uri_exists ()) {
+		uri->create_file (Gio::FILE_CREATE_PRIVATE);
+		if (uri->query_exists ()) {
 			return installedfile;
 		}
 	}
@@ -244,10 +244,10 @@ bool fileExists (
 	if (filename.empty ())
 		return false;
 
-	Glib::RefPtr<Gnome::Vfs::Uri> uri =
-		Gnome::Vfs::Uri::create (filename);
+	Glib::RefPtr<Gio::File> uri =
+		Gio::File::create_for_uri (filename);
 
-	return uri->uri_exists ();
+	return uri->query_exists ();
 }
 
 
@@ -511,7 +511,7 @@ Glib::RefPtr<Gdk::Pixbuf> getThemeMenuIcon(Glib::ustring const &iconname) {
 void deleteFile (
 	Glib::ustring const &target_uri_str)
 {
-	// Caller is responsible for catching Gnome::Vfs exceptions
+	// Caller is responsible for catching Gio::Error exceptions
 	Glib::RefPtr<Gio::File> file = Gio::File::create_for_uri(target_uri_str);
     file->remove();
 }
