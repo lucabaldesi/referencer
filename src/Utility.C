@@ -322,7 +322,7 @@ bool onAddDocFolderRecurse (const Glib::RefPtr<const Gio::FileInfo>& info,
 				onAddDocFolderRecurse(nextinfolder, true);	
 			}else{      
 				fullname = Glib::build_filename (
-   				_basepath, Glib::uri_escape_string(nextinfolder->get_name()));
+					_basepath, Glib::uri_escape_string(nextinfolder->get_name()));
 				_filestoadd.push_back (fullname);
 			}
 		}

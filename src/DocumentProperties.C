@@ -14,6 +14,7 @@
 
 #include <glibmm/i18n.h>
 #include <string>
+#include <giomm/appinfo.h>
 #include "ucompose.hpp"
 
 #include "Document.h"
@@ -524,7 +525,7 @@ void DocumentProperties::onFileChanged ()
 
 void DocumentProperties::onIconButtonClicked ()
 {
-	Gnome::Vfs::url_show (filechooser_->get_uri());
+	Gio::AppInfo::launch_default_for_uri (filechooser_->get_uri());
 }
 
 
