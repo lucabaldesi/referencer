@@ -1409,7 +1409,7 @@ void RefWindow::onNotesExport ()
 		if (openedlib_.empty ()) {
 			libname = _("Unnamed Library");
 		} else {
-			libname = Gnome::Vfs::unescape_string_for_display (Glib::path_get_basename (openedlib_));
+			libname = Glib::uri_unescape_string (Glib::path_get_basename (openedlib_));
 			Glib::ustring::size_type pos = libname.find (".reflib");
 			if (pos != Glib::ustring::npos) {
 				libname = libname.substr (0, pos);
@@ -1463,7 +1463,7 @@ void RefWindow::manageBrowseDialog (Gtk::Entry *entry)
 		// Effect is that we are always setting a UTF-8 filename
 		// NOT a URI.
 		if (!relpath.empty ()) {
-			entry->set_text (Gnome::Vfs::unescape_string (relpath));
+			entry->set_text (Glib::uri_unescape_string (relpath));
 		} else {
 			entry->set_text (Glib::filename_to_utf8 (dialog.get_filename()));
 		}
@@ -1509,13 +1509,13 @@ void RefWindow::onManageBibtex ()
 
 	DEBUG (String::ucompose ("Got bibtextarget = %1", library_->getBibtexTarget()));
 	Glib::RefPtr<Gio::File> uri =
-  	Gio::File::create_for_uri (library_->getBibtexTarget () );
-    Glib::ustring bibfilename = uri->get_path ();
+  		Gio::File::create_for_uri (library_->getBibtexTarget () );
+    Glib::ustring bibfilename = uri->get_uri ();
 
 	DEBUG (String::ucompose ("Got absolute path = %1", bibfilename));
 	// Did we fail?  (if so then it's a relative path)
 	if (bibfilename.empty ()) {
-		bibfilename = Gnome::Vfs::unescape_string (library_->getBibtexTarget ());
+		bibfilename = Glib::uri_unescape_string (library_->getBibtexTarget ());
 		DEBUG (String::ucompose ("Got relative path = %1", bibfilename));
 	}
 	urientry.set_text (bibfilename);
@@ -1560,10 +1560,9 @@ void RefWindow::onManageBibtex ()
 		Glib::RefPtr<Gio::File> uri = Gio::File::create_for_uri (newfilename);
     	newtarget = uri->get_path();
 	} else {
-		newtarget = Gnome::Vfs::escape_string (newfilename);
+		newtarget = Glib::uri_escape_string (newfilename);
 	}
 	DEBUG (String::ucompose ("newtarget: %1", newtarget));
-
 
 	bool const newbraces = bracescheck.get_active ();
 
@@ -2026,7 +2025,7 @@ void RefWindow::addDocFiles (std::vector<Glib::ustring> const &filenames)
 			
 			// If we did not succeed in getting a title, use the filename
 			if (newdoc->getBibData().getTitle().empty()) {
-				Glib::ustring filename = Gnome::Vfs::unescape_string_for_display (
+				Glib::ustring filename = Glib::uri_unescape_string (
 					Glib::path_get_basename (newdoc->getFileName()));
 
 				Glib::ustring::size_type periodpos = filename.find_last_of (".");
