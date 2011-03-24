@@ -31,6 +31,7 @@
 #include <gtkmm/icontheme.h>
 #include <glibmm/i18n.h>
 #include <giomm/file.h>
+#include <giomm/fileinfo.h>
 
 #include "ucompose.hpp"
 
@@ -265,7 +266,7 @@ void exceptionDialog (
 		);
 
 	Gtk::MessageDialog dialog (
-		message, true,
+	    message, true,
 		Gtk::MESSAGE_ERROR, Gtk::BUTTONS_CLOSE, true);
 	//gdk_threads_leave ();
 
@@ -285,51 +286,64 @@ void exceptionDialog (
 static Glib::ustring _basepath;
 std::vector<Glib::ustring> _filestoadd;
 
-bool onAddDocFolderRecurse (const Glib::ustring& rel_path, const Glib::RefPtr<const Gnome::Vfs::FileInfo>& info, bool recursing_will_loop, bool& recurse)
+bool onAddDocFolderRecurse (const Glib::RefPtr<const Gio::FileInfo>& info,
+                            bool recurse)
 {
-	// We escape to be consistent with the escaped URI that FileChooser
-	// gave us for basepath
-	Glib::ustring fullname =
-		Glib::build_filename (
-			_basepath, Gnome::Vfs::escape_string(info->get_name()));
-
+	Glib::ustring fullname = _basepath;
 	Glib::ustring basename = Glib::filename_display_basename (info->get_name ());
 
 	bool is_reflib = Utility::hasExtension (basename, "reflib");
 	bool is_bib = Utility::hasExtension (basename, "bib");
 	bool is_dotfile = basename[0] == '.';
-
+  
+	Glib::RefPtr<Gio::FileEnumerator> dir;
 	if (basename == ".svn" || basename == "CVS" || is_reflib || is_bib || is_dotfile) {
 		return true;
-	} else if (info->get_type () == Gnome::Vfs::FILE_TYPE_DIRECTORY) {
-		Gnome::Vfs::DirectoryHandle dir;
-		Glib::ustring tmp = _basepath;
-		_basepath = fullname;
-		dir.visit (
-			fullname,
-			Gnome::Vfs::FILE_INFO_DEFAULT,
-			Gnome::Vfs::DIRECTORY_VISIT_DEFAULT,
-			&onAddDocFolderRecurse);
-		_basepath = tmp;
-	} else {
+	}else if (info->get_file_type () == Gio::FILE_TYPE_DIRECTORY) {
+
+	  	// Build subdirectory name
+	  	if (recurse){
+			Glib::ustring subdirname = Glib::build_filename (
+   					_basepath, Glib::uri_escape_string(basename));
+	  		Glib::RefPtr<Gio::File> diruri = Gio::File::create_for_uri (subdirname);
+			dir = diruri->enumerate_children ();
+			_basepath = subdirname;
+		}else{
+		  
+			Glib::RefPtr<Gio::File> diruri = Gio::File::create_for_uri (fullname);
+			dir = diruri->enumerate_children ();
+		}
+
+		//Enumerate files and add them to _filestoadd
+		while(Glib::RefPtr<Gio::FileInfo> nextinfolder = dir->next_file()){
+		  
+			// Found subdirectory, add it's files first
+			if(nextinfolder->get_file_type () == Gio::FILE_TYPE_DIRECTORY){
+				onAddDocFolderRecurse(nextinfolder, true);	
+			}else{      
+				fullname = Glib::build_filename (
+   				_basepath, Glib::uri_escape_string(nextinfolder->get_name()));
+				_filestoadd.push_back (fullname);
+			}
+		}
+		dir->close();
+	}else {
 		_filestoadd.push_back (fullname);
 	}
-
-	// What does this retval do?
-	return true;
 }
 
 std::vector<Glib::ustring> recurseFolder (
-	Glib::ustring const &rootfoldername)
+  Glib::ustring const &rootfoldername)
 {
-	Gnome::Vfs::DirectoryHandle dir;
+
+	Glib::RefPtr<Gio::File> diruri = Gio::File::create_for_uri (rootfoldername);
+	DEBUG("Adding Files From Folder %1", rootfoldername);
+
+	Glib::RefPtr<Gio::FileInfo> dirinfo = diruri->query_info();
 	_basepath = rootfoldername;
 	_filestoadd.clear();
-	dir.visit (
-		rootfoldername,
-		Gnome::Vfs::FILE_INFO_DEFAULT,
-		Gnome::Vfs::DIRECTORY_VISIT_DEFAULT,
-		&onAddDocFolderRecurse);
+
+    onAddDocFolderRecurse(dirinfo, false);
 
 	// A hurtful copy to avoid _filestoadd sticking around afterwards.
 	std::vector<Glib::ustring> filescopy;
@@ -338,7 +352,6 @@ std::vector<Glib::ustring> recurseFolder (
 
 	return filescopy;
 }
-
 
 void writeBibKey (
 	std::ostringstream &out,
