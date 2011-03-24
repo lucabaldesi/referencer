@@ -330,6 +330,7 @@ bool onAddDocFolderRecurse (const Glib::RefPtr<const Gio::FileInfo>& info,
 	}else {
 		_filestoadd.push_back (fullname);
 	}
+  return true;
 }
 
 std::vector<Glib::ustring> recurseFolder (
