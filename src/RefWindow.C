@@ -1463,9 +1463,9 @@ void RefWindow::manageBrowseDialog (Gtk::Entry *entry)
 		// Effect is that we are always setting a UTF-8 filename
 		// NOT a URI.
 		if (!relpath.empty ()) {
-			entry->set_text (Glib::uri_unescape_string (relpath));
+			entry->set_text (Glib::uri_unescape_string (relpath));		  	
 		} else {
-			entry->set_text (Glib::filename_to_utf8 (dialog.get_filename()));
+		  entry->set_text (Glib::filename_to_utf8 (dialog.get_filename()));
 		}
 	}
 }
@@ -1557,12 +1557,13 @@ void RefWindow::onManageBibtex ()
 
 	Glib::ustring newtarget;
 	if (Glib::path_is_absolute (newfilename)) {
-		Glib::RefPtr<Gio::File> uri = Gio::File::create_for_uri (newfilename);
+		Glib::RefPtr<Gio::File> uri = Gio::File::create_for_path (newfilename);
     	newtarget = uri->get_path();
 	} else {
-		newtarget = Glib::uri_escape_string (newfilename);
+		newtarget = newfilename;
 	}
 	DEBUG (String::ucompose ("newtarget: %1", newtarget));
+
 
 	bool const newbraces = bracescheck.get_active ();
 
