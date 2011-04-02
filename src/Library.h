@@ -162,8 +162,8 @@ struct LibraryData {
     DocumentList *doclist_;
     /**
      * Contains the list of all \ref Tag "tags" in this library.
-     * <p>These tags can be assigned to documents in \ref
-     * LibraryData::doclist_.</p>
+     * <p>These tags can be assigned to documents in \ref 
+   	 * LibraryData::doclis</p>t_.
      */
     TagList *taglist_;
     Glib::ustring manage_target_;
@@ -214,7 +214,7 @@ class Library {
 	bool save (Glib::ustring const &libfilename);
 
 	void writeXML(xmlTextWriterPtr writer);
-	bool readXML(const Glib::ustring& libFileName);
+	bool readXML(Gio::InputStream *inputStream) throw(Glib::Exception);
 
 	void writeBibtex (
 		Glib::ustring const &bibfilename,

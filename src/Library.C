@@ -10,9 +10,13 @@
 #include <iostream>
 #include <cstring>
 
+#include "RefWindow.h"
+
 #include <glibmm/i18n.h>
 #include <libxml/xmlreader.h>
 #include <libxml/xmlwriter.h>
+#include <giomm/fileinfo.h>
+#include <giomm/error.h>
 
 #include "TagList.h"
 #include "DocumentList.h"
@@ -28,34 +32,55 @@
 using namespace Utility;
 
 /**
- * This is a callback function used in the XML parser to fetch data from a GVFS
+ * This is a callback function used in the XML parser to fetch data from a GIO
  * input stream.
+ * @param context should be a pointer to an open/valid Gio::InputStream.
+ * @return -1 upon failure or the number of bytes actually read.
  */
 static int vfsRead(void * context, char * buffer, int len) {
     if (!context)
         return -1;
-    return ((Gnome::Vfs::Handle*) context)->read(buffer, len);
+    Gio::InputStream *in = (Gio::InputStream*)context;
+    return in->read(buffer, len);
 }
 
 /**
- * This is a callback function used in the XML parser to close a GVFS input
+ * This is a callback function used in the XML parser to close a GIO input
  * stream.
+ * @param context should be a pointer to an open/valid Gio::InputStream.
+ * @return -1 upon failure, or 0 upon success.
  */
-static int vfsClose(void * context) {
+static int vfsCloseInputStream(void * context) {
     if (!context)
         return -1;
-    ((Gnome::Vfs::Handle*) context)->close();
-    return 0;
+    Gio::InputStream *in = (Gio::InputStream*)context;
+    return in->close() ? 0 : -1;
 }
 
 /**
- * This is a callback function used in the XML parser to write data to a GVFS
+ * This is a callback function used in the XML parser to close a GIO output
+ * stream.
+ * @param context should be a pointer to an open/valid Gio::OutputStream.
+ * @return -1 upon failure, or 0 upon success.
+ */
+static int vfsCloseOutputStream(void * context) {
+    if (!context)
+        return -1;
+    Gio::OutputStream *in = (Gio::OutputStream*)context;
+    return in->close() ? 0 : -1;
+}
+
+/**
+ * This is a callback function used in the XML parser to write data to a GIO
  * output stream.
+ * @param context should be a pointer to an open/valid Gio::OutputStream.
+ * @return -1 upon failure or the number of bytes actually written.
  */
 static int vfsWrite(void * context, const char * buffer, int len) {
     if (!context)
         return -1;
-    return ((Gnome::Vfs::Handle*) context)->write(buffer, len);
+    Gio::OutputStream *in = (Gio::OutputStream*)context;
+    return in->write(buffer, len);
 }
 
 /**
@@ -256,16 +281,16 @@ void Library::writeXML(xmlTextWriterPtr writer) {
     xmlTextWriterEndElement(writer);
 }
 
-bool Library::readXML(const Glib::ustring& libFileName) {
-    Gnome::Vfs::Handle libfile;
+bool Library::readXML(Gio::InputStream *inputStream) throw(Glib::Exception) {
+    if (inputStream == NULL)
+        return false;
 
     LibraryData* tmpData = NULL;
     xmlDocPtr libDoc = NULL;
     try {
-        libfile.open(libFileName, Gnome::Vfs::OPEN_READ);
         // Parse the library XML file to get the DOM tree.
         xmlDocPtr libDoc =
-                xmlReadIO(vfsRead, vfsClose, &libfile, NULL, NULL, 0);
+                xmlReadIO(vfsRead, vfsCloseInputStream, inputStream, NULL, NULL, 0);
         if (!libDoc) {
             throw Glib::MarkupError(Glib::MarkupError::PARSE, _(
                     "Could not parse the 'reflib' file."));
@@ -274,16 +299,15 @@ bool Library::readXML(const Glib::ustring& libFileName) {
         tmpData = new LibraryData();
         tmpData->extractData(libDoc);
     } catch (const Glib::Exception& ex) {
-        Utility::exceptionDialog(&ex, "opening library '"
-                + Gnome::Vfs::Uri::format_for_display(libFileName) + "'");
-        DELETE_AND_NULL(tmpData)
+        DELETE(tmpData)
+        if (libDoc != NULL)
+            xmlFreeDoc(libDoc);
+        throw;
     }
-
+    
     xmlFreeDoc(libDoc);
-    if (tmpData) {
-        delete this->data;
-        this->data = tmpData;
-    }
+    DELETE(this->data);
+    this->data = tmpData;
     return tmpData != NULL;
 }
 
@@ -334,19 +358,33 @@ bool Library::libraryFolderDialog ()
 // True on success
 bool Library::load (Glib::ustring const &libfilename)
 {
- 	Glib::RefPtr<Gio::File> libfile = Gio::File::create_for_uri (libfilename);
-	Glib::RefPtr<Gio::FileInfo> fileinfo = libfile->query_info ();
-	Glib::RefPtr<Gio::FileInputStream> libfile_is;
+    Glib::RefPtr<Gio::File> libfile = Gio::File::create_for_uri (libfilename);
+  	Glib::RefPtr<Gio::FileInfo> fileinfo;
 
-	Progress progress (tagwindow_);
+	try{
+  		fileinfo = libfile->query_info ();
+	} catch (const Gio::Error& ex) {
+		Utility::exceptionDialog(&ex, "opening library '"
+                + libfile->get_parse_name () + "'");
+	  	return false;
+	}
+  
+    Progress progress (tagwindow_);
 
-	progress.start (String::ucompose (
-		_("Opening %1"),
-		fileinfo->get_display_name ()));
+    progress.start (String::ucompose (
+            _("Opening %1"),
+            fileinfo->get_display_name ()));
 
-    // First try to parse the XML library file
-    if (!readXML(libfilename)) {
-        return false;
+    try {
+		Glib::RefPtr<Gio::FileInputStream> libfile_is = libfile->read();
+        // We have opened the file for reading, now try to parse the XML library
+        // file into this->data
+        if (!readXML(libfile_is.operator ->())) {
+            return false;
+        }
+    } catch (const Glib::Exception& ex) {
+        Utility::exceptionDialog(&ex, "opening library '"
+                + fileinfo->get_display_name () + "'");
     }
     DEBUG(String::ucompose("Done, got %1 docs", data->doclist_->getDocs().size()));
     //XXX: progress calls commented out, since they flush events,
@@ -379,10 +417,8 @@ bool Library::load (Glib::ustring const &libfilename)
 // True on success
 
 bool Library::save(Glib::ustring const &libfilename) {
-
     DEBUG("Saving to %1", libfilename);
-    Glib::RefPtr<Gio::File> libfile = Gio::File::create_for_uri (libfilename
-);
+    Glib::RefPtr<Gio::File> libfile = Gio::File::create_for_uri (libfilename);
 
     DEBUG("Updating relative filenames...");
     DocumentList::Container &docs = data->doclist_->getDocs();
@@ -394,9 +430,10 @@ bool Library::save(Glib::ustring const &libfilename) {
     DEBUG("Done.");
 
     DEBUG("Generating XML...");
-	try {
-        xmlBufferPtr buf = xmlBufferCreate();
-        xmlOutputBufferPtr outBuf = xmlOutputBufferCreateBuffer(buf, NULL);
+    try {
+        Glib::RefPtr<Gio::FileOutputStream> oStream = libfile->replace ();
+        xmlOutputBufferPtr outBuf = xmlOutputBufferCreateIO(&vfsWrite,
+                &vfsCloseOutputStream, (Gio::OutputStream*)(oStream.operator ->()), NULL);
         xmlTextWriterPtr writer = xmlNewTextWriter(outBuf);
         if (writer) {
             xmlTextWriterSetIndent(writer, true);
@@ -406,16 +443,12 @@ bool Library::save(Glib::ustring const &libfilename) {
             xmlTextWriterEndDocument(writer);
             xmlTextWriterFlush(writer);
             xmlFreeTextWriter(writer);
-
-            std::string new_etag;
-            Glib::ustring rawtext = reinterpret_cast<const char*>(xmlBufferContent(buf));
-            libfile->replace_contents (rawtext, "", new_etag);
         } else
             throw Glib::FileError(Glib::FileError::FAILED, _("Could not create an XML writer."));
     } catch (const Glib::Exception& ex) {
         Utility::exceptionDialog(&ex, "Generating 'reflib' XML file '" + libfilename + "'");
-		return false;
-	}
+        return false;
+    }
     DEBUG("Done.");
 
     DEBUG("Writing bibtex, manage_target_ = %1", data->manage_target_);

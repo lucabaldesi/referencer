@@ -20,7 +20,6 @@
 
 #include <giomm/file.h>
 #include <gtkmm.h>
-#include <libgnomevfsmm.h>
 #include <libxml/xmlstring.h>
 
 #include "ucompose.hpp"
