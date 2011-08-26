@@ -213,20 +213,20 @@ Glib::ustring findDataFile (
 		localfile = filename;
 	} else {
 		localfile = Glib::build_filename (
-			Glib::get_current_dir (), "data");
-		localfile = Glib::build_filename (
-			localfile, filename);
+			Glib::get_current_dir (), "data", filename);
 	}
 
+	
 	Glib::RefPtr<Gio::File> uri =
-    Gio::File::create_for_path (localfile);
+		Gio::File::create_for_path (localfile);
+	
 
 	if (uri->query_exists ()) {
 		return localfile;
 	} else {
 		Glib::ustring const installedfile =
 			Glib::build_filename (DATADIR, filename);
-		uri->create_file (Gio::FILE_CREATE_PRIVATE);
+		uri = Gio::File::create_for_path (installedfile);
 		if (uri->query_exists ()) {
 			return installedfile;
 		}
