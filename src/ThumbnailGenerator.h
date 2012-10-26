@@ -4,8 +4,8 @@
 
 #include <glibmm.h>
 #include <gdkmm.h>
-#include <libgnomeuimm.h>
 #include <map>
+
 
 class Document;
 
@@ -16,7 +16,6 @@ class ThumbnailGenerator
 
 	static Glib::RefPtr<Gdk::Pixbuf> defaultthumb_;
 	static Glib::RefPtr<Gdk::Pixbuf> thumbframe_;
-	static Glib::RefPtr<Gnome::UI::ThumbnailFactory> thumbfac_;
 
 	void mainLoop ();
 	Glib::RefPtr<Gdk::Pixbuf> lookupThumb (Glib::ustring const &file);

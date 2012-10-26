@@ -1,6 +1,4 @@
 
-#include <libgnomevfsmm.h>
-
 #include "Document.h"
 #include "Utility.h"
 
@@ -9,7 +7,6 @@
 
 Glib::RefPtr<Gdk::Pixbuf> ThumbnailGenerator::defaultthumb_;
 Glib::RefPtr<Gdk::Pixbuf> ThumbnailGenerator::thumbframe_;
-Glib::RefPtr<Gnome::UI::ThumbnailFactory> ThumbnailGenerator::thumbfac_;
 
 ThumbnailGenerator &ThumbnailGenerator::instance ()
 {
@@ -86,48 +83,18 @@ Glib::RefPtr<Gdk::Pixbuf> ThumbnailGenerator::getThumbnailSynchronous (Glib::ust
 Glib::RefPtr<Gdk::Pixbuf> ThumbnailGenerator::lookupThumb (Glib::ustring const &file)
 {
 	Glib::RefPtr<Gdk::Pixbuf> thumbnail;
+	GdkPixbuf* thumbnail_c;
 
 	Glib::RefPtr<Gio::File> uri = Gio::File::create_for_uri (file);
+
+
 	if (!file.empty () && Utility::uriIsFast (uri) && uri->query_exists()) {
-    	Glib::RefPtr<Gio::FileInfo> fileinfo = uri->query_info ();
-		/* We need to convert GtimeVal to time_t because it's required
-    	*  by ThumbnailFactory
-      	*/
-        time_t mtime = Utility::timeValToPosix (fileinfo->modification_time ());
+		Glib::RefPtr<Gio::FileInfo> fileinfo = uri->query_info ();
 
-		if (!thumbfac_)
-			thumbfac_ = Gnome::UI::ThumbnailFactory::create (Gnome::UI::THUMBNAIL_SIZE_NORMAL);
-
-		Glib::ustring thumbfile;
-		thumbfile = thumbfac_->lookup (file, mtime);
-
-		/*
-		 * Upsettingly, this leads to two full opens-read-close operations 
-		 * on the thumbnail.  ThumbnailFactory does one, presumably to 
-		 * read the PNG metadata, then we do it again to get the 
-		 * image itself.
-		 */
-
-		// Should we be using Gnome::UI::icon_lookup_sync?
-		if (thumbfile.empty()) {
-			DEBUG ("Couldn't find thumbnail:'%1'", file);
-			if (thumbfac_->has_valid_failed_thumbnail (file, mtime)) {
-				DEBUG ("Has valid failed thumbnail: '%1'", file);
-			} else {
-				DEBUG ("Generate thumbnail: '%1'", file);
-				Glib::ustring mimetype = fileinfo->get_content_type ();
-
-				thumbnail = thumbfac_->generate_thumbnail (file, mimetype);
-				if (thumbnail) {
-					thumbfac_->save_thumbnail (thumbnail, file, mtime);
-				} else {
-					DEBUG ("Failed to generate thumbnail: '%1'", file);
-					thumbfac_->create_failed_thumbnail (file, mtime);
-				}
-			}
-
-		} else {
-			thumbnail = Gdk::Pixbuf::create_from_file (thumbfile);
+		Glib::ustring thumbnail_path = fileinfo->get_attribute_as_string("thumbnail::path");
+		//DEBUG("gio thumbnail path: '%1'", thumbnail_path);
+		if (thumbnail_path != "") {
+			thumbnail = Gdk::Pixbuf::create_from_file(thumbnail_path);
 		}
 	}
 
