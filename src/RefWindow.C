@@ -18,7 +18,6 @@
 #include <giomm/file.h>
 #include <giomm/appinfo.h>
 #include <giomm/error.h>
-#include <libgnomeuimm.h>
 #include <glibmm/i18n.h>
 #include "ucompose.hpp"
 
@@ -105,7 +104,7 @@ void RefWindow::run ()
         Glib::add_exception_handler (sigc::mem_fun (*this, &RefWindow::signalException));
 
         /* Enter the main event loop */
-	Gnome::Main::run (*window_);
+	Gtk::Main::run (*window_);
 }
 
 
@@ -1028,7 +1027,7 @@ void RefWindow::tagClicked (GdkEventButton* event)
 void RefWindow::onQuit ()
 {
 	if (ensureSaved ())
-		Gnome::Main::quit ();
+		Gtk::Main::quit ();
 }
 
 
@@ -1995,8 +1994,8 @@ void RefWindow::addDocFiles (std::vector<Glib::ustring> const &filenames)
 		progress.set_fraction ((float)n / (float)filenames.size());
 		progresstext = String::ucompose (_("%1 of %2 documents"), n, filenames.size ());
 		progress.set_text (progresstext);
-		while (Gnome::Main::events_pending())
-			Gnome::Main::iteration ();
+		while (Gtk::Main::events_pending())
+			Gtk::Main::iteration ();
 
     	Glib::RefPtr<Gio::File> uri = Gio::File::create_for_uri (*it);
 		if (!Utility::uriIsFast (uri)) {
@@ -2013,8 +2012,8 @@ void RefWindow::addDocFiles (std::vector<Glib::ustring> const &filenames)
 		if (newdoc) {
 			gotText = newdoc->readPDF ();
 
-			while (Gnome::Main::events_pending())
-				Gnome::Main::iteration ();
+			while (Gtk::Main::events_pending())
+				Gtk::Main::iteration ();
 
 			// If we got a DOI or eprint field this will work
 			gotMetadata = newdoc->getMetaData ();

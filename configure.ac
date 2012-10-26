@@ -33,7 +33,6 @@ dnl ============================================================================
 dnl Checks for libraries.
 dnl ============================================================================
 PKG_CHECK_MODULES(DEPS, [
-			libgnomeuimm-2.6 >= 2.12.0
 			gtkmm-2.4 >= 2.12.0
 dnl TODO: make dbus-glib and tracker optional
 dnl			dbus-glib-1 >= 0.74

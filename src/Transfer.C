@@ -13,7 +13,6 @@
 #include <iostream>
 #include <stdint.h>
 
-#include <libgnomeuimm.h>
 #include <libgnomevfsmm.h>
 #include <glibmm/i18n.h>
 #include "ucompose.hpp"
@@ -154,8 +153,8 @@ Glib::ustring &readRemoteFile (
 	bool dialogShown = false;
 	while (transferStatus == TRANSFER_NONE) {
 		progress.pulse ();
-		while (Gnome::Main::events_pending())
-			Gnome::Main::iteration ();
+		while (Gtk::Main::events_pending())
+			Gtk::Main::iteration ();
 		Glib::usleep (100000);
 
 		if (!dialogShown && timeout.elapsed () > dialogDelay) {

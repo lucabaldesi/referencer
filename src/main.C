@@ -9,8 +9,9 @@
  */
 
 
+#include <memory>
+#include <iostream>
 #include <gtkmm.h>
-#include <libgnomeuimm.h>
 #include <libgnomevfsmm.h>
 #include <glibmm/i18n.h>
 
@@ -30,13 +31,24 @@ int main (int argc, char **argv)
 	bind_textdomain_codeset (GETTEXT_PACKAGE, "UTF-8");
 	textdomain (GETTEXT_PACKAGE);
 
-	Gnome::Main gui (PACKAGE, VERSION,
-		Gnome::UI::module_info_get(), argc, argv);
+	if (!Glib::thread_supported())
+		Glib::thread_init(0); //So we can use GMutex.
+	gdk_threads_init ();
+	Gnome::Conf::init();
+
+	std::auto_ptr<Gtk::Main> mainInstance;
+	try
+	{
+		mainInstance = std::auto_ptr<Gtk::Main>( new Gtk::Main(argc, argv) );
+	}
+	catch(const Glib::Error& ex)
+	{
+		std::cerr << "Glom: Error while initializing gtkmm: " << ex.what() << std::endl;
+		return EXIT_FAILURE;
+	}
 
 	Gnome::Vfs::init ();
 	Gio::init ();
-
-	gdk_threads_init ();
 
 	Glib::ustring pythonPath = "";
 	/* Pick up existing python path */

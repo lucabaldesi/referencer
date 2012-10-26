@@ -5,7 +5,6 @@
 #include <dirent.h>
 
 #include <glibmm/i18n.h>
-#include <libgnomeuimm.h>
 
 #include "Python.h"
 
@@ -122,8 +121,8 @@ static PyObject *
 referencer_poll_cancellation (PyObject *self, PyObject *args)
 {
 	/* Advance GTK+ */
-	while (Gnome::Main::events_pending())
-		Gnome::Main::iteration (); 
+	while (Gtk::Main::events_pending())
+		Gtk::Main::iteration (); 
 
 	/* Invoke any registered callback */
 	bool cancelled = false;
@@ -132,8 +131,8 @@ referencer_poll_cancellation (PyObject *self, PyObject *args)
 	}
 
 	/* Advance GTK+ */
-	while (Gnome::Main::events_pending())
-		Gnome::Main::iteration (); 
+	while (Gtk::Main::events_pending())
+		Gtk::Main::iteration (); 
 
 	return cancelled ? Py_True : Py_False;
 }

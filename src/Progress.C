@@ -12,8 +12,6 @@
 
 #include <iostream>
 
-#include <libgnomemm/main.h>
-
 #include "RefWindow.h"
 
 #include "Progress.h"
@@ -68,8 +66,8 @@ void Progress::update ()
 
 void Progress::flushEvents ()
 {
-	while (Gnome::Main::events_pending())
-		Gnome::Main::iteration ();
+	while (Gtk::Main::events_pending())
+		Gtk::Main::iteration ();
 }
 
 
