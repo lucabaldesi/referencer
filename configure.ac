@@ -38,7 +38,6 @@ dnl TODO: make dbus-glib and tracker optional
 dnl			dbus-glib-1 >= 0.74
 dnl			tracker >= 0.6.3
 			gconfmm-2.6 >= 2.12.0
-			gnome-vfsmm-2.6 >= 2.12.0
 			poppler-glib >= 0.5.0
 			libxml-2.0 >= 2.7.6
 			])

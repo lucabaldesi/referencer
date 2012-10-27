@@ -21,11 +21,6 @@ class Progress;
 
 namespace Transfer {
 
-void downloadRemoteFile (
-	Glib::ustring const &source,
-	Glib::ustring const &dest,
-	Progress &progress);
-
 Glib::ustring &readRemoteFile (
 	Glib::ustring const &title,
 	Glib::ustring const &messagetext,

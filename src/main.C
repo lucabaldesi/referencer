@@ -12,7 +12,6 @@
 #include <memory>
 #include <iostream>
 #include <gtkmm.h>
-#include <libgnomevfsmm.h>
 #include <glibmm/i18n.h>
 
 #include <Python.h>
@@ -47,7 +46,6 @@ int main (int argc, char **argv)
 		return EXIT_FAILURE;
 	}
 
-	Gnome::Vfs::init ();
 	Gio::init ();
 
 	Glib::ustring pythonPath = "";

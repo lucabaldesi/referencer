@@ -13,7 +13,6 @@
 #include <iostream>
 #include <stdint.h>
 
-#include <libgnomevfsmm.h>
 #include <glibmm/i18n.h>
 #include "ucompose.hpp"
 
@@ -71,51 +70,6 @@ void promptWorkOffline ()
 	if (faildialog.run () == Gtk::RESPONSE_YES) {
 		_global_prefs->setWorkOffline (true);
 	};
-}
-
-
-bool on_transfer_progress(
-	const Gnome::Vfs::Transfer::ProgressInfo& info,
-	Progress &progress)
-{
-	if (info.get_phase() == Gnome::Vfs::XFER_PHASE_COPYING) {
-		progress.update (
-			(double)info.get_bytes_copied()
-			/ (double)info.get_file_size());
-	} else {
-		progress.update ();
-	}
-	
-	return true;
-}
-
-void downloadRemoteFile (
-	Glib::ustring const &source,
-	Glib::ustring const &dest,
-	Progress &progress)
-{
-	Glib::RefPtr<Gnome::Vfs::Uri> srcuri = Gnome::Vfs::Uri::create (source);
-	Glib::RefPtr<Gnome::Vfs::Uri> desturi = Gnome::Vfs::Uri::create (dest);
-
-	progress.start (String::ucompose(
-		_("Downloading %1"),
-		srcuri->extract_short_name()));
-	try {
-		Gnome::Vfs::Transfer::transfer (
-			srcuri,
-			desturi,
-			Gnome::Vfs::XFER_DEFAULT,
-			Gnome::Vfs::XFER_ERROR_MODE_ABORT,
-			Gnome::Vfs::XFER_OVERWRITE_MODE_SKIP,
-			sigc::bind (
-				sigc::ptr_fun (&on_transfer_progress),
-				sigc::ref(progress))
-			);
-	} catch (const Gnome::Vfs::exception ex) {
-		progress.finish ();
-		throw ex;
-	}
-	progress.finish ();
 }
 
 
@@ -183,161 +137,27 @@ Glib::ustring &readRemoteFile (
 	}
 }
 
-
-volatile static bool advance;
-Gnome::Vfs::Async::Handle bibfile;
-static long transferCounter;
-/* FIXME: remove this limit */
-static int const maxSize = 1024 * 256;
-
-void openCB (
-	Gnome::Vfs::Async::Handle const &handle,
-	Gnome::Vfs::Result result)
-{
-	if (result == Gnome::Vfs::OK) {
-		DEBUG ("result OK, opened");
-		advance = true;
-	} else {
-		DEBUG ("result not OK");
-		transferStatus |= TRANSFER_FAIL_SILENT;
-	}
-}
-
-
-void readCB (
-	Gnome::Vfs::Async::Handle const &handle,
-	Gnome::Vfs::Result result,
-	gpointer buffer,
-	Gnome::Vfs::FileSize requested,
-	Gnome::Vfs::FileSize reallyRead)
-{
-	transferCounter += reallyRead;
-	DEBUG ("Transferred %1 bytes (%2)", transferCounter, reallyRead);
-
-	char *charbuf = (char *) buffer;
-	charbuf [reallyRead] = 0;
-	if (result == Gnome::Vfs::OK) {
-		if (reallyRead > 0) {
-			Gnome::Vfs::Async::Handle &h = const_cast<Gnome::Vfs::Async::Handle&> (handle);
-			h.read ((char*)buffer + reallyRead, maxSize - transferCounter, sigc::ptr_fun (&readCB));
-		} else {
-			advance = true;
-		}
-	} else  {
-		if (result == Gnome::Vfs::ERROR_EOF) {
-			DEBUG ("readCB: EOF");
-			advance = true;
-		} else {
-			DEBUG ("readCB: result error");
-			transferStatus |= TRANSFER_FAIL_SILENT;
-		}
-	}
-}
-
-
-void closeCB (
-	Gnome::Vfs::Async::Handle const &handle,
-	Gnome::Vfs::Result result)
-{
-	if (result == Gnome::Vfs::OK) {
-		DEBUG ("closeCB: result OK, closed");
-	} else {
-		// Can't really do much about this
-		DEBUG ("closeCB: warning: result not OK");
-	}
-
-	advance = true;
-}
-
-
-// Return true if all is well
-// Return false if we should give up and go home
-static bool waitForFlag (volatile bool &flag)
-{
-	while (flag == false) {
-		DEBUG ("Waiting...");
-		Glib::usleep (100000);
-		if ((transferStatus & TRANSFER_FAIL_SILENT) | (transferStatus & TRANSFER_FAIL_LOUD)) {
-			// The parent decided we've timed out or cancelled and should give up
-			//     libgnomevfsmm-WARNING **: gnome-vfsmm Async::Handle::cancel():
-			//     This method currently leaks memory
-			bibfile.cancel ();
-			// Should close it if it's open
-			DEBUG ("waitForFlag completed due to transferfail");
-			return true;
-		}
-	}
-	DEBUG ("Done!");
-	return false;
-}
-
-
 void fetcherThread (Glib::ustring const &filename)
 {
-	Glib::RefPtr<Gnome::Vfs::Uri> biburi = Gnome::Vfs::Uri::create (filename);
+	char *buffer = NULL;
+	gsize len = 0;
 
-	advance = false;
 	try {
-		bibfile.open (filename,
-		              Gnome::Vfs::OPEN_READ,
-		              0,
-		              sigc::ptr_fun(&openCB));
-	} catch (const Gnome::Vfs::exception ex) {
-		DEBUG ("Got an exception from open");
+		Glib::RefPtr<Gio::File> file =
+			Gio::File::create_for_uri (filename);
+		Glib::RefPtr<Gio::Cancellable> cancellable = Gio::Cancellable::create();
+		Glib::RefPtr<Gio::FileInfo> fileinfo = file->query_info();
+
+		file->load_contents(buffer, len);
+	} catch (const Glib::Error ex) {
+		DEBUG ("Got an exception from load_contents");
 		transferStatus |= TRANSFER_FAIL_SILENT;
-		Utility::exceptionDialog (&ex,
-			String::ucompose (
-				_("Opening URI '%1' on server"),
-				Gnome::Vfs::unescape_string_for_display (filename)));
 		return;
 	}
 
-	if (waitForFlag (advance))
-		// Opening failed
-		return;
+	DEBUG("Received '%1' bytes", len);
 
-	// Crossref can fuck off if it thinks the metadata for a
-	// paper is more than 256kB.  If it really is then we will
-	// later try and parse incomplete XML, and should fail
-	// there probably.
-	char *buffer = (char *) malloc (sizeof (char) * maxSize);
-
-	transferCounter = 0;
-	advance = false;
-	try {
-		bibfile.read (buffer, maxSize, sigc::ptr_fun (&readCB));
-	} catch (const Gnome::Vfs::exception ex) {
-		DEBUG ("Got an exception from read");
-		// should close handle?
-		transferStatus |= TRANSFER_FAIL_SILENT;
-		Utility::exceptionDialog (&ex,
-			String::ucompose (
-				_("Reading URI '%1' on server"),
-				Gnome::Vfs::unescape_string_for_display (filename)));
-		return;
-	}
-
-	if (waitForFlag (advance))
-		// Aargh shouldn't we be closing?
-		return;
-
-	transferresults = buffer;
-	free (buffer);
-	advance = false;
-	try {
-		bibfile.close (sigc::ptr_fun (&closeCB));
-	} catch (const Gnome::Vfs::exception ex) {
-		DEBUG ("Got an exception from close");
-		transferStatus |= TRANSFER_FAIL_SILENT;
-		Utility::exceptionDialog (&ex,
-			String::ucompose (
-				_("Closing URI '%1' on server"),
-				Gnome::Vfs::unescape_string_for_display (filename)));
-		return;
-	}
-
-	if (waitForFlag (advance))
-		return;
+	transferresults = Glib::ustring(buffer);
 
 	transferStatus |= TRANSFER_OK;
 }
