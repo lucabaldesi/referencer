@@ -37,9 +37,9 @@ class DocumentProperties {
 
 	Gtk::Button *crossrefbutton_;
 	Gtk::Button *pastebibtexbutton_;
-	Gtk::Button *newextrafieldbutton_;
-	Gtk::Button *deleteextrafieldbutton_;
-	Gtk::Button *editextrafieldbutton_;
+	Gtk::ToolButton *newextrafieldbutton_;
+	Gtk::ToolButton *deleteextrafieldbutton_;
+	Gtk::ToolButton *editextrafieldbutton_;
 	Gtk::Expander *extrafieldsexpander_;
 	Gtk::TreeView *extrafieldsview_;
 	Glib::RefPtr<Gtk::TreeSelection> extrafieldssel_;
