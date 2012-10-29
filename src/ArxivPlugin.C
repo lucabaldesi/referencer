@@ -25,6 +25,13 @@
 #include "config.h"
 #include "ArxivPlugin.h"
 
+int ArxivPlugin::canResolve (Document &doc)
+{
+	if (doc.hasField("eprint") || doc.hasField("ee"))
+		return 80;
+	return -1;
+}
+
 bool ArxivPlugin::resolve (Document &doc)
 {
 	DEBUG (">> resolve");

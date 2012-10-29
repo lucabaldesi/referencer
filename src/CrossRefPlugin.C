@@ -168,6 +168,13 @@ CrossRefPlugin::CrossRefPlugin () {
 }
 
 
+int CrossRefPlugin::canResolve (Document &doc) {
+	if (doc.hasField("doi"))
+		return 10; /* Return low priority */
+	return -1;
+}
+
+
 bool CrossRefPlugin::resolve (Document &doc)
 {
 	/*

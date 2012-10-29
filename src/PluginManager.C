@@ -279,3 +279,54 @@ PluginManager::PluginList PluginManager::getEnabledPlugins ()
 	return retval;
 }
 
+
+bool PluginManager::canResolve (Document &doc)
+{
+	std::list<Plugin*> plugins = this->getEnabledPlugins();
+	std::list<Plugin*>::iterator it = plugins.begin ();
+	std::list<Plugin*>::iterator end = plugins.end ();
+
+	for (; it != end; ++it) {
+		if ((*it)->canResolve(doc) > 0) {
+			DEBUG ("PluginManager::canResolve found module '%1'",
+				(*it)->getShortName());
+			return true;
+		}
+	}
+	return false;
+}
+
+bool PluginManager::resolveMetadata (Document &doc)
+{
+	std::list<Plugin*> plugins = this->getEnabledPlugins();
+	std::list<Plugin*>::iterator it = plugins.begin ();
+	std::list<Plugin*>::iterator end = plugins.end ();
+	std::vector< std::pair<int, Plugin*> > candidates;
+
+	int priority;
+
+	for (; it != end; ++it) {
+		priority = (*it)->canResolve(doc);
+		if (priority > 0) {
+			candidates.push_back (std::make_pair(priority, (*it)));
+		}
+	}
+	std::sort(candidates.begin(), candidates.end());
+
+
+	std::vector< std::pair<int, Plugin*> >::reverse_iterator candit = candidates.rbegin ();
+	std::vector< std::pair<int, Plugin*> >::reverse_iterator candend = candidates.rend ();
+	bool success = false;
+	for (; candit != candend; ++candit) {
+		DEBUG ("PluginManager::resolveMetadata: trying module '%1' with priority '%2'",
+			((*candit).second)->getShortName(), (*candit).first);
+		success = ((*candit).second)->resolve(doc);
+
+		if (success) {
+			DEBUG ("PluginManager::resolveMetadata: paydirt with module '%1'",
+				((*candit).second)->getShortName());
+			break;
+		}
+	}
+	return success;
+}

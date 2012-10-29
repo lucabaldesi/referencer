@@ -15,6 +15,7 @@ class ArxivPlugin : public Plugin
 			cap_.add(PluginCapability::ARXIV);
 		}
 		~ArxivPlugin () {};
+		virtual int canResolve (Document &doc);
 		virtual bool resolve (Document &doc);
 		virtual Glib::ustring const getShortName ();
 		virtual Glib::ustring const getLongName ();

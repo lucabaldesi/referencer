@@ -244,6 +244,12 @@ def get_citation_from_pmid (pmid, email='referencer@icculus.org', tool='Referenc
 
 	return data
 
+def can_resolve_metadata (doc):
+    if doc.get_field ("pmid"):
+        return 90
+    elif doc.get_field ("doi"):
+        return 50
+    return -1
 
 def resolve_metadata (doc, method):
 	try:

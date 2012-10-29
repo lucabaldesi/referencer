@@ -27,6 +27,7 @@ class PythonPlugin : public Plugin
 		virtual bool updateSensitivity (Glib::ustring const action, std::vector<Document*>);
 		
 		/* Metadata lookup */
+		virtual int canResolve (Document &doc);
 		virtual bool resolve (Document &doc);
 
 		/* Search */
@@ -52,7 +53,8 @@ class PythonPlugin : public Plugin
 
 		Glib::ustring const getPluginInfoField (Glib::ustring const &targetKey);
 		std::string moduleName_;
-		PyObject *pGetFunc_;
+		PyObject *pResolveFunc_;
+		PyObject *pCanResolveFunc_;
 		PyObject *pActionFunc_;
 		PyObject *pPluginInfo_;
 		PyObject *pMod_;

@@ -134,7 +134,16 @@ class Plugin
 		virtual ~Plugin () {};
 
 		virtual void load (std::string const &moduleName) {};
+		
+		/* Lookup metadata, and add to document. Return true on success */
 		virtual bool resolve (Document &doc) = 0;
+		/* Return a priority for how well this plugin can handle this document.
+		 * Should not incur any network traffic.
+		 * Return: -1 if unable, or a positive integer if an attempt can be made.
+		 * 	(Suggested: integer from 1-100, depending on how well it might go.) */
+		virtual int canResolve (Document &doc) {
+			return 1;
+		};
 
 		virtual Glib::ustring const getShortName () = 0;
 		virtual Glib::ustring const getLongName () = 0;
@@ -168,6 +177,7 @@ class Plugin
 				enabled_ = false;
 		}
 
+		/* TODO mchro: eliminate PluginCapability, or make more generic */
 		PluginCapability cap_;
 
 		

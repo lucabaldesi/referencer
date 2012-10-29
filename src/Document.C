@@ -573,15 +573,8 @@ bool Document::readPDF ()
 
 bool Document::canGetMetadata ()
 {
-	if (hasField("doi")
-		|| hasField ("eprint")
-		|| hasField ("pmid")
-	   )
-	{
-		return true;
-	} else {
-		return false;
-	}
+	PluginManager *pluginManager = _global_plugins;
+	return _global_plugins->canResolve(*this);
 }
 
 
@@ -667,48 +660,10 @@ bool Document::getMetaData ()
 	if (_global_prefs->getWorkOffline())
 		return false;
 
-	PluginCapability potentials;
-
-	if (hasField("doi"))
-		potentials.add(PluginCapability::DOI);
-
-	if (hasField("eprint"))
-		potentials.add(PluginCapability::ARXIV);
-
-	if (hasField("pmid"))
-		potentials.add(PluginCapability::PUBMED);
-
-	if (hasField("url"))
-		potentials.add(PluginCapability::URL);
-
-	if (potentials.empty())
-		return false;
-
 	PluginManager *pluginManager = _global_plugins;
-
-	std::list<Plugin*> plugins = pluginManager->getEnabledPlugins();
-	std::list<Plugin*>::iterator it = plugins.begin ();
-	std::list<Plugin*>::iterator end = plugins.end ();
-
 	bool success = false;
 
-	for (; it != end; ++it) {
-		if (!(*it)->cap_.hasAny(potentials)) {
-			DEBUG ("Document::getMetaData: module '%1' has no "
-				"suitable capabilities", (*it)->getShortName());
-			continue;
-		}
-
-		DEBUG ("Document::getMetaData: trying module '%1'",
-			(*it)->getShortName());
-		success = (*it)->resolve(*this);
-
-		if (success) {
-			DEBUG ("BibData::resolveDoi: paydirt with module '%1'",
-				(*it)->getShortName());
-			break;
-		}
-	}
+	success = _global_plugins->resolveMetadata(*this);
 
 	/*
 	 * Set up the key if it was never set to begin with

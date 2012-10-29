@@ -38,6 +38,11 @@ class PluginManager
 		void *progressObject_;
 		bool (*progressCallback_)(void*);
 
+        /* Does a plugin want to try and fetch metadata for this document? */
+        bool canResolve (Document &doc);
+        /* Resolve metadata for this document, using plugins in priority order */
+        bool resolveMetadata (Document &doc);
+
 	private:
 		/* Python module search locations */
 		std::vector<Glib::ustring> pythonPaths_;

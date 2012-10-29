@@ -18,7 +18,8 @@
 
 PythonPlugin::PythonPlugin(PluginManager *owner)
 {
-	pGetFunc_ = NULL;
+	pResolveFunc_ = NULL;
+    pCanResolveFunc_ = NULL;
 	pMod_ = NULL;
 	owner_ = owner;
 }
@@ -27,8 +28,11 @@ PythonPlugin::PythonPlugin(PluginManager *owner)
 PythonPlugin::~PythonPlugin()
 {
 	if (loaded_) {
-		if (pGetFunc_ != NULL)
-			Py_DECREF (pGetFunc_);
+		if (pResolveFunc_ != NULL)
+			Py_DECREF (pResolveFunc_);
+
+		if (pCanResolveFunc_ != NULL)
+			Py_DECREF (pCanResolveFunc_);
 
 		if (pPluginInfo_ != NULL)
 			Py_DECREF (pPluginInfo_);
@@ -122,13 +126,20 @@ void PythonPlugin::load (std::string const &moduleName)
 
 	/* Extract metadata lookup function */
 	if (cap_.hasMetadataCapability()) { 
-		pGetFunc_ = PyObject_GetAttrString (pMod_, "resolve_metadata");
-		if (!pGetFunc_) {
+		pResolveFunc_ = PyObject_GetAttrString (pMod_, "resolve_metadata");
+		if (!pResolveFunc_) {
 			DEBUG ("Couldn't find resolver");
 			Py_DECREF (pMod_);
 			return;
 		} else {
-			DEBUG ("Found resolver %1", pGetFunc_);
+			DEBUG ("Found resolver %1", pResolveFunc_);
+		}
+
+		pCanResolveFunc_ = PyObject_GetAttrString (pMod_, "can_resolve_metadata");
+		if (!pCanResolveFunc_) {
+			DEBUG ("Couldn't find can_resolve_metadata");
+		} else {
+			DEBUG ("Found can_resolve_metadata %1", pCanResolveFunc_);
 		}
 	}
 
@@ -197,6 +208,34 @@ void PythonPlugin::load (std::string const &moduleName)
 	DEBUG (String::ucompose ("successfully loaded %1", moduleName));
 
 	loaded_ = true;
+}
+
+int PythonPlugin::canResolve (Document &doc)
+{
+    if (pCanResolveFunc_ == NULL)
+        return -1;
+
+	referencer_document *pDoc =
+		PyObject_New (referencer_document, &t_referencer_document);
+	pDoc->doc_ = &doc;
+
+	PyObject *pArgs = NULL;
+	pArgs = Py_BuildValue ("(O)", pDoc);
+
+	PyObject *pReturn = PyObject_CallObject(pCanResolveFunc_, pArgs);
+	Py_DECREF(pArgs);
+	Py_DECREF (pDoc);
+
+    int toret = -1;
+	if (pReturn != NULL) {
+        toret = PyLong_AsLong(pReturn);
+		Py_DECREF(pReturn);
+	} else {
+		DEBUG ("PythonPlugin::resolveID: NULL return from PyObject_CallObject");
+		displayException ();
+	}
+
+	return toret;
 }
 
 bool PythonPlugin::resolve (Document &doc)
@@ -414,7 +453,7 @@ bool PythonPlugin::resolveID (Document &doc, PluginCapability::Identifier id)
 	}
 
 
-	PyObject *pReturn = PyObject_CallObject(pGetFunc_, pArgs);
+	PyObject *pReturn = PyObject_CallObject(pResolveFunc_, pArgs);
 	Py_DECREF(pArgs);
 	Py_DECREF (pDoc);
 
