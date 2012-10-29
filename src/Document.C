@@ -765,8 +765,9 @@ Glib::ustring Document::getField (Glib::ustring const &field)
 			const Glib::ustring _field = field;
 			return bib_.extras_[_field];
 		} else {
+			// If field does not exist, return a null string.
 			DEBUG ("Document::getField: WARNING: unknown field %1", field);
-			throw std::range_error("Document::getField: unknown field");
+			return "";
 		}
 	}
 }
