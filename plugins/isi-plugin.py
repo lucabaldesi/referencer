@@ -468,28 +468,14 @@ def choose_record(document,nrecs):
     recChoose.destroy()
     return currentrec
 
-#>-- Get MAXRECORDS from conf file ro from default
 def get_MAXRECORDS():
-    MAXRECORDS = DEFAULTMAXRECORDS
-    filename = os.getenv("HOME") + "/.referencer/plugins/isi-plugin.conf"
-    if os.path.isfile(filename):
-        cf = open(filename,'r+')
-        while True:
-            line = cf.readline()
-            if not line:
-                break
-            var,value = line.split("=")
-            if var.strip().upper()=='MAXRECORDS':
-                MAXRECORDS = int(value)
-        cf.close()
-    return MAXRECORDS
+    maxrecords = referencer.pref_get ("isi_maxrecords")
+    if (len(maxrecords)==0):
+        maxrecords = DEFAULTMAXRECORDS
+    return int(maxrecords)
 
-#>-- Write MAXRECORDS to conf file
-def set_MAXRECORDS(MAXRECORDS):
-    filename = os.getenv("HOME") + "/.referencer/plugins/isi-plugin.conf"
-    cf = open(filename,'w')
-    cf.write("MAXRECORDS = " + str(MAXRECORDS))
-    cf.close()
+def set_MAXRECORDS(maxrecords):
+    referencer.pref_set ("isi_maxrecords", str(maxrecords))
 
 #>-- Main referencer function
 def do_action(library,documents):
