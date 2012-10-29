@@ -26,7 +26,6 @@ def get_field (doc, field):
 		return value[0].childNodes[0].data.encode("utf-8")
 
 def can_resolve_metadata (doc):
-    print "abemad"
     if doc.get_field("doi"):
         return 50
     return -1

@@ -46,7 +46,8 @@ static PyObject *referencer_document_get_type (PyObject *self, PyObject *args)
 		return PyString_FromString(value.c_str());
 	} catch (std::exception &ex) {
 		PyErr_SetString (PyExc_KeyError, ex.what());
-		return PyString_FromString("");
+        Py_INCREF(Py_None);
+        return Py_None;
 	}
 }
 
@@ -57,7 +58,12 @@ static PyObject *referencer_document_get_field (PyObject *self, PyObject *args)
 	try {
 		Glib::ustring value = ((referencer_document*)self)->doc_->getField (PyString_AsString(fieldName));
 		return PyString_FromString(value.c_str());
-	} catch (std::exception &ex) {
+	}
+	catch (std::range_error &ex) { /* unknown field */
+		Py_INCREF(Py_None);
+		return Py_None;
+	}
+	catch (std::exception &ex) {
 		PyErr_SetString (PyExc_KeyError, ex.what());
 		return NULL;
 	}
