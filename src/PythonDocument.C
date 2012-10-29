@@ -46,7 +46,7 @@ static PyObject *referencer_document_get_type (PyObject *self, PyObject *args)
 		return PyString_FromString(value.c_str());
 	} catch (std::exception &ex) {
 		PyErr_SetString (PyExc_KeyError, ex.what());
-		return "";
+		return PyString_FromString("");
 	}
 }
 
