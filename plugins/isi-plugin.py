@@ -76,6 +76,18 @@ referencer_plugin_actions = [{
         "accelerator":"<control>i"
         }]
 
+referencer_plugin_capabilities = ["resolve_metadata"]
+
+def can_resolve_metadata (doc):
+    if doc.get_field ("title"):
+        return 10
+    elif doc.get_field ("author") and doc.get_field("year"):
+        return 5
+    return -1
+
+def resolve_metadata (doc, method=None):
+    return do_action(None,[doc])
+
 class isiRec:
     def __init__(self, isi_rec):
         self.authors=''
