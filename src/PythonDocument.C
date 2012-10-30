@@ -51,6 +51,14 @@ static PyObject *referencer_document_get_type (PyObject *self, PyObject *args)
 	}
 }
 
+static PyObject *referencer_document_set_type (PyObject *self, PyObject *args)
+{
+	PyObject *value = PyTuple_GetItem (args, 0);
+	((referencer_document*)self)->doc_->getBibData().setType (PyString_AsString(value));
+	return Py_BuildValue ("i", 0);
+}
+
+
 static PyObject *referencer_document_get_field (PyObject *self, PyObject *args)
 {
 	PyObject *fieldName = PyTuple_GetItem (args, 0);
@@ -135,6 +143,7 @@ static PyMemberDef referencer_document_members[] = {
 
 static PyMethodDef referencer_document_methods[] = {
 	{"get_type",	referencer_document_get_type,	METH_VARARGS, "Get the document type"},
+	{"set_type",	referencer_document_set_type,	METH_VARARGS, "Set the document type"},
 	{"get_field", referencer_document_get_field, METH_VARARGS, "Get a field"},
 	{"get_fields", referencer_document_get_fields, METH_VARARGS, "Get a dictionary of all fields"},
 	{"set_field", referencer_document_set_field, METH_VARARGS, "Set a field"},
