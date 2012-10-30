@@ -85,8 +85,38 @@ def can_resolve_metadata (doc):
         return 5
     return -1
 
-def resolve_metadata (doc, method=None):
-    return do_action(None,[doc])
+def resolve_metadata (document, method=None):
+    #do search
+    try:
+        searchres = do_search(document)
+    except:
+        return False
+    #throw exception on server error: probably because IP is not allowed
+    err = get_field(searchres,"ERROR")
+    if err:
+        serverExcDia = serverException(err)
+        response = serverExcDia.run()
+        serverExcDia.destroy()
+        return False
+
+    nrecs = int(get_field(searchres,"COUNT"))
+    isi_recs = searchres.getElementsByTagName("REC")
+
+    if nrecs>1:
+        rec = choose_record(document, nrecs, isi_recs)
+        if rec is not False:
+            rec.set_document_from_record(document)
+        else:
+            return False
+    elif nrecs == 1:
+        rec = isiRec(isi_recs[0])
+        rec.set_document_from_record(document)
+    elif nrecs == 0:
+        noRec = noRecordFound(document)
+        response = noRec.run()
+        noRec.destroy()
+        return False
+    return True
 
 class isiRec:
     def __init__(self, isi_rec):
@@ -216,6 +246,26 @@ class documentDisplay(gtk.Window):
         x = xp
         y = yp - hp - 30
         self.move(x,y)
+
+class serverException(gtk.Dialog):
+    def __init__(self, err, parent=None):
+        gtk.Dialog.__init__(self,"ISI plugin",
+                            parent,
+                            gtk.DIALOG_MODAL | 
+                            gtk.DIALOG_DESTROY_WITH_PARENT,
+                            (gtk.STOCK_OK, gtk.RESPONSE_OK))
+        text = """
+<b>   ISI Error</b>
+        
+The server returned an error:
+"%s"
+
+Your current IP address probably does not have access to the ISI webservice.
+""" % (err)
+        label = gtk.Label()
+        label.set_markup(text)
+        self.vbox.pack_start(label)
+        self.vbox.show_all()
 
 class noRecordFound(gtk.Dialog):
     def __init__(self, document = None, parent = None):
@@ -429,8 +479,7 @@ def do_search (document):
             url0)
     print data0
     xmldoc0 = minidom.parseString(data0)
-    recordsFound=get_field(xmldoc0,"COUNT")
-    return (int(recordsFound), xmldoc0)
+    return xmldoc0
 
 def get_query(document):
     query = {}
@@ -487,22 +536,7 @@ def do_action(library,documents):
     s = ""
     assigned_keys = {}
     for document in documents:
-        #do search
-        (nrecs, searchres) = do_search(document)
-
-        isi_recs = searchres.getElementsByTagName("REC")
-
-        if nrecs>1:
-            rec = choose_record(document, nrecs, isi_recs)
-            if rec is not False:
-                rec.set_document_from_record(document)
-        elif nrecs == 1:
-            rec = isiRec(isi_recs[0])
-            rec.set_document_from_record(document)
-        elif nrecs == 0:
-            noRec = noRecordFound(document)
-            response = noRec.run()
-            noRec.destroy()
+        resolve_metadata(document)
     return True
 
 #>-- Main referencer preferences function

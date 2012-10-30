@@ -138,6 +138,9 @@ def resolve_metadata (doc, method=None):
     print "DBLP:url:", repr(url)
     data = referencer.download (_("Searching DBLP"), _("Fetching metadata from DBLP for search query '%s'") % searchTerm, url);
 
+    if not data:
+        return False
+
     hits = parse_hits_get_urls(data)
 
     print "DBLP:hits:", hits
