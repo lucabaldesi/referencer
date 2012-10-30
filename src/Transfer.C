@@ -102,7 +102,7 @@ Glib::ustring &readRemoteFile (
 	Glib::Timer timeout;
 	timeout.start ();
 
-	double const maxTimeout = 10.0;
+	double const maxTimeout = 30.0;
 	double const dialogDelay = 1.0;
 	bool dialogShown = false;
 	while (transferStatus == TRANSFER_NONE) {
