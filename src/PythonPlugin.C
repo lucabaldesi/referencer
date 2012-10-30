@@ -118,6 +118,8 @@ void PythonPlugin::load (std::string const &moduleName)
 				cap_.add(PluginCapability::PUBMED);
 			else if (str == "url")
 				cap_.add(PluginCapability::URL);
+			else if (str == "resolve_metadata")
+				cap_.add(PluginCapability::RESOLVE_METADATA);
 		}
 		Py_DECREF (pCaps);
 	} else {
@@ -251,10 +253,6 @@ bool PythonPlugin::resolve (Document &doc)
 			break;
 	}
 	
-
-	if (success)
-		doc.getBibData().setType("article");
-
 	return success;
 }
 
@@ -447,6 +445,9 @@ bool PythonPlugin::resolveID (Document &doc, PluginCapability::Identifier id)
 				return false;
 			pArgs = Py_BuildValue ("(Os)", pDoc, "url");
 		break;
+        case PluginCapability::RESOLVE_METADATA:
+			pArgs = Py_BuildValue ("(O)", pDoc);
+        break;
 		default:
 			DEBUG ("PythonPlugin::resolveID: warning, unhandled id type %1", id);
 			return false;

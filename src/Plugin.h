@@ -23,7 +23,9 @@ class PluginCapability
 			PUBMED = 1 << 2,
 			DOCUMENT_ACTION = 1 << 3,
 			URL = 1 << 4,
-			SEARCH = 1 << 5
+			SEARCH = 1 << 5,
+			RESOLVE_METADATA = 1 << 6, /* generic metadata resolution capability */
+			/* XXX: In time DOI, ARXIV and PUBMED should go away, in place of RESOLVE_METADATA */
 		} Identifier;
 
 		void add (Identifier const id) {
@@ -74,6 +76,8 @@ class PluginCapability
 					return "Web URL";
 				case SEARCH:
 					return "Search";
+				case RESOLVE_METADATA:
+					return "Resolve metadata";
 				case NONE:
 				default:
 					return "Invalid PluginCapability for display";
@@ -95,6 +99,7 @@ class PluginCapability
 				case NONE:
 				case SEARCH:
 				case DOCUMENT_ACTION:
+				case RESOLVE_METADATA:
 				default:
 					return "";
 
@@ -111,11 +116,12 @@ class PluginCapability
 			retval.push_back (PUBMED);
 			retval.push_back (ARXIV);
 			retval.push_back (URL);
+			retval.push_back (RESOLVE_METADATA);
 			return retval;
 		}
 
 		bool hasMetadataCapability () {
-			return has (DOI) || has (ARXIV) || has (PUBMED) || has (URL);
+			return has (DOI) || has (ARXIV) || has (PUBMED) || has (URL) || has(RESOLVE_METADATA);
 		}
 };
 
