@@ -139,12 +139,11 @@ def resolve_metadata (doc, method=None):
 
     hits = parse_hits_get_urls(data)
 
+    print "DBLP:hits:", hits
     if len(hits) != 1:
         #XXX, display UI?
         print "DBLP: Not exactly one hit, giving up"
         return False
-
-    print "DBLP:hits:", hits
 
     bibtex_xml = get_bibtex_xml_from_url(hits[0])
     #print bibtex_xml
