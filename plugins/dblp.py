@@ -31,6 +31,7 @@ from xml.dom import minidom
 
 referencer_plugin_info = {
 	"longname":  _("DBLP resolver"),
+    "version":    "0.1",
 	"author":      "Mads Chr. Olesen <mads@mchro.dk>"
 	}
 
