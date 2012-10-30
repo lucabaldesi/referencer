@@ -77,7 +77,7 @@ referencer_plugin_actions = [{
         }]
 
 class isiRec:
-    def __init__(self, document = None, firstrec = None):
+    def __init__(self, isi_rec):
         self.authors=''
         self.abstract=''
         self.keywords=''
@@ -87,17 +87,18 @@ class isiRec:
         self.title=''
         self.year=''
         self.volume=''
-        if document is not None:
-            self.get_record_from_document(document,firstrec)
+        self.isi_rec = isi_rec
 
-    def set_fields_from_data(self,data):
-        xmldoc = minidom.parseString(data)
-        self.authors=get_field(xmldoc,"primaryauthor")
-        more_authors=get_fields(xmldoc,"author",' and ')
-        if(len(more_authors)>0):
-            self.authors+=' and '+more_authors
-        self.authors = capitalize_authors(self.authors)
-        self.abstract=get_field(xmldoc,"p")
+        self.set_fields_from_data(self.isi_rec)
+
+    def set_fields_from_data(self,isi_rec):
+        """
+        xmlrec is a <REC> xml node
+        """
+        xmldoc = isi_rec
+        self.authors=get_fields(xmldoc,"AuCollectiveName",' and ')
+        #self.authors = capitalize_authors(self.authors)
+        self.abstract=get_field(xmldoc,"abstract")
         self.keywords=get_fields(xmldoc,"keyword",', ')
         self.journal=get_field(xmldoc,"source_title")
         if self.journal.isupper():
@@ -122,30 +123,6 @@ class isiRec:
                 self.title = self.title.title()
         self.year=get_attribute_from_field(xmldoc,"bib_issue","year")
         self.volume=get_attribute_from_field(xmldoc,"bib_issue","vol")
-
-    def get_data(self,document, firstrec=None, numrecs=None):
-        title = document.get_field("title")
-        year = document.get_field ("year")
-        author= document.get_field ("author")
-        if firstrec is None:
-            firstrec = 1
-        if numrecs is None:
-            numrecs = 1
-
-        url='http://estipub.isiknowledge.com/esti/cgi?databaseID=WOS&SID=Q1mNFhCECOk6c8aELLh&rspType=xml&method=searchRetrieve'
-        url += \
-            '&firstRec=' + str(firstrec) + \
-            '&numRecs=' + str(numrecs) + \
-            '&query=' + get_query(document)
-        data = referencer.download(_("Obtaining data from ISI-WebOfScience"), 
-                                   _("Fetching data for %s/%s/%s") 
-                                   % (author,title,year), url);
-        return data
-
-    def get_record_from_document(self,document,firstrec=None, numrecs=None):
-        print 'firstrec = ', firstrec
-        data = self.get_data(document,firstrec,numrecs)
-        self.set_fields_from_data(data)
 
     def set_document_from_record(self,document):
         if (len(self.year)>0):
@@ -271,7 +248,7 @@ class noRecordFound(gtk.Dialog):
             self.showdoc.set_label("Hide document")
 
 class recordChooser(gtk.Dialog):
-    def __init__(self,document = None, records = None, parent = None):
+    def __init__(self,document, nrecs, records, parent = None):
         gtk.Dialog.__init__(self,"ISI record chooser dialog",
                             parent,
                             gtk.DIALOG_DESTROY_WITH_PARENT,
@@ -279,6 +256,10 @@ class recordChooser(gtk.Dialog):
                              gtk.STOCK_OK, gtk.RESPONSE_OK))
         self.document = document
         self.records = records
+
+        label = gtk.Label("Found %d records, showing first %d" % (nrecs, len(records)))
+        self.vbox.pack_start(label,False,False,0)
+
         self.recTree = gtk.TreeStore(bool,str,str,bool)
         self.treeview = gtk.TreeView(self.recTree)
         self.tvcolumn0 = gtk.TreeViewColumn()  
@@ -391,6 +372,19 @@ def get_last_field (doc, field):
                 last=items.childNodes[0].data.encode("utf-8")
             return last
 
+def getText(nodelist):
+    """
+    Recursively traverse the nodelist for any text nodes.
+    Needed for situations like: Swans and <b>bees</b> and the like
+    """
+    rc = []
+    for node in nodelist:
+        if node.nodeType == node.TEXT_NODE:
+            rc.append(node.data)
+        elif node.nodeType == node.ELEMENT_NODE:
+            rc.append(getText(node.childNodes))
+    return u''.join(rc).strip()
+
 def get_field (doc, field):
     value = doc.getElementsByTagName(field)
     if len(value) == 0:
@@ -399,66 +393,64 @@ def get_field (doc, field):
         if (len(value[0].childNodes) == 0):
             return ""
         else:
-            return value[0].childNodes[0].data.encode("utf-8")
-
+            return getText(value[0].childNodes)
 
 def get_attribute_from_field (doc, field, attr):
     value = doc.getElementsByTagName(field)
     return value[0].getAttribute(attr)
 
-def get_number_of_records (document):
-
+def do_search (document):
     title = document.get_field("title")
     year = document.get_field ("year")
     author= document.get_field ("author")
 
-    url0='http://estipub.isiknowledge.com/esti/cgi?databaseID=WOS&rspType=xml&method=search&firstRec=1&numRecs=1'
-    url0+= '&query='+get_query(document) 
-    data0 = referencer.download(
-        _("Obtaining data from ISI-WebOfScience"), 
-        _("Fetching number of ocurrences for %s/%s/%s") % (author,title,year), 
-        url0)
+    url0='http://estipub.isiknowledge.com/esti/cgi?action=search&viewType=xml&mode=GeneralSearch&product=WOS&ServiceName=GeneralSearch&filter=&Start=&End=%d&DestApp=WOS' % (get_MAXRECORDS())
+    url0+= "&" + get_query(document) 
+    print "isi query url:", url0
+    if False: #debugging
+        #data0 = open("plugins/isi-plugin-testdata.txt").read()
+        data0 = open("plugins/isi-plugin-testdata2.txt").read()
+    else:
+        data0 = referencer.download(
+            _("Obtaining data from ISI-WebOfScience"), 
+            _("Querying for %s/%s/%s") % (author,title,year), 
+            url0)
     print data0
     xmldoc0 = minidom.parseString(data0)
-    recordsFound=get_field(xmldoc0,"recordsFound")
-    return int(recordsFound)
+    recordsFound=get_field(xmldoc0,"COUNT")
+    return (int(recordsFound), xmldoc0)
 
 def get_query(document):
-
-    query = ''
+    query = {}
 
     title = document.get_field("title")
     title = remove_non_ascii_chars(title)
     if len(title) > 0:
-        ti=urllib.urlencode([('','('+title+')')])
-        query = 'TI'+ti+'&'
+        query['topic'] = title
     year = document.get_field ("year")
     if len(year)>0:
-        ye=urllib.urlencode([('','('+year+')')])
-        query+= 'PY'+ye+'&'
+        query['year'] = year
     author= document.get_field ("author")
     author = remove_non_ascii_chars(author)
     if len(author)>0:
-        au=urllib.urlencode([('','('+author+')')])
-        query+= 'AU'+au+'&'
+        query['author'] = author
 
-    return query
+    return urllib.urlencode(query)
 
 def remove_non_ascii_chars(si):
     for s in si:
-        if ord(s)>126 or ord(s) < 32:
+        if ord(s)>126 or ord(s) < 32 or s in "?!.,()":
             si = si.replace(s,'',1)
     return si
 
 #>-- Start the record chooser dialog in case more than one matching
 #>-- record was found
-def choose_record(document,nrecs):
-#    CurrentRecord = isiRec()
+def choose_record(document,nrecs,isi_recs):
     records = []
-    for rec in range(nrecs):
-        irec = isiRec(document,rec+1)
+    for isi_rec in isi_recs:
+        irec = isiRec(isi_rec)
         records.append(irec)
-    recChoose = recordChooser(document,records)
+    recChoose = recordChooser(document,nrecs,records)
     response = recChoose.run()
     if response == int(gtk.RESPONSE_OK):
         currentrec = recChoose.current_record
@@ -483,14 +475,17 @@ def do_action(library,documents):
     s = ""
     assigned_keys = {}
     for document in documents:
-        nrecs=get_number_of_records(document)
+        #do search
+        (nrecs, searchres) = do_search(document)
+
+        isi_recs = searchres.getElementsByTagName("REC")
+
         if nrecs>1:
-            MAXRECORDS = get_MAXRECORDS()
-            rec = choose_record(document,min(nrecs,MAXRECORDS))
+            rec = choose_record(document, nrecs, isi_recs)
             if rec is not False:
                 rec.set_document_from_record(document)
         elif nrecs == 1:
-            rec = isiRec(document)
+            rec = isiRec(isi_recs[0])
             rec.set_document_from_record(document)
         elif nrecs == 0:
             noRec = noRecordFound(document)
