@@ -129,6 +129,7 @@ def resolve_metadata (doc, method=None):
     searchTerm = " ".join(searchTerms)
     for c in "(),.{}!\"':=#%$/&[]+":
         searchTerm = searchTerm.replace(c, "")
+    searchTerm = searchTerm.replace("-", " ")
     while searchTerm.find("  ") > 0: #remove double spaces
         searchTerm = searchTerm.replace("  ", " ")
     
