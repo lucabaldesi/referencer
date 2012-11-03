@@ -56,6 +56,7 @@ class TagList {
         uidCounter_ = 0;
     }
     bool tagExists(const std::string& name);
+    int getTagUid(const std::string& name);
 
 	private:
 	TagMap tags_;

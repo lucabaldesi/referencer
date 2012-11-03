@@ -16,6 +16,8 @@
 #include <giomm/file.h>
 #include <giomm/fileinfo.h>
 #include <giomm/error.h>
+#include <gtkmm-utils/entry-multi-completion.h>
+#include <glibmm-utils/ustring.h>
 
 #include "Document.h"
 #include "DocumentList.h"
@@ -27,6 +29,7 @@
 #include "Transfer.h"
 #include "ucompose.hpp"
 #include "Utility.h"
+#include "TagList.h"
 
 #include "DocumentView.h"
 
@@ -288,10 +291,14 @@ protected:
         if (y > thumb->get_height() - buttonHeight / 2) {
             if (x - buttonPad < buttonWidth) {
                 docview_->select (doc);
+		docview_->doEditTagsDialog(doc);
+
+		/*
+                docview_->select (doc);
         		Gtk::MenuItem *item =
         			(Gtk::MenuItem*)docview_->win_.uimanager_->get_widget("/DocPopup/TaggerMenu");
         		Gtk::Menu *popup = item->get_submenu ();
-				popup->popup (evButton->button, evButton->time);
+				popup->popup (evButton->button, evButton->time);*/
 		return true;
             } else if (
                     x - buttonPad > buttonWidth + buttonPad * 2
@@ -311,6 +318,78 @@ protected:
         
     }
 };
+
+void DocumentView::doEditTagsDialog(Document *doc) {
+	Gtk::Dialog dialog (_("Edit tags"), *(win_.window_), true, false);
+	/* XXX, do more clever handling of tag separation. maybe copy+modify EntryMultiCompletion class */
+
+	Gtk::VBox *vbox = dialog.get_vbox ();
+
+	Gtk::HBox hbox;
+	hbox.set_spacing (12);
+	vbox->pack_start (hbox, true, true, 0);
+
+	Gtk::Label label (_("Tags (separated by spaces):"), false);
+	hbox.pack_start (label, false, false, 0);
+
+	std::list<Glib::ustring> items;
+	Glib::ustring str_current_tags;
+	TagList* taglist = lib_.getTagList();
+	TagList::TagMap allTags = taglist->getTags();
+	TagList::TagMap::iterator tagIter = allTags.begin();
+	TagList::TagMap::iterator const tagEnd = allTags.end();
+	for (; tagIter != tagEnd; ++tagIter) {
+		items.push_back(tagIter->second.name_ + ",");
+
+		if (doc->hasTag(tagIter->second.uid_)) {
+			str_current_tags += tagIter->second.name_ + ", ";
+		}
+
+		/*Gtk::ListStore::iterator row = model_->append();
+		(*row)[nameColumn_] = tagIter->second.name_;
+		(*row)[uidColumn_] = tagIter->second.uid_;
+		(*row)[selectedColumn_] = selections_[tagIter->second.uid_];*/
+	}
+
+
+	Glib::RefPtr<Gtk::Util::EntryMultiCompletion> completion = Gtk::Util::EntryMultiCompletion::create(items);
+	
+	Gtk::Entry entry;
+	entry.set_text(str_current_tags);
+	entry.set_completion(completion);
+	entry.set_activates_default (true);
+	entry.set_size_request(400, -1);
+	hbox.pack_start (entry, true, true, 0);
+
+	dialog.add_button (Gtk::Stock::CANCEL, Gtk::RESPONSE_CANCEL);
+	dialog.add_button (Gtk::Stock::OK, Gtk::RESPONSE_ACCEPT);
+	dialog.set_default_response (Gtk::RESPONSE_ACCEPT);
+
+	dialog.show_all ();
+	vbox->set_border_width (12);
+
+	if (dialog.run () == Gtk::RESPONSE_ACCEPT) {
+		/* mangle tags back to tag uid's*/
+		doc->clearTags();
+		std::vector<Glib::ustring> new_tags = Glib::Util::split(entry.get_text(), ",");
+
+		std::vector<Glib::ustring>::iterator new_tagIter = new_tags.begin();
+		std::vector<Glib::ustring>::iterator const new_tagEnd = new_tags.end();
+		for (; new_tagIter != new_tagEnd; ++new_tagIter) {
+			Glib::Util::trim(*new_tagIter);
+			if (*new_tagIter != "") {
+				int taguid = taglist->getTagUid(*new_tagIter);
+				if (taguid > 0) {
+					doc->setTag(taguid);
+				} else {
+					/* XXX: Tag not found. Ask user to add? */
+				}
+			}
+		}
+
+
+	}
+}
 
 
 DocumentView::~DocumentView ()

@@ -40,6 +40,8 @@ dnl			tracker >= 0.6.3
 			gconfmm-2.6 >= 2.12.0
 			poppler-glib >= 0.5.0
 			libxml-2.0 >= 2.7.6
+			gtkmm-utils >= 0.4.1
+			glibmm-utils >= 0.4.1
 			])
 AC_CHECK_LIB(boost_regex, [main], , [
 		AC_CHECK_LIB(boost_regex-mt, [main], ,

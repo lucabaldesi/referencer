@@ -97,3 +97,14 @@ bool TagList::tagExists(const std::string& name) {
 
 	return false;
 }
+
+int TagList::getTagUid(const std::string& name) {
+	TagMap::iterator it = tags_.begin();
+	TagMap::iterator const end = tags_.end();
+	for (; it != end; it++) {
+		if (it->second.name_ == name)
+			return it->second.uid_;
+	}
+
+	return -1;
+}

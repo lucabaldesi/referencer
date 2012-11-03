@@ -77,6 +77,7 @@ class DocumentView : public Gtk::VBox
 
 	Document *hoverdoc_;
 	void popupContextMenu (GdkEventButton* event);
+	void doEditTagsDialog(Document *doc);
 
 	private:
 	bool ignoreSelectionChanged_;
