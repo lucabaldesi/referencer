@@ -46,9 +46,9 @@ RefWindow::RefWindow ()
 
 	library_ = new Library (*this);
 
-	docpropertiesdialog_ = new DocumentProperties ();
-
 	constructUI ();
+
+	docpropertiesdialog_ = new DocumentProperties (*this);
 
 	progress_ = new Progress (*this);
 

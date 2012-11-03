@@ -21,10 +21,12 @@
 #include "DocumentTypes.h"
 
 class Document;
+class RefWindow;
 
 class DocumentProperties {
 	private:
 	Glib::RefPtr<Gtk::Builder> xml_;
+	RefWindow &win_;
 
 	/*
 	 * Local working copy
@@ -79,7 +81,7 @@ class DocumentProperties {
 
 	public:
 		bool show (Document *doc);
-		DocumentProperties ();
+		DocumentProperties (RefWindow &refwin);
 };
 
 #endif

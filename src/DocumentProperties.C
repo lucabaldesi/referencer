@@ -22,11 +22,15 @@
 #include "DocumentTypes.h"
 #include "Preferences.h"
 #include "ThumbnailGenerator.h"
+#include "RefWindow.h"
 
 #include "DocumentProperties.h"
 
 
-DocumentProperties::DocumentProperties ()
+DocumentProperties::DocumentProperties (
+	RefWindow &refwin
+	)
+: win_ (refwin)
 {
 	xml_ =  Gtk::Builder::create_from_file 
 		(Utility::findDataFile ("documentproperties.ui"));
@@ -116,6 +120,9 @@ bool DocumentProperties::show (Document *doc)
 	extrafieldsexpander_->set_expanded (extrafieldsstore_->children().size() > 0);
 
 	keyentry_->grab_focus ();
+
+	dialog_->set_transient_for(*win_.window_);
+	dialog_->set_modal(true);
 
 	int result = dialog_->run ();
 
@@ -348,7 +355,7 @@ void DocumentProperties::setupFields (Glib::ustring const &docType)
 
 void DocumentProperties::onNewExtraField ()
 {
-	Gtk::Dialog dialog ("New Field", true, false);
+	Gtk::Dialog dialog ("New Field", *dialog_, true, false);
 
 	Gtk::VBox *vbox = dialog.get_vbox ();
 
