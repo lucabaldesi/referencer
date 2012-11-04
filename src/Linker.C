@@ -51,9 +51,15 @@ void Linker::createUI (RefWindow *window, DocumentView *view)
 	window->uimanager_->add_ui_from_string (ui);
 }
 
+Glib::ustring Linker::getURL (Document *doc)
+{
+	DEBUG ("Linker::getURL called erroneously!");
+}
+
 void Linker::doLink (Document *doc)
 {
-	DEBUG ("Linker::doLink called erroneously!");
+	Glib::ustring url = getURL(doc);
+	Gio::AppInfo::launch_default_for_uri (url);
 }
 
 bool DoiLinker::canLink (Document const *doc)
@@ -62,10 +68,10 @@ bool DoiLinker::canLink (Document const *doc)
 }
 
 
-void DoiLinker::doLink (Document *doc)
+Glib::ustring DoiLinker::getURL (Document *doc)
 {
 	Glib::ustring url = Glib::ustring("http://dx.doi.org/") + doc->getField("doi");
-	Gio::AppInfo::launch_default_for_uri (url);
+	return url;
 }
 
 Glib::ustring DoiLinker::getLabel ()
@@ -81,10 +87,10 @@ bool ArxivLinker::canLink (Document const *doc)
 }
 
 
-void ArxivLinker::doLink (Document *doc)
+Glib::ustring ArxivLinker::getURL (Document *doc)
 {
 	Glib::ustring url = Glib::ustring("http://arxiv.org/abs/") + doc->getField ("eprint");
-	Gio::AppInfo::launch_default_for_uri (url);
+	return url;
 }
 
 
@@ -102,10 +108,10 @@ bool UrlLinker::canLink (Document const *doc)
 }
 
 
-void UrlLinker::doLink (Document *doc)
+Glib::ustring UrlLinker::getURL (Document *doc)
 {
 	Glib::ustring url = doc->getField("url");
-	Gio::AppInfo::launch_default_for_uri (url);
+	return url;
 }
 
 Glib::ustring UrlLinker::getLabel ()
@@ -121,11 +127,10 @@ bool PubmedLinker::canLink (Document const *doc)
 }
 
 
-void PubmedLinker::doLink (Document *doc)
+Glib::ustring PubmedLinker::getURL (Document *doc)
 {
 	Glib::ustring url = Glib::ustring ("http://www.ncbi.nlm.nih.gov/pubmed/") + doc->getField("pmid");
-
-	Gio::AppInfo::launch_default_for_uri (url);
+	return url;
 }
 
 Glib::ustring PubmedLinker::getLabel ()
@@ -141,7 +146,7 @@ bool GoogleLinker::canLink (Document const *doc)
 }
 
 
-void GoogleLinker::doLink (Document *doc)
+Glib::ustring GoogleLinker::getURL (Document *doc)
 {
 	/*
 	 * We assert in canLink that we at least have doi or title
@@ -168,8 +173,7 @@ void GoogleLinker::doLink (Document *doc)
 	Glib::ustring escaped = Glib::uri_escape_string (searchTerm);
 	DEBUG (escaped);
 	Glib::ustring url = Glib::ustring ("http://scholar.google.co.uk/scholar?q=") + escaped + Glib::ustring("&btnG=Search");
-
-	Gio::AppInfo::launch_default_for_uri (url);
+	return url;
 }
 
 Glib::ustring GoogleLinker::getLabel ()

@@ -30,6 +30,7 @@
 #include "Preferences.h"
 #include "Progress.h"
 #include "TagList.h"
+#include "Linker.h"
 
 #include "config.h"
 #include "RefWindow.h"
@@ -1398,11 +1399,36 @@ void RefWindow::onNotesExport ()
 			DocumentList::Container::iterator it = docrefs.begin();
 			DocumentList::Container::iterator const end = docrefs.end();
 			for (; it != end; it++) {
-				// Don't export documents without notes
-				if ( !(*it).getNotes().empty() )
-					docs.push_back(&(*it));
+				docs.push_back(&(*it));
 			}
 		}
+
+		/* Copied from DocumentView.C, this should probably start living in Linker.C. {{{
+		 *
+		 * Linkers are local to here for now, in the future they might
+		 * be plugin-extensible and thus moved elsewhere
+		 */
+		static std::vector<Linker*> linkers;
+		static DoiLinker doi;
+		static ArxivLinker arxiv;
+		static UrlLinker url;
+		static PubmedLinker pubmed;
+		static GoogleLinker google;
+
+		/*
+		 * Initialise linkers
+		 */
+		if (linkers.size() == 0) {
+			linkers.push_back(&doi);
+			linkers.push_back(&arxiv);
+			linkers.push_back(&url);
+			linkers.push_back(&pubmed);
+			linkers.push_back(&google);
+
+			std::vector<Linker*>::iterator it = linkers.begin ();
+			std::vector<Linker*>::iterator const end = linkers.end ();
+		}
+		/* }}} */
 		
 		/* Extremely basic HTML writer, maybe move into a separate function
 		   if it gets more complicated */
@@ -1436,6 +1462,22 @@ void RefWindow::onNotesExport ()
 		for (; it != end; ++it) {
 			notesfile << "<h1>" << (*it)->getField("title") << "</h1>" << std::endl;
 			notesfile << "<i>" << (*it)->getField("author") << "</i>" << std::endl;
+
+			/* Copied from DocumentView.C, this should probably start living in Linker.C. {{{
+			 * Work out which linkers are applicable */
+			std::vector<Linker*>::iterator linker_it = linkers.begin();
+			std::vector<Linker*>::iterator const linker_end = linkers.end();
+			for (; linker_it != linker_end; ++linker_it) {
+				Linker *linker = (*linker_it);
+				if (linker->canLink(*it)) {
+					notesfile << "<a href=\"" << linker->getURL(*it) << "\">" <<
+						linker->getLabel() <<
+						"</a> ";
+				}
+			}
+			/* }}} */
+
+
 
 			Glib::ustring notes = (*it)->getNotes();
 			/* do \n -> <br> replacement */
