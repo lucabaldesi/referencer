@@ -35,6 +35,7 @@ class DocumentView : public Gtk::VBox
 
 	Document *getSelectedDoc ();
 	std::vector<Document*> getSelectedDocs ();
+	std::vector<Document*> getVisibleDocs ();
 	int getSelectedDocCount ();
 	int getVisibleDocCount ();
 	

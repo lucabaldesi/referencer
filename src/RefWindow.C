@@ -1363,10 +1363,18 @@ void RefWindow::onNotesExport ()
 	selectionbox.pack_start (label, false, false, 0);
 	Gtk::ComboBoxText combo;
 	combo.append_text (_("All Documents"));
+	combo.append_text (_("Currently Shown Documents"));
 	combo.append_text (_("Selected Documents"));
-	combo.set_active (0);
+	if (docview_->getSelectedDocCount ()) {
+		/* there is a selection */
+		combo.set_active (2);
+	} else if (docview_->getVisibleDocCount () != library_->getDocList()->size()) {
+		/* there is some filtering */
+		combo.set_active (1);
+	} else {
+		combo.set_active (0);
+	}
 	selectionbox.pack_start (combo, true, true, 0);
-	combo.set_sensitive (docview_->getSelectedDocCount ());
 
 	extrabox.show_all ();
 
@@ -1377,14 +1385,15 @@ void RefWindow::onNotesExport ()
 		chooser.set_current_folder (exportfolder_);
 
 	if (chooser.run() == Gtk::RESPONSE_ACCEPT) {
-		bool const selectedonly = combo.get_active_row_number () == 1;
 		exportfolder_ = Glib::path_get_dirname(chooser.get_filename());
 		chooser.hide ();
 
 		std::vector<Document*> docs;
-		if (selectedonly) {
+		if (combo.get_active_row_number () == 2 /* Selected documents */) {
 			docs = docview_->getSelectedDocs ();
-		} else {
+		} else if (combo.get_active_row_number () == 1 /* Currently shown documents */) {
+			docs = docview_->getVisibleDocs ();
+		} else /* All documents */ {
 			DocumentList::Container &docrefs = library_->getDocList()->getDocs ();
 			DocumentList::Container::iterator it = docrefs.begin();
 			DocumentList::Container::iterator const end = docrefs.end();
@@ -1426,7 +1435,13 @@ void RefWindow::onNotesExport ()
 		std::vector<Document*>::const_iterator const end = docs.end ();
 		for (; it != end; ++it) {
 			notesfile << "<h1>" << (*it)->getField("title") << "</h1>" << std::endl;
-			notesfile << "<p>" << (*it)->getNotes() << "</p>" << std::endl;
+			notesfile << "<i>" << (*it)->getField("author") << "</i>" << std::endl;
+
+			Glib::ustring notes = (*it)->getNotes();
+			/* do \n -> <br> replacement */
+			for ( unsigned int index = notes.find( "\n" ) ; index < notes.length() ; index = notes.find( "\n" ) )
+				notes.replace( index, 1, "<br />" ) ;
+			notesfile << "<p>" << notes << "</p>" << std::endl;
 		}
 		notesfile << "</body>\n</html>";
 		notesfile.close();

@@ -826,6 +826,18 @@ int DocumentView::getSelectedDocCount ()
 	}
 }
 
+std::vector<Document*> DocumentView::getVisibleDocs ()
+{
+	std::vector<Document*> docpointers;
+
+	Gtk::ListStore::iterator it = docstoresort_->children().begin();
+	Gtk::ListStore::iterator const end = docstoresort_->children().end();
+	for (; it != end; it++) {
+		Document *docptr = (*it)[docpointercol_];
+		docpointers.push_back(docptr);
+	}
+	return docpointers;
+}
 
 int DocumentView::getVisibleDocCount ()
 {
