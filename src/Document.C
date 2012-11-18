@@ -507,7 +507,13 @@ bool Document::readPDF ()
 	}
 
 	Glib::ustring textdump;
+	int num_pages = poppler_document_get_n_pages (popplerdoc);
 	bool got_id = false;
+
+	if (num_pages == 0) {
+		DEBUG ("Document::readPDF: No pages in '%1'", filename_);
+		return false;
+	}
 
 	// Read the first page
 	PopplerPage *page;
