@@ -38,7 +38,7 @@ dnl TODO: make dbus-glib and tracker optional
 dnl			dbus-glib-1 >= 0.74
 dnl			tracker >= 0.6.3
 			gconfmm-2.6 >= 2.12.0
-			poppler-glib >= 0.5.0
+			poppler-glib >= 0.16.0
 			libxml-2.0 >= 2.7.6
 			gtkmm-utils >= 0.4.1
 			glibmm-utils >= 0.4.1
@@ -52,15 +52,6 @@ AC_CHECK_HEADERS(boost/regex.hpp)
 AC_SUBST(DEPS_CFLAGS)
 AC_SUBST(DEPS_LIBS)
 LIBS="$LIBS $DEPS_LIBS"
-
-dnl ============================================================================
-dnl Special case for poppler-glib < 0.6
-dnl ============================================================================
-case $($PKG_CONFIG --modversion poppler-glib) in
-	0.5.*)
-		AC_DEFINE(OLD_POPPLER,"1","Using poppler < 0.6");;
-esac
-AC_CHECK_FUNCS([poppler_page_get_selected_text])
 
 dnl ============================================================================
 dnl I18n

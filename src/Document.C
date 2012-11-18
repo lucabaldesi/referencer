@@ -507,68 +507,25 @@ bool Document::readPDF ()
 	}
 
 	Glib::ustring textdump;
-	int num_pages = poppler_document_get_n_pages (popplerdoc);
 	bool got_id = false;
 
-	for (int i = 0; i < num_pages; i++) {
-		PopplerPage *page;
-		PopplerRectangle *rect;
-		double width, height;
+	// Read the first page
+	PopplerPage *page;
+	page = poppler_document_get_page (popplerdoc, 0);
+	textdump += poppler_page_get_text(page);
+	g_object_unref (page);
 
-		page = poppler_document_get_page (popplerdoc, i);
-		poppler_page_get_size (page, &width, &height);
+	// When we read the first page, see if it has the doc info
+	bib_.guessYear (textdump);
+	bib_.guessDoi (textdump);
+	bib_.guessArxiv (textdump);
 
-		rect = poppler_rectangle_new ();
-		rect->x1 = 0.;
-		rect->y1 = 0.;
-		rect->x2 = width;
-		rect->y2 = height;
-
-		// FIXME: add something before/after appending text to signal pagebreak?
-		#ifdef OLD_POPPLER
-			#warning Using poppler <= 0.5
-			textdump += poppler_page_get_text (page, rect);
-		#elif POPPLER_CHECK_VERSION(0, 15, 0)
-			textdump += poppler_page_get_text(page);
-		#else
-			#warning Using poppler >= 0.6
-			#ifdef HAVE_POPPLER_PAGE_GET_SELECTED_TEXT
-				textdump += poppler_page_get_text (page);
-			#else
-				textdump += poppler_page_get_text (page, POPPLER_SELECTION_GLYPH, rect);
-			#endif
-		#endif
-
-		poppler_rectangle_free (rect);
-		g_object_unref (page);
-
-		// When we read the first page, see if it has the doc ID
-		// and if it does then don't bother reading the rest.
-		if (i == 0) {
-			bib_.guessYear (textdump);
-			bib_.guessDoi (textdump);
-			bib_.guessArxiv (textdump);
-
-			if (!bib_.getDoi ().empty () || !bib_.getExtras ()["eprint"].empty ()) {
-				got_id = true;
-				break;
-			}
-		}
+	if (!bib_.getDoi ().empty () || !bib_.getExtras ()["eprint"].empty ()) {
+		got_id = true;
 	}
-
 	g_object_unref (popplerdoc);
 
 	DEBUG ("%1", textdump);
-	// If we didn't find the ID on the first page and we have some text
-	// then search the whole document text for the ID and year
-	if (!got_id && !textdump.empty()) {
-		bib_.guessDoi (textdump);
-		bib_.guessArxiv (textdump);
-		// We might have picked this up on the first page
-		if (bib_.getYear ().empty())
-			bib_.guessYear (textdump);
-	}
-
 	return !(textdump.empty ());
 }
 
