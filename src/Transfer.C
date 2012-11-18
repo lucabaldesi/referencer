@@ -33,10 +33,13 @@ typedef enum {
 static uint64_t transferStatus;
 
 static Glib::ustring transferresults;
-void fetcherThread (Glib::ustring const &filename);
+void fetcherThread (Glib::ustring const &filename, Glib::RefPtr<Gio::Cancellable> cancellable);
 
-void onTransferCancel ()
-	{transferStatus |= TRANSFER_FAIL_SILENT;}
+void onTransferCancel (Glib::RefPtr<Gio::Cancellable> cancellable)
+{
+	DEBUG("Cancelling...");
+	cancellable->cancel();
+}
 
 
 void promptWorkOffline ()
@@ -90,14 +93,17 @@ Glib::ustring &readRemoteFile (
 	Gtk::ProgressBar progress;
 	vbox->pack_start (progress, false, false, 0);
 
+	Glib::RefPtr<Gio::Cancellable> cancellable = Gio::Cancellable::create();
+
 	Gtk::Button *cancelbutton = dialog.add_button (Gtk::Stock::CANCEL, 0);
 	cancelbutton->signal_clicked().connect(
-		sigc::ptr_fun (&onTransferCancel));
+		sigc::bind (sigc::ptr_fun (&onTransferCancel), cancellable));
 
 	transferStatus = TRANSFER_NONE;
 
+
 	Glib::Thread *fetcher = Glib::Thread::create (
-		sigc::bind (sigc::ptr_fun (&fetcherThread), filename), true);
+		sigc::bind (sigc::ptr_fun (&fetcherThread), filename, cancellable), true);
 
 	Glib::Timer timeout;
 	timeout.start ();
@@ -118,8 +124,7 @@ Glib::ustring &readRemoteFile (
 		}
 
 		if (timeout.elapsed () > maxTimeout) {
-			transferStatus |= TRANSFER_FAIL_SILENT;
-			break;
+			cancellable->cancel();
 		}
 	}
 
@@ -137,7 +142,7 @@ Glib::ustring &readRemoteFile (
 	}
 }
 
-void fetcherThread (Glib::ustring const &filename)
+void fetcherThread (Glib::ustring const &filename, Glib::RefPtr<Gio::Cancellable> cancellable)
 {
 	char *buffer = NULL;
 	gsize len = 0;
@@ -145,10 +150,7 @@ void fetcherThread (Glib::ustring const &filename)
 	try {
 		Glib::RefPtr<Gio::File> file =
 			Gio::File::create_for_uri (filename);
-		Glib::RefPtr<Gio::Cancellable> cancellable = Gio::Cancellable::create();
-		Glib::RefPtr<Gio::FileInfo> fileinfo = file->query_info();
-
-		file->load_contents(buffer, len);
+		file->load_contents(cancellable, buffer, len);
 	} catch (const Glib::Error ex) {
 		DEBUG ("Got an exception from load_contents");
 		transferStatus |= TRANSFER_FAIL_SILENT;
