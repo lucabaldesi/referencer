@@ -1,11 +1,12 @@
 <?xml version="1.0"?>
-<!DOCTYPE article PUBLIC "-//OASIS//DTD DocBook XML V4.1.2//EN" 
-"http://www.oasis-open.org/docbook/xml/4.1.2/docbookx.dtd" [
+<!DOCTYPE article PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN"
+"http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd" [
   <!ENTITY legal SYSTEM "legal.xml">
   <!ENTITY appversion "1.1.6">
   <!ENTITY manrevision "1.1.6">
   <!ENTITY date "October 2008">
-  <!ENTITY app "<application>Referencer</application>">
+  <!ENTITY appname "Referencer">
+  <!ENTITY app "<application>&appname;</application>">
   <!-- Information about the entities
        The legal.xml file contains legal information, there is no need to edit the file. 
        Use the appversion entity to specify the version of the application.
@@ -49,7 +50,7 @@
       </revision>
     </revhistory>
 
-    <releaseinfo>This manual describes version &appversion; of &app;.
+    <releaseinfo>This manual describes version &appversion; of &appname;.
     </releaseinfo> 
       <legalnotice> 
       <title>Feedback</title> 
@@ -174,7 +175,9 @@
   
   <para>When you add a PDF file to your &app; library, it will automatically be searched for key identifiers such as a DOI code or arXiv identifier. If either of these is found, &app; uses your internet connection to retrieve the metadata for the document.</para>
   
-  <note>If you've got a collection of already-downloaded PDFs of papers, this can save you a lot of typing!</note>
+  <note>
+	  <para>If you've got a collection of already-downloaded PDFs of papers, this can save you a lot of typing!</para>
+  </note>
   
   <para>&app; also uses its knowledge of papers to provide handy functions such as opening the web page associated with the article, or opening the document itself. Additionally, you can attach tags to documents to catgorise them, and then browse documents more easily by filtering them by tag.</para>
   
@@ -192,7 +195,7 @@
               
               <para>If you already have a BibTeX file, you can import it into &app; by choosing <menuchoice><guisubmenu>Library</guisubmenu><guimenuitem>Import...</guimenuitem></menuchoice> from the menubar.</para>
               
-              <note>Importing and then exporting a BibTex file is not guaranteed (or intended) to produce exactly the same file as went in: &app; is not a BibTeX editor!</note>
+	      <note><para>Importing and then exporting a BibTex file is not guaranteed (or intended) to produce exactly the same file as went in: &app; is not a BibTeX editor!</para></note>
               
               <para>Information such as document filenames and tags is not included in BibTeX files. You should always use your &app; library file as the authoritative copy.</para>
 
@@ -206,7 +209,7 @@
               <guimenuitem>Add file …</guimenuitem></menuchoice> from the menubar.</para>
         <para>If you have some document files you'd like Referencer to know about, you can add one or more files, or a whole folder (by choosing <menuchoice><guisubmenu>Documents</guisubmenu>
               <guimenuitem>Add folder …</guimenuitem></menuchoice>), and &app; will create entries for each file. PDF files will be read, and &app; will do its best to fill out the metadata for you.</para>
-              <note>When adding a folder of files, files named ".svn", "CVS", files with the extension ".bib" or ".reflib" and files with names starting "." are automatically skipped. These files can still be added individually.</note>
+	      <note><para>When adding a folder of files, files named ".svn", "CVS", files with the extension ".bib" or ".reflib" and files with names starting "." are automatically skipped. These files can still be added individually.</para></note>
    	</sect3>
    	<sect3 id="howto-add-docs-by-DOI">
       <title>To add documents by DOI code</title>
@@ -236,8 +239,8 @@
       <title>To add documents by Copy/Paste</title>
       <para>Choose <menuchoice><guisubmenu>Edit</guisubmenu>
               <guimenuitem>Paste BibTex</guimenuitem></menuchoice> from the menubar.
-      <para>To conveniently import references from the web, or particular references from an existing BibTeX file, you can simply copy and past BibTeX markup into referencer, where these references will be added as if you had imported them from a file.
       </para>
+      <para>To conveniently import references from the web, or particular references from an existing BibTeX file, you can simply copy and past BibTeX markup into referencer, where these references will be added as if you had imported them from a file.
       </para>
    	</sect3>
    </sect2>

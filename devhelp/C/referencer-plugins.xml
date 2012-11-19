@@ -5,7 +5,8 @@
   <!ENTITY appversion "1.1.6">
   <!ENTITY manrevision "1.1.6">
   <!ENTITY date "June 2009">
-  <!ENTITY app "<application>Referencer</application>">
+  <!ENTITY appname "Referencer">
+  <!ENTITY app "<application>&appname;</application>">
   <!-- Information about the entities
        The legal.xml file contains legal information, there is no need to edit the file. 
        Use the appversion entity to specify the version of the application.
@@ -27,7 +28,7 @@
       <holder>John Spray</holder> 
     </copyright>
     <publisher> 
-      <publishername> &app; Development Team </publishername> 
+      <publishername> &appname; Development Team </publishername> 
     </publisher> 
     &legal;
     <authorgroup>
@@ -50,7 +51,7 @@
       </revision>
     </revhistory>
 
-    <releaseinfo>This is the Plugin Writing Guide version &appversion; of &app;.
+    <releaseinfo>This is the Plugin Writing Guide version &appversion; of &appname;.
     </releaseinfo> 
       <legalnotice> 
       <title>Feedback</title> 

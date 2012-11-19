@@ -1,7 +1,15 @@
-data/documentproperties.glade
-data/preferences.glade
-plugins/pubmed.py
+data/documentproperties.ui
+data/preferences.ui
+data/crossref.ui
+data/libraryfolder.ui
+data/search.ui
+plugins/ads.py
+plugins/dblp.py
+plugins/genkey.py
+plugins/google-books.py
+plugins/isi-plugin.py
 plugins/lyx.py
+plugins/pubmed.py
 src/ArxivPlugin.C
 src/ArxivPlugin.h
 src/BibData.C
@@ -24,7 +32,6 @@ src/DocumentView.h
 src/icon-entry.h
 src/Library.C
 src/Library.h
-src/LibraryParser.h
 src/Linker.C
 src/Linker.h
 src/main.C
