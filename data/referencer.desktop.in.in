@@ -6,6 +6,6 @@ TryExec=referencer
 Icon=referencer
 Terminal=false
 Type=Application
-Categories=GNOME;Application;Office;
+Categories=GTK;GNOME;Office;
 StartupNotify=true
 MimeType=application/x-referencer;
