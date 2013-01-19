@@ -53,6 +53,10 @@ def resolve_metadata (doc, method):
 		fields.append (["journal", get_field(xmldoc, "journal")])
 		fields.append (["title",   get_field(xmldoc, "title")])
 		fields.append (["volume",  get_field(xmldoc, "volume")])
+		fields.append (["issue",  get_field(xmldoc, "issue")])
+		fields.append (["year", get_field(xmldoc, "pubdate").partition(' ')[2]])
+		fields.append (["month", str.lower(get_field(xmldoc, "pubdate").partition(' ')[0])])
+		fields.append (["Adsurl", xmldoc.getElementsByTagName('url')[-1].childNodes[0].data.encode("utf-8")])
 
 		authors = xmldoc.getElementsByTagName('author')
 		authorString = ""
@@ -76,7 +80,7 @@ def resolve_metadata (doc, method):
 			pages += lastPage
 
 		print "got pages " , pages
-		fields.append (["page", pages])
+		fields.append (["pages", pages])
 		print "appended pages"
 	except:
 		print "exception"
