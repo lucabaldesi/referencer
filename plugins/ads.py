@@ -90,7 +90,5 @@ def resolve_metadata (doc, method):
 		if len(field[1]) > 0:
 			doc.set_field(field[0], field[1]) 
 
-	# TODO: parse pubdata element for "Jul 1989" (month and year fields)
-
 	return True
 
