@@ -38,6 +38,20 @@ static PyObject *referencer_document_set_filename (PyObject *self, PyObject *arg
 	return Py_BuildValue ("i", 0);
 }
 
+static PyObject *referencer_document_get_notes(PyObject *self, PyObject *args)
+{
+	Glib::ustring value = ((referencer_document*)self)->doc_->getNotes ();
+	return PyString_FromString(value.c_str());
+}
+
+
+static PyObject *referencer_document_set_notes (PyObject *self, PyObject *args)
+{
+	PyObject *value = PyTuple_GetItem (args, 0);
+	((referencer_document*)self)->doc_->setNotes (PyString_AsString(value));
+	return Py_BuildValue ("i", 0);
+}
+
 
 static PyObject *referencer_document_get_type (PyObject *self, PyObject *args)
 {
@@ -152,6 +166,8 @@ static PyMethodDef referencer_document_methods[] = {
 	{"set_key", referencer_document_set_key, METH_VARARGS, "Set the key"},
 	{"get_filename", referencer_document_get_filename, METH_VARARGS, "Get the filename"},
 	{"set_filename", referencer_document_set_filename, METH_VARARGS, "Set the filename"},
+	{"get_notes", referencer_document_get_notes, METH_VARARGS, "Get the notes"},
+	{"set_notes", referencer_document_set_notes, METH_VARARGS, "Set the notes"},
 	{"parse_bibtex", referencer_document_parse_bibtex, METH_VARARGS, "Set fields from bibtex string"},
 	{"print_bibtex", referencer_document_print_bibtex, METH_VARARGS, "Print bibtex representation of document"},
 	{NULL, NULL, 0, NULL}
