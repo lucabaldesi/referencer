@@ -371,13 +371,13 @@ void RefWindow::constructMenu ()
 
 	actiongroup_->add ( Gtk::Action::create("LibraryMenu", _("_Library")) );
 	actiongroup_->add( Gtk::Action::create("NewLibrary",
-		Gtk::Stock::NEW),
+		Gtk::Stock::NEW, _("_New..."), _("New Library")),
   	sigc::mem_fun(*this, &RefWindow::onNewLibrary));
 	actiongroup_->add( Gtk::Action::create("OpenLibrary",
-		Gtk::Stock::OPEN, _("_Open...")),
+		Gtk::Stock::OPEN, _("_Open..."), _("Open Library")),
   	sigc::mem_fun(*this, &RefWindow::onOpenLibrary));
 	actiongroup_->add( Gtk::Action::create("SaveLibrary",
-		Gtk::Stock::SAVE),
+		Gtk::Stock::SAVE, _("_Save..."), _("Save Library")),
   	sigc::mem_fun(*this, &RefWindow::onSaveLibrary));
 	actiongroup_->add( Gtk::Action::create("SaveAsLibrary",
 		Gtk::Stock::SAVE_AS, _("Save _As...")), Gtk::AccelKey ("<control><shift>s"),
