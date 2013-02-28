@@ -24,6 +24,7 @@
 #include "ThumbnailGenerator.h"
 #include "RefWindow.h"
 
+#include "Utility.h"
 #include "DocumentProperties.h"
 
 
@@ -378,9 +379,31 @@ void DocumentProperties::onNewExtraField ()
 	vbox->set_border_width (12);
 
 	if (dialog.run () == Gtk::RESPONSE_ACCEPT) {
-		Gtk::ListStore::iterator row = extrafieldsstore_->append ();
-		(*row)[extrakeycol_] = entry.get_text ();
-		(*row)[extravalcol_] = "";
+
+		Gtk::ListStore::iterator it = extrafieldsstore_->children().begin ();
+		Gtk::ListStore::iterator const end = extrafieldsstore_->children().end ();
+		bool key_isnew = true;
+		for (; it != end; ++it)
+			if (Utility::firstCap ((*it)[extrakeycol_]) == Utility::firstCap (entry.get_text ())) {
+				key_isnew = false;
+			}
+		if ( key_isnew ) {
+			Gtk::ListStore::iterator row = extrafieldsstore_->append ();
+			(*row)[extrakeycol_] = Utility::firstCap (entry.get_text ());
+			(*row)[extravalcol_] = "";
+		} else {
+			Glib::ustring message;
+			message = String::ucompose (
+			"<b><big>%1</big></b>",
+			_("This key already exists.\n"));
+			Gtk::MessageDialog dialog (
+
+			message, true,
+			Gtk::MESSAGE_ERROR, Gtk::BUTTONS_CLOSE, true);
+
+			dialog.run ();
+
+		}
 	}
 }
 
