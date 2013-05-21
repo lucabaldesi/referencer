@@ -279,11 +279,41 @@ void Document::setNotes (Glib::ustring const &notes)
 
 void Document::updateRelFileName (Glib::ustring const &libfilename)
 {
-	Glib::ustring const newrelfilename =
-		Utility::relPath (libfilename, getFileName ());
-	if (!newrelfilename.empty())
-		relfilename_ = Utility::relPath (libfilename, getFileName ());
-	DEBUG (String::ucompose ("Set refilename_ '%1'", relfilename_));
+	const Glib::RefPtr<Gio::File> doc_file = Gio::File::create_for_uri(filename_);
+	Glib::RefPtr<Gio::File> lib_path = Gio::File::create_for_uri(libfilename)->get_parent();
+
+	bool doc_is_relative_to_library = true;
+	std::string relative_path;
+	std::string up_dir_level;
+
+	if ( !libfilename.empty() && lib_path->get_uri_scheme() == doc_file->get_uri_scheme() ) {
+
+		for( ;; ) {
+			relative_path = lib_path->get_relative_path(doc_file);
+			if (!relative_path.empty()) {
+				relative_path = up_dir_level + relative_path;
+				break;
+			}
+
+			lib_path = lib_path->get_parent();
+			up_dir_level += "../";
+			if (lib_path == 0) {
+				doc_is_relative_to_library = false;
+				break;
+			}
+		}
+
+	} else {
+		doc_is_relative_to_library = false;
+	}
+
+	if ( doc_is_relative_to_library ) {
+		relfilename_ = relative_path;
+		DEBUG (String::ucompose ("Set relfilename_ '%1'", relfilename_));
+	} else {
+		relfilename_ = "";
+		DEBUG (String::ucompose ("Not relative"));
+	}
 }
 
 void Document::setKey (Glib::ustring const &key)
@@ -434,7 +464,13 @@ void Document::writeBibtex (
 void Document::writeXML(xmlTextWriterPtr writer) {
     xmlTextWriterStartElement(writer, BAD_CAST LIB_ELEMENT_DOC);
 
-    xmlTextWriterWriteElement(writer, BAD_CAST LIB_ELEMENT_DOC_REL_FILENAME, BAD_CAST getRelFileName().c_str());
+    /* Prefer to use write only relative filenames */
+    if (!relfilename_.empty()) {
+    	xmlTextWriterWriteElement(writer, BAD_CAST LIB_ELEMENT_DOC_REL_FILENAME, BAD_CAST relfilename_.c_str());
+    }
+    else {
+    	xmlTextWriterWriteElement(writer, BAD_CAST LIB_ELEMENT_DOC_FILENAME, BAD_CAST filename_.c_str());
+    }
     xmlTextWriterWriteElement(writer, BAD_CAST LIB_ELEMENT_DOC_KEY, BAD_CAST getKey().c_str());
     xmlTextWriterWriteElement(writer, BAD_CAST LIB_ELEMENT_DOC_NOTES, BAD_CAST getNotes().c_str());
 
@@ -455,6 +491,8 @@ void Document::readXML(xmlNodePtr docNode) {
             SET_FROM_NODE_MAP(setTag, child, atoi);
         } else if (nodeNameEq(child, LIB_ELEMENT_DOC_REL_FILENAME)) {
             SET_FROM_NODE(setRelFileName, child);
+        } else if (nodeNameEq(child, LIB_ELEMENT_DOC_FILENAME)) {
+            SET_FROM_NODE(setFileName, child);
         } else if (nodeNameEq(child, LIB_ELEMENT_DOC_KEY)) {
             SET_FROM_NODE(setKey, child);
         } else if (nodeNameEq(child, LIB_ELEMENT_DOC_NOTES)) {

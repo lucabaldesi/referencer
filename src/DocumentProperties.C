@@ -42,7 +42,6 @@ DocumentProperties::DocumentProperties (
 	filechooser_->signal_selection_changed().connect (
 			sigc::mem_fun (*this, &DocumentProperties::onFileChanged));
 
-
 	xml_->get_widget ("Key", keyentry_);
 	xml_->get_widget ("Icon", iconImage_);
 	xml_->get_widget ("IconButton", iconButton_);
@@ -142,6 +141,8 @@ bool DocumentProperties::show (Document *doc)
 
 void DocumentProperties::update (Document &doc)
 {
+    DEBUG ("Setting uri '%1'", doc.getFileName());
+	filechooser_->set_local_only (false);
 	filechooser_->set_uri (doc.getFileName());
 	keyentry_->set_text (doc.getKey());
 	iconImage_->set (doc.getThumbnail());
@@ -544,13 +545,8 @@ void DocumentProperties::onTypeChanged ()
 void DocumentProperties::onFileChanged ()
 {
 	Glib::ustring const uri = filechooser_->get_uri();
-	if (Utility::fileExists (uri)) {
-		iconImage_->set (ThumbnailGenerator::instance().getThumbnailSynchronous (uri));
-		iconButton_->set_sensitive (true);
-	} else {
-		iconImage_->set (ThumbnailGenerator::instance().getThumbnailSynchronous (uri));
-		iconButton_->set_sensitive (false);
-	}
+    iconImage_->set (ThumbnailGenerator::instance().getThumbnailSynchronous (uri));
+    iconButton_->set_sensitive (true);
 }
 
 void DocumentProperties::onIconButtonClicked ()

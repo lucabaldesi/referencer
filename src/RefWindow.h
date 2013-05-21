@@ -172,6 +172,7 @@ class RefWindow {
 		void onAddDocFilesCancel       (Gtk::Button *button, Gtk::ProgressBar *progress);
 		bool cancelAddDocFiles_;
 		void onAddDocFilesTag          (std::vector<Document*> &docs);
+		void configureDocumentFileChooser(Gtk::FileChooserDialog & chooser);
 
 		class TaggerDialog : public Gtk::Dialog {
 			Gtk::TreeModelColumn<Glib::ustring> nameColumn_;

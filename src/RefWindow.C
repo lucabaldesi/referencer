@@ -1658,9 +1658,7 @@ void RefWindow::onOpenLibrary ()
 	Gtk::FileChooserDialog chooser(
 		_("Open Library"),
 		Gtk::FILE_CHOOSER_ACTION_OPEN);
-
-	// remote not working?
-	//chooser.set_local_only (false);
+	chooser.set_local_only (false);
 
 	if (!ensureSaved ())
 		return;
@@ -2054,12 +2052,6 @@ void RefWindow::addDocFiles (std::vector<Glib::ustring> const &filenames)
 		while (Gtk::Main::events_pending())
 			Gtk::Main::iteration ();
 
-    	Glib::RefPtr<Gio::File> uri = Gio::File::create_for_uri (*it);
-		if (!Utility::uriIsFast (uri)) {
-			// Should prompt the user to download the file
-			DEBUG ("Ooh, a remote uri\n");
-		}
-
 		Document *newdoc = library_->getDocList()->newDocWithFile(*it);
 		bool added = false;
 		bool gotMetadata = false;
@@ -2288,28 +2280,18 @@ void RefWindow::onAddDocById ()
 
 void RefWindow::onAddDocFile ()
 {
-	Gtk::FileChooserDialog chooser(
-		_("Add Document"),
-		Gtk::FILE_CHOOSER_ACTION_OPEN);
-
+	Gtk::FileChooserDialog chooser(_("Add Document"), Gtk::FILE_CHOOSER_ACTION_OPEN);
+	configureDocumentFileChooser(chooser);
 	chooser.set_select_multiple (true);
-	chooser.set_local_only (false);
-	if (!addfolder_.empty())
-		chooser.set_current_folder (addfolder_);
-	chooser.add_button (Gtk::Stock::CANCEL, Gtk::RESPONSE_REJECT);
-	chooser.add_button (Gtk::Stock::ADD, Gtk::RESPONSE_ACCEPT);
-	chooser.set_default_response (Gtk::RESPONSE_ACCEPT);
-
 
 	if (chooser.run () == Gtk::RESPONSE_ACCEPT) {
 		// Dirty is set in adddocfiles
 		addfolder_ = Glib::path_get_dirname(chooser.get_filename());
-		std::vector<Glib::ustring> newfiles;
 		Glib::SListHandle<Glib::ustring> uris = chooser.get_uris ();
 		chooser.hide ();
-		Glib::SListHandle<Glib::ustring>::iterator iter = uris.begin();
-		Glib::SListHandle<Glib::ustring>::iterator const end = uris.end();
-		for (; iter != end; ++iter) {
+
+		std::vector<Glib::ustring> newfiles;
+		for (Glib::SListHandle<Glib::ustring>::iterator iter = uris.begin(); iter != uris.end(); ++iter) {
 			newfiles.push_back (*iter);
 		}
 		addDocFiles (newfiles);
@@ -2319,29 +2301,31 @@ void RefWindow::onAddDocFile ()
 
 void RefWindow::onAddDocFolder ()
 {
-	Gtk::FileChooserDialog chooser(
-		_("Add Folder"),
-		Gtk::FILE_CHOOSER_ACTION_SELECT_FOLDER);
-
+	Gtk::FileChooserDialog chooser(_("Add Folder"), Gtk::FILE_CHOOSER_ACTION_SELECT_FOLDER);
 	// Want an option for following symlinks? (we don't do it)
-
-	chooser.set_local_only (false);
-	if (!addfolder_.empty())
-		chooser.set_current_folder (addfolder_);
-	chooser.add_button (Gtk::Stock::CANCEL, Gtk::RESPONSE_REJECT);
-	chooser.add_button (Gtk::Stock::ADD, Gtk::RESPONSE_ACCEPT);
-	chooser.set_default_response (Gtk::RESPONSE_ACCEPT);
+	configureDocumentFileChooser(chooser);
 
 	if (chooser.run () == Gtk::RESPONSE_ACCEPT) {
 		// Dirty is set in adddocfiles
 		addfolder_ = Glib::path_get_dirname(chooser.get_filename());
 		Glib::ustring rootfoldername = chooser.get_uri();
 		chooser.hide ();
-		std::vector<Glib::ustring> files = Utility::recurseFolder (rootfoldername);
+
+		std::vector<Glib::ustring> files = Utility::recurseFolder(rootfoldername);
 		addDocFiles (files);
 	}
 }
 
+void RefWindow::configureDocumentFileChooser(Gtk::FileChooserDialog & chooser) {
+	chooser.add_button (Gtk::Stock::CANCEL, Gtk::RESPONSE_REJECT);
+	chooser.add_button (Gtk::Stock::ADD, Gtk::RESPONSE_ACCEPT);
+	chooser.set_default_response (Gtk::RESPONSE_ACCEPT);
+	chooser.set_local_only (false);
+	if (!addfolder_.empty()) {
+		chooser.set_current_folder (addfolder_);
+	}
+
+}
 
 
 void RefWindow::onRemoveDoc ()
