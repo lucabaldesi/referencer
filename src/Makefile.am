@@ -41,6 +41,8 @@ referencer_SOURCES =	\
 	DocumentTypes.h \
 	DocumentView.C \
 	DocumentView.h \
+	EntryMultiCompletion.C \
+	EntryMultiCompletion.h \
 	icon-entry.cc \
 	icon-entry.h \
 	Library.C \
@@ -72,6 +74,8 @@ referencer_SOURCES =	\
 	Transfer.C	\
 	Transfer.h	\
 	ucompose.hpp \
+	ustring.cc	\
+	ustring.h	\
 	Utility.C	\
 	Utility.h
 

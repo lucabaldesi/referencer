@@ -16,8 +16,6 @@
 #include <giomm/file.h>
 #include <giomm/fileinfo.h>
 #include <giomm/error.h>
-#include <gtkmm-utils/entry-multi-completion.h>
-#include <glibmm-utils/ustring.h>
 
 #include "Document.h"
 #include "DocumentList.h"
@@ -30,6 +28,8 @@
 #include "ucompose.hpp"
 #include "Utility.h"
 #include "TagList.h"
+#include "EntryMultiCompletion.h"
+#include "ustring.h"
 
 #include "DocumentView.h"
 
@@ -329,7 +329,7 @@ void DocumentView::doEditTagsDialog(Document *doc) {
 	hbox.set_spacing (12);
 	vbox->pack_start (hbox, true, true, 0);
 
-	Gtk::Label label (_("Tags (separated by spaces):"), false);
+	Gtk::Label label (_("Tags:"), false);
 	hbox.pack_start (label, false, false, 0);
 
 	std::list<Glib::ustring> items;
@@ -352,7 +352,7 @@ void DocumentView::doEditTagsDialog(Document *doc) {
 	}
 
 
-	Glib::RefPtr<Gtk::Util::EntryMultiCompletion> completion = Gtk::Util::EntryMultiCompletion::create(items);
+	Glib::RefPtr<EntryMultiCompletion> completion = EntryMultiCompletion::create(items);
 	
 	Gtk::Entry entry;
 	entry.set_text(str_current_tags);
