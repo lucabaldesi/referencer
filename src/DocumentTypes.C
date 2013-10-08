@@ -47,7 +47,7 @@ DocumentTypeManager::DocumentTypeManager () {
 	registerField ("edition", _("Edition"), false);
 
 	registerField ("booktitle", _("Book title"), false);
-	registerField ("organisation", _("Organisation"), false);
+	registerField ("organization", _("Organisation"), false);
 
 	registerField ("howpublished", _("How published"), false);
 
@@ -99,8 +99,10 @@ DocumentTypeManager::DocumentTypeManager () {
 	addField (inproceedings, "year", true);
 	addField (inproceedings, "editor", false);
 	addField (inproceedings, "pages", false);
-	addField (inproceedings, "organisation", false);
+	addField (inproceedings, "organization", false);
 	addField (inproceedings, "publisher", false);
+	addField (inproceedings, "volume", false);
+	addField (inproceedings, "series", false);
 	addField (inproceedings, "address", false);
 	addField (inproceedings, "doi", false);
 	/*
@@ -155,7 +157,7 @@ DocumentTypeManager::DocumentTypeManager () {
 	addField (proceedings, "year", true);
 	addField (proceedings, "editor", false);
 	addField (proceedings, "publisher", false);
-	addField (proceedings, "organisation", false);
+	addField (proceedings, "organization", false);
 	addField (proceedings, "address", false);
 	addField (proceedings, "month", false);
 	addField (proceedings, "note", false);
@@ -208,7 +210,7 @@ DocumentTypeManager::DocumentTypeManager () {
 	addField (incollection, "year", true);
 	addField (incollection, "editor", false);
 	addField (incollection, "pages", false);
-	addField (incollection, "organisation", false);
+	addField (incollection, "organization", false);
 	addField (incollection, "publisher", false);
 	addField (incollection, "address", false);
 	addField (incollection, "month", false);
@@ -219,7 +221,7 @@ DocumentTypeManager::DocumentTypeManager () {
 	DocumentType manual ("manual", _("Manual"));
 	addField (manual, "title", true);
 	addField (manual, "author", false);
-	addField (manual, "organisation", false);
+	addField (manual, "organization", false);
 	addField (manual, "address", false);
 	addField (manual, "edition", false);
 	addField (manual, "month", false);
