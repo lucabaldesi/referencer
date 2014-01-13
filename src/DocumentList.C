@@ -59,7 +59,7 @@ Glib::ustring DocumentList::sanitizedKey (
 {
 	Glib::ustring sanitizedKey = Glib::ustring(key);
 	Glib::ustring::size_type invalidchar; 
-	while ((invalidchar = sanitizedKey.find_first_of(":-[]{},+/*")) != Glib::ustring::npos) {
+	while ((invalidchar = sanitizedKey.find_first_of(":-[]{},+/* ")) != Glib::ustring::npos) {
 		sanitizedKey.replace(invalidchar, 1, "_");
 	}
 
