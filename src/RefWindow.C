@@ -1639,8 +1639,10 @@ void RefWindow::onNewLibrary ()
 {
 	if (ensureSaved ()) {
 		setDirty (false);
-
 		setOpenedLib ("");
+
+		ignoreDocSelectionChanged_ = true;
+		ignoreTagSelectionChanged_ = true;
 		clearTagList ();
 		docview_->clear ();
 
@@ -1648,6 +1650,8 @@ void RefWindow::onNewLibrary ()
 
 		populateTagList ();
 		docview_->populateDocStore ();
+		ignoreDocSelectionChanged_ = false;
+		ignoreTagSelectionChanged_ = false;
 		updateStatusBar ();
 	}
 }
