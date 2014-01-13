@@ -737,9 +737,7 @@ msgstr "%1 dokument (%2 valda)"
 
 #: ../src/RefWindow.C:915
 msgid "%1 documents"
-msgstr ""
-":   \t Copy text   \t\n"
-"%1 dokument"
+msgstr "%1 dokument"
 
 #: ../src/RefWindow.C:952
 msgid "_Notes: <i>%1</i>"
