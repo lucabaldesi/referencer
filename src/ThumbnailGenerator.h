@@ -22,11 +22,7 @@ class ThumbnailGenerator
 	Glib::RefPtr<Gdk::Pixbuf> lookupThumb (Glib::ustring const &file);
 	void lookupThumb_async (Glib::ustring const &file);
 	void _onQueryInfoAsyncReady(Glib::RefPtr<Gio::AsyncResult>& result);
-	void _onReadAsyncReady(Glib::RefPtr<Gio::AsyncResult>& result);
-	static void _onPixbufNewFromStreamReadyWrapper (GObject *source_object,
-                                                         GAsyncResult *res,
-                                                         gpointer user_data);
-	void _onPixbufNewFromStreamReady (Glib::RefPtr<Gdk::Pixbuf>& result);
+	void _setDocumentThumbnail(Glib::RefPtr<Gdk::Pixbuf>& result);
 	void _taskDone();
 	void _taskAbort();
 

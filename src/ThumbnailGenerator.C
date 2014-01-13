@@ -83,7 +83,14 @@ void ThumbnailGenerator::_onQueryInfoAsyncReady(Glib::RefPtr<Gio::AsyncResult>& 
 		thumbnail_file_ = Gio::File::create_for_path(thumbnail_path);
 
 		if (thumbnail_path != "") {
-			thumbnail_file_->read_async(sigc::mem_fun(this, &ThumbnailGenerator::_onReadAsyncReady));
+			int const desiredwidth = 64 + 9;
+			Glib::RefPtr<Gdk::Pixbuf> result = 
+				Gdk::Pixbuf::create_from_stream_at_scale(
+					thumbnail_file_->read(),
+					desiredwidth,
+					-1,
+					true);
+			_setDocumentThumbnail (result);
 		}
 		else {
 			_taskAbort();
@@ -98,50 +105,7 @@ void ThumbnailGenerator::_onQueryInfoAsyncReady(Glib::RefPtr<Gio::AsyncResult>& 
 }
 
 
-
-void ThumbnailGenerator::_onReadAsyncReady(Glib::RefPtr<Gio::AsyncResult>& result)
-{
-	try {
-		Glib::RefPtr<Gio::FileInputStream> fis = thumbnail_file_->read_finish(result);
-		//Unfortunately, this method is not in Gdkmm
-		int const desiredwidth = 64 + 9;
-		gdk_pixbuf_new_from_stream_at_scale_async(
-			(GInputStream*)fis->gobj(),
-			desiredwidth,
-			-1,
-			true,
-			NULL,
-			//sigc::mem_fun(this, &ThumbnailGenerator::_onPixbufNewFromStreamReady),
-			&ThumbnailGenerator::_onPixbufNewFromStreamReadyWrapper,
-			this
-		);
-	}
-	catch(const Glib::Exception& ex)
-	{
-		DEBUG("Exception caught: %1", ex.what());
-		_taskAbort();
-	}
-}
-
-void ThumbnailGenerator::_onPixbufNewFromStreamReadyWrapper (GObject *source_object,
-                                                         GAsyncResult *res,
-                                                         gpointer user_data)
-{
-	ThumbnailGenerator* obj = (ThumbnailGenerator*) user_data;
-	GError* err = NULL;
-	GdkPixbuf* res2 = gdk_pixbuf_new_from_stream_finish(res, &err);
-	if (!err) {
-		Glib::RefPtr<Gdk::Pixbuf> result = Glib::wrap(res2);
-		obj->_onPixbufNewFromStreamReady(result);
-	}
-	else {
-		DEBUG("Error: %1", err->message);
-		obj->_taskAbort();
-	}
-}
-
-
-void ThumbnailGenerator::_onPixbufNewFromStreamReady (Glib::RefPtr<Gdk::Pixbuf>& result)
+void ThumbnailGenerator::_setDocumentThumbnail(Glib::RefPtr<Gdk::Pixbuf>& result)
 {
 	int const left_offset = 3;
 	int const top_offset = 3;
@@ -167,8 +131,6 @@ void ThumbnailGenerator::_taskDone ()
 {
 	taskList_.erase (currentFile_);
 	currentFile_ = "";
-	/*Glib::signal_idle().connect(
-		sigc::mem_fun (this, &ThumbnailGenerator::run));*/
 	this->run();
 }
 
