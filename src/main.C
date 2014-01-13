@@ -32,7 +32,6 @@ int main (int argc, char **argv)
 
 	if (!Glib::thread_supported())
 		Glib::thread_init(0); //So we can use GMutex.
-	gdk_threads_init ();
 	Gnome::Conf::init();
 
 	std::auto_ptr<Gtk::Main> mainInstance;

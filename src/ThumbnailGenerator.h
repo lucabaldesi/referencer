@@ -11,17 +11,27 @@ class Document;
 
 class ThumbnailGenerator
 {
-	Glib::Mutex taskLock_;
 	std::multimap<Glib::ustring, Document *> taskList_;
+	Glib::ustring currentFile_;
+	Glib::RefPtr<Gio::File> currentUri_;
+	Glib::RefPtr<Gio::File> thumbnail_file_;
 
 	static Glib::RefPtr<Gdk::Pixbuf> defaultthumb_;
 	static Glib::RefPtr<Gdk::Pixbuf> thumbframe_;
 
-	void mainLoop ();
 	Glib::RefPtr<Gdk::Pixbuf> lookupThumb (Glib::ustring const &file);
+	void lookupThumb_async (Glib::ustring const &file);
+	void _onQueryInfoAsyncReady(Glib::RefPtr<Gio::AsyncResult>& result);
+	void _onReadAsyncReady(Glib::RefPtr<Gio::AsyncResult>& result);
+	static void _onPixbufNewFromStreamReadyWrapper (GObject *source_object,
+                                                         GAsyncResult *res,
+                                                         gpointer user_data);
+	void _onPixbufNewFromStreamReady (Glib::RefPtr<Gdk::Pixbuf>& result);
+	void _taskDone();
+	void _taskAbort();
 
 	ThumbnailGenerator ();
-	void run ();
+	bool run ();
 
 	public:
 	void registerRequest (Glib::ustring const &file, Document *doc);

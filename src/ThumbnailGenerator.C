@@ -17,62 +17,43 @@ ThumbnailGenerator &ThumbnailGenerator::instance ()
 
 ThumbnailGenerator::ThumbnailGenerator ()
 {
+	Glib::RefPtr<Gdk::Pixbuf> thumbnail = Gdk::Pixbuf::create_from_file
+		(Utility::findDataFile ("unknown-document.png"));
+	float const desiredwidth = 64.0 + 9;
+	int oldwidth = thumbnail->get_width ();
+	int oldheight = thumbnail->get_height ();
+	int newwidth = (int)desiredwidth;
+	int newheight = (int)((float)oldheight * (desiredwidth / (float)oldwidth));
+	thumbnail = thumbnail->scale_simple (
+		newwidth, newheight, Gdk::INTERP_BILINEAR);
+	defaultthumb_ = thumbnail;
+
+	thumbframe_ = Gdk::Pixbuf::create_from_file (
+		Utility::findDataFile ("thumbnail_frame.png"));
+
+	//We run when idle
 	Glib::signal_idle().connect(
-		sigc::bind_return (sigc::mem_fun (this, &ThumbnailGenerator::run), false));
+		sigc::mem_fun (this, &ThumbnailGenerator::run));
 }
 
 
-void ThumbnailGenerator::run ()
+bool ThumbnailGenerator::run ()
 {
-	Glib::Thread::create(
-		sigc::mem_fun (*this, &ThumbnailGenerator::mainLoop), false);
-}
+	//Stuff to do?
+	Glib::ustring file;
 
-void ThumbnailGenerator::mainLoop ()
-{
-	for (;;) {
-		Glib::ustring file;
+	bool gotJob = false;
+	if (taskList_.size () > 0) {
+		std::multimap<Glib::ustring, Document *>::iterator it = taskList_.begin ();
+		std::pair<Glib::ustring, Document *> task = *it;
 
-		bool gotJob = false;
-		taskLock_.lock ();
-		if (taskList_.size () > 0) {
-			std::multimap<Glib::ustring, Document *>::iterator it = taskList_.begin ();
-			std::pair<Glib::ustring, Document *> task = *it;
-
-			file = task.first;
-			gotJob = true;
-		}
-
-		taskLock_.unlock ();
-
-		if (!gotJob) {
-			sleep (1);
-			continue;
-		}
-		
-		Glib::RefPtr<Gdk::Pixbuf> result;
-		gdk_threads_enter ();
-		result = lookupThumb (file);
-		gdk_threads_leave ();
-		
-		if (result) {
-			gdk_threads_enter ();
-			taskLock_.lock ();
-
-			typedef std::multimap<Glib::ustring, Document*>::iterator Iterator;
-			const std::pair<Iterator,Iterator> docs = taskList_.equal_range(file);
-			for (Iterator i = docs.first; i!= docs.second; ++i) {
-				Document *doc = i->second;
-				doc->setThumbnail (result);
-			}
-
-			taskList_.erase (file);
-
-			taskLock_.unlock ();
-			gdk_threads_leave ();
-			sleep (0.1);
-		}
+		file = task.first;
+		gotJob = true;
+		DEBUG("gotJob: '%1'", file);
+		lookupThumb_async(file);
 	}
+
+	return false;
 }
 
 Glib::RefPtr<Gdk::Pixbuf> ThumbnailGenerator::getThumbnailSynchronous (Glib::ustring const &file)
@@ -80,6 +61,134 @@ Glib::RefPtr<Gdk::Pixbuf> ThumbnailGenerator::getThumbnailSynchronous (Glib::ust
 	return lookupThumb (file);
 }
 
+/* Async lookup thumbnail routines {{{ */
+void ThumbnailGenerator::lookupThumb_async (Glib::ustring const &file)
+{
+	currentFile_ = file;
+	if (!file.empty ()) {
+		currentUri_ = Gio::File::create_for_uri (currentFile_);
+
+		currentUri_->query_info_async(sigc::mem_fun(this, &ThumbnailGenerator::_onQueryInfoAsyncReady), "thumbnail::path");
+	}
+	else {
+		_taskAbort();
+	}
+}
+
+void ThumbnailGenerator::_onQueryInfoAsyncReady(Glib::RefPtr<Gio::AsyncResult>& result)
+{
+	try {
+		Glib::RefPtr<Gio::FileInfo> fileinfo = currentUri_->query_info_finish(result);
+		Glib::ustring thumbnail_path = fileinfo->get_attribute_as_string("thumbnail::path");
+		thumbnail_file_ = Gio::File::create_for_path(thumbnail_path);
+
+		if (thumbnail_path != "") {
+			thumbnail_file_->read_async(sigc::mem_fun(this, &ThumbnailGenerator::_onReadAsyncReady));
+		}
+		else {
+			_taskAbort();
+		}
+
+	}
+	catch(const Glib::Exception& ex)
+	{
+		DEBUG("Exception caught: %1", ex.what());
+		_taskAbort();
+	}
+}
+
+
+
+void ThumbnailGenerator::_onReadAsyncReady(Glib::RefPtr<Gio::AsyncResult>& result)
+{
+	try {
+		Glib::RefPtr<Gio::FileInputStream> fis = thumbnail_file_->read_finish(result);
+		//Unfortunately, this method is not in Gdkmm
+		int const desiredwidth = 64 + 9;
+		gdk_pixbuf_new_from_stream_at_scale_async(
+			(GInputStream*)fis->gobj(),
+			desiredwidth,
+			-1,
+			true,
+			NULL,
+			//sigc::mem_fun(this, &ThumbnailGenerator::_onPixbufNewFromStreamReady),
+			&ThumbnailGenerator::_onPixbufNewFromStreamReadyWrapper,
+			this
+		);
+	}
+	catch(const Glib::Exception& ex)
+	{
+		DEBUG("Exception caught: %1", ex.what());
+		_taskAbort();
+	}
+}
+
+void ThumbnailGenerator::_onPixbufNewFromStreamReadyWrapper (GObject *source_object,
+                                                         GAsyncResult *res,
+                                                         gpointer user_data)
+{
+	ThumbnailGenerator* obj = (ThumbnailGenerator*) user_data;
+	GError* err = NULL;
+	GdkPixbuf* res2 = gdk_pixbuf_new_from_stream_finish(res, &err);
+	if (!err) {
+		Glib::RefPtr<Gdk::Pixbuf> result = Glib::wrap(res2);
+		obj->_onPixbufNewFromStreamReady(result);
+	}
+	else {
+		DEBUG("Error: %1", err->message);
+		obj->_taskAbort();
+	}
+}
+
+
+void ThumbnailGenerator::_onPixbufNewFromStreamReady (Glib::RefPtr<Gdk::Pixbuf>& result)
+{
+	int const left_offset = 3;
+	int const top_offset = 3;
+	int const right_offset = 6;
+	int const bottom_offset = 6;
+	Glib::RefPtr<Gdk::Pixbuf> thumbnail = Utility::eelEmbedImageInFrame (
+		result, thumbframe_,
+		left_offset, top_offset, right_offset, bottom_offset);
+
+	typedef std::multimap<Glib::ustring, Document*>::iterator Iterator;
+	const std::pair<Iterator,Iterator> docs = taskList_.equal_range(currentFile_);
+	for (Iterator i = docs.first; i!= docs.second; ++i) {
+		Document *doc = i->second;
+		doc->setThumbnail (thumbnail);
+	}
+
+	_taskDone();
+}
+
+
+
+void ThumbnailGenerator::_taskDone ()
+{
+	taskList_.erase (currentFile_);
+	currentFile_ = "";
+	/*Glib::signal_idle().connect(
+		sigc::mem_fun (this, &ThumbnailGenerator::run));*/
+	this->run();
+}
+
+void ThumbnailGenerator::_taskAbort ()
+{
+	Glib::RefPtr<Gdk::Pixbuf> thumbnail;
+	thumbnail = defaultthumb_;
+
+	typedef std::multimap<Glib::ustring, Document*>::iterator Iterator;
+	const std::pair<Iterator,Iterator> docs = taskList_.equal_range(currentFile_);
+	for (Iterator i = docs.first; i!= docs.second; ++i) {
+		Document *doc = i->second;
+		doc->setThumbnail (thumbnail);
+	}
+	_taskDone();
+}
+/* }}} */
+
+
+// XXX old code: drop at some point?
 Glib::RefPtr<Gdk::Pixbuf> ThumbnailGenerator::lookupThumb (Glib::ustring const &file)
 {
 	Glib::RefPtr<Gdk::Pixbuf> thumbnail;
@@ -142,34 +251,21 @@ Glib::RefPtr<Gdk::Pixbuf> ThumbnailGenerator::lookupThumb (Glib::ustring const &
 	return thumbnail;
 }
 
-/*
- * Always called holding gdk_threads lock
- */
 void ThumbnailGenerator::registerRequest (Glib::ustring const &file, Document *doc)
 {
-	taskLock_.lock ();
 	taskList_.insert (std::pair<Glib::ustring, Document*>(file,doc));
-	taskLock_.unlock ();
 }
 
-/*
- * Always called holding gdk_threads lock
- */
 void ThumbnailGenerator::deregisterRequest (Document *doc)
 {
-	taskLock_.lock ();
-
 	/* Erase exactly one entry which has its second field equal to doc */
 	typedef std::multimap<Glib::ustring, Document*>::iterator Iterator;
 	for (Iterator i = taskList_.begin(); i!= taskList_.end(); ++i) {
 		if (i->second == doc) {
 			taskList_.erase (i);
-			taskLock_.unlock ();
 			return;
 		}
 	}
-
-	taskLock_.unlock ();
 }
 
 

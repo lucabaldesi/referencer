@@ -255,6 +255,7 @@ bool fileExists (
 void exceptionDialog (
 	Glib::Exception const *ex, Glib::ustring const &context)
 {
+	//TODO: rewrite this to use main thread!
 	//gdk_threads_enter ();
 	Glib::ustring message = String::ucompose (
 		_("<big><b>%1: %2</b></big>\n\n%3"),
