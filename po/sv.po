@@ -875,9 +875,7 @@ msgstr ""
 
 #: ../src/RefWindow.C:1709
 msgid "Showing '%1'"
-msgstr ""
-"Copy text   \t\n"
-"Visar '%1'"
+msgstr "Visar '%1'"
 
 #: ../src/RefWindow.C:1718
 msgid "Cancelling"
