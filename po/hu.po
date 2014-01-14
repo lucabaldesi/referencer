@@ -7,167 +7,86 @@ msgid ""
 msgstr ""
 "Project-Id-Version: referencer\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
-"POT-Creation-Date: 2008-09-18 16:29+0100\n"
-"PO-Revision-Date: 2008-06-27 11:35+0000\n"
-"Last-Translator: HORVATH, Akos <Unknown>\n"
+"POT-Creation-Date: 2014-01-13 11:56+0100\n"
+"PO-Revision-Date: 2014-01-14 00:47+0000\n"
+"Last-Translator: Mads Chr. Olesen <mads@mchro.dk>\n"
 "Language-Team: Hungarian <hu@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2008-10-13 14:44+0000\n"
-"X-Generator: Launchpad (build Unknown)\n"
+"X-Launchpad-Export-Date: 2014-01-14 05:14+0000\n"
+"X-Generator: Launchpad (build 16890)\n"
 
-#: ../data/documentproperties.glade.h:1
-msgid "<b>Document</b>"
-msgstr "<b>Dokumentum</b>"
-
-#: ../data/documentproperties.glade.h:2
-msgid "<b>E_xtra Fields</b>"
-msgstr "<b>_További mezők</b>"
-
-#: ../data/documentproperties.glade.h:3
-msgid "<b>Metadata</b>"
-msgstr "<b>Metaadatok</b>"
-
-#: ../data/documentproperties.glade.h:4
-msgid "Add a field"
-msgstr "Mező hozzáadása"
-
-#: ../data/documentproperties.glade.h:5
-msgid "Attempt to look up metadata for this document online"
-msgstr "A dokumentum metaadatainak megkeresése az interneten"
-
-#: ../data/documentproperties.glade.h:6
-msgid "Clear metadata"
-msgstr "Metaadatok törlése"
-
-#: ../data/documentproperties.glade.h:7
-msgid "Delete this field"
-msgstr "Mező törlése"
-
-#: ../data/documentproperties.glade.h:8
-msgid "Document Properties"
-msgstr "Dokumentum tulajdonságai"
-
-#: ../data/documentproperties.glade.h:9
-msgid "File:"
-msgstr "Fájl:"
-
-#: ../data/documentproperties.glade.h:10
-msgid "Fill out metadata from BibTeX on clipboard"
-msgstr "Metaadatok kitöltése a vágólapon lévő BibTeX adatokkal"
-
-#: ../data/documentproperties.glade.h:11
-msgid "Rename this field"
-msgstr "Fájl átnevezése"
-
-#: ../data/documentproperties.glade.h:12
-msgid "Select A File"
-msgstr "Válasszon egy fájlt"
-
-#: ../data/documentproperties.glade.h:13
-msgid "_Key:"
-msgstr "_Kulcs:"
-
-#: ../data/documentproperties.glade.h:14
-msgid "_Look Up"
-msgstr "_Keresés"
-
-#: ../data/documentproperties.glade.h:15 ../src/RefWindow.C:404
-msgid "_Paste BibTeX"
-msgstr "BibTeX beillesztése"
-
-#: ../data/preferences.glade.h:1
-msgid "<b>Proxy</b>"
-msgstr "<b>Proxy</b>"
-
-#: ../data/preferences.glade.h:2
-msgid ""
-"<i>Plugins nearer the top of the list are tried first when looking up "
-"metadata.</i>"
+#: ../plugins/ads.py:13
+msgid "NASA Astrophysics Data System DOI resolver"
 msgstr ""
 
-#: ../data/preferences.glade.h:3
-msgid ""
-"<i>These proxy settings apply desktop-wide\n"
-"to all Gnome applications.  Auto-configuration\n"
-" URLs are not supported.</i>"
-msgstr ""
-"<i>Ezek a proxybeállítások vonatkoznak minden Gnome alkalmazásra. "
-"Automatikus beállítást nyújtó URL-ek nem működnek.</i>"
-
-#: ../data/preferences.glade.h:6
-msgid "C_onfigure..."
-msgstr ""
-
-#: ../data/preferences.glade.h:7
-msgid "Host:"
-msgstr "Gépnév:"
-
-#: ../data/preferences.glade.h:8
-msgid "Move _down"
-msgstr "Mozgatás _le"
-
-#: ../data/preferences.glade.h:9
-msgid "Move _up"
-msgstr "Mozgatás _fel"
-
-#: ../data/preferences.glade.h:10
-msgid "Network"
-msgstr "Hálózat"
-
-#: ../data/preferences.glade.h:11
-msgid "Password:"
-msgstr "Jelszó:"
-
-#: ../data/preferences.glade.h:12
-msgid "Plugins"
-msgstr "Bővítmények"
-
-#: ../data/preferences.glade.h:13
-msgid "Port:"
-msgstr "Port:"
-
-#: ../data/preferences.glade.h:14
-msgid "Preferences"
-msgstr "Beállítások"
-
-#: ../data/preferences.glade.h:15
-msgid "Use authentication"
-msgstr "Azonosítás használata"
-
-#: ../data/preferences.glade.h:16
-msgid "Use web proxy"
-msgstr "web-proxy használata"
-
-#: ../data/preferences.glade.h:17
-msgid "Username:"
-msgstr "Felhasználónév:"
-
-#: ../data/preferences.glade.h:18
-msgid "_About..."
-msgstr "_Névjegy…"
-
-#: ../plugins/pubmed.py:16
-msgid "PubMed DOI resolver"
-msgstr ""
-
-#: ../plugins/pubmed.py:35
+#: ../plugins/ads.py:44 ../plugins/pubmed.py:215
 msgid "Resolving DOI"
+msgstr "DOI feloldása"
+
+#: ../plugins/ads.py:44
+#, python-format
+msgid "Fetching metadata from NASA ADS for DOI %s"
 msgstr ""
 
-#: ../plugins/pubmed.py:35
-#, python-format
-msgid "Finding PubMed ID from DOI %s"
-msgstr "%s DOI alapján PubMed ID keresése"
-
-#: ../plugins/pubmed.py:63
-msgid "Resolving PubMed ID"
+#: ../plugins/dblp.py:33
+msgid "DBLP resolver"
 msgstr ""
 
-#: ../plugins/pubmed.py:63
+#: ../plugins/dblp.py:81 ../plugins/dblp.py:140
+msgid "Searching DBLP"
+msgstr ""
+
+#: ../plugins/dblp.py:81
 #, python-format
-msgid "Fetching metadata from NCBI for PubMed ID %s"
+msgid "Fetching metadata from DBLP for url '%s'"
+msgstr ""
+
+#: ../plugins/dblp.py:140
+#, python-format
+msgid "Fetching metadata from DBLP for search query '%s'"
+msgstr ""
+
+#: ../plugins/genkey.py:15
+msgid "Generate keys from metadata"
+msgstr ""
+
+#: ../plugins/genkey.py:40
+msgid "Generate Key"
+msgstr ""
+
+#: ../plugins/genkey.py:41
+msgid "Generate keys for the selected documents from their metadata"
+msgstr ""
+
+#: ../plugins/google-books.py:14
+msgid "Fetch BiBTeX metadata from Google Books"
+msgstr ""
+
+#: ../plugins/isi-plugin.py:65 ../plugins/isi-plugin.py:67
+msgid "ISI Web of Science resolver (requires subscription)"
+msgstr ""
+
+#: ../plugins/isi-plugin.py:66
+msgid "Get metadata from ISI Web of Science"
+msgstr ""
+
+#: ../plugins/isi-plugin.py:71
+msgid "ISI Info"
+msgstr ""
+
+#: ../plugins/isi-plugin.py:72
+msgid "Retrieve metadata for the selected documents from ISI Web of Science"
+msgstr ""
+
+#: ../plugins/isi-plugin.py:477
+msgid "Obtaining data from ISI-WebOfScience"
+msgstr ""
+
+#: ../plugins/isi-plugin.py:478
+#, python-format
+msgid "Querying for %s/%s/%s"
 msgstr ""
 
 #: ../plugins/lyx.py:11 ../plugins/lyx.py:41
@@ -178,37 +97,73 @@ msgstr "Hivatkozás LyXben"
 msgid "Cite the selected documents in LyX"
 msgstr "A kiválasztott dokumentumok hivatkozása LyXben"
 
-#: ../src/ArxivPlugin.C:48
+#: ../plugins/pubmed.py:16
+msgid "PubMed DOI resolver"
+msgstr "PubMed DOI link feloldó"
+
+#: ../plugins/pubmed.py:131
+msgid "Searching pubmed"
+msgstr ""
+
+#: ../plugins/pubmed.py:131
+#, python-format
+msgid "Searching pubmed for '%s'"
+msgstr ""
+
+#: ../plugins/pubmed.py:162
+msgid "Retrieving pubmed summaries"
+msgstr ""
+
+#: ../plugins/pubmed.py:162
+#, python-format
+msgid "Retrieving summaries for '%s'"
+msgstr ""
+
+#: ../plugins/pubmed.py:215
+#, python-format
+msgid "Finding PubMed ID from DOI %s"
+msgstr "%s DOI alapján PubMed ID keresése"
+
+#: ../plugins/pubmed.py:243
+msgid "Resolving PubMed ID"
+msgstr "PubMed ID azonosítás"
+
+#: ../plugins/pubmed.py:243
+#, python-format
+msgid "Fetching metadata from NCBI for PubMed ID %s"
+msgstr "%s PubMed ID számára metaadatok lekérése az NCBI-ből"
+
+#: ../src/ArxivPlugin.C:55
 msgid "Retrieving metadata"
 msgstr "Metaadatok beolvasása"
 
-#: ../src/ArxivPlugin.C:50
+#: ../src/ArxivPlugin.C:57
 msgid "Contacting citebase.org to retrieve metadata for '%1'"
 msgstr ""
 "'%1' metaadatainak lekéréséhez kapcsolat építése a citebase.org honlappal"
 
-#: ../src/ArxivPlugin.C:58 ../src/CrossRefPlugin.C:241
+#: ../src/ArxivPlugin.C:65 ../src/CrossRefPlugin.C:251
 msgid "Downloading Metadata"
 msgstr "Metaadat letöltése"
 
-#: ../src/ArxivPlugin.C:62 ../src/CrossRefPlugin.C:216
-#: ../src/PluginManager.C:44
+#: ../src/ArxivPlugin.C:69 ../src/CrossRefPlugin.C:223
+#: ../src/PluginManager.C:45
 msgid "Downloading metadata"
 msgstr "Metaadat letöltése"
 
-#: ../src/ArxivPlugin.C:100 ../src/Document.C:772
+#: ../src/ArxivPlugin.C:107 ../src/Document.C:912
 msgid "Parsing BibTeX"
 msgstr "BibTeX feldolgozása"
 
-#: ../src/ArxivPlugin.C:116
+#: ../src/ArxivPlugin.C:123
 msgid "Arxiv.org ArXiv-ID resolver"
-msgstr ""
+msgstr "Arxiv.org ArXiv-ID kereső"
 
-#: ../src/CrossRefPlugin.C:180
+#: ../src/CrossRefPlugin.C:187
 msgid "CrossRef credentials not found"
-msgstr ""
+msgstr "CrossRef adatok nem találhatóak"
 
-#: ../src/CrossRefPlugin.C:181
+#: ../src/CrossRefPlugin.C:188
 msgid ""
 "To use the CrossRef service, a free account is needed.  Login information "
 "may be set in Preferences, or the CrossRef plugin may be disabled."
@@ -217,80 +172,99 @@ msgstr ""
 "bejelentkezési adatok a Beállítások alatt adhatóak meg, vagy a CrossRef "
 "bővítményt le lehet tiltani."
 
-#: ../src/CrossRefPlugin.C:190
+#: ../src/CrossRefPlugin.C:197
 msgid "_Preferences"
 msgstr "_Beállítások"
 
-#: ../src/CrossRefPlugin.C:191
+#: ../src/CrossRefPlugin.C:198
 msgid "_Disable CrossRef"
 msgstr "_CrossRef letiltása"
 
-#: ../src/CrossRefPlugin.C:218
+#: ../src/CrossRefPlugin.C:225
 msgid "Contacting crossref.org to retrieve metadata for '%1'"
 msgstr ""
+"'%1' metaadatainak lekéréséhez kapcsolat építése a crossref.org oldallal"
 
-#: ../src/CrossRefPlugin.C:277
+#: ../src/CrossRefPlugin.C:287
 msgid "Crossref.org OpenURL DOI resolver"
 msgstr "Crossref.org OpenURL DOI kereső"
 
-#: ../src/Document.C:38
+#: ../src/Document.C:32
 msgid "Unnamed"
 msgstr "Névtelen"
 
-#: ../src/Document.C:93
-msgid "Key naming conflict"
-msgstr ""
-
-#: ../src/Document.C:95
+#: ../src/Document.C:89
 msgid ""
 "The chosen key conflicts with an existing one.  Replace '%1' with '%2'?"
 msgstr ""
+"A kiválasztott kulcs ütközik egy már meglevővel. Lecseréljem: '%1' ezzel "
+"'%2'?"
 
-#: ../src/Document.C:102
+#: ../src/Document.C:98
+msgid "The chosen key contained invalid characters.  Replace '%1' with '%2'?"
+msgstr ""
+
+#: ../src/Document.C:109
+msgid "Key naming conflict"
+msgstr "Kulcs elnevezés ütközés"
+
+#: ../src/Document.C:117
 msgid "_Ignore"
-msgstr ""
+msgstr "_Kihagyás"
 
-#: ../src/Document.C:106
+#: ../src/Document.C:121
 msgid "_Replace"
-msgstr ""
+msgstr "_Csere"
 
-#: ../src/Document.C:602
+#: ../src/Document.C:740
 msgid "Moving '%1' to '%2'"
 msgstr "'%1' mozgatása '%2' helyére"
 
-#: ../src/DocumentList.C:191
+#: ../src/DocumentList.C:211
 msgid "Opening file '%1'"
 msgstr "'%1' fájl megnyitása"
 
-#: ../src/DocumentList.C:210
+#: ../src/DocumentList.C:230
 msgid "Reading file '%1'"
 msgstr "'%1' fájl beolvasása folyamatban"
 
-#: ../src/DocumentList.C:231
+#: ../src/DocumentList.C:251
 msgid "converting file %1 to utf8 from (guessed) latin1"
-msgstr ""
+msgstr "%1 fájl konvertálása UTF-8-ról (valószínűleg) latin1-es formátumra"
 
-#: ../src/DocumentList.C:265
+#: ../src/DocumentList.C:285
 msgid "Parsing import"
 msgstr "Importálás folyamatban"
 
-#: ../src/DocumentList.C:278
+#: ../src/DocumentList.C:298
 msgid "Extracting document %1 from bibutils structure"
 msgstr "'%1' dokumentum betöltése a bibutils rendszerből"
 
-#: ../src/DocumentProperties.C:200
+#: ../src/DocumentProperties.C:89 ../src/RefWindow.C:1110
+msgid "Name"
+msgstr "Név"
+
+#: ../src/DocumentProperties.C:90
+msgid "Value"
+msgstr ""
+
+#: ../src/DocumentProperties.C:236
 msgid "_Type:"
 msgstr "_Típus:"
 
-#: ../src/DocumentProperties.C:420 ../src/RefWindow.C:2690
+#: ../src/DocumentProperties.C:399
+msgid "This key already exists.\n"
+msgstr ""
+
+#: ../src/DocumentProperties.C:509 ../src/RefWindow.C:2837
 msgid "No references found on clipboard.\n"
 msgstr "A vágólapon hivatkozás nem található\n"
 
-#: ../src/DocumentProperties.C:424
+#: ../src/DocumentProperties.C:513
 msgid "Multiple references found on clipboard.\n"
 msgstr "A vágólapon több hivatkozás is található\n"
 
-#: ../src/DocumentTypes.C:31 ../src/DocumentView.C:1491
+#: ../src/DocumentTypes.C:31 ../src/DocumentView.C:1602
 msgid "Title"
 msgstr "Cím"
 
@@ -302,7 +276,7 @@ msgstr "Szerzők"
 msgid "Journal"
 msgstr "Folyóirat"
 
-#: ../src/DocumentTypes.C:34 ../src/DocumentView.C:1493
+#: ../src/DocumentTypes.C:34 ../src/DocumentView.C:1604
 msgid "Year"
 msgstr "Év"
 
@@ -326,7 +300,7 @@ msgstr "Hónap"
 msgid "Note"
 msgstr "Megjegyzés"
 
-#: ../src/DocumentTypes.C:41 ../src/DocumentView.C:1490
+#: ../src/DocumentTypes.C:41 ../src/DocumentView.C:1601
 msgid "Key"
 msgstr "Kulcs"
 
@@ -380,150 +354,122 @@ msgstr "Típus"
 
 #: ../src/DocumentTypes.C:58
 msgid "DOI"
-msgstr ""
+msgstr "DOI"
 
 #: ../src/DocumentTypes.C:61
 msgid "Article"
 msgstr "Cikk"
 
-#: ../src/DocumentTypes.C:78
+#: ../src/DocumentTypes.C:77
 msgid "Book"
 msgstr "Könyv"
 
-#: ../src/DocumentTypes.C:97
+#: ../src/DocumentTypes.C:95
 msgid "In Proceedings"
 msgstr "Előadássorozat"
 
-#: ../src/DocumentTypes.C:115
+#: ../src/DocumentTypes.C:114
 msgid "Misc"
 msgstr "Egyéb"
 
-#: ../src/DocumentTypes.C:126
+#: ../src/DocumentTypes.C:124
 msgid "Unpublished"
 msgstr "Kiadatlan"
 
-#: ../src/DocumentTypes.C:136
+#: ../src/DocumentTypes.C:133
 msgid "Master's thesis"
 msgstr "Diplomamunka"
 
-#: ../src/DocumentTypes.C:148
+#: ../src/DocumentTypes.C:144
 msgid "PhD thesis"
 msgstr "Doktori disszertáció"
 
-#: ../src/DocumentTypes.C:160
+#: ../src/DocumentTypes.C:155
 msgid "Proceedings"
 msgstr "Előadás"
 
-#: ../src/DocumentTypes.C:173
+#: ../src/DocumentTypes.C:167
 msgid "Conference"
 msgstr "Konferencia"
 
-#: ../src/DocumentTypes.C:185
+#: ../src/DocumentTypes.C:178
 msgid "In Book"
 msgstr "Könyvrész"
 
-#: ../src/DocumentTypes.C:203
+#: ../src/DocumentTypes.C:195
 msgid "Booklet"
 msgstr "Füzet"
 
-#: ../src/DocumentTypes.C:215
+#: ../src/DocumentTypes.C:206
 msgid "In Collection"
 msgstr "Gyűjtemény"
 
-#: ../src/DocumentTypes.C:231
+#: ../src/DocumentTypes.C:221
 msgid "Manual"
 msgstr "Kézikönyv"
 
-#: ../src/DocumentTypes.C:244
+#: ../src/DocumentTypes.C:233
 msgid "Technical Report"
+msgstr "Technikai Jelentés"
+
+#: ../src/DocumentView.C:323
+msgid "Edit tags"
 msgstr ""
 
-#: ../src/DocumentView.C:622
-msgid "Downloaded Documents"
-msgstr "Letöltött dokumentumok"
+#: ../src/DocumentView.C:332
+msgid "Tags:"
+msgstr ""
 
-#: ../src/DocumentView.C:647
+#: ../src/DocumentView.C:725
 msgid "Getting info for file '%1'"
 msgstr "'%1' fájl információinak betöltése"
 
 #. Translators: this is the format for the document captions
-#: ../src/DocumentView.C:1046
+#: ../src/DocumentView.C:1135
 msgid ""
-"<span size='xx-small'> </span>\n"
 "<small>%1</small>\n"
 "<b>%2</b>\n"
-"%3\n"
-"<i>%4</i>"
+"%3<i>%4</i>%5"
 msgstr ""
-"<span size=\"xx-small\"> </span>\n"
-"<small>%1</small>\n"
-"<b>%2</b>\n"
-"%3\n"
-"<i>%4</i>"
 
 #. Translation note: this completes the sentence started by
 #. * the "Arrange Items" string, which is the parent menu
 #. * item.  If this does not make sense in your locale, translate
 #. * "Arrange Items" as something like "Sort" and translate this
 #. * as just "%1"
-#: ../src/DocumentView.C:1407
+#: ../src/DocumentView.C:1518
 msgid "By %1"
-msgstr ""
+msgstr "Szerző: %1"
 
-#: ../src/DocumentView.C:1492
+#: ../src/DocumentView.C:1603
 msgid "Author"
 msgstr "Szerző"
 
-#: ../src/Library.C:92
-msgid "Parsing Library XML"
-msgstr "Könyvtár XML beolvasása"
+#: ../src/Library.C:185
+msgid "Stumbled upon a tag without a name or an id."
+msgstr ""
 
-#: ../src/Library.C:164
+#: ../src/Library.C:296
+msgid "Could not parse the 'reflib' file."
+msgstr ""
+
+#: ../src/Library.C:375
 msgid "Opening %1"
 msgstr "%1 megnyitása"
 
-#: ../src/Library.C:251
-msgid "Document location ambiguity"
-msgstr "A dokumentum elérhetősége nem egyértelmű"
-
-#: ../src/Library.C:253
-msgid ""
-"The file '%1' exists in two locations:\n"
-"\tOriginal: <b>%2</b>\n"
-"\tNew: <b>%3</b>\n"
-"\n"
-"Do you want to keep the original location, or update it to the new one?"
-msgstr ""
-"A '%1' file több helyen is elérhető\n"
-"\tEredeti: <b>%2</b>\n"
-"\tÚj: <b>%3</b>"
-
-#: ../src/Library.C:269
-msgid "Apply choice to all ambiguous locations"
-msgstr "Választás alkalmazása minden többértelmű helyre"
-
-#: ../src/Library.C:273
-msgid "Keep _Original"
-msgstr "Eredeti _megtartása"
-
-#: ../src/Library.C:274
-msgid "Use _New"
-msgstr "_Új használata"
-
-#: ../src/LibraryParser.h:89
-#, c-format
-msgid "'%s' is not a valid boolean value"
+#: ../src/Library.C:447
+msgid "Could not create an XML writer."
 msgstr ""
 
-#: ../src/Linker.C:78
+#: ../src/Linker.C:79
 msgid "DOI Link"
 msgstr "DOI link"
 
-#: ../src/Linker.C:99
+#: ../src/Linker.C:100
 msgid "arXiv Link"
 msgstr "arXiv link"
 
-#: ../src/Linker.C:118
+#: ../src/Linker.C:119
 msgid "URL Link"
 msgstr "URL link"
 
@@ -531,48 +477,52 @@ msgstr "URL link"
 msgid "PubMed Link"
 msgstr "PubMed link"
 
-#: ../src/Linker.C:182
+#: ../src/Linker.C:181
 msgid "Google Scholar"
 msgstr "Google Scholar"
 
-#: ../src/main.C:92
+#: ../src/main.C:97
 msgid "Terminating due to unhandled exception"
 msgstr "Kilépés kezeletlen kivétel miatt"
 
-#: ../src/Preferences.C:183
+#: ../src/Preferences.C:184
 msgid "Enabled"
 msgstr "Bekapcsolva"
 
-#: ../src/Preferences.C:187 ../src/PythonPlugin.C:317
-#: ../src/PythonPlugin.C:357
+#: ../src/Preferences.C:188 ../src/PythonPlugin.C:364
+#: ../src/PythonPlugin.C:404
 msgid "Module"
 msgstr "Modul"
 
-#: ../src/Preferences.C:189
+#: ../src/Preferences.C:190
 msgid "Description"
 msgstr "Leírás"
 
-#: ../src/Preferences.C:533
+#: ../src/Preferences.C:534
 msgid "Plugin error"
 msgstr "Hiba egy modulban"
 
-#: ../src/PythonPlugin.C:314
+#: ../src/PythonPlugin.C:361
 msgid ""
 "%1: %2\n"
 "\n"
 "%3: %4\n"
 "%5: %6\n"
 msgstr ""
+"%1: %2\n"
+"\n"
+"%3: %4\n"
+"%5: %6\n"
 
-#: ../src/PythonPlugin.C:315 ../src/PythonPlugin.C:355 ../src/Utility.C:260
+#: ../src/PythonPlugin.C:362 ../src/PythonPlugin.C:402 ../src/Utility.C:261
 msgid "Exception"
 msgstr "Kivétel"
 
-#: ../src/PythonPlugin.C:319 ../src/PythonPlugin.C:359
+#: ../src/PythonPlugin.C:366 ../src/PythonPlugin.C:406
 msgid "Explanation"
 msgstr "Magyarázat"
 
-#: ../src/PythonPlugin.C:354
+#: ../src/PythonPlugin.C:401
 msgid ""
 "<big><b>%1: %2</b></big>\n"
 "\n"
@@ -584,47 +534,67 @@ msgstr ""
 "%3: %4\n"
 "%5: %6"
 
-#: ../src/RefWindow.C:256
+#: ../src/RefWindow.C:262
 msgid "Tags"
 msgstr "Címkék"
 
-#: ../src/RefWindow.C:364
+#: ../src/RefWindow.C:372
 msgid "_Library"
 msgstr "_Könyvtár"
 
-#: ../src/RefWindow.C:369 ../src/RefWindow.C:457
+#: ../src/RefWindow.C:374
+msgid "_New..."
+msgstr ""
+
+#: ../src/RefWindow.C:374
+msgid "New Library"
+msgstr ""
+
+#: ../src/RefWindow.C:377
 msgid "_Open..."
 msgstr "_Megnyitás..."
 
-#: ../src/RefWindow.C:375
+#: ../src/RefWindow.C:377 ../src/RefWindow.C:1659
+msgid "Open Library"
+msgstr "Könyvtár megnyitása"
+
+#: ../src/RefWindow.C:380
+msgid "_Save..."
+msgstr ""
+
+#: ../src/RefWindow.C:380
+msgid "Save Library"
+msgstr ""
+
+#: ../src/RefWindow.C:383
 msgid "Save _As..."
 msgstr "Men_tés másként..."
 
-#: ../src/RefWindow.C:378
+#: ../src/RefWindow.C:386
 msgid "E_xport as BibTeX..."
 msgstr "E_xportálás BibTeXként..."
 
-#: ../src/RefWindow.C:381
+#: ../src/RefWindow.C:389
 msgid "_Manage BibTeX File..."
 msgstr "_BibTeX fájl beállítása..."
 
-#: ../src/RefWindow.C:384
-msgid "_Library Folder..."
+#: ../src/RefWindow.C:392
+msgid "_Properties..."
 msgstr ""
 
-#: ../src/RefWindow.C:387
+#: ../src/RefWindow.C:395
 msgid "_Import..."
 msgstr "_Importálás..."
 
-#: ../src/RefWindow.C:390
+#: ../src/RefWindow.C:398
 msgid "_Work Offline"
 msgstr "K_apcsolat nélküli munka"
 
-#: ../src/RefWindow.C:394
+#: ../src/RefWindow.C:402
 msgid "_Edit"
 msgstr "_Szerkesztés"
 
-#: ../src/RefWindow.C:396
+#: ../src/RefWindow.C:404
 msgid "_View"
 msgstr "_Nézet"
 
@@ -633,167 +603,183 @@ msgstr "_Nézet"
 #. * item.  If this does not make sense in your locale, translate
 #. * "Arrange Items" as something like "Sort" and translate "By %1"
 #. * as just "%1"
-#: ../src/RefWindow.C:402
+#: ../src/RefWindow.C:410
 msgid "Arran_ge Items"
-msgstr ""
+msgstr "Elemek rendezése"
 
-#: ../src/RefWindow.C:405
+#: ../src/RefWindow.C:412
+msgid "_Paste BibTeX"
+msgstr "BibTeX beillesztése"
+
+#: ../src/RefWindow.C:413
 msgid "Import references from BibTeX on the clipboard"
 msgstr "BibTeX hivatkozások beemelése a vágólapról"
 
-#: ../src/RefWindow.C:408
-msgid "_Copy LaTeX citation"
-msgstr "LaTeX hivatkozás másolása"
+#: ../src/RefWindow.C:416
+msgid "_Copy LaTeX Citation"
+msgstr ""
 
-#: ../src/RefWindow.C:409
+#: ../src/RefWindow.C:417
 msgid "Copy currently selected keys to the clipboard as a LaTeX citation"
 msgstr "A kiválasztott dokumentumokat LaTeX idézetként a vágólapra másolja"
 
-#: ../src/RefWindow.C:417
+#: ../src/RefWindow.C:425
 msgid "Use _List View"
 msgstr "_Lista nézet használata"
 
-#: ../src/RefWindow.C:419
+#: ../src/RefWindow.C:427
 msgid "Use _Icon View"
 msgstr "_Ikonos nézet használata"
 
-#: ../src/RefWindow.C:421
+#: ../src/RefWindow.C:429
 msgid "_Show Tag Pane"
 msgstr "_Címke panel mutatása"
 
-#: ../src/RefWindow.C:423
+#: ../src/RefWindow.C:431
 msgid "Show _Notes Pane"
-msgstr ""
+msgstr "Mutasd a jegyzet panelt"
 
-#: ../src/RefWindow.C:425 ../src/RefWindow.C:463
+#: ../src/RefWindow.C:433 ../src/RefWindow.C:471
 msgid "_Tags"
 msgstr "_Címkék"
 
-#: ../src/RefWindow.C:427
+#: ../src/RefWindow.C:435
 msgid "_Create Tag..."
 msgstr "Címke _létrehozása..."
 
-#: ../src/RefWindow.C:430
+#: ../src/RefWindow.C:438
 msgid "_Attach New Tag..."
-msgstr ""
+msgstr "_Új cimke r_agasztása..."
 
-#: ../src/RefWindow.C:433
+#: ../src/RefWindow.C:441
 msgid "_Delete Tag"
 msgstr "Címke _törlése"
 
-#: ../src/RefWindow.C:436
+#: ../src/RefWindow.C:444
 msgid "_Rename Tag"
 msgstr "Címke _átnevezése"
 
-#: ../src/RefWindow.C:439
+#: ../src/RefWindow.C:447
 msgid "_Documents"
 msgstr "_Dokumentumok"
 
-#: ../src/RefWindow.C:441
+#: ../src/RefWindow.C:449
 msgid "_Add File..."
 msgstr "_Fájl hozzáadása..."
 
-#: ../src/RefWindow.C:444
+#: ../src/RefWindow.C:452
 msgid "Add _Folder..."
 msgstr "_Könyvtár hozzáadása..."
 
-#: ../src/RefWindow.C:447
+#: ../src/RefWindow.C:455
 msgid "Add E_mpty Reference..."
 msgstr "_Üres hivatkozás hozzáadása"
 
-#: ../src/RefWindow.C:450
+#: ../src/RefWindow.C:458
 msgid "Add Refere_nce with ID..."
 msgstr "_DOI hivatkozás hozzáadása"
 
-#: ../src/RefWindow.C:453
+#: ../src/RefWindow.C:461
 msgid "_Remove"
 msgstr "_Eltávolítás"
 
-#: ../src/RefWindow.C:467
+#: ../src/RefWindow.C:465
+msgid "_Open"
+msgstr ""
+
+#: ../src/RefWindow.C:475
 msgid "_Get Metadata"
 msgstr "_Metaadatok lekérése"
 
-#: ../src/RefWindow.C:470
+#: ../src/RefWindow.C:478
 msgid "_Delete File from Drive"
-msgstr ""
+msgstr "Fájlt törlése a meghajtóról"
 
-#: ../src/RefWindow.C:474
+#: ../src/RefWindow.C:482
 msgid "R_ename File from Key"
 msgstr "Fájl _átnevezése a kulcs alapján"
 
-#: ../src/RefWindow.C:477
+#: ../src/RefWindow.C:485
 msgid "_Tools"
-msgstr ""
+msgstr "_Eszközök"
 
-#: ../src/RefWindow.C:479
+#: ../src/RefWindow.C:487
 msgid "Export Notes as HTML"
 msgstr ""
 
-#: ../src/RefWindow.C:482
+#: ../src/RefWindow.C:490
 msgid "_Help"
 msgstr "_Súgó"
 
-#: ../src/RefWindow.C:484
-msgid "Introduction"
+#: ../src/RefWindow.C:492
+msgid "Contents"
 msgstr ""
 
-#: ../src/RefWindow.C:640
+#: ../src/RefWindow.C:512
+msgid "Search..."
+msgstr ""
+
+#: ../src/RefWindow.C:673
 msgid "All"
 msgstr "Mind"
 
-#: ../src/RefWindow.C:645
+#: ../src/RefWindow.C:678
 msgid "Untagged"
 msgstr "Nincs címke"
 
-#: ../src/RefWindow.C:911
+#: ../src/RefWindow.C:944
 msgid "%1 documents (%2 selected)"
 msgstr "%1 dokumentum (%2 kijelölve)"
 
-#: ../src/RefWindow.C:915
+#: ../src/RefWindow.C:948
 msgid "%1 documents"
 msgstr "%1 dokumentum"
 
-#: ../src/RefWindow.C:952
+#: ../src/RefWindow.C:985
 msgid "_Notes: <i>%1</i>"
 msgstr ""
 
-#: ../src/RefWindow.C:955
+#: ../src/RefWindow.C:988
 msgid "Multiple documents selected"
 msgstr ""
 
-#: ../src/RefWindow.C:957
+#: ../src/RefWindow.C:990
 msgid "Select a document to view and edit notes"
 msgstr ""
 
-#: ../src/RefWindow.C:1019
+#: ../src/RefWindow.C:1052
 msgid "Save changes to library before closing?"
 msgstr "Bezárás előtt mentse a változtatásokat?"
 
-#: ../src/RefWindow.C:1025
+#: ../src/RefWindow.C:1058
 msgid "Close _without Saving"
 msgstr "Bezárás mentés _nélkül"
 
-#: ../src/RefWindow.C:1061
+#: ../src/RefWindow.C:1094
 msgid "Type a tag"
 msgstr "Adjon meg egy címkét"
 
-#: ../src/RefWindow.C:1065
+#: ../src/RefWindow.C:1098
 msgid "Create tag"
 msgstr ""
 
-#: ../src/RefWindow.C:1066
+#: ../src/RefWindow.C:1099
 msgid "Short memorable tag names help you organise your documents"
 msgstr ""
 
-#: ../src/RefWindow.C:1077
-msgid "Name"
+#: ../src/RefWindow.C:1127
+msgid "Empty tag names are not valid"
 msgstr ""
 
-#: ../src/RefWindow.C:1151
+#: ../src/RefWindow.C:1132
+msgid "Duplicate tag names are not valid"
+msgstr ""
+
+#: ../src/RefWindow.C:1197
 msgid "Are you sure you want to delete \"%1\"?"
 msgstr "Biztosan törölni szeretné a '%1' címkét?"
 
-#: ../src/RefWindow.C:1158
+#: ../src/RefWindow.C:1204
 msgid ""
 "When a tag is deleted it is also permanently removed from all documents it "
 "is currently associated with."
@@ -801,62 +787,66 @@ msgstr ""
 "Amikor egy címkét töröl, egyúttal minden dokumentumból is törli, amelyekhez "
 "jelenleg hozzá van rendelve."
 
-#: ../src/RefWindow.C:1211
+#: ../src/RefWindow.C:1257
 msgid "Export BibTeX"
 msgstr "BibTeX exportálása"
 
-#: ../src/RefWindow.C:1220 ../src/RefWindow.C:1403 ../src/RefWindow.C:2581
+#: ../src/RefWindow.C:1266 ../src/RefWindow.C:1505 ../src/RefWindow.C:2728
 msgid "BibTeX Files"
 msgstr "BibTeX fájlok"
 
-#: ../src/RefWindow.C:1225 ../src/RefWindow.C:1306 ../src/RefWindow.C:1408
-#: ../src/RefWindow.C:1576 ../src/RefWindow.C:1642 ../src/RefWindow.C:2568
+#: ../src/RefWindow.C:1271 ../src/RefWindow.C:1352 ../src/RefWindow.C:1510
+#: ../src/RefWindow.C:1679 ../src/RefWindow.C:1748 ../src/RefWindow.C:2715
 msgid "All Files"
 msgstr "Minden fájl"
 
-#: ../src/RefWindow.C:1236 ../src/RefWindow.C:1317
+#: ../src/RefWindow.C:1282 ../src/RefWindow.C:1363
 msgid "Selection:"
 msgstr "Választás:"
 
-#: ../src/RefWindow.C:1239 ../src/RefWindow.C:1320
+#: ../src/RefWindow.C:1285 ../src/RefWindow.C:1366
 msgid "All Documents"
 msgstr "Minden dokumentumot"
 
-#: ../src/RefWindow.C:1240 ../src/RefWindow.C:1321
+#: ../src/RefWindow.C:1286 ../src/RefWindow.C:1368
 msgid "Selected Documents"
 msgstr "Kijelölt dokumentumok"
 
 #. Any options here should be replicated in onManageBibtex
 #. Any options here should be replicated in onExportBibtex
-#: ../src/RefWindow.C:1246 ../src/RefWindow.C:1496
+#: ../src/RefWindow.C:1292 ../src/RefWindow.C:1600
 msgid "Protect capitalization (surround values with {})"
 msgstr "Nagybetűk védelme (az értékeket {} közé foglalja)"
 
-#: ../src/RefWindow.C:1248 ../src/RefWindow.C:1499
+#: ../src/RefWindow.C:1294 ../src/RefWindow.C:1603
 msgid "Use Unicode (UTF-8) encoding"
 msgstr "Unicode (UTF-8) kódolás használata"
 
-#: ../src/RefWindow.C:1292
+#: ../src/RefWindow.C:1338
 msgid "Export Notes"
 msgstr ""
 
-#: ../src/RefWindow.C:1301
+#: ../src/RefWindow.C:1347
 msgid "HTML Files"
+msgstr "HTML-fájlok"
+
+#: ../src/RefWindow.C:1367
+msgid "Currently Shown Documents"
 msgstr ""
 
-#: ../src/RefWindow.C:1364 ../src/RefWindow.C:2519
+#: ../src/RefWindow.C:1444 ../src/RefWindow.C:2665
 msgid "Unnamed Library"
 msgstr "Névtelen könyvtár"
 
-#: ../src/RefWindow.C:1396
+#: ../src/RefWindow.C:1498
 msgid "Browse"
 msgstr "Tallózás"
 
-#: ../src/RefWindow.C:1436 ../src/RefWindow.C:1451
+#: ../src/RefWindow.C:1538 ../src/RefWindow.C:1553
 msgid "Manage BibTeX File"
 msgstr "BibTeX fájl beállításai"
 
-#: ../src/RefWindow.C:1452
+#: ../src/RefWindow.C:1554
 msgid ""
 "If you choose a file here, it will be overwritten whenever this library is "
 "saved."
@@ -864,62 +854,62 @@ msgstr ""
 "Amennyiben itt megad egy fájlt, akkor az a könyvtár elmentésekor "
 "automatikusan felül lesz írva."
 
-#: ../src/RefWindow.C:1459
+#: ../src/RefWindow.C:1561
 msgid "BibTeX file:"
 msgstr "BibTeX fájl"
 
-#: ../src/RefWindow.C:1480
+#: ../src/RefWindow.C:1584
 msgid "_Browse..."
 msgstr "_Tallózás..."
 
-#: ../src/RefWindow.C:1554
-msgid "Open Library"
-msgstr "Könyvtár megnyitása"
-
-#: ../src/RefWindow.C:1571 ../src/RefWindow.C:1637
+#: ../src/RefWindow.C:1674 ../src/RefWindow.C:1743
 msgid "Referencer Libraries"
 msgstr "Referencer könyvtárak"
 
-#: ../src/RefWindow.C:1628
+#: ../src/RefWindow.C:1734
 msgid "Save Library As"
 msgstr "Könyvtár mentése másként"
 
 #. Translators: your name here!
-#: ../src/RefWindow.C:1689
+#: ../src/RefWindow.C:1795
 msgid "translator-credits"
 msgstr ""
 "Launchpad Contributions:\n"
 "  HORVATH, Akos https://launchpad.net/~akos-horvath\n"
-"  ViktorNagy https://launchpad.net/~viktor-nagy"
+"  Krasznecz Zoltán https://launchpad.net/~krasznecz-zoltan\n"
+"  Mads Chr. Olesen https://launchpad.net/~shiyee\n"
+"  Muszela Balázs https://launchpad.net/~bazsi86-deactivatedaccount\n"
+"  ViktorNagy https://launchpad.net/~viktor-nagy\n"
+"  Zoltan Hoppar https://launchpad.net/~hopparz-gmail"
 
-#: ../src/RefWindow.C:1709
+#: ../src/RefWindow.C:1814
 msgid "Showing '%1'"
 msgstr "'%1' megmutatása"
 
-#: ../src/RefWindow.C:1718
+#: ../src/RefWindow.C:1823
 msgid "Cancelling"
 msgstr "Megszakítás"
 
 #. Show a dialog containing a treeview of checkboxes for
 #. * tags, and a button for creating tags
-#: ../src/RefWindow.C:1763
+#: ../src/RefWindow.C:1868
 msgid "Tag Added Files"
 msgstr ""
 
 #. "Create tag" button
-#: ../src/RefWindow.C:1801
+#: ../src/RefWindow.C:1908
 msgid "C_reate Tag..."
-msgstr ""
+msgstr "C_ímke készítése..."
 
-#: ../src/RefWindow.C:1864
+#: ../src/RefWindow.C:1971
 msgid "Add Document Files"
 msgstr "Dokumentumok hozzáadása"
 
-#: ../src/RefWindow.C:1871
+#: ../src/RefWindow.C:1978
 msgid "Adding document files"
 msgstr "Dokumentumok hozzáadása folyamatban"
 
-#: ../src/RefWindow.C:1872
+#: ../src/RefWindow.C:1979
 msgid ""
 "This process may take some time as the bibliographic information for each "
 "document is looked up."
@@ -927,59 +917,59 @@ msgstr ""
 "Ez a folyamat sokáig is eltarthat, miután a program minden dokumentum "
 "könyvtári információját megpróbálja felismerni."
 
-#: ../src/RefWindow.C:1897
+#: ../src/RefWindow.C:2004
 msgid "Document"
 msgstr "Dokumentum"
 
-#: ../src/RefWindow.C:1898
+#: ../src/RefWindow.C:2005
 msgid "Got text"
 msgstr "Szöveg megjött"
 
-#: ../src/RefWindow.C:1899
+#: ../src/RefWindow.C:2006
 msgid "Got ID"
 msgstr "ID megjött"
 
-#: ../src/RefWindow.C:1900
+#: ../src/RefWindow.C:2007
 msgid "Got metadata"
 msgstr "Metaadatok megjöttek"
 
-#: ../src/RefWindow.C:1901
+#: ../src/RefWindow.C:2008
 msgid "Outcome"
 msgstr "Végeredmény"
 
-#: ../src/RefWindow.C:1916
+#: ../src/RefWindow.C:2025
 msgid "_Attach tags..."
-msgstr ""
+msgstr "Címke hozzá_adása..."
 
-#: ../src/RefWindow.C:1944
+#: ../src/RefWindow.C:2053
 msgid "%1 of %2 documents"
 msgstr "%1 a %2 dokumentumból"
 
-#: ../src/RefWindow.C:2033 ../src/RefWindow.C:2035
+#: ../src/RefWindow.C:2136 ../src/RefWindow.C:2138
 msgid "Cancelled"
 msgstr "Megszakítva"
 
-#: ../src/RefWindow.C:2039
+#: ../src/RefWindow.C:2142
 msgid "Finished"
 msgstr "Kész"
 
-#: ../src/RefWindow.C:2080
+#: ../src/RefWindow.C:2184
 msgid "Add Reference with ID"
 msgstr "ID-val rendelkező referencia hozzáadása"
 
-#: ../src/RefWindow.C:2150
+#: ../src/RefWindow.C:2286
 msgid "Add Document"
 msgstr "Dokumentum hozzáadása"
 
-#: ../src/RefWindow.C:2181
+#: ../src/RefWindow.C:2307
 msgid "Add Folder"
 msgstr "Mappa hozzáadása"
 
-#: ../src/RefWindow.C:2218
+#: ../src/RefWindow.C:2347
 msgid "Are you sure you want to remove these %1 documents?"
 msgstr "Biztosan el szeretné távolítani ezt a %1 dokumentumot?"
 
-#: ../src/RefWindow.C:2220
+#: ../src/RefWindow.C:2349
 msgid ""
 "All tag associations and metadata for these documents will be permanently "
 "lost."
@@ -987,41 +977,41 @@ msgstr ""
 "A dokumentumok el fogják veszíteni a hozzájuk rendelt címkéket és a "
 "metaadataikat."
 
-#: ../src/RefWindow.C:2223
+#: ../src/RefWindow.C:2352
 msgid "Are you sure you want to remove '%1'?"
 msgstr "Biztosan el szeretné távolítani '%1' dokumentumot?"
 
-#: ../src/RefWindow.C:2225
+#: ../src/RefWindow.C:2354
 msgid ""
 "All tag associations and metadata for the document will be permanently lost."
 msgstr ""
 "A dokumentum el fogja veszíteni a hozzá rendelt címkéket és a metaadatait."
 
-#: ../src/RefWindow.C:2255
+#: ../src/RefWindow.C:2391
 msgid "Fetching metadata"
 msgstr "Metaadatok beolvasása"
 
-#: ../src/RefWindow.C:2285
+#: ../src/RefWindow.C:2421
 msgid "Really rename this file to '%1'?"
 msgstr "Valóban át szeretné nevezni ezt a fájlt '%1' névre?"
 
-#: ../src/RefWindow.C:2288
+#: ../src/RefWindow.C:2424
 msgid "Really rename these %1 files to their keys?"
 msgstr "Valóban át szeretné ezt a %1 fájlt a kulcsra nevezni?"
 
-#: ../src/RefWindow.C:2296
+#: ../src/RefWindow.C:2432
 msgid "This action <b>cannot be undone</b>."
 msgstr "Ez a művelet <b>nem fordítható vissza</b>."
 
-#: ../src/RefWindow.C:2299
+#: ../src/RefWindow.C:2435
 msgid "Rename from Key"
 msgstr "Átnevezés kulcs alapján"
 
-#: ../src/RefWindow.C:2330
+#: ../src/RefWindow.C:2466
 msgid "Are you sure you want to delete the files of these %1 documents?"
 msgstr "Biztosan törölni szeretné ennek a %1 dokumentumnak a fájljait?"
 
-#: ../src/RefWindow.C:2332
+#: ../src/RefWindow.C:2468
 msgid ""
 "All tag associations and metadata for these documents will be permanently "
 "lost, and the files they refer to will be irretrievably deleted."
@@ -1030,11 +1020,11 @@ msgstr ""
 "és az általuk hivatkozott fájlok a visszaállítás lehetősége nélkül törölve "
 "lesznek."
 
-#: ../src/RefWindow.C:2338
+#: ../src/RefWindow.C:2474
 msgid "Are you sure you want to delete the file of '%1'?"
 msgstr "Biztosan törölni szeretné '%1' fájlját?"
 
-#: ../src/RefWindow.C:2340
+#: ../src/RefWindow.C:2476
 msgid ""
 "All tag associations and metadata for the document will be permanently lost, "
 "and the file it refers to will be irretrievably deleted."
@@ -1042,43 +1032,51 @@ msgstr ""
 "A dokumentum kapcsolódó címkéi és metaadatai örökké el fognak veszni, és az "
 "általa hivatkozott fájl a visszaállítás lehetősége nélkül törölve lesz."
 
-#: ../src/RefWindow.C:2368
+#: ../src/RefWindow.C:2504
 msgid "Deleting '%1'"
 msgstr "'%1' törlése folyamatban"
 
-#: ../src/RefWindow.C:2390
+#: ../src/RefWindow.C:2527
 msgid "Trying to open file '%1'"
 msgstr "'%1' fájl megnyitása folyamatban"
 
-#: ../src/RefWindow.C:2483
+#: ../src/RefWindow.C:2629
 msgid "Working offline"
 msgstr "Kapcsolat nélküli munka"
 
-#: ../src/RefWindow.C:2484
+#: ../src/RefWindow.C:2630
 msgid "Working online"
 msgstr "Kapcsolódva"
 
-#: ../src/RefWindow.C:2553
+#: ../src/RefWindow.C:2700
 msgid "Import References"
 msgstr "Hivatkozások importálása"
 
-#: ../src/RefWindow.C:2576
+#: ../src/RefWindow.C:2723
 msgid "Bibliography Files"
 msgstr "Hivatkozásjegyzék fájlok"
 
-#: ../src/RefWindow.C:2587
+#: ../src/RefWindow.C:2734
 msgid "Format:"
 msgstr "Formátum:"
 
-#: ../src/RefWindow.C:2684
+#: ../src/RefWindow.C:2831
 msgid "Imported %1 BibTeX references"
 msgstr "%1 BibTeX hivatkozás importálása megtörtént"
 
-#: ../src/Transfer.C:47
+#: ../src/RefWindow.C:3172
+msgid "Searching..."
+msgstr ""
+
+#: ../src/RefWindow.C:3197
+msgid "Complete"
+msgstr ""
+
+#: ../src/Transfer.C:49
 msgid "Work offline?"
 msgstr "Kapcsolat nélkül dolgozzon?"
 
-#: ../src/Transfer.C:48
+#: ../src/Transfer.C:50
 msgid ""
 "There was a problem while retrieving metadata, would you like \n"
 "to work offline?  If you choose to work offline, no further network "
@@ -1091,31 +1089,15 @@ msgstr ""
 "hálózati szolgáltatással sem fog a program próbálkozni. A Beállítások "
 "párbeszédablakban kapcsolódhat majd újra."
 
-#: ../src/Transfer.C:59
+#: ../src/Transfer.C:61
 msgid "_Stay Online"
 msgstr "_Maradjon kapcsolódva"
 
-#: ../src/Transfer.C:61
+#: ../src/Transfer.C:63
 msgid "_Go Offline"
 msgstr "_Kapcsolódjon le"
 
-#: ../src/Transfer.C:101
-msgid "Downloading %1"
-msgstr "Letöltés: %1"
-
-#: ../src/Transfer.C:286
-msgid "Opening URI '%1' on server"
-msgstr "'%1' URI megnyitása a szerveren"
-
-#: ../src/Transfer.C:311
-msgid "Reading URI '%1' on server"
-msgstr "'%1' URI beolvasása a szerverről"
-
-#: ../src/Transfer.C:330
-msgid "Closing URI '%1' on server"
-msgstr "'%1' URI lezárása a szerveren"
-
-#: ../src/Utility.C:259
+#: ../src/Utility.C:260
 msgid ""
 "<big><b>%1: %2</b></big>\n"
 "\n"
@@ -1125,6 +1107,164 @@ msgstr ""
 "\n"
 "%3"
 
-#: ../src/Utility.C:263
+#: ../src/Utility.C:264
 msgid "The operation underway was: \"%1\""
 msgstr "A végrehajtandó parancs '%1' volt"
+
+#: ../src/Utility.C:2195
+msgid "A"
+msgstr ""
+
+#: ../src/Utility.C:2196
+msgid "An"
+msgstr ""
+
+#: ../src/Utility.C:2197
+msgid "The"
+msgstr ""
+
+#~ msgid "<b>Document</b>"
+#~ msgstr "<b>Dokumentum</b>"
+
+#~ msgid "<b>E_xtra Fields</b>"
+#~ msgstr "<b>_További mezők</b>"
+
+#~ msgid "<b>Metadata</b>"
+#~ msgstr "<b>Metaadatok</b>"
+
+#~ msgid "Add a field"
+#~ msgstr "Mező hozzáadása"
+
+#~ msgid "Attempt to look up metadata for this document online"
+#~ msgstr "A dokumentum metaadatainak megkeresése az interneten"
+
+#~ msgid "Clear metadata"
+#~ msgstr "Metaadatok törlése"
+
+#~ msgid "Delete this field"
+#~ msgstr "Mező törlése"
+
+#~ msgid "Document Properties"
+#~ msgstr "Dokumentum tulajdonságai"
+
+#~ msgid "File:"
+#~ msgstr "Fájl:"
+
+#~ msgid "Fill out metadata from BibTeX on clipboard"
+#~ msgstr "Metaadatok kitöltése a vágólapon lévő BibTeX adatokkal"
+
+#~ msgid "Rename this field"
+#~ msgstr "Fájl átnevezése"
+
+#~ msgid "Select A File"
+#~ msgstr "Válasszon egy fájlt"
+
+#~ msgid "_Key:"
+#~ msgstr "_Kulcs:"
+
+#~ msgid "_Look Up"
+#~ msgstr "_Keresés"
+
+#~ msgid "<b>Proxy</b>"
+#~ msgstr "<b>Proxy</b>"
+
+#~ msgid ""
+#~ "<i>These proxy settings apply desktop-wide\n"
+#~ "to all Gnome applications.  Auto-configuration\n"
+#~ " URLs are not supported.</i>"
+#~ msgstr ""
+#~ "<i>Ezek a proxybeállítások vonatkoznak minden Gnome alkalmazásra. "
+#~ "Automatikus beállítást nyújtó URL-ek nem működnek.</i>"
+
+#~ msgid "Host:"
+#~ msgstr "Gépnév:"
+
+#~ msgid "Move _down"
+#~ msgstr "Mozgatás _le"
+
+#~ msgid "Move _up"
+#~ msgstr "Mozgatás _fel"
+
+#~ msgid "Network"
+#~ msgstr "Hálózat"
+
+#~ msgid "Password:"
+#~ msgstr "Jelszó:"
+
+#~ msgid "Plugins"
+#~ msgstr "Bővítmények"
+
+#~ msgid "Port:"
+#~ msgstr "Port:"
+
+#~ msgid "Preferences"
+#~ msgstr "Beállítások"
+
+#~ msgid "Use authentication"
+#~ msgstr "Azonosítás használata"
+
+#~ msgid "Use web proxy"
+#~ msgstr "web-proxy használata"
+
+#~ msgid "Username:"
+#~ msgstr "Felhasználónév:"
+
+#~ msgid "_About..."
+#~ msgstr "_Névjegy…"
+
+#~ msgid "Downloaded Documents"
+#~ msgstr "Letöltött dokumentumok"
+
+#~ msgid ""
+#~ "<span size='xx-small'> </span>\n"
+#~ "<small>%1</small>\n"
+#~ "<b>%2</b>\n"
+#~ "%3\n"
+#~ "<i>%4</i>"
+#~ msgstr ""
+#~ "<span size=\"xx-small\"> </span>\n"
+#~ "<small>%1</small>\n"
+#~ "<b>%2</b>\n"
+#~ "%3\n"
+#~ "<i>%4</i>"
+
+#~ msgid "Parsing Library XML"
+#~ msgstr "Könyvtár XML beolvasása"
+
+#~ msgid "Document location ambiguity"
+#~ msgstr "A dokumentum elérhetősége nem egyértelmű"
+
+#~ msgid ""
+#~ "The file '%1' exists in two locations:\n"
+#~ "\tOriginal: <b>%2</b>\n"
+#~ "\tNew: <b>%3</b>\n"
+#~ "\n"
+#~ "Do you want to keep the original location, or update it to the new one?"
+#~ msgstr ""
+#~ "A '%1' file több helyen is elérhető\n"
+#~ "\tEredeti: <b>%2</b>\n"
+#~ "\tÚj: <b>%3</b>"
+
+#~ msgid "Apply choice to all ambiguous locations"
+#~ msgstr "Választás alkalmazása minden többértelmű helyre"
+
+#~ msgid "Keep _Original"
+#~ msgstr "Eredeti _megtartása"
+
+#~ msgid "Use _New"
+#~ msgstr "_Új használata"
+
+#~ msgid "_Copy LaTeX citation"
+#~ msgstr "LaTeX hivatkozás másolása"
+
+#~ msgid "Downloading %1"
+#~ msgstr "Letöltés: %1"
+
+#~ msgid "Opening URI '%1' on server"
+#~ msgstr "'%1' URI megnyitása a szerveren"
+
+#~ msgid "Reading URI '%1' on server"
+#~ msgstr "'%1' URI beolvasása a szerverről"
+
+#~ msgid "Closing URI '%1' on server"
+#~ msgstr "'%1' URI lezárása a szerveren"

@@ -1,16 +1,16 @@
-# Dutch translation for referencer
-# Copyright (c) 2007 Rosetta Contributors and Canonical Ltd 2007
+# Czech translation for referencer
+# Copyright (c) 2011 Rosetta Contributors and Canonical Ltd 2011
 # This file is distributed under the same license as the referencer package.
-# FIRST AUTHOR <EMAIL@ADDRESS>, 2007.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2011.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: referencer\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
 "POT-Creation-Date: 2014-01-13 11:56+0100\n"
-"PO-Revision-Date: 2014-01-14 00:47+0000\n"
-"Last-Translator: Mads Chr. Olesen <mads@mchro.dk>\n"
-"Language-Team: Dutch <nl@li.org>\n"
+"PO-Revision-Date: 2011-03-09 14:25+0000\n"
+"Last-Translator: Konki <pavel.konkol@seznam.cz>\n"
+"Language-Team: Czech <cs@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -23,7 +23,7 @@ msgstr ""
 
 #: ../plugins/ads.py:44 ../plugins/pubmed.py:215
 msgid "Resolving DOI"
-msgstr "DOI aan het opzoeken"
+msgstr "Řešení DOI"
 
 #: ../plugins/ads.py:44
 #, python-format
@@ -91,15 +91,15 @@ msgstr ""
 
 #: ../plugins/lyx.py:11 ../plugins/lyx.py:41
 msgid "Cite in LyX"
-msgstr "Citeer in LyX"
+msgstr "Uvést v LyX"
 
 #: ../plugins/lyx.py:42
 msgid "Cite the selected documents in LyX"
-msgstr "Citeer de geselecteerde documenten in LyX"
+msgstr "Uvést vybraný dokument v LyX"
 
 #: ../plugins/pubmed.py:16
 msgid "PubMed DOI resolver"
-msgstr "PubMed DOI opzoeker"
+msgstr "PubMed DOI řešitel"
 
 #: ../plugins/pubmed.py:131
 msgid "Searching pubmed"
@@ -122,78 +122,79 @@ msgstr ""
 #: ../plugins/pubmed.py:215
 #, python-format
 msgid "Finding PubMed ID from DOI %s"
-msgstr "PubMed ID opzoeken via DOI %s"
+msgstr "Nalezení PubMed ID z DOI %s"
 
 #: ../plugins/pubmed.py:243
 msgid "Resolving PubMed ID"
-msgstr "PubMed ID aan het opzoeken"
+msgstr "Řešení PubMed ID"
 
 #: ../plugins/pubmed.py:243
 #, python-format
 msgid "Fetching metadata from NCBI for PubMed ID %s"
-msgstr "Metadata aan het binnenhalen uit NCBI voor PubMed ID %s"
+msgstr "Získávají se metadata z NCBI pro PubMed ID %s"
 
 #: ../src/ArxivPlugin.C:55
 msgid "Retrieving metadata"
-msgstr "Metadata aan het binnenhalen"
+msgstr "Načítají se metadata"
 
 #: ../src/ArxivPlugin.C:57
 msgid "Contacting citebase.org to retrieve metadata for '%1'"
-msgstr "Met citebase.org verbinden om metadata voor '%1' binnen te halen"
+msgstr "Kontaktuje se citebase.org k načtení metadat pro '%1'"
 
 #: ../src/ArxivPlugin.C:65 ../src/CrossRefPlugin.C:251
 msgid "Downloading Metadata"
-msgstr "Metadata ophalen"
+msgstr "Stahují se Metadata"
 
 #: ../src/ArxivPlugin.C:69 ../src/CrossRefPlugin.C:223
 #: ../src/PluginManager.C:45
 msgid "Downloading metadata"
-msgstr "Metadata ophalen"
+msgstr "Stahují se metadata"
 
 #: ../src/ArxivPlugin.C:107 ../src/Document.C:912
 msgid "Parsing BibTeX"
-msgstr "BibTex verwerken"
+msgstr "Zpracovává se BibTeX"
 
 #: ../src/ArxivPlugin.C:123
 msgid "Arxiv.org ArXiv-ID resolver"
-msgstr "Arxiv.org ArXiv-ID verwerker"
+msgstr "Arxiv.org ArXiv-ID řešitel"
 
 #: ../src/CrossRefPlugin.C:187
 msgid "CrossRef credentials not found"
-msgstr "CrossRef aanmeldgegevens niet aanwezig"
+msgstr "CrossRef pověření nebylo nalezeno"
 
 #: ../src/CrossRefPlugin.C:188
 msgid ""
 "To use the CrossRef service, a free account is needed.  Login information "
 "may be set in Preferences, or the CrossRef plugin may be disabled."
 msgstr ""
-"Om van CrossRef gebruik te maken is een gratis account nodig. U kunt de "
-"login-informatie in Voorkeuren opgeven, of de CrossRef plug-in uitschakelen."
+"Pro používání služby CrossRef je vyžadován účet zdarma. Přihlašovací "
+"informace mohou být nastaveny v Nastavení, nebo může být zásuvný modul "
+"CrossRef vypnutý."
 
 #: ../src/CrossRefPlugin.C:197
 msgid "_Preferences"
-msgstr "_Voorkeuren"
+msgstr "_Nastavení"
 
 #: ../src/CrossRefPlugin.C:198
 msgid "_Disable CrossRef"
-msgstr "CrossRef _uitschakelen"
+msgstr "_Vypnout CrossRef"
 
 #: ../src/CrossRefPlugin.C:225
 msgid "Contacting crossref.org to retrieve metadata for '%1'"
-msgstr "Met crossref.org verbinden om metadata voor '%1' op te halen"
+msgstr "Kontaktuje se crossref.org k načtení metadat pro '%1'"
 
 #: ../src/CrossRefPlugin.C:287
 msgid "Crossref.org OpenURL DOI resolver"
-msgstr "Crossref.org OpenURL DOI verwerker"
+msgstr "Crossref.org OpenURL DOI řešitel"
 
 #: ../src/Document.C:32
 msgid "Unnamed"
-msgstr "Naamloos"
+msgstr "Bezejmenný"
 
 #: ../src/Document.C:89
 msgid ""
 "The chosen key conflicts with an existing one.  Replace '%1' with '%2'?"
-msgstr "De gekozen sleutel bestaat al.  '%1' door '%2' vervangen?"
+msgstr "Zvolené klíčové konflikty s jedním exitujícím. Nahradit '%1' s '%2'?"
 
 #: ../src/Document.C:98
 msgid "The chosen key contained invalid characters.  Replace '%1' with '%2'?"
@@ -201,43 +202,43 @@ msgstr ""
 
 #: ../src/Document.C:109
 msgid "Key naming conflict"
-msgstr "Overlappende sleutelwaarde"
+msgstr "Klíčové pojmenování konfliktu"
 
 #: ../src/Document.C:117
 msgid "_Ignore"
-msgstr "_Negeer"
+msgstr "_Ignorovat"
 
 #: ../src/Document.C:121
 msgid "_Replace"
-msgstr "Ve_rvangen"
+msgstr "_Nahradit"
 
 #: ../src/Document.C:740
 msgid "Moving '%1' to '%2'"
-msgstr "'%1' naar '%2' verpaatsen"
+msgstr "Přesouvá se '%1' do '%2'"
 
 #: ../src/DocumentList.C:211
 msgid "Opening file '%1'"
-msgstr "Bestand '%1' openen"
+msgstr "Otvírá se soubor '%1'"
 
 #: ../src/DocumentList.C:230
 msgid "Reading file '%1'"
-msgstr "Bestand '%1' lezen"
+msgstr "Čte se soubor '%1'"
 
 #: ../src/DocumentList.C:251
 msgid "converting file %1 to utf8 from (guessed) latin1"
-msgstr "Bestand %1 vanut latin1 (gegokt) naar utf8 omzetten"
+msgstr "konvertuje se soubor %1 do utf8 z (odhadnuto) latin1"
 
 #: ../src/DocumentList.C:285
 msgid "Parsing import"
-msgstr "Importatie verwerken"
+msgstr "Zpracovává se import"
 
 #: ../src/DocumentList.C:298
 msgid "Extracting document %1 from bibutils structure"
-msgstr "Document %1 uit de bibutils-structuur aanmaken"
+msgstr "Extrahuje se dokument %1 z bibutils struktury"
 
 #: ../src/DocumentProperties.C:89 ../src/RefWindow.C:1110
 msgid "Name"
-msgstr "Naam"
+msgstr "Název"
 
 #: ../src/DocumentProperties.C:90
 msgid "Value"
@@ -245,7 +246,7 @@ msgstr ""
 
 #: ../src/DocumentProperties.C:236
 msgid "_Type:"
-msgstr "_Type:"
+msgstr "_Typ:"
 
 #: ../src/DocumentProperties.C:399
 msgid "This key already exists.\n"
@@ -253,99 +254,99 @@ msgstr ""
 
 #: ../src/DocumentProperties.C:509 ../src/RefWindow.C:2837
 msgid "No references found on clipboard.\n"
-msgstr "Geen verwijzing op het klembord gevonden.\n"
+msgstr "Nebyly nalezeny odkazy ve schránce.\n"
 
 #: ../src/DocumentProperties.C:513
 msgid "Multiple references found on clipboard.\n"
-msgstr "Meerdere verwijzingen op het klembord gevonden.\n"
+msgstr "Ve schránce bylo nalezeno více odkazů.\n"
 
 #: ../src/DocumentTypes.C:31 ../src/DocumentView.C:1602
 msgid "Title"
-msgstr "Titel"
+msgstr "Název"
 
 #: ../src/DocumentTypes.C:32
 msgid "Authors"
-msgstr "Auteurs"
+msgstr "Autoři"
 
 #: ../src/DocumentTypes.C:33
 msgid "Journal"
-msgstr "Tijdschrift"
+msgstr "Deník"
 
 #: ../src/DocumentTypes.C:34 ../src/DocumentView.C:1604
 msgid "Year"
-msgstr "Jaar"
+msgstr "Rok"
 
 #: ../src/DocumentTypes.C:36
 msgid "Volume"
-msgstr "Jaargang"
+msgstr "Objem"
 
 #: ../src/DocumentTypes.C:37
 msgid "Issue"
-msgstr "Uitgave"
+msgstr "Vydání"
 
 #: ../src/DocumentTypes.C:38
 msgid "Pages"
-msgstr "Pagina's"
+msgstr "Stránek"
 
 #: ../src/DocumentTypes.C:39
 msgid "Month"
-msgstr "Maand"
+msgstr "Měsíc"
 
 #: ../src/DocumentTypes.C:40
 msgid "Note"
-msgstr "Aantekening"
+msgstr "Poznámka"
 
 #: ../src/DocumentTypes.C:41 ../src/DocumentView.C:1601
 msgid "Key"
-msgstr "Sleutel"
+msgstr "Klíč"
 
 #: ../src/DocumentTypes.C:43
 msgid "Editor"
-msgstr "Redacteur"
+msgstr "Editor"
 
 #: ../src/DocumentTypes.C:44
 msgid "Publisher"
-msgstr "Uitgever"
+msgstr "Vydavatel"
 
 #: ../src/DocumentTypes.C:45
 msgid "Series"
-msgstr "Serie"
+msgstr "Série"
 
 #: ../src/DocumentTypes.C:46
 msgid "Address"
-msgstr "Adres"
+msgstr "Adresa"
 
 #: ../src/DocumentTypes.C:47
 msgid "Edition"
-msgstr "Uitgave"
+msgstr "Edice"
 
 #: ../src/DocumentTypes.C:49
 msgid "Book title"
-msgstr "Boektitel"
+msgstr "Název knihy"
 
 #: ../src/DocumentTypes.C:50
 msgid "Organisation"
-msgstr "Organisatie"
+msgstr "Organizace"
 
 #: ../src/DocumentTypes.C:52
 msgid "How published"
-msgstr "Soort publicatie"
+msgstr "Jak byl zveřejněn"
 
 #: ../src/DocumentTypes.C:54
 msgid "School"
-msgstr "School"
+msgstr "Škola"
 
 #: ../src/DocumentTypes.C:55
 msgid "Institution"
-msgstr "Instelling"
+msgstr "Instituce"
 
 #: ../src/DocumentTypes.C:56
 msgid "Chapter"
-msgstr "Hoofdstuk"
+msgstr "Kapitola"
 
 #: ../src/DocumentTypes.C:57
 msgid "Type"
-msgstr "Type"
+msgstr "Typ"
 
 #: ../src/DocumentTypes.C:58
 msgid "DOI"
@@ -353,59 +354,59 @@ msgstr "DOI"
 
 #: ../src/DocumentTypes.C:61
 msgid "Article"
-msgstr "Artikel"
+msgstr "Článek"
 
 #: ../src/DocumentTypes.C:77
 msgid "Book"
-msgstr "Boek"
+msgstr "Kniha"
 
 #: ../src/DocumentTypes.C:95
 msgid "In Proceedings"
-msgstr "In conferentierapport"
+msgstr "V jednání"
 
 #: ../src/DocumentTypes.C:114
 msgid "Misc"
-msgstr "Overig"
+msgstr "Různé"
 
 #: ../src/DocumentTypes.C:124
 msgid "Unpublished"
-msgstr "Ongepubliceerd"
+msgstr "Neuveřejněno"
 
 #: ../src/DocumentTypes.C:133
 msgid "Master's thesis"
-msgstr "Master thesis"
+msgstr "Hlavní teze"
 
 #: ../src/DocumentTypes.C:144
 msgid "PhD thesis"
-msgstr "PhD thesis"
+msgstr "PhD teze"
 
 #: ../src/DocumentTypes.C:155
 msgid "Proceedings"
-msgstr "Conferentierapport"
+msgstr "Jednání"
 
 #: ../src/DocumentTypes.C:167
 msgid "Conference"
-msgstr "Conferentie"
+msgstr "Konference"
 
 #: ../src/DocumentTypes.C:178
 msgid "In Book"
-msgstr "In Boek"
+msgstr "V knize"
 
 #: ../src/DocumentTypes.C:195
 msgid "Booklet"
-msgstr "Booklet"
+msgstr "Kniha"
 
 #: ../src/DocumentTypes.C:206
 msgid "In Collection"
-msgstr "In verzameling"
+msgstr "Ve sbírce"
 
 #: ../src/DocumentTypes.C:221
 msgid "Manual"
-msgstr "Handleiding"
+msgstr "Ručně"
 
 #: ../src/DocumentTypes.C:233
 msgid "Technical Report"
-msgstr "Technisch rapport"
+msgstr "Technické hlášení"
 
 #: ../src/DocumentView.C:323
 msgid "Edit tags"
@@ -417,7 +418,7 @@ msgstr ""
 
 #: ../src/DocumentView.C:725
 msgid "Getting info for file '%1'"
-msgstr "Informatie voor bestand '%1' ophalen"
+msgstr "Získávají se informace pro soubor '%1'"
 
 #. Translators: this is the format for the document captions
 #: ../src/DocumentView.C:1135
@@ -434,11 +435,11 @@ msgstr ""
 #. * as just "%1"
 #: ../src/DocumentView.C:1518
 msgid "By %1"
-msgstr "Met %1"
+msgstr "Od %1"
 
 #: ../src/DocumentView.C:1603
 msgid "Author"
-msgstr "Auteur"
+msgstr "Autor"
 
 #: ../src/Library.C:185
 msgid "Stumbled upon a tag without a name or an id."
@@ -450,7 +451,7 @@ msgstr ""
 
 #: ../src/Library.C:375
 msgid "Opening %1"
-msgstr "Open %1"
+msgstr "Otevírání %1"
 
 #: ../src/Library.C:447
 msgid "Could not create an XML writer."
@@ -458,19 +459,19 @@ msgstr ""
 
 #: ../src/Linker.C:79
 msgid "DOI Link"
-msgstr "DOI-link"
+msgstr "DOI odkaz"
 
 #: ../src/Linker.C:100
 msgid "arXiv Link"
-msgstr "arXiv-link"
+msgstr "arXiv odkaz"
 
 #: ../src/Linker.C:119
 msgid "URL Link"
-msgstr "URL-link"
+msgstr "URL odkaz"
 
 #: ../src/Linker.C:138
 msgid "PubMed Link"
-msgstr "PubMed-link"
+msgstr "PubMed odkaz"
 
 #: ../src/Linker.C:181
 msgid "Google Scholar"
@@ -478,24 +479,24 @@ msgstr "Google Scholar"
 
 #: ../src/main.C:97
 msgid "Terminating due to unhandled exception"
-msgstr "Afgebroken door onverwerkte fout"
+msgstr "Ukončování kvůli neošetřené vyjímce"
 
 #: ../src/Preferences.C:184
 msgid "Enabled"
-msgstr "Ingeschakeld"
+msgstr "Povoleno"
 
 #: ../src/Preferences.C:188 ../src/PythonPlugin.C:364
 #: ../src/PythonPlugin.C:404
 msgid "Module"
-msgstr "Module"
+msgstr "Modul"
 
 #: ../src/Preferences.C:190
 msgid "Description"
-msgstr "Omschrijving"
+msgstr "Popis"
 
 #: ../src/Preferences.C:534
 msgid "Plugin error"
-msgstr "Plug-in fout"
+msgstr "Chyba modulu"
 
 #: ../src/PythonPlugin.C:361
 msgid ""
@@ -511,11 +512,11 @@ msgstr ""
 
 #: ../src/PythonPlugin.C:362 ../src/PythonPlugin.C:402 ../src/Utility.C:261
 msgid "Exception"
-msgstr "Fout"
+msgstr "Výjimka"
 
 #: ../src/PythonPlugin.C:366 ../src/PythonPlugin.C:406
 msgid "Explanation"
-msgstr "Uitleg"
+msgstr "Vysvětlivka"
 
 #: ../src/PythonPlugin.C:401
 msgid ""
@@ -531,11 +532,11 @@ msgstr ""
 
 #: ../src/RefWindow.C:262
 msgid "Tags"
-msgstr "Labels"
+msgstr "Popisky"
 
 #: ../src/RefWindow.C:372
 msgid "_Library"
-msgstr "Bib_liotheek"
+msgstr "_Knihovna"
 
 #: ../src/RefWindow.C:374
 msgid "_New..."
@@ -547,11 +548,11 @@ msgstr ""
 
 #: ../src/RefWindow.C:377
 msgid "_Open..."
-msgstr "_Openen…"
+msgstr "_Otevřít…"
 
 #: ../src/RefWindow.C:377 ../src/RefWindow.C:1659
 msgid "Open Library"
-msgstr "Open bibliotheek"
+msgstr "Otevřít knihovnu"
 
 #: ../src/RefWindow.C:380
 msgid "_Save..."
@@ -563,15 +564,15 @@ msgstr ""
 
 #: ../src/RefWindow.C:383
 msgid "Save _As..."
-msgstr "Opslaan _als..."
+msgstr "Uložit _jako…"
 
 #: ../src/RefWindow.C:386
 msgid "E_xport as BibTeX..."
-msgstr "Als BibTeX e_xporteren"
+msgstr "_Exportovat jako BibTeX..."
 
 #: ../src/RefWindow.C:389
 msgid "_Manage BibTeX File..."
-msgstr "BibTeX-bestand beheren"
+msgstr "_Spravovat BibTeX soubor..."
 
 #: ../src/RefWindow.C:392
 msgid "_Properties..."
@@ -579,19 +580,19 @@ msgstr ""
 
 #: ../src/RefWindow.C:395
 msgid "_Import..."
-msgstr "_Importeren..."
+msgstr "_Importovat…"
 
 #: ../src/RefWindow.C:398
 msgid "_Work Offline"
-msgstr "Offline _werken"
+msgstr "_Pracovat offline"
 
 #: ../src/RefWindow.C:402
 msgid "_Edit"
-msgstr "B_ewerken"
+msgstr "_Upravit"
 
 #: ../src/RefWindow.C:404
 msgid "_View"
-msgstr "Weerge_ven"
+msgstr "_Zobrazit"
 
 #. Translation note: this begins the sentence completed by
 #. * the "By %1" string, which is the child menu
@@ -600,15 +601,15 @@ msgstr "Weerge_ven"
 #. * as just "%1"
 #: ../src/RefWindow.C:410
 msgid "Arran_ge Items"
-msgstr "Items sor_teren"
+msgstr "_Uspořádat položky"
 
 #: ../src/RefWindow.C:412
 msgid "_Paste BibTeX"
-msgstr "_Plak BibTeX"
+msgstr "_Vložit BibTeX"
 
 #: ../src/RefWindow.C:413
 msgid "Import references from BibTeX on the clipboard"
-msgstr "Referenties van BibTeX op het klembord importeren"
+msgstr "Importovat odkazy z BibTeX do schránky"
 
 #: ../src/RefWindow.C:416
 msgid "_Copy LaTeX Citation"
@@ -616,68 +617,67 @@ msgstr ""
 
 #: ../src/RefWindow.C:417
 msgid "Copy currently selected keys to the clipboard as a LaTeX citation"
-msgstr ""
-"Kopieer de nu geselecteerde sleutels naar het klembord als LaTeX citatie"
+msgstr "Zkopírovat aktuálně vybrané klíče do schránky jako LaTeX citace"
 
 #: ../src/RefWindow.C:425
 msgid "Use _List View"
-msgstr "Gebruik _Lijst-weergave"
+msgstr "Použít Náhled _seznamu"
 
 #: ../src/RefWindow.C:427
 msgid "Use _Icon View"
-msgstr "Gebruik _Icoon-weergave"
+msgstr "Použít Náhled _ikon"
 
 #: ../src/RefWindow.C:429
 msgid "_Show Tag Pane"
-msgstr "Laat label-paneel zien"
+msgstr "_Zobrazit panel s popisky"
 
 #: ../src/RefWindow.C:431
 msgid "Show _Notes Pane"
-msgstr "Laat  _notitie-paneel zien"
+msgstr "Zobrazit _poznámkový panel"
 
 #: ../src/RefWindow.C:433 ../src/RefWindow.C:471
 msgid "_Tags"
-msgstr "_Labels"
+msgstr "_Popisky"
 
 #: ../src/RefWindow.C:435
 msgid "_Create Tag..."
-msgstr "Tag aanmaken..."
+msgstr "_Vytvořit popisek..."
 
 #: ../src/RefWindow.C:438
 msgid "_Attach New Tag..."
-msgstr "Nieuwe tag pla_atsen"
+msgstr "_Přiložit nový popisek..."
 
 #: ../src/RefWindow.C:441
 msgid "_Delete Tag"
-msgstr "_Verwijder label"
+msgstr "_Smazat popisek"
 
 #: ../src/RefWindow.C:444
 msgid "_Rename Tag"
-msgstr "_Hernoem label"
+msgstr "_Přejmenovat popisek"
 
 #: ../src/RefWindow.C:447
 msgid "_Documents"
-msgstr "_Documenten"
+msgstr "_Dokumenty"
 
 #: ../src/RefWindow.C:449
 msgid "_Add File..."
-msgstr "_Bestand toevoegen…"
+msgstr "_Přidat soubor..."
 
 #: ../src/RefWindow.C:452
 msgid "Add _Folder..."
-msgstr "_Map toevoegen.."
+msgstr "Přidat _soubor..."
 
 #: ../src/RefWindow.C:455
 msgid "Add E_mpty Reference..."
-msgstr "Lege referentie invoegen"
+msgstr "Přidat _prázdný odkaz..."
 
 #: ../src/RefWindow.C:458
 msgid "Add Refere_nce with ID..."
-msgstr "Citatie met ID toevoege_n..."
+msgstr "Přidat od_kaz s ID..."
 
 #: ../src/RefWindow.C:461
 msgid "_Remove"
-msgstr "_Verwijderen"
+msgstr "_Odstranit"
 
 #: ../src/RefWindow.C:465
 msgid "_Open"
@@ -685,27 +685,27 @@ msgstr ""
 
 #: ../src/RefWindow.C:475
 msgid "_Get Metadata"
-msgstr "Metadata verkrij_gen"
+msgstr "_Získat metadata"
 
 #: ../src/RefWindow.C:478
 msgid "_Delete File from Drive"
-msgstr "Bestand van station _verwijderen"
+msgstr "_Smazat soubor z disku"
 
 #: ../src/RefWindow.C:482
 msgid "R_ename File from Key"
-msgstr "Bestand naar sleutel _hernoemen"
+msgstr "Pře_jmenovat soubor z klíče"
 
 #: ../src/RefWindow.C:485
 msgid "_Tools"
-msgstr "E_xtra"
+msgstr "_Nástroje"
 
 #: ../src/RefWindow.C:487
 msgid "Export Notes as HTML"
-msgstr "Notities als HTML exporteren"
+msgstr "Exportovat poznámky do HTML"
 
 #: ../src/RefWindow.C:490
 msgid "_Help"
-msgstr "_Help"
+msgstr "_Pomoc"
 
 #: ../src/RefWindow.C:492
 msgid "Contents"
@@ -717,53 +717,52 @@ msgstr ""
 
 #: ../src/RefWindow.C:673
 msgid "All"
-msgstr "Alle"
+msgstr "Vše"
 
 #: ../src/RefWindow.C:678
 msgid "Untagged"
-msgstr "Zonder label"
+msgstr "Nepopsané"
 
 #: ../src/RefWindow.C:944
 msgid "%1 documents (%2 selected)"
-msgstr "%1 documenten (%2 geselecteerd)"
+msgstr "%1 dokumenty (%2 vybrané)"
 
 #: ../src/RefWindow.C:948
 msgid "%1 documents"
-msgstr "%1 documenten"
+msgstr "%1 dokumenty"
 
 #: ../src/RefWindow.C:985
 msgid "_Notes: <i>%1</i>"
-msgstr "_Notities: <i>%1</i>"
+msgstr "_Poznámky: <i>%1</i>"
 
 #: ../src/RefWindow.C:988
 msgid "Multiple documents selected"
-msgstr "Meerdere documenten geselecteerd"
+msgstr "Bylo vybráno více dokumentů"
 
 #: ../src/RefWindow.C:990
 msgid "Select a document to view and edit notes"
-msgstr "Selecteer een document om notities te bekijken of bewerken"
+msgstr "Zvolte dokument pro náhled a úpravu poznámek"
 
 #: ../src/RefWindow.C:1052
 msgid "Save changes to library before closing?"
-msgstr "Wijzigingen in de bibliotheek opslaan alvorens af te sluiten?"
+msgstr "Uložit změny do knihovny před zavřením?"
 
 #: ../src/RefWindow.C:1058
 msgid "Close _without Saving"
-msgstr "Sluiten _zonder opslaan"
+msgstr "Zavřít _bez uložení"
 
 #: ../src/RefWindow.C:1094
 msgid "Type a tag"
-msgstr "Typ een label"
+msgstr "Zapsat popisek"
 
 #: ../src/RefWindow.C:1098
 msgid "Create tag"
-msgstr "Creëer een label"
+msgstr "Vytvořit popisek"
 
 #: ../src/RefWindow.C:1099
 msgid "Short memorable tag names help you organise your documents"
 msgstr ""
-"Met korte label-namen die u makkelijk kunt onthouden kunt u uw documenten "
-"organiseren"
+"Krátké, zapamatovatelné názvy popisků Vám pomůžou organizovat Vaše dokumenty"
 
 #: ../src/RefWindow.C:1127
 msgid "Empty tag names are not valid"
@@ -775,58 +774,58 @@ msgstr ""
 
 #: ../src/RefWindow.C:1197
 msgid "Are you sure you want to delete \"%1\"?"
-msgstr "Weet u zeker dat u \"%1\" wilt verwijderen?"
+msgstr "Opravdu chcete smazat \"%1\"?"
 
 #: ../src/RefWindow.C:1204
 msgid ""
 "When a tag is deleted it is also permanently removed from all documents it "
 "is currently associated with."
 msgstr ""
-"Wanneer een label wordt verwijderd verdwijnt het ook van alle documenten die "
-"momenteel dat label hebben."
+"Když je popisek smazán, je rovněž trvale odstraněn ze všech dokumentů, se "
+"kterými je aktuálně spojen."
 
 #: ../src/RefWindow.C:1257
 msgid "Export BibTeX"
-msgstr "BibTeX exporteren"
+msgstr "Exportovat BibTeX"
 
 #: ../src/RefWindow.C:1266 ../src/RefWindow.C:1505 ../src/RefWindow.C:2728
 msgid "BibTeX Files"
-msgstr "BibTeX-bestanden"
+msgstr "BibTeX soubory"
 
 #: ../src/RefWindow.C:1271 ../src/RefWindow.C:1352 ../src/RefWindow.C:1510
 #: ../src/RefWindow.C:1679 ../src/RefWindow.C:1748 ../src/RefWindow.C:2715
 msgid "All Files"
-msgstr "Alle bestanden"
+msgstr "Všechny soubory"
 
 #: ../src/RefWindow.C:1282 ../src/RefWindow.C:1363
 msgid "Selection:"
-msgstr "Selectie:"
+msgstr "Výběr:"
 
 #: ../src/RefWindow.C:1285 ../src/RefWindow.C:1366
 msgid "All Documents"
-msgstr "Alle documenten"
+msgstr "Všechny dokumenty"
 
 #: ../src/RefWindow.C:1286 ../src/RefWindow.C:1368
 msgid "Selected Documents"
-msgstr "Geselecteerde documenten"
+msgstr "Vybrané dokumenty"
 
 #. Any options here should be replicated in onManageBibtex
 #. Any options here should be replicated in onExportBibtex
 #: ../src/RefWindow.C:1292 ../src/RefWindow.C:1600
 msgid "Protect capitalization (surround values with {})"
-msgstr "Bescherm hoofdlettergebruik (waardes met { } omsluiten)"
+msgstr "Ochránit velká písmena (prostorové hodnoty s {})"
 
 #: ../src/RefWindow.C:1294 ../src/RefWindow.C:1603
 msgid "Use Unicode (UTF-8) encoding"
-msgstr "Gebruik Unicode (UTF-8) codering"
+msgstr "Použít Unicode (UTF-8) kódování"
 
 #: ../src/RefWindow.C:1338
 msgid "Export Notes"
-msgstr "Exporteer notities"
+msgstr "Exportovat poznámky"
 
 #: ../src/RefWindow.C:1347
 msgid "HTML Files"
-msgstr "HTML-bestanden"
+msgstr "HTML soubory"
 
 #: ../src/RefWindow.C:1367
 msgid "Currently Shown Documents"
@@ -834,232 +833,226 @@ msgstr ""
 
 #: ../src/RefWindow.C:1444 ../src/RefWindow.C:2665
 msgid "Unnamed Library"
-msgstr "Naamloze bibliotheek"
+msgstr "Nepojmenovaná knihovna"
 
 #: ../src/RefWindow.C:1498
 msgid "Browse"
-msgstr "Bladeren"
+msgstr "Procházet"
 
 #: ../src/RefWindow.C:1538 ../src/RefWindow.C:1553
 msgid "Manage BibTeX File"
-msgstr "BibTeX-bestand beheren"
+msgstr "Spravovat BibTeX soubor"
 
 #: ../src/RefWindow.C:1554
 msgid ""
 "If you choose a file here, it will be overwritten whenever this library is "
 "saved."
 msgstr ""
-"Als u hier een bestand kiest zal het overschreven worden wanneer deze "
-"bibliotheek wordt opgeslagen."
+"Pokud vyberete soubor zde, bude přepsán kdykoliv, když bude uložena knihovna."
 
 #: ../src/RefWindow.C:1561
 msgid "BibTeX file:"
-msgstr "BibTeX-bestand:"
+msgstr "BibTeX soubor:"
 
 #: ../src/RefWindow.C:1584
 msgid "_Browse..."
-msgstr "_Bladeren..."
+msgstr "_Procházet…"
 
 #: ../src/RefWindow.C:1674 ../src/RefWindow.C:1743
 msgid "Referencer Libraries"
-msgstr "Referencer bibliotheken"
+msgstr "Referencer knihovny"
 
 #: ../src/RefWindow.C:1734
 msgid "Save Library As"
-msgstr "Bibliotheek opslaan als"
+msgstr "Uložit knihovnu jako"
 
 #. Translators: your name here!
 #: ../src/RefWindow.C:1795
 msgid "translator-credits"
 msgstr ""
 "Launchpad Contributions:\n"
-"  Eric Spierings https://launchpad.net/~ericspierings\n"
-"  Harm Hilvers https://launchpad.net/~harmhilvers\n"
-"  Mads Chr. Olesen https://launchpad.net/~shiyee\n"
-"  Redmar https://launchpad.net/~redmar\n"
-"  roderikk https://launchpad.net/~roderikk"
+"  Konki https://launchpad.net/~pavel-konkol"
 
 #: ../src/RefWindow.C:1814
 msgid "Showing '%1'"
-msgstr "'%1' weergeven"
+msgstr "Zobrazuje se '%1'"
 
 #: ../src/RefWindow.C:1823
 msgid "Cancelling"
-msgstr "Annuleren"
+msgstr "Ruší se"
 
 #. Show a dialog containing a treeview of checkboxes for
 #. * tags, and a button for creating tags
 #: ../src/RefWindow.C:1868
 msgid "Tag Added Files"
-msgstr "Toegevoegde bestanden van een label voorzien"
+msgstr "Soubory s popisky"
 
 #. "Create tag" button
 #: ../src/RefWindow.C:1908
 msgid "C_reate Tag..."
-msgstr "Label c_reëren"
+msgstr "Vy_tvořit popisek..."
 
 #: ../src/RefWindow.C:1971
 msgid "Add Document Files"
-msgstr "Voeg bestanden toe"
+msgstr "Přidat soubory dokumentu"
 
 #: ../src/RefWindow.C:1978
 msgid "Adding document files"
-msgstr "Bestanden toevoegen"
+msgstr "Přidávají se soubory dokumentu"
 
 #: ../src/RefWindow.C:1979
 msgid ""
 "This process may take some time as the bibliographic information for each "
 "document is looked up."
 msgstr ""
-"Dit kan enige tijd duren omdat de bibliografische informatie voor elk "
-"document moet worden opgezocht."
+"Tento proces může chvíli trvat než se vyhledají bibliografické informace o "
+"každém dokumentu."
 
 #: ../src/RefWindow.C:2004
 msgid "Document"
-msgstr "Document"
+msgstr "Dokument"
 
 #: ../src/RefWindow.C:2005
 msgid "Got text"
-msgstr "Tekst verkregen"
+msgstr "Získal text"
 
 #: ../src/RefWindow.C:2006
 msgid "Got ID"
-msgstr "ID verkregen"
+msgstr "Získal ID"
 
 #: ../src/RefWindow.C:2007
 msgid "Got metadata"
-msgstr "Metadata verkregen"
+msgstr "Získal metadata"
 
 #: ../src/RefWindow.C:2008
 msgid "Outcome"
-msgstr "Resultaat"
+msgstr "Výsledek"
 
 #: ../src/RefWindow.C:2025
 msgid "_Attach tags..."
-msgstr "L_abel toevoegen..."
+msgstr "_Připojit popisky..."
 
 #: ../src/RefWindow.C:2053
 msgid "%1 of %2 documents"
-msgstr "%1 van %2 documenten"
+msgstr "%1 z %2 dokumentů"
 
 #: ../src/RefWindow.C:2136 ../src/RefWindow.C:2138
 msgid "Cancelled"
-msgstr "Geannuleerd"
+msgstr "Zrušeno"
 
 #: ../src/RefWindow.C:2142
 msgid "Finished"
-msgstr "Voltooid"
+msgstr "Dokončeno"
 
 #: ../src/RefWindow.C:2184
 msgid "Add Reference with ID"
-msgstr "Referentie met ID toevoegen"
+msgstr "Přidat odkaz s ID"
 
 #: ../src/RefWindow.C:2286
 msgid "Add Document"
-msgstr "Document toevoegen"
+msgstr "Přidat dokument"
 
 #: ../src/RefWindow.C:2307
 msgid "Add Folder"
-msgstr "Map toevoegen"
+msgstr "Přidat adresář"
 
 #: ../src/RefWindow.C:2347
 msgid "Are you sure you want to remove these %1 documents?"
-msgstr "Weet u zeker dat u deze %1 documenten wilt verwijderen?"
+msgstr "Opravdu chcete odstranit těchto %1 dokumentů?"
 
 #: ../src/RefWindow.C:2349
 msgid ""
 "All tag associations and metadata for these documents will be permanently "
 "lost."
 msgstr ""
-"Alle labels en metadata van deze documenten zullen definitief verloren gaan."
+"Všechny přidružené popisky a metadata pro tyto dokumenty budou navěky "
+"ztraceny."
 
 #: ../src/RefWindow.C:2352
 msgid "Are you sure you want to remove '%1'?"
-msgstr "Weet u zeker dat u '%1' wilt verwijderen?"
+msgstr "Opravdu chcete odstranit '%1'?"
 
 #: ../src/RefWindow.C:2354
 msgid ""
 "All tag associations and metadata for the document will be permanently lost."
 msgstr ""
-"Alle labels en metadata van dit document zullen definitief verloren gaan."
+"Všechna přidružení popisků a metadata pro dokument budou navěky ztraceny."
 
 #: ../src/RefWindow.C:2391
 msgid "Fetching metadata"
-msgstr "Metadata verkrijgen"
+msgstr "Získávají se metadata"
 
 #: ../src/RefWindow.C:2421
 msgid "Really rename this file to '%1'?"
-msgstr "Weet u zeker dat u dit bestand naar '%1' wilt hernoemen?"
+msgstr "Opravdu přejmenovat tento soubor na '%1'?"
 
 #: ../src/RefWindow.C:2424
 msgid "Really rename these %1 files to their keys?"
-msgstr ""
-"Weet u zeker dat u deze %1 bestanden naar hun sleutel wilt hernoemen?"
+msgstr "Opravdu přejmenovat těchto %1 souboů na jejich klíče?"
 
 #: ../src/RefWindow.C:2432
 msgid "This action <b>cannot be undone</b>."
-msgstr "Deze bewerking <b>kan niet ongedaan gemaakt worden</b>."
+msgstr "Tato akce <b>nelze vrátit zpět</b>."
 
 #: ../src/RefWindow.C:2435
 msgid "Rename from Key"
-msgstr "Naar sleutel hernoemen"
+msgstr "Přejmenovat z klíče"
 
 #: ../src/RefWindow.C:2466
 msgid "Are you sure you want to delete the files of these %1 documents?"
-msgstr ""
-"Weet u zeker dat u de bestanden van deze %1 documenten wilt verwijderen?"
+msgstr "Opravdu chcete smazat soubory těchto %1 dokumentů?"
 
 #: ../src/RefWindow.C:2468
 msgid ""
 "All tag associations and metadata for these documents will be permanently "
 "lost, and the files they refer to will be irretrievably deleted."
 msgstr ""
-"Alle labels en metadata van deze documenten zullen definitief verloren gaan "
-"en de bestanden waar ze naar verwijzen zullen verwijderd worden."
+"Všechny přidružené popisky a metadata pro tyto dokumenty budou navěky "
+"ztraceny, a soubory, na které odkazují budou nenávratně smazány."
 
 #: ../src/RefWindow.C:2474
 msgid "Are you sure you want to delete the file of '%1'?"
-msgstr "Weet u zeker dat u het bestand van '%1' wilt verwijderen?"
+msgstr "Opravdu chcete smazat soubor '%1'?"
 
 #: ../src/RefWindow.C:2476
 msgid ""
 "All tag associations and metadata for the document will be permanently lost, "
 "and the file it refers to will be irretrievably deleted."
 msgstr ""
-"Alle labels en metadata van dit document zullen definitief verloren gaan en "
-"het bestand waar het naar verwijst zal verwijderd worden."
+"Všechny přidružené popisky a metadata pro dokument budou navěky ztraceny, a "
+"soubor, na který odkazuje bude nenávratně smazán."
 
 #: ../src/RefWindow.C:2504
 msgid "Deleting '%1'"
-msgstr "'%1' verwijderen"
+msgstr "Maže se '%1'"
 
 #: ../src/RefWindow.C:2527
 msgid "Trying to open file '%1'"
-msgstr "Bestand '%1' aan het openen"
+msgstr "Zkouší se otevřít soubor '%1'"
 
 #: ../src/RefWindow.C:2629
 msgid "Working offline"
-msgstr "Offline werken"
+msgstr "Pracuje se offline"
 
 #: ../src/RefWindow.C:2630
 msgid "Working online"
-msgstr "Online werken"
+msgstr "Pracuje se online"
 
 #: ../src/RefWindow.C:2700
 msgid "Import References"
-msgstr "Importeer referenties"
+msgstr "Importovat odkazy"
 
 #: ../src/RefWindow.C:2723
 msgid "Bibliography Files"
-msgstr "Bibliografie bestanden"
+msgstr "Bibliografické soubory"
 
 #: ../src/RefWindow.C:2734
 msgid "Format:"
-msgstr "Opmaak"
+msgstr "Formát:"
 
 #: ../src/RefWindow.C:2831
 msgid "Imported %1 BibTeX references"
-msgstr "%1 BibTeX-referenties geïmporteerd"
+msgstr "Importované %1 BibTeX odkazy"
 
 #: ../src/RefWindow.C:3172
 msgid "Searching..."
@@ -1071,7 +1064,7 @@ msgstr ""
 
 #: ../src/Transfer.C:49
 msgid "Work offline?"
-msgstr "Offline werken?"
+msgstr "Pracovat offline?"
 
 #: ../src/Transfer.C:50
 msgid ""
@@ -1080,18 +1073,17 @@ msgid ""
 "operations will be attempted until you choose to work online again in the "
 "Preferences dialog."
 msgstr ""
-"Er was een probleem bij het verkrijgen van metadata, wilt u \n"
-"offline werken? Als u ervoor kiest offline te werken zullen geen netwerk-"
-"operaties ondernomen worden totdat u er in het Voorkeuren venster voor kiest "
-"weer online te werken."
+"Byl tam problém při načítání metadat, přejete si \n"
+"pracovat offline? Pokud zvolíte práci offline, nebudou žádné další pokusy o "
+"síťové operace, dokud znovu nevyberete práci online v dialogu Nastavení."
 
 #: ../src/Transfer.C:61
 msgid "_Stay Online"
-msgstr "Online _blijven"
+msgstr "_Zůstat online"
 
 #: ../src/Transfer.C:63
 msgid "_Go Offline"
-msgstr "Offline _gaan"
+msgstr "_Přechod na offline"
 
 #: ../src/Utility.C:260
 msgid ""
@@ -1105,7 +1097,7 @@ msgstr ""
 
 #: ../src/Utility.C:264
 msgid "The operation underway was: \"%1\""
-msgstr "De actieve operatie was: \"%1\""
+msgstr "Probíhající operace byla: \"%1\""
 
 #: ../src/Utility.C:2195
 msgid "A"
@@ -1118,36 +1110,3 @@ msgstr ""
 #: ../src/Utility.C:2197
 msgid "The"
 msgstr ""
-
-#~ msgid "Clear metadata"
-#~ msgstr "Verwijder metadata"
-
-#~ msgid "Fill out metadata from BibTeX on clipboard"
-#~ msgstr "Plaats metadata uit BibTeX in Clipbord"
-
-#~ msgid "_Look Up"
-#~ msgstr "_Opzoeken"
-
-#~ msgid "Host:"
-#~ msgstr "Serveradres:"
-
-#~ msgid "Network"
-#~ msgstr "Netwerk"
-
-#~ msgid "Plugins"
-#~ msgstr "Plugins"
-
-#~ msgid "Port:"
-#~ msgstr "Poort:"
-
-#~ msgid "Preferences"
-#~ msgstr "Voorkeuren"
-
-#~ msgid "Use authentication"
-#~ msgstr "Authenticatie gebruiken"
-
-#~ msgid "Use web proxy"
-#~ msgstr "Gebruik web proxy"
-
-#~ msgid "Username:"
-#~ msgstr "Gebruikersnaam:"

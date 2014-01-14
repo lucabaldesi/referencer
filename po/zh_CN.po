@@ -7,183 +7,87 @@ msgid ""
 msgstr ""
 "Project-Id-Version: referencer\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
-"POT-Creation-Date: 2008-09-18 16:29+0100\n"
-"PO-Revision-Date: 2008-09-19 15:54+0000\n"
-"Last-Translator: luojie-dune <Unknown>\n"
+"POT-Creation-Date: 2014-01-13 11:56+0100\n"
+"PO-Revision-Date: 2014-01-14 00:48+0000\n"
+"Last-Translator: Mads Chr. Olesen <mads@mchro.dk>\n"
 "Language-Team: Simplified Chinese <zh_CN@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2008-10-13 14:44+0000\n"
-"X-Generator: Launchpad (build Unknown)\n"
+"X-Launchpad-Export-Date: 2014-01-14 05:15+0000\n"
+"X-Generator: Launchpad (build 16890)\n"
 
-#~ msgid "This Document"
-#~ msgstr "本文档"
-
-#~ msgid "_Delete File from drive"
-#~ msgstr "从驱动器删除文件(_D)"
-
-#~ msgid ""
-#~ "<b>%1</b>\n"
-#~ "%2\n"
-#~ "<i>%3</i>"
-#~ msgstr ""
-#~ "<b>%1</b>\n"
-#~ "%2\n"
-#~ "<i>%3</i>"
-
-#: ../data/documentproperties.glade.h:1
-msgid "<b>Document</b>"
-msgstr "<b>文档</b>"
-
-#: ../data/documentproperties.glade.h:2
-msgid "<b>E_xtra Fields</b>"
-msgstr "<b>更多字段(_x)</b>"
-
-#: ../data/documentproperties.glade.h:3
-msgid "<b>Metadata</b>"
-msgstr "<b>元数据</b>"
-
-#: ../data/documentproperties.glade.h:4
-msgid "Add a field"
-msgstr "添加一个字段"
-
-#: ../data/documentproperties.glade.h:5
-msgid "Attempt to look up metadata for this document online"
-msgstr "尝试在线搜索本文档的元数据"
-
-#: ../data/documentproperties.glade.h:6
-msgid "Clear metadata"
-msgstr "清除元数据"
-
-#: ../data/documentproperties.glade.h:7
-msgid "Delete this field"
-msgstr "删除该字段"
-
-#: ../data/documentproperties.glade.h:8
-msgid "Document Properties"
-msgstr "文档属性"
-
-#: ../data/documentproperties.glade.h:9
-msgid "File:"
-msgstr "文件："
-
-#: ../data/documentproperties.glade.h:10
-msgid "Fill out metadata from BibTeX on clipboard"
-msgstr "按剪贴板中的 BibTeX 信息填写元数据"
-
-#: ../data/documentproperties.glade.h:11
-msgid "Rename this field"
-msgstr "重命名该字段"
-
-#: ../data/documentproperties.glade.h:12
-msgid "Select A File"
-msgstr "选择一个文件"
-
-#: ../data/documentproperties.glade.h:13
-msgid "_Key:"
-msgstr "键值(_K)："
-
-#: ../data/documentproperties.glade.h:14
-msgid "_Look Up"
-msgstr "在线查询(_L)"
-
-#: ../data/documentproperties.glade.h:15 ../src/RefWindow.C:404
-msgid "_Paste BibTeX"
-msgstr "粘贴 BibTeX 信息(_P)"
-
-#: ../data/preferences.glade.h:1
-msgid "<b>Proxy</b>"
-msgstr "<b>代理</b>"
-
-#: ../data/preferences.glade.h:2
-msgid ""
-"<i>Plugins nearer the top of the list are tried first when looking up "
-"metadata.</i>"
-msgstr "搜索元数据时优先使用列表顶部的插件"
-
-#: ../data/preferences.glade.h:3
-msgid ""
-"<i>These proxy settings apply desktop-wide\n"
-"to all Gnome applications.  Auto-configuration\n"
-" URLs are not supported.</i>"
+#: ../plugins/ads.py:13
+msgid "NASA Astrophysics Data System DOI resolver"
 msgstr ""
-"<i> 这些代理设置在桌面范围内应用于所有的 Gnome 应用程序。\n"
-"不支持自动配置 URL。</i>"
 
-#: ../data/preferences.glade.h:6
-msgid "C_onfigure..."
-msgstr "配置(_O)..."
-
-#: ../data/preferences.glade.h:7
-msgid "Host:"
-msgstr "主机："
-
-#: ../data/preferences.glade.h:8
-msgid "Move _down"
-msgstr "下移(_d)"
-
-#: ../data/preferences.glade.h:9
-msgid "Move _up"
-msgstr "上移(_u)"
-
-#: ../data/preferences.glade.h:10
-msgid "Network"
-msgstr "网络"
-
-#: ../data/preferences.glade.h:11
-msgid "Password:"
-msgstr "密码："
-
-#: ../data/preferences.glade.h:12
-msgid "Plugins"
-msgstr "插件"
-
-#: ../data/preferences.glade.h:13
-msgid "Port:"
-msgstr "端口："
-
-#: ../data/preferences.glade.h:14
-msgid "Preferences"
-msgstr "设置"
-
-#: ../data/preferences.glade.h:15
-msgid "Use authentication"
-msgstr "使用验证"
-
-#: ../data/preferences.glade.h:16
-msgid "Use web proxy"
-msgstr "使用代理"
-
-#: ../data/preferences.glade.h:17
-msgid "Username:"
-msgstr "用户名："
-
-#: ../data/preferences.glade.h:18
-msgid "_About..."
-msgstr "关于(_A)…"
-
-#: ../plugins/pubmed.py:16
-msgid "PubMed DOI resolver"
-msgstr "PubMed DOI 解析器"
-
-#: ../plugins/pubmed.py:35
+#: ../plugins/ads.py:44 ../plugins/pubmed.py:215
 msgid "Resolving DOI"
 msgstr "解析 DOI"
 
-#: ../plugins/pubmed.py:35
+#: ../plugins/ads.py:44
 #, python-format
-msgid "Finding PubMed ID from DOI %s"
-msgstr "从 DOI %s 查找 PubMed ID"
+msgid "Fetching metadata from NASA ADS for DOI %s"
+msgstr ""
 
-#: ../plugins/pubmed.py:63
-msgid "Resolving PubMed ID"
-msgstr "解析 PubMed ID"
+#: ../plugins/dblp.py:33
+msgid "DBLP resolver"
+msgstr ""
 
-#: ../plugins/pubmed.py:63
+#: ../plugins/dblp.py:81 ../plugins/dblp.py:140
+msgid "Searching DBLP"
+msgstr ""
+
+#: ../plugins/dblp.py:81
 #, python-format
-msgid "Fetching metadata from NCBI for PubMed ID %s"
-msgstr "从 NCBI 获取 PubMed ID %s 的元数据"
+msgid "Fetching metadata from DBLP for url '%s'"
+msgstr ""
+
+#: ../plugins/dblp.py:140
+#, python-format
+msgid "Fetching metadata from DBLP for search query '%s'"
+msgstr ""
+
+#: ../plugins/genkey.py:15
+msgid "Generate keys from metadata"
+msgstr ""
+
+#: ../plugins/genkey.py:40
+msgid "Generate Key"
+msgstr ""
+
+#: ../plugins/genkey.py:41
+msgid "Generate keys for the selected documents from their metadata"
+msgstr ""
+
+#: ../plugins/google-books.py:14
+msgid "Fetch BiBTeX metadata from Google Books"
+msgstr ""
+
+#: ../plugins/isi-plugin.py:65 ../plugins/isi-plugin.py:67
+msgid "ISI Web of Science resolver (requires subscription)"
+msgstr ""
+
+#: ../plugins/isi-plugin.py:66
+msgid "Get metadata from ISI Web of Science"
+msgstr ""
+
+#: ../plugins/isi-plugin.py:71
+msgid "ISI Info"
+msgstr ""
+
+#: ../plugins/isi-plugin.py:72
+msgid "Retrieve metadata for the selected documents from ISI Web of Science"
+msgstr ""
+
+#: ../plugins/isi-plugin.py:477
+msgid "Obtaining data from ISI-WebOfScience"
+msgstr ""
+
+#: ../plugins/isi-plugin.py:478
+#, python-format
+msgid "Querying for %s/%s/%s"
+msgstr ""
 
 #: ../plugins/lyx.py:11 ../plugins/lyx.py:41
 msgid "Cite in LyX"
@@ -193,115 +97,167 @@ msgstr "在 LyX 中引用"
 msgid "Cite the selected documents in LyX"
 msgstr "在 LyX 中引用被选中的文档"
 
-#: ../src/ArxivPlugin.C:48
+#: ../plugins/pubmed.py:16
+msgid "PubMed DOI resolver"
+msgstr "PubMed DOI 解析器"
+
+#: ../plugins/pubmed.py:131
+msgid "Searching pubmed"
+msgstr ""
+
+#: ../plugins/pubmed.py:131
+#, python-format
+msgid "Searching pubmed for '%s'"
+msgstr ""
+
+#: ../plugins/pubmed.py:162
+msgid "Retrieving pubmed summaries"
+msgstr ""
+
+#: ../plugins/pubmed.py:162
+#, python-format
+msgid "Retrieving summaries for '%s'"
+msgstr ""
+
+#: ../plugins/pubmed.py:215
+#, python-format
+msgid "Finding PubMed ID from DOI %s"
+msgstr "从 DOI %s 查找 PubMed ID"
+
+#: ../plugins/pubmed.py:243
+msgid "Resolving PubMed ID"
+msgstr "解析 PubMed ID"
+
+#: ../plugins/pubmed.py:243
+#, python-format
+msgid "Fetching metadata from NCBI for PubMed ID %s"
+msgstr "从 NCBI 获取 PubMed ID %s 的元数据"
+
+#: ../src/ArxivPlugin.C:55
 msgid "Retrieving metadata"
 msgstr "检索元数据"
 
-#: ../src/ArxivPlugin.C:50
+#: ../src/ArxivPlugin.C:57
 msgid "Contacting citebase.org to retrieve metadata for '%1'"
 msgstr "联系 citebase.org 以检索 '%1' 的元数据"
 
-#: ../src/ArxivPlugin.C:58 ../src/CrossRefPlugin.C:241
+#: ../src/ArxivPlugin.C:65 ../src/CrossRefPlugin.C:251
 msgid "Downloading Metadata"
 msgstr "正在下载元数据"
 
-#: ../src/ArxivPlugin.C:62 ../src/CrossRefPlugin.C:216
-#: ../src/PluginManager.C:44
+#: ../src/ArxivPlugin.C:69 ../src/CrossRefPlugin.C:223
+#: ../src/PluginManager.C:45
 msgid "Downloading metadata"
 msgstr "下载元数据"
 
-#: ../src/ArxivPlugin.C:100 ../src/Document.C:772
+#: ../src/ArxivPlugin.C:107 ../src/Document.C:912
 msgid "Parsing BibTeX"
 msgstr "分析 BibTeX 信息"
 
-#: ../src/ArxivPlugin.C:116
+#: ../src/ArxivPlugin.C:123
 msgid "Arxiv.org ArXiv-ID resolver"
 msgstr "Arxiv.org ArXiv-ID 解析"
 
-#: ../src/CrossRefPlugin.C:180
+#: ../src/CrossRefPlugin.C:187
 msgid "CrossRef credentials not found"
 msgstr "未发现 CrossRef 证书"
 
-#: ../src/CrossRefPlugin.C:181
+#: ../src/CrossRefPlugin.C:188
 msgid ""
 "To use the CrossRef service, a free account is needed.  Login information "
 "may be set in Preferences, or the CrossRef plugin may be disabled."
 msgstr "需要一个免费帐号以便使用 CrossRef 服务。登录信息要通过<b>设置</b>来设定，否则 CrossRef 将被禁用。"
 
-#: ../src/CrossRefPlugin.C:190
+#: ../src/CrossRefPlugin.C:197
 msgid "_Preferences"
-msgstr "设置(_P)"
+msgstr "首选项(_P)"
 
-#: ../src/CrossRefPlugin.C:191
+#: ../src/CrossRefPlugin.C:198
 msgid "_Disable CrossRef"
 msgstr "禁用 CrossRef(_D)"
 
-#: ../src/CrossRefPlugin.C:218
+#: ../src/CrossRefPlugin.C:225
 msgid "Contacting crossref.org to retrieve metadata for '%1'"
 msgstr "联系 crossref.org 以检索 '%1' 的元数据"
 
-#: ../src/CrossRefPlugin.C:277
+#: ../src/CrossRefPlugin.C:287
 msgid "Crossref.org OpenURL DOI resolver"
 msgstr "Crossref.org OpenURL DOI 解析"
 
-#: ../src/Document.C:38
+#: ../src/Document.C:32
 msgid "Unnamed"
 msgstr "未命名的"
 
-#: ../src/Document.C:93
-msgid "Key naming conflict"
-msgstr "键位命名重复"
-
-#: ../src/Document.C:95
+#: ../src/Document.C:89
 msgid ""
 "The chosen key conflicts with an existing one.  Replace '%1' with '%2'?"
 msgstr "选中的键和已有的冲突。用 '%1' 代替 '%2'?"
 
-#: ../src/Document.C:102
+#: ../src/Document.C:98
+msgid "The chosen key contained invalid characters.  Replace '%1' with '%2'?"
+msgstr ""
+
+#: ../src/Document.C:109
+msgid "Key naming conflict"
+msgstr "键位命名重复"
+
+#: ../src/Document.C:117
 msgid "_Ignore"
 msgstr "忽略(_I)"
 
-#: ../src/Document.C:106
+#: ../src/Document.C:121
 msgid "_Replace"
 msgstr "替换(_R)"
 
-#: ../src/Document.C:602
+#: ../src/Document.C:740
 msgid "Moving '%1' to '%2'"
 msgstr "移动 '%1' 到 '%2'"
 
-#: ../src/DocumentList.C:191
+#: ../src/DocumentList.C:211
 msgid "Opening file '%1'"
 msgstr "打开文件 '%1'"
 
-#: ../src/DocumentList.C:210
+#: ../src/DocumentList.C:230
 msgid "Reading file '%1'"
 msgstr "读取文件 '%1'"
 
-#: ../src/DocumentList.C:231
+#: ../src/DocumentList.C:251
 msgid "converting file %1 to utf8 from (guessed) latin1"
 msgstr "文件编码从拉丁(猜测)转换为utf8"
 
-#: ../src/DocumentList.C:265
+#: ../src/DocumentList.C:285
 msgid "Parsing import"
 msgstr "分析输入"
 
-#: ../src/DocumentList.C:278
+#: ../src/DocumentList.C:298
 msgid "Extracting document %1 from bibutils structure"
 msgstr "从 bibutils 结构提取文档 %1"
 
-#: ../src/DocumentProperties.C:200
+#: ../src/DocumentProperties.C:89 ../src/RefWindow.C:1110
+msgid "Name"
+msgstr "名称"
+
+#: ../src/DocumentProperties.C:90
+msgid "Value"
+msgstr ""
+
+#: ../src/DocumentProperties.C:236
 msgid "_Type:"
 msgstr "类型(_T)："
 
-#: ../src/DocumentProperties.C:420 ../src/RefWindow.C:2690
+#: ../src/DocumentProperties.C:399
+msgid "This key already exists.\n"
+msgstr ""
+
+#: ../src/DocumentProperties.C:509 ../src/RefWindow.C:2837
 msgid "No references found on clipboard.\n"
 msgstr "剪贴板中未发现 references。\n"
 
-#: ../src/DocumentProperties.C:424
+#: ../src/DocumentProperties.C:513
 msgid "Multiple references found on clipboard.\n"
 msgstr "剪贴板中发现多个 references。\n"
 
-#: ../src/DocumentTypes.C:31 ../src/DocumentView.C:1491
+#: ../src/DocumentTypes.C:31 ../src/DocumentView.C:1602
 msgid "Title"
 msgstr "标题"
 
@@ -313,7 +269,7 @@ msgstr "作者"
 msgid "Journal"
 msgstr "期刊"
 
-#: ../src/DocumentTypes.C:34 ../src/DocumentView.C:1493
+#: ../src/DocumentTypes.C:34 ../src/DocumentView.C:1604
 msgid "Year"
 msgstr "年"
 
@@ -337,7 +293,7 @@ msgstr "月"
 msgid "Note"
 msgstr "注释"
 
-#: ../src/DocumentTypes.C:41 ../src/DocumentView.C:1490
+#: ../src/DocumentTypes.C:41 ../src/DocumentView.C:1601
 msgid "Key"
 msgstr "键值"
 
@@ -397,146 +353,116 @@ msgstr "DOI"
 msgid "Article"
 msgstr "文章"
 
-#: ../src/DocumentTypes.C:78
+#: ../src/DocumentTypes.C:77
 msgid "Book"
 msgstr "书籍"
 
-#: ../src/DocumentTypes.C:97
+#: ../src/DocumentTypes.C:95
 msgid "In Proceedings"
 msgstr "准备中"
 
-#: ../src/DocumentTypes.C:115
+#: ../src/DocumentTypes.C:114
 msgid "Misc"
 msgstr "其他"
 
-#: ../src/DocumentTypes.C:126
+#: ../src/DocumentTypes.C:124
 msgid "Unpublished"
 msgstr "未发表"
 
-#: ../src/DocumentTypes.C:136
+#: ../src/DocumentTypes.C:133
 msgid "Master's thesis"
 msgstr "硕士论文"
 
-#: ../src/DocumentTypes.C:148
+#: ../src/DocumentTypes.C:144
 msgid "PhD thesis"
 msgstr "博士论文"
 
-#: ../src/DocumentTypes.C:160
+#: ../src/DocumentTypes.C:155
 msgid "Proceedings"
 msgstr "准备中"
 
-#: ../src/DocumentTypes.C:173
+#: ../src/DocumentTypes.C:167
 msgid "Conference"
 msgstr "会议"
 
-#: ../src/DocumentTypes.C:185
+#: ../src/DocumentTypes.C:178
 msgid "In Book"
 msgstr "书籍中"
 
-#: ../src/DocumentTypes.C:203
+#: ../src/DocumentTypes.C:195
 msgid "Booklet"
 msgstr "手册"
 
-#: ../src/DocumentTypes.C:215
+#: ../src/DocumentTypes.C:206
 msgid "In Collection"
 msgstr "文集中"
 
-#: ../src/DocumentTypes.C:231
+#: ../src/DocumentTypes.C:221
 msgid "Manual"
 msgstr "手册指南"
 
-#: ../src/DocumentTypes.C:244
+#: ../src/DocumentTypes.C:233
 msgid "Technical Report"
 msgstr "技术报告"
 
-#: ../src/DocumentView.C:622
-msgid "Downloaded Documents"
-msgstr "已下载的文档"
+#: ../src/DocumentView.C:323
+msgid "Edit tags"
+msgstr ""
 
-#: ../src/DocumentView.C:647
+#: ../src/DocumentView.C:332
+msgid "Tags:"
+msgstr ""
+
+#: ../src/DocumentView.C:725
 msgid "Getting info for file '%1'"
 msgstr "获取文件 '%1' 的信息"
 
 #. Translators: this is the format for the document captions
-#: ../src/DocumentView.C:1046
+#: ../src/DocumentView.C:1135
 msgid ""
-"<span size='xx-small'> </span>\n"
 "<small>%1</small>\n"
 "<b>%2</b>\n"
-"%3\n"
-"<i>%4</i>"
+"%3<i>%4</i>%5"
 msgstr ""
-"<span size='xx-small'> </span>\n"
-"<small>%1</small>\n"
-"<b>%2</b>\n"
-"%3\n"
-"<i>%4</i>"
 
 #. Translation note: this completes the sentence started by
 #. * the "Arrange Items" string, which is the parent menu
 #. * item.  If this does not make sense in your locale, translate
 #. * "Arrange Items" as something like "Sort" and translate this
 #. * as just "%1"
-#: ../src/DocumentView.C:1407
+#: ../src/DocumentView.C:1518
 msgid "By %1"
 msgstr "由 %1 制作"
 
-#: ../src/DocumentView.C:1492
+#: ../src/DocumentView.C:1603
 msgid "Author"
 msgstr "作者"
 
-#: ../src/Library.C:92
-msgid "Parsing Library XML"
-msgstr "分析 XML 库"
+#: ../src/Library.C:185
+msgid "Stumbled upon a tag without a name or an id."
+msgstr ""
 
-#: ../src/Library.C:164
+#: ../src/Library.C:296
+msgid "Could not parse the 'reflib' file."
+msgstr ""
+
+#: ../src/Library.C:375
 msgid "Opening %1"
 msgstr "打开 %1"
 
-#: ../src/Library.C:251
-msgid "Document location ambiguity"
-msgstr "文档路径模糊"
-
-#: ../src/Library.C:253
-msgid ""
-"The file '%1' exists in two locations:\n"
-"\tOriginal: <b>%2</b>\n"
-"\tNew: <b>%3</b>\n"
-"\n"
-"Do you want to keep the original location, or update it to the new one?"
+#: ../src/Library.C:447
+msgid "Could not create an XML writer."
 msgstr ""
-"文件 '%1' 存在于两个路径：\n"
-"\t原路径： <b>%2</b>\n"
-"\t新路径： <b>%3</b>\n"
-"\n"
-"是保持原路径，还是更新到新路径？"
 
-#: ../src/Library.C:269
-msgid "Apply choice to all ambiguous locations"
-msgstr "应用选择于所有的模糊路径"
-
-#: ../src/Library.C:273
-msgid "Keep _Original"
-msgstr "保持原路径(_O)"
-
-#: ../src/Library.C:274
-msgid "Use _New"
-msgstr "使用新路径(_N)"
-
-#: ../src/LibraryParser.h:89
-#, c-format
-msgid "'%s' is not a valid boolean value"
-msgstr "'%s' 不是有效的布尔值"
-
-#: ../src/Linker.C:78
+#: ../src/Linker.C:79
 msgid "DOI Link"
 msgstr "DOI 链接"
 
-#: ../src/Linker.C:99
+#: ../src/Linker.C:100
 msgid "arXiv Link"
 msgstr "arXiv 链接"
 
-#: ../src/Linker.C:118
+#: ../src/Linker.C:119
 msgid "URL Link"
 msgstr "URL 链接"
 
@@ -544,32 +470,32 @@ msgstr "URL 链接"
 msgid "PubMed Link"
 msgstr "PubMed 链接"
 
-#: ../src/Linker.C:182
+#: ../src/Linker.C:181
 msgid "Google Scholar"
 msgstr "Google Scholar"
 
-#: ../src/main.C:92
+#: ../src/main.C:97
 msgid "Terminating due to unhandled exception"
 msgstr "因未处理的例外而终止"
 
-#: ../src/Preferences.C:183
+#: ../src/Preferences.C:184
 msgid "Enabled"
 msgstr "启用"
 
-#: ../src/Preferences.C:187 ../src/PythonPlugin.C:317
-#: ../src/PythonPlugin.C:357
+#: ../src/Preferences.C:188 ../src/PythonPlugin.C:364
+#: ../src/PythonPlugin.C:404
 msgid "Module"
 msgstr "模块"
 
-#: ../src/Preferences.C:189
+#: ../src/Preferences.C:190
 msgid "Description"
 msgstr "说明"
 
-#: ../src/Preferences.C:533
+#: ../src/Preferences.C:534
 msgid "Plugin error"
 msgstr "插件错误"
 
-#: ../src/PythonPlugin.C:314
+#: ../src/PythonPlugin.C:361
 msgid ""
 "%1: %2\n"
 "\n"
@@ -581,15 +507,15 @@ msgstr ""
 "%3: %4\n"
 "%5: %6\n"
 
-#: ../src/PythonPlugin.C:315 ../src/PythonPlugin.C:355 ../src/Utility.C:260
+#: ../src/PythonPlugin.C:362 ../src/PythonPlugin.C:402 ../src/Utility.C:261
 msgid "Exception"
 msgstr "例外"
 
-#: ../src/PythonPlugin.C:319 ../src/PythonPlugin.C:359
+#: ../src/PythonPlugin.C:366 ../src/PythonPlugin.C:406
 msgid "Explanation"
 msgstr "解释"
 
-#: ../src/PythonPlugin.C:354
+#: ../src/PythonPlugin.C:401
 msgid ""
 "<big><b>%1: %2</b></big>\n"
 "\n"
@@ -601,47 +527,67 @@ msgstr ""
 "%3: %4\n"
 "%5: %6"
 
-#: ../src/RefWindow.C:256
+#: ../src/RefWindow.C:262
 msgid "Tags"
 msgstr "标签"
 
-#: ../src/RefWindow.C:364
+#: ../src/RefWindow.C:372
 msgid "_Library"
 msgstr "文库(_L)"
 
-#: ../src/RefWindow.C:369 ../src/RefWindow.C:457
+#: ../src/RefWindow.C:374
+msgid "_New..."
+msgstr ""
+
+#: ../src/RefWindow.C:374
+msgid "New Library"
+msgstr ""
+
+#: ../src/RefWindow.C:377
 msgid "_Open..."
 msgstr "打开(_O)"
 
-#: ../src/RefWindow.C:375
-msgid "Save _As..."
-msgstr "另存为...(_A)"
+#: ../src/RefWindow.C:377 ../src/RefWindow.C:1659
+msgid "Open Library"
+msgstr "打开文库"
 
-#: ../src/RefWindow.C:378
+#: ../src/RefWindow.C:380
+msgid "_Save..."
+msgstr ""
+
+#: ../src/RefWindow.C:380
+msgid "Save Library"
+msgstr ""
+
+#: ../src/RefWindow.C:383
+msgid "Save _As..."
+msgstr "另存为(_A)..."
+
+#: ../src/RefWindow.C:386
 msgid "E_xport as BibTeX..."
 msgstr "以 BibTeX 格式导出...(_x)"
 
-#: ../src/RefWindow.C:381
+#: ../src/RefWindow.C:389
 msgid "_Manage BibTeX File..."
 msgstr "管理 BibTeX 文件...(_M)"
 
-#: ../src/RefWindow.C:384
-msgid "_Library Folder..."
-msgstr "收藏文件夹(_L)..."
+#: ../src/RefWindow.C:392
+msgid "_Properties..."
+msgstr ""
 
-#: ../src/RefWindow.C:387
+#: ../src/RefWindow.C:395
 msgid "_Import..."
 msgstr "导入...(_I)"
 
-#: ../src/RefWindow.C:390
+#: ../src/RefWindow.C:398
 msgid "_Work Offline"
 msgstr "离线工作(_W)"
 
-#: ../src/RefWindow.C:394
+#: ../src/RefWindow.C:402
 msgid "_Edit"
 msgstr "编辑(_E)"
 
-#: ../src/RefWindow.C:396
+#: ../src/RefWindow.C:404
 msgid "_View"
 msgstr "查看(_V)"
 
@@ -650,443 +596,465 @@ msgstr "查看(_V)"
 #. * item.  If this does not make sense in your locale, translate
 #. * "Arrange Items" as something like "Sort" and translate "By %1"
 #. * as just "%1"
-#: ../src/RefWindow.C:402
+#: ../src/RefWindow.C:410
 msgid "Arran_ge Items"
 msgstr "排列项目(_g)"
 
-#: ../src/RefWindow.C:405
+#: ../src/RefWindow.C:412
+msgid "_Paste BibTeX"
+msgstr "粘贴 BibTeX 信息(_P)"
+
+#: ../src/RefWindow.C:413
 msgid "Import references from BibTeX on the clipboard"
 msgstr "从剪贴板中的 BibTeX 信息导入 references"
 
-#: ../src/RefWindow.C:408
-msgid "_Copy LaTeX citation"
-msgstr "复制 LaTeX 引用(_C)"
+#: ../src/RefWindow.C:416
+msgid "_Copy LaTeX Citation"
+msgstr ""
 
-#: ../src/RefWindow.C:409
+#: ../src/RefWindow.C:417
 msgid "Copy currently selected keys to the clipboard as a LaTeX citation"
 msgstr "复制当前选择的键值到剪贴板作为 LaTeX 引用"
 
-#: ../src/RefWindow.C:417
+#: ../src/RefWindow.C:425
 msgid "Use _List View"
 msgstr "使用列表查看(_L)"
 
-#: ../src/RefWindow.C:419
+#: ../src/RefWindow.C:427
 msgid "Use _Icon View"
 msgstr "使用图标查看(_I)"
 
-#: ../src/RefWindow.C:421
+#: ../src/RefWindow.C:429
 msgid "_Show Tag Pane"
 msgstr "显示标签框(_S)"
 
-#: ../src/RefWindow.C:423
+#: ../src/RefWindow.C:431
 msgid "Show _Notes Pane"
 msgstr "显示笔记(_N)面板"
 
-#: ../src/RefWindow.C:425 ../src/RefWindow.C:463
+#: ../src/RefWindow.C:433 ../src/RefWindow.C:471
 msgid "_Tags"
 msgstr "标签(_T)"
 
-#: ../src/RefWindow.C:427
+#: ../src/RefWindow.C:435
 msgid "_Create Tag..."
 msgstr "创建标签...(_C)"
 
-#: ../src/RefWindow.C:430
+#: ../src/RefWindow.C:438
 msgid "_Attach New Tag..."
 msgstr "增加(_A)新标签"
 
-#: ../src/RefWindow.C:433
+#: ../src/RefWindow.C:441
 msgid "_Delete Tag"
 msgstr "删除标签(_D)"
 
-#: ../src/RefWindow.C:436
+#: ../src/RefWindow.C:444
 msgid "_Rename Tag"
 msgstr "重命名标签(_R)"
 
-#: ../src/RefWindow.C:439
+#: ../src/RefWindow.C:447
 msgid "_Documents"
 msgstr "文档(_D)"
 
-#: ../src/RefWindow.C:441
+#: ../src/RefWindow.C:449
 msgid "_Add File..."
 msgstr "添加文件...(_A)"
 
-#: ../src/RefWindow.C:444
+#: ../src/RefWindow.C:452
 msgid "Add _Folder..."
 msgstr "添加文件夹...(_F)"
 
-#: ../src/RefWindow.C:447
+#: ../src/RefWindow.C:455
 msgid "Add E_mpty Reference..."
 msgstr "添加空白 Reference...(_m)"
 
-#: ../src/RefWindow.C:450
+#: ../src/RefWindow.C:458
 msgid "Add Refere_nce with ID..."
 msgstr "按ID添加 Reference...(_n)"
 
-#: ../src/RefWindow.C:453
+#: ../src/RefWindow.C:461
 msgid "_Remove"
 msgstr "移除(_R)"
 
-#: ../src/RefWindow.C:467
+#: ../src/RefWindow.C:465
+msgid "_Open"
+msgstr ""
+
+#: ../src/RefWindow.C:475
 msgid "_Get Metadata"
 msgstr "获取元数据(_G)"
 
-#: ../src/RefWindow.C:470
+#: ../src/RefWindow.C:478
 msgid "_Delete File from Drive"
 msgstr "从硬盘删除(_D)"
 
-#: ../src/RefWindow.C:474
+#: ../src/RefWindow.C:482
 msgid "R_ename File from Key"
 msgstr "按键值重命名文件(_e)"
 
-#: ../src/RefWindow.C:477
+#: ../src/RefWindow.C:485
 msgid "_Tools"
 msgstr "工具(_T)"
 
-#: ../src/RefWindow.C:479
+#: ../src/RefWindow.C:487
 msgid "Export Notes as HTML"
 msgstr "导出笔记为HTML"
 
-#: ../src/RefWindow.C:482
+#: ../src/RefWindow.C:490
 msgid "_Help"
 msgstr "帮助(_H)"
 
-#: ../src/RefWindow.C:484
-msgid "Introduction"
-msgstr "介绍"
+#: ../src/RefWindow.C:492
+msgid "Contents"
+msgstr ""
 
-#: ../src/RefWindow.C:640
+#: ../src/RefWindow.C:512
+msgid "Search..."
+msgstr ""
+
+#: ../src/RefWindow.C:673
 msgid "All"
 msgstr "全部"
 
-#: ../src/RefWindow.C:645
+#: ../src/RefWindow.C:678
 msgid "Untagged"
 msgstr "无标签的"
 
-#: ../src/RefWindow.C:911
+#: ../src/RefWindow.C:944
 msgid "%1 documents (%2 selected)"
 msgstr "%1 个文档（%2 个被选中）"
 
-#: ../src/RefWindow.C:915
+#: ../src/RefWindow.C:948
 msgid "%1 documents"
 msgstr "%1 个文档"
 
-#: ../src/RefWindow.C:952
+#: ../src/RefWindow.C:985
 msgid "_Notes: <i>%1</i>"
 msgstr "_速记: <i>%1</i>"
 
-#: ../src/RefWindow.C:955
+#: ../src/RefWindow.C:988
 msgid "Multiple documents selected"
 msgstr "选择多个文件"
 
-#: ../src/RefWindow.C:957
+#: ../src/RefWindow.C:990
 msgid "Select a document to view and edit notes"
-msgstr ""
+msgstr "选择一个文件显示并编辑其笔记"
 
-#: ../src/RefWindow.C:1019
+#: ../src/RefWindow.C:1052
 msgid "Save changes to library before closing?"
 msgstr "关闭前保存更改到文库吗？"
 
-#: ../src/RefWindow.C:1025
+#: ../src/RefWindow.C:1058
 msgid "Close _without Saving"
 msgstr "关闭而不保存(_w)"
 
-#: ../src/RefWindow.C:1061
+#: ../src/RefWindow.C:1094
 msgid "Type a tag"
 msgstr "输入一个标签"
 
-#: ../src/RefWindow.C:1065
+#: ../src/RefWindow.C:1098
 msgid "Create tag"
 msgstr "建立标签"
 
-#: ../src/RefWindow.C:1066
+#: ../src/RefWindow.C:1099
 msgid "Short memorable tag names help you organise your documents"
 msgstr "简短易记的标签名可以方便组织您的文件"
 
-#: ../src/RefWindow.C:1077
-msgid "Name"
-msgstr "名称"
+#: ../src/RefWindow.C:1127
+msgid "Empty tag names are not valid"
+msgstr ""
 
-#: ../src/RefWindow.C:1151
+#: ../src/RefWindow.C:1132
+msgid "Duplicate tag names are not valid"
+msgstr ""
+
+#: ../src/RefWindow.C:1197
 msgid "Are you sure you want to delete \"%1\"?"
 msgstr "确定删除 \"%1\" 吗？"
 
-#: ../src/RefWindow.C:1158
+#: ../src/RefWindow.C:1204
 msgid ""
 "When a tag is deleted it is also permanently removed from all documents it "
 "is currently associated with."
 msgstr "一个标签被删除后，该标签会从所有相关联文档中移除。"
 
-#: ../src/RefWindow.C:1211
+#: ../src/RefWindow.C:1257
 msgid "Export BibTeX"
 msgstr "导出 BibTeX"
 
-#: ../src/RefWindow.C:1220 ../src/RefWindow.C:1403 ../src/RefWindow.C:2581
+#: ../src/RefWindow.C:1266 ../src/RefWindow.C:1505 ../src/RefWindow.C:2728
 msgid "BibTeX Files"
 msgstr "BibTeX 文件"
 
-#: ../src/RefWindow.C:1225 ../src/RefWindow.C:1306 ../src/RefWindow.C:1408
-#: ../src/RefWindow.C:1576 ../src/RefWindow.C:1642 ../src/RefWindow.C:2568
+#: ../src/RefWindow.C:1271 ../src/RefWindow.C:1352 ../src/RefWindow.C:1510
+#: ../src/RefWindow.C:1679 ../src/RefWindow.C:1748 ../src/RefWindow.C:2715
 msgid "All Files"
 msgstr "全部文件"
 
-#: ../src/RefWindow.C:1236 ../src/RefWindow.C:1317
+#: ../src/RefWindow.C:1282 ../src/RefWindow.C:1363
 msgid "Selection:"
 msgstr "选择："
 
-#: ../src/RefWindow.C:1239 ../src/RefWindow.C:1320
+#: ../src/RefWindow.C:1285 ../src/RefWindow.C:1366
 msgid "All Documents"
 msgstr "全部文档"
 
-#: ../src/RefWindow.C:1240 ../src/RefWindow.C:1321
+#: ../src/RefWindow.C:1286 ../src/RefWindow.C:1368
 msgid "Selected Documents"
 msgstr "选中的文档"
 
 #. Any options here should be replicated in onManageBibtex
 #. Any options here should be replicated in onExportBibtex
-#: ../src/RefWindow.C:1246 ../src/RefWindow.C:1496
+#: ../src/RefWindow.C:1292 ../src/RefWindow.C:1600
 msgid "Protect capitalization (surround values with {})"
 msgstr "保护大写（以 {} 包含）"
 
-#: ../src/RefWindow.C:1248 ../src/RefWindow.C:1499
+#: ../src/RefWindow.C:1294 ../src/RefWindow.C:1603
 msgid "Use Unicode (UTF-8) encoding"
 msgstr "使用 Unicode (UTF-8) 编码"
 
-#: ../src/RefWindow.C:1292
+#: ../src/RefWindow.C:1338
 msgid "Export Notes"
 msgstr "导出笔记"
 
-#: ../src/RefWindow.C:1301
+#: ../src/RefWindow.C:1347
 msgid "HTML Files"
 msgstr "HTML 文件"
 
-#: ../src/RefWindow.C:1364 ../src/RefWindow.C:2519
+#: ../src/RefWindow.C:1367
+msgid "Currently Shown Documents"
+msgstr ""
+
+#: ../src/RefWindow.C:1444 ../src/RefWindow.C:2665
 msgid "Unnamed Library"
 msgstr "未命名的文库"
 
-#: ../src/RefWindow.C:1396
+#: ../src/RefWindow.C:1498
 msgid "Browse"
 msgstr "浏览"
 
-#: ../src/RefWindow.C:1436 ../src/RefWindow.C:1451
+#: ../src/RefWindow.C:1538 ../src/RefWindow.C:1553
 msgid "Manage BibTeX File"
 msgstr "管理 BibTeX 文件"
 
-#: ../src/RefWindow.C:1452
+#: ../src/RefWindow.C:1554
 msgid ""
 "If you choose a file here, it will be overwritten whenever this library is "
 "saved."
 msgstr "如果在这里选择一个文件，它将被覆盖而无论文库是否被保存。"
 
-#: ../src/RefWindow.C:1459
+#: ../src/RefWindow.C:1561
 msgid "BibTeX file:"
 msgstr "BibTeX 文件："
 
-#: ../src/RefWindow.C:1480
+#: ../src/RefWindow.C:1584
 msgid "_Browse..."
 msgstr "浏览(_B)..."
 
-#: ../src/RefWindow.C:1554
-msgid "Open Library"
-msgstr "打开文库"
-
-#: ../src/RefWindow.C:1571 ../src/RefWindow.C:1637
+#: ../src/RefWindow.C:1674 ../src/RefWindow.C:1743
 msgid "Referencer Libraries"
 msgstr "Referencer 文库"
 
-#: ../src/RefWindow.C:1628
+#: ../src/RefWindow.C:1734
 msgid "Save Library As"
 msgstr "保存文库为"
 
 #. Translators: your name here!
-#: ../src/RefWindow.C:1689
+#: ../src/RefWindow.C:1795
 msgid "translator-credits"
 msgstr ""
 "Launchpad Contributions:\n"
-"  huang https://launchpad.net/~zwhuang\n"
-"\n"
-"Launchpad Contributions:\n"
+"  Mads Chr. Olesen https://launchpad.net/~shiyee\n"
 "  huang https://launchpad.net/~zwhuang\n"
 "  luojie-dune https://launchpad.net/~luojie-dune\n"
-"  rainofchaos https://launchpad.net/~rainofchaos\n"
-"  yang https://launchpad.net/~totlab"
+"  yang https://launchpad.net/~totlab\n"
+"  冯超 https://launchpad.net/~rainofchaos"
 
-#: ../src/RefWindow.C:1709
+#: ../src/RefWindow.C:1814
 msgid "Showing '%1'"
 msgstr "显示  '%1'"
 
-#: ../src/RefWindow.C:1718
+#: ../src/RefWindow.C:1823
 msgid "Cancelling"
 msgstr "取消"
 
 #. Show a dialog containing a treeview of checkboxes for
 #. * tags, and a button for creating tags
-#: ../src/RefWindow.C:1763
+#: ../src/RefWindow.C:1868
 msgid "Tag Added Files"
 msgstr "显示标签的树状选择对话框，以及建立标签按钮"
 
 #. "Create tag" button
-#: ../src/RefWindow.C:1801
+#: ../src/RefWindow.C:1908
 msgid "C_reate Tag..."
 msgstr "建立(_r)标签"
 
-#: ../src/RefWindow.C:1864
+#: ../src/RefWindow.C:1971
 msgid "Add Document Files"
 msgstr "添加文档文件"
 
-#: ../src/RefWindow.C:1871
+#: ../src/RefWindow.C:1978
 msgid "Adding document files"
 msgstr "添加文档文件"
 
-#: ../src/RefWindow.C:1872
+#: ../src/RefWindow.C:1979
 msgid ""
 "This process may take some time as the bibliographic information for each "
 "document is looked up."
 msgstr "查询书目信息将要花费一些时间。"
 
-#: ../src/RefWindow.C:1897
+#: ../src/RefWindow.C:2004
 msgid "Document"
 msgstr "文档"
 
-#: ../src/RefWindow.C:1898
+#: ../src/RefWindow.C:2005
 msgid "Got text"
 msgstr "获取文本"
 
-#: ../src/RefWindow.C:1899
+#: ../src/RefWindow.C:2006
 msgid "Got ID"
 msgstr "获取 ID"
 
-#: ../src/RefWindow.C:1900
+#: ../src/RefWindow.C:2007
 msgid "Got metadata"
 msgstr "获取元数据"
 
-#: ../src/RefWindow.C:1901
+#: ../src/RefWindow.C:2008
 msgid "Outcome"
 msgstr "结果"
 
-#: ../src/RefWindow.C:1916
+#: ../src/RefWindow.C:2025
 msgid "_Attach tags..."
 msgstr "附着(_A)标签"
 
-#: ../src/RefWindow.C:1944
+#: ../src/RefWindow.C:2053
 msgid "%1 of %2 documents"
 msgstr "%2 个文档中的 %1 个"
 
-#: ../src/RefWindow.C:2033 ../src/RefWindow.C:2035
+#: ../src/RefWindow.C:2136 ../src/RefWindow.C:2138
 msgid "Cancelled"
 msgstr "已取消的"
 
-#: ../src/RefWindow.C:2039
+#: ../src/RefWindow.C:2142
 msgid "Finished"
 msgstr "已完成的"
 
-#: ../src/RefWindow.C:2080
+#: ../src/RefWindow.C:2184
 msgid "Add Reference with ID"
 msgstr "以 ID 添加 Reference"
 
-#: ../src/RefWindow.C:2150
+#: ../src/RefWindow.C:2286
 msgid "Add Document"
 msgstr "添加文档"
 
-#: ../src/RefWindow.C:2181
+#: ../src/RefWindow.C:2307
 msgid "Add Folder"
 msgstr "添加文件夹"
 
-#: ../src/RefWindow.C:2218
+#: ../src/RefWindow.C:2347
 msgid "Are you sure you want to remove these %1 documents?"
 msgstr "确定要移除这 %1 个文档吗？"
 
-#: ../src/RefWindow.C:2220
+#: ../src/RefWindow.C:2349
 msgid ""
 "All tag associations and metadata for these documents will be permanently "
 "lost."
 msgstr "所有和这些文档关联的标签和元数据将永久性地丢失。"
 
-#: ../src/RefWindow.C:2223
+#: ../src/RefWindow.C:2352
 msgid "Are you sure you want to remove '%1'?"
 msgstr "确定要移除 '%1' 吗？"
 
-#: ../src/RefWindow.C:2225
+#: ../src/RefWindow.C:2354
 msgid ""
 "All tag associations and metadata for the document will be permanently lost."
 msgstr "所有和该文档关联的标签和元数据将永久性地丢失。"
 
-#: ../src/RefWindow.C:2255
+#: ../src/RefWindow.C:2391
 msgid "Fetching metadata"
 msgstr "获取元数据"
 
-#: ../src/RefWindow.C:2285
+#: ../src/RefWindow.C:2421
 msgid "Really rename this file to '%1'?"
 msgstr "要重命名本文件为 '%1' 吗？"
 
-#: ../src/RefWindow.C:2288
+#: ../src/RefWindow.C:2424
 msgid "Really rename these %1 files to their keys?"
 msgstr "要按键值重命名这 %1 个文件吗？"
 
-#: ../src/RefWindow.C:2296
+#: ../src/RefWindow.C:2432
 msgid "This action <b>cannot be undone</b>."
 msgstr "本操作<b>无法撤销</b>。"
 
-#: ../src/RefWindow.C:2299
+#: ../src/RefWindow.C:2435
 msgid "Rename from Key"
 msgstr "按键值重命名"
 
-#: ../src/RefWindow.C:2330
+#: ../src/RefWindow.C:2466
 msgid "Are you sure you want to delete the files of these %1 documents?"
 msgstr "确定要删除这 %1 个文档的文件吗？"
 
-#: ../src/RefWindow.C:2332
+#: ../src/RefWindow.C:2468
 msgid ""
 "All tag associations and metadata for these documents will be permanently "
 "lost, and the files they refer to will be irretrievably deleted."
 msgstr "所有与这些文档关联的标签和元数据将永久丢失，而且与之关联的文件将被不可挽回地删除。"
 
-#: ../src/RefWindow.C:2338
+#: ../src/RefWindow.C:2474
 msgid "Are you sure you want to delete the file of '%1'?"
 msgstr "确定要删除 '%1' 关联的文件文件吗？"
 
-#: ../src/RefWindow.C:2340
+#: ../src/RefWindow.C:2476
 msgid ""
 "All tag associations and metadata for the document will be permanently lost, "
 "and the file it refers to will be irretrievably deleted."
 msgstr "所有与该文档关联的标签和元数据将永久丢失，而且与之关联的文件将被不可挽回地删除。"
 
-#: ../src/RefWindow.C:2368
+#: ../src/RefWindow.C:2504
 msgid "Deleting '%1'"
 msgstr "删除 '%1'"
 
-#: ../src/RefWindow.C:2390
+#: ../src/RefWindow.C:2527
 msgid "Trying to open file '%1'"
 msgstr "尝试打开文件 '%1'"
 
-#: ../src/RefWindow.C:2483
+#: ../src/RefWindow.C:2629
 msgid "Working offline"
 msgstr "离线工作"
 
-#: ../src/RefWindow.C:2484
+#: ../src/RefWindow.C:2630
 msgid "Working online"
 msgstr "在线工作"
 
-#: ../src/RefWindow.C:2553
+#: ../src/RefWindow.C:2700
 msgid "Import References"
 msgstr "导入 References"
 
-#: ../src/RefWindow.C:2576
+#: ../src/RefWindow.C:2723
 msgid "Bibliography Files"
 msgstr "Bibliography 文件"
 
-#: ../src/RefWindow.C:2587
+#: ../src/RefWindow.C:2734
 msgid "Format:"
 msgstr "格式："
 
-#: ../src/RefWindow.C:2684
+#: ../src/RefWindow.C:2831
 msgid "Imported %1 BibTeX references"
 msgstr "导入的 %1 个 BibTeX references"
 
-#: ../src/Transfer.C:47
+#: ../src/RefWindow.C:3172
+msgid "Searching..."
+msgstr ""
+
+#: ../src/RefWindow.C:3197
+msgid "Complete"
+msgstr ""
+
+#: ../src/Transfer.C:49
 msgid "Work offline?"
 msgstr "离线工作？"
 
-#: ../src/Transfer.C:48
+#: ../src/Transfer.C:50
 msgid ""
 "There was a problem while retrieving metadata, would you like \n"
 "to work offline?  If you choose to work offline, no further network "
@@ -1096,31 +1064,15 @@ msgstr ""
 "检索元数据遇到问题，要离线工作吗？\n"
 "如果选择离线工作，将不会尝试进一步的网络操作，直到你在<b>设置</b>对话框中选择在线工作为止。"
 
-#: ../src/Transfer.C:59
+#: ../src/Transfer.C:61
 msgid "_Stay Online"
 msgstr "保持在线(_S)"
 
-#: ../src/Transfer.C:61
+#: ../src/Transfer.C:63
 msgid "_Go Offline"
 msgstr "切换离线(_G)"
 
-#: ../src/Transfer.C:101
-msgid "Downloading %1"
-msgstr "下载 %1"
-
-#: ../src/Transfer.C:286
-msgid "Opening URI '%1' on server"
-msgstr "在服务器上打开 URI '%1'"
-
-#: ../src/Transfer.C:311
-msgid "Reading URI '%1' on server"
-msgstr "在服务器上读取 URI '%1'"
-
-#: ../src/Transfer.C:330
-msgid "Closing URI '%1' on server"
-msgstr "在服务器上关闭 URI '%1'"
-
-#: ../src/Utility.C:259
+#: ../src/Utility.C:260
 msgid ""
 "<big><b>%1: %2</b></big>\n"
 "\n"
@@ -1130,6 +1082,198 @@ msgstr ""
 "\n"
 "%3"
 
-#: ../src/Utility.C:263
+#: ../src/Utility.C:264
 msgid "The operation underway was: \"%1\""
 msgstr "正在进行操作：\"%1\""
+
+#: ../src/Utility.C:2195
+msgid "A"
+msgstr ""
+
+#: ../src/Utility.C:2196
+msgid "An"
+msgstr ""
+
+#: ../src/Utility.C:2197
+msgid "The"
+msgstr ""
+
+#~ msgid "This Document"
+#~ msgstr "本文档"
+
+#~ msgid "_Delete File from drive"
+#~ msgstr "从驱动器删除文件(_D)"
+
+#~ msgid ""
+#~ "<b>%1</b>\n"
+#~ "%2\n"
+#~ "<i>%3</i>"
+#~ msgstr ""
+#~ "<b>%1</b>\n"
+#~ "%2\n"
+#~ "<i>%3</i>"
+
+#~ msgid "<b>Document</b>"
+#~ msgstr "<b>文档</b>"
+
+#~ msgid "<b>E_xtra Fields</b>"
+#~ msgstr "<b>更多字段(_x)</b>"
+
+#~ msgid "<b>Metadata</b>"
+#~ msgstr "<b>元数据</b>"
+
+#~ msgid "Add a field"
+#~ msgstr "添加一个字段"
+
+#~ msgid "Attempt to look up metadata for this document online"
+#~ msgstr "尝试在线搜索本文档的元数据"
+
+#~ msgid "Clear metadata"
+#~ msgstr "清除元数据"
+
+#~ msgid "Delete this field"
+#~ msgstr "删除该字段"
+
+#~ msgid "Document Properties"
+#~ msgstr "文档属性"
+
+#~ msgid "File:"
+#~ msgstr "文件："
+
+#~ msgid "Fill out metadata from BibTeX on clipboard"
+#~ msgstr "按剪贴板中的 BibTeX 信息填写元数据"
+
+#~ msgid "Rename this field"
+#~ msgstr "重命名该字段"
+
+#~ msgid "Select A File"
+#~ msgstr "选择一个文件"
+
+#~ msgid "_Key:"
+#~ msgstr "键值(_K)："
+
+#~ msgid "_Look Up"
+#~ msgstr "在线查询(_L)"
+
+#~ msgid "<b>Proxy</b>"
+#~ msgstr "<b>代理</b>"
+
+#~ msgid ""
+#~ "<i>Plugins nearer the top of the list are tried first when looking up "
+#~ "metadata.</i>"
+#~ msgstr "搜索元数据时优先使用列表顶部的插件"
+
+#~ msgid ""
+#~ "<i>These proxy settings apply desktop-wide\n"
+#~ "to all Gnome applications.  Auto-configuration\n"
+#~ " URLs are not supported.</i>"
+#~ msgstr ""
+#~ "<i> 这些代理设置在桌面范围内应用于所有的 Gnome 应用程序。\n"
+#~ "不支持自动配置 URL。</i>"
+
+#~ msgid "C_onfigure..."
+#~ msgstr "配置(_O)..."
+
+#~ msgid "Host:"
+#~ msgstr "主机："
+
+#~ msgid "Move _down"
+#~ msgstr "下移(_d)"
+
+#~ msgid "Move _up"
+#~ msgstr "上移(_u)"
+
+#~ msgid "Network"
+#~ msgstr "网络"
+
+#~ msgid "Password:"
+#~ msgstr "密码："
+
+#~ msgid "Plugins"
+#~ msgstr "插件"
+
+#~ msgid "Port:"
+#~ msgstr "端口："
+
+#~ msgid "Preferences"
+#~ msgstr "设置"
+
+#~ msgid "Use authentication"
+#~ msgstr "使用验证"
+
+#~ msgid "Use web proxy"
+#~ msgstr "使用代理"
+
+#~ msgid "Username:"
+#~ msgstr "用户名："
+
+#~ msgid "_About..."
+#~ msgstr "关于(_A)…"
+
+#~ msgid "Downloaded Documents"
+#~ msgstr "已下载的文档"
+
+#~ msgid ""
+#~ "<span size='xx-small'> </span>\n"
+#~ "<small>%1</small>\n"
+#~ "<b>%2</b>\n"
+#~ "%3\n"
+#~ "<i>%4</i>"
+#~ msgstr ""
+#~ "<span size='xx-small'> </span>\n"
+#~ "<small>%1</small>\n"
+#~ "<b>%2</b>\n"
+#~ "%3\n"
+#~ "<i>%4</i>"
+
+#~ msgid "Parsing Library XML"
+#~ msgstr "分析 XML 库"
+
+#~ msgid "Document location ambiguity"
+#~ msgstr "文档路径模糊"
+
+#~ msgid ""
+#~ "The file '%1' exists in two locations:\n"
+#~ "\tOriginal: <b>%2</b>\n"
+#~ "\tNew: <b>%3</b>\n"
+#~ "\n"
+#~ "Do you want to keep the original location, or update it to the new one?"
+#~ msgstr ""
+#~ "文件 '%1' 存在于两个路径：\n"
+#~ "\t原路径： <b>%2</b>\n"
+#~ "\t新路径： <b>%3</b>\n"
+#~ "\n"
+#~ "是保持原路径，还是更新到新路径？"
+
+#~ msgid "Apply choice to all ambiguous locations"
+#~ msgstr "应用选择于所有的模糊路径"
+
+#~ msgid "Keep _Original"
+#~ msgstr "保持原路径(_O)"
+
+#~ msgid "Use _New"
+#~ msgstr "使用新路径(_N)"
+
+#~ msgid "'%s' is not a valid boolean value"
+#~ msgstr "'%s' 不是有效的布尔值"
+
+#~ msgid "_Library Folder..."
+#~ msgstr "收藏文件夹(_L)..."
+
+#~ msgid "_Copy LaTeX citation"
+#~ msgstr "复制 LaTeX 引用(_C)"
+
+#~ msgid "Introduction"
+#~ msgstr "介绍"
+
+#~ msgid "Downloading %1"
+#~ msgstr "下载 %1"
+
+#~ msgid "Opening URI '%1' on server"
+#~ msgstr "在服务器上打开 URI '%1'"
+
+#~ msgid "Reading URI '%1' on server"
+#~ msgstr "在服务器上读取 URI '%1'"
+
+#~ msgid "Closing URI '%1' on server"
+#~ msgstr "在服务器上关闭 URI '%1'"
