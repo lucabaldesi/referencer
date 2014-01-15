@@ -14,7 +14,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2014-01-14 05:14+0000\n"
+"X-Launchpad-Export-Date: 2014-01-15 05:14+0000\n"
 "X-Generator: Launchpad (build 16890)\n"
 
 #: ../plugins/ads.py:13
@@ -882,8 +882,7 @@ msgstr ""
 "  David Coeurjolly https://launchpad.net/~dcoeurjo\n"
 "  Frédéric Grosshans https://launchpad.net/~fgrosshans\n"
 "  Guillaume Lanquepin-Chesnais https://launchpad.net/~guyomel\n"
-"  Jérôme Rousselot https://launchpad.net/~jerome-rousselot\n"
-"  Mortimer https://launchpad.net/~mortimer-pa"
+"  Jérôme Rousselot https://launchpad.net/~jerome-rousselot"
 
 #: ../src/RefWindow.C:1814
 msgid "Showing '%1'"
@@ -1127,172 +1126,3 @@ msgstr ""
 #: ../src/Utility.C:2197
 msgid "The"
 msgstr ""
-
-#~ msgid "<b>Document</b>"
-#~ msgstr "<b>Document</b>"
-
-#~ msgid "<b>E_xtra Fields</b>"
-#~ msgstr "<b>Champs _optionnels</b>"
-
-#~ msgid "<b>Metadata</b>"
-#~ msgstr "<b>Métadonnées</b>"
-
-#~ msgid "Add a field"
-#~ msgstr "Ajouter un champ"
-
-#~ msgid "Attempt to look up metadata for this document online"
-#~ msgstr "Tentative de recherche en ligne des métadonnées de ce document"
-
-#~ msgid "Clear metadata"
-#~ msgstr "Effacer les métadonnées"
-
-#~ msgid "Delete this field"
-#~ msgstr "Supprimer ce champ"
-
-#~ msgid "Document Properties"
-#~ msgstr "Propriétés du document"
-
-#~ msgid "File:"
-#~ msgstr "Fichier :"
-
-#~ msgid "Fill out metadata from BibTeX on clipboard"
-#~ msgstr "Remplir les métadonnées depuis BibTeX via le presse-papier"
-
-#~ msgid "Rename this field"
-#~ msgstr "Renommer ce champ"
-
-#~ msgid "Select A File"
-#~ msgstr "Sélectionnez un Fichier"
-
-#~ msgid "_Key:"
-#~ msgstr "_Clefs :"
-
-#~ msgid "_Look Up"
-#~ msgstr "_Rechercher"
-
-#~ msgid "<b>Proxy</b>"
-#~ msgstr "<b>Proxy</b>"
-
-#~ msgid ""
-#~ "<i>Plugins nearer the top of the list are tried first when looking up "
-#~ "metadata.</i>"
-#~ msgstr ""
-#~ "Les greffons les plus proches du haut de la liste sont essayés en premier "
-#~ "lors de la recherche de métadonnées."
-
-#~ msgid ""
-#~ "<i>These proxy settings apply desktop-wide\n"
-#~ "to all Gnome applications.  Auto-configuration\n"
-#~ " URLs are not supported.</i>"
-#~ msgstr ""
-#~ "<i>Ces paramètres de serveur proxy s'appliquent\n"
-#~ "à toutes les applications Gnome. Les URLs \n"
-#~ "d'auto-configuration ne sont pas prises en charge. </i>"
-
-#~ msgid "C_onfigure..."
-#~ msgstr "C_onfigurer..."
-
-#~ msgid "Host:"
-#~ msgstr "Serveur :"
-
-#~ msgid "Move _down"
-#~ msgstr "Déplacer vers le bas"
-
-#~ msgid "Move _up"
-#~ msgstr "Déplacer vers le haut"
-
-#~ msgid "Network"
-#~ msgstr "Réseau"
-
-#~ msgid "Password:"
-#~ msgstr "Mot de passe :"
-
-#~ msgid "Plugins"
-#~ msgstr "Modules"
-
-#~ msgid "Port:"
-#~ msgstr "Port:"
-
-#~ msgid "Preferences"
-#~ msgstr "Préférences"
-
-#~ msgid "Use authentication"
-#~ msgstr "Utiliser l'authentification"
-
-#~ msgid "Use web proxy"
-#~ msgstr "Utiliser un proxy web"
-
-#~ msgid "Username:"
-#~ msgstr "Identifiant :"
-
-#~ msgid "_About..."
-#~ msgstr "À _propos..."
-
-#~ msgid "Downloaded Documents"
-#~ msgstr "Documents téléchargés"
-
-#~ msgid ""
-#~ "<span size='xx-small'> </span>\n"
-#~ "<small>%1</small>\n"
-#~ "<b>%2</b>\n"
-#~ "%3\n"
-#~ "<i>%4</i>"
-#~ msgstr ""
-#~ "<span size='xx-small'> </span>\n"
-#~ "<small>%1</small>\n"
-#~ "<b>%2</b>\n"
-#~ "%3\n"
-#~ "<i>%4</i>"
-
-#~ msgid "Parsing Library XML"
-#~ msgstr "Analyse de la bibliothèque XML"
-
-#~ msgid "Document location ambiguity"
-#~ msgstr "Emplacement du document ambigü"
-
-#~ msgid ""
-#~ "The file '%1' exists in two locations:\n"
-#~ "\tOriginal: <b>%2</b>\n"
-#~ "\tNew: <b>%3</b>\n"
-#~ "\n"
-#~ "Do you want to keep the original location, or update it to the new one?"
-#~ msgstr ""
-#~ "Le fichier '%1' existe en deux endroits :\n"
-#~ "\tActuel : <b>%2</b>\n"
-#~ "\tNouveau : <b>%3</b>\n"
-#~ "\n"
-#~ "Voulez-vous conserver l'emplacement actuel ou voulez-vous le mettre à jour "
-#~ "vers le nouveau ?"
-
-#~ msgid "Apply choice to all ambiguous locations"
-#~ msgstr "Appliquer ce choix pour tous les emplacements ambigüs"
-
-#~ msgid "Keep _Original"
-#~ msgstr "Garder l'_original"
-
-#~ msgid "Use _New"
-#~ msgstr "Utiliser le _nouveau"
-
-#~ msgid "'%s' is not a valid boolean value"
-#~ msgstr "'%s' n'est pas une valeur booléenne valide"
-
-#~ msgid "_Library Folder..."
-#~ msgstr "Répertoire de la bibliothèque"
-
-#~ msgid "_Copy LaTeX citation"
-#~ msgstr "_Copier une citation LaTeX"
-
-#~ msgid "Introduction"
-#~ msgstr "Introduction"
-
-#~ msgid "Downloading %1"
-#~ msgstr "Téléchargement de %1"
-
-#~ msgid "Opening URI '%1' on server"
-#~ msgstr "Ouverture de l'URI '%1' sur le serveur"
-
-#~ msgid "Reading URI '%1' on server"
-#~ msgstr "Lecture de l'URI '%1' sur le serveur"
-
-#~ msgid "Closing URI '%1' on server"
-#~ msgstr "Fermeture de l'URI '%1' sur le serveur"

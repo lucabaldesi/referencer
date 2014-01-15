@@ -14,7 +14,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2014-01-14 05:15+0000\n"
+"X-Launchpad-Export-Date: 2014-01-15 05:14+0000\n"
 "X-Generator: Launchpad (build 16890)\n"
 
 #: ../plugins/ads.py:13
@@ -1080,51 +1080,3 @@ msgstr ""
 #: ../src/Utility.C:2197
 msgid "The"
 msgstr ""
-
-#~ msgid "<b>Document</b>"
-#~ msgstr "<b>Документ</b>"
-
-#~ msgid "<b>E_xtra Fields</b>"
-#~ msgstr "<b>Д_одатна поља</b>"
-
-#~ msgid "<b>Metadata</b>"
-#~ msgstr "<b>Подаци</b>"
-
-#~ msgid "Add a field"
-#~ msgstr "Додај поље"
-
-#~ msgid "Attempt to look up metadata for this document online"
-#~ msgstr "Покушавам да добавим податке о овом документу са интернета"
-
-#~ msgid "Clear metadata"
-#~ msgstr "Очисти податке"
-
-#~ msgid "Delete this field"
-#~ msgstr "Обриши ово поље"
-
-#~ msgid "Document Properties"
-#~ msgstr "Својства документа"
-
-#~ msgid "File:"
-#~ msgstr "Датотека:"
-
-#~ msgid "Fill out metadata from BibTeX on clipboard"
-#~ msgstr "Kopiraj податке из BibTeX у клипборд"
-
-#~ msgid "Rename this field"
-#~ msgstr "Преименуј ово поље"
-
-#~ msgid "Select A File"
-#~ msgstr "Изаберите датотеку"
-
-#~ msgid "_Key:"
-#~ msgstr "_Тастер:"
-
-#~ msgid "_Look Up"
-#~ msgstr "_Пронађи"
-
-#~ msgid "<b>Proxy</b>"
-#~ msgstr "<b>Прокси</b>"
-
-#~ msgid "Host:"
-#~ msgstr "Домаћин:"

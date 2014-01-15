@@ -14,7 +14,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2014-01-14 05:15+0000\n"
+"X-Launchpad-Export-Date: 2014-01-15 05:14+0000\n"
 "X-Generator: Launchpad (build 16890)\n"
 
 #: ../plugins/ads.py:13
@@ -1088,58 +1088,3 @@ msgstr ""
 #: ../src/Utility.C:2197
 msgid "The"
 msgstr ""
-
-#~ msgid "<b>Document</b>"
-#~ msgstr "<b>سند</b>"
-
-#~ msgid "<b>Metadata</b>"
-#~ msgstr "<b>فوق داده</b>"
-
-#~ msgid "Document Properties"
-#~ msgstr "ویژگیهای سند"
-
-#~ msgid "File:"
-#~ msgstr "پرونده:"
-
-#~ msgid "Select A File"
-#~ msgstr "یک پرونده انتخاب کنید"
-
-#~ msgid "_Key:"
-#~ msgstr "_کلید:"
-
-#~ msgid "Host:"
-#~ msgstr "میزبان:"
-
-#~ msgid "Network"
-#~ msgstr "شبکه"
-
-#~ msgid "Password:"
-#~ msgstr "رمز عبور:"
-
-#~ msgid "Plugins"
-#~ msgstr "افزونه‌ها"
-
-#~ msgid "Preferences"
-#~ msgstr "تنظیمات‌"
-
-#~ msgid "Username:"
-#~ msgstr "نام کاربر:"
-
-#~ msgid ""
-#~ "<span size='xx-small'> </span>\n"
-#~ "<small>%1</small>\n"
-#~ "<b>%2</b>\n"
-#~ "%3\n"
-#~ "<i>%4</i>"
-#~ msgstr ""
-#~ "<span size='xx-small'> </span>\n"
-#~ "<small>%1</small>\n"
-#~ "<b>%2</b>\n"
-#~ "%3\n"
-#~ "<i>%4</i>"
-
-#~ msgid "Introduction"
-#~ msgstr "مقدمه"
-
-#~ msgid "Downloading %1"
-#~ msgstr "بارگیری %1"

@@ -14,7 +14,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2014-01-14 05:14+0000\n"
+"X-Launchpad-Export-Date: 2014-01-15 05:14+0000\n"
 "X-Generator: Launchpad (build 16890)\n"
 
 #: ../plugins/ads.py:13
@@ -1082,63 +1082,3 @@ msgstr ""
 #: ../src/Utility.C:2197
 msgid "The"
 msgstr ""
-
-#~ msgid "<b>Document</b>"
-#~ msgstr "<b>Document</b>"
-
-#~ msgid "<b>E_xtra Fields</b>"
-#~ msgstr "<b>Camps E_xtres</b>"
-
-#~ msgid "<b>Metadata</b>"
-#~ msgstr "<b>Metadades</b>"
-
-#~ msgid "Add a field"
-#~ msgstr "Afegeix un camp"
-
-#~ msgid "Attempt to look up metadata for this document online"
-#~ msgstr "Prova de buscar les metadades d'aquest document a la xarxa"
-
-#~ msgid "Delete this field"
-#~ msgstr "Elimina aquest camp"
-
-#~ msgid "Document Properties"
-#~ msgstr "Propietats del Document"
-
-#~ msgid "File:"
-#~ msgstr "Fitxer:"
-
-#~ msgid "Rename this field"
-#~ msgstr "Reanomena aquest camp"
-
-#~ msgid "Select A File"
-#~ msgstr "Escolliu un fitxer"
-
-#~ msgid "_Key:"
-#~ msgstr "_Clau:"
-
-#~ msgid "<b>Proxy</b>"
-#~ msgstr "<b>Proxy</b>"
-
-#~ msgid "Host:"
-#~ msgstr "Màquina:"
-
-#~ msgid "Port:"
-#~ msgstr "Port:"
-
-#~ msgid "Preferences"
-#~ msgstr "Preferències"
-
-#~ msgid "Use authentication"
-#~ msgstr "Utilitza l'autenticació"
-
-#~ msgid "Use web proxy"
-#~ msgstr "Utilitza un proxy web"
-
-#~ msgid "Username:"
-#~ msgstr "Nom d'usuari/a:"
-
-#~ msgid "_Copy LaTeX citation"
-#~ msgstr "_Copia cita LaTeX"
-
-#~ msgid "Introduction"
-#~ msgstr "Introducció"

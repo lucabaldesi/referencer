@@ -14,7 +14,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2014-01-14 05:15+0000\n"
+"X-Launchpad-Export-Date: 2014-01-15 05:15+0000\n"
 "X-Generator: Launchpad (build 16890)\n"
 
 #: ../plugins/ads.py:13
@@ -1081,45 +1081,3 @@ msgstr ""
 #: ../src/Utility.C:2197
 msgid "The"
 msgstr ""
-
-#~ msgid "<b>Document</b>"
-#~ msgstr "文件"
-
-#~ msgid "Add a field"
-#~ msgstr "新增欄位"
-
-#~ msgid "Delete this field"
-#~ msgstr "刪除此欄位"
-
-#~ msgid "Document Properties"
-#~ msgstr "文件屬性"
-
-#~ msgid "Rename this field"
-#~ msgstr "重新命名此欄位"
-
-#~ msgid "Select A File"
-#~ msgstr "選取一個檔案"
-
-#~ msgid "_Look Up"
-#~ msgstr "檢索(_L)"
-
-#~ msgid "<b>Proxy</b>"
-#~ msgstr "<b>代理伺服器</b>"
-
-#~ msgid "C_onfigure..."
-#~ msgstr "設定(_O)"
-
-#~ msgid "Password:"
-#~ msgstr "密碼:"
-
-#~ msgid "Port:"
-#~ msgstr "連接埠："
-
-#~ msgid "Preferences"
-#~ msgstr "偏好設定"
-
-#~ msgid "Username:"
-#~ msgstr "使用者名稱："
-
-#~ msgid "_About..."
-#~ msgstr "關於(_A)..."

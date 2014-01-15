@@ -14,7 +14,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2014-01-14 05:15+0000\n"
+"X-Launchpad-Export-Date: 2014-01-15 05:14+0000\n"
 "X-Generator: Launchpad (build 16890)\n"
 
 #: ../plugins/ads.py:13
@@ -867,7 +867,6 @@ msgstr ""
 "  Pedro Henriques https://launchpad.net/~pedrohenriques\n"
 "  Renne Rocha https://launchpad.net/~rennerocha\n"
 "  Santhell https://launchpad.net/~santhell-ferreira\n"
-"  Tiago Silva https://launchpad.net/~tiagosilva\n"
 "  VCarvalho https://launchpad.net/~v-carvalho\n"
 "  rgomesf https://launchpad.net/~rgomesf"
 
@@ -1109,114 +1108,3 @@ msgstr ""
 #: ../src/Utility.C:2197
 msgid "The"
 msgstr ""
-
-#~ msgid "   "
-#~ msgstr "   "
-
-#~ msgid "Pages:"
-#~ msgstr "Páginas:"
-
-#~ msgid "Type:"
-#~ msgstr "Tipo:"
-
-#~ msgid "Year:"
-#~ msgstr "Ano:"
-
-#~ msgid "_Title:"
-#~ msgstr "_Título:"
-
-#~ msgid "_Search:"
-#~ msgstr "_Procura:"
-
-#~ msgid "This Document"
-#~ msgstr "Este Documento"
-
-#~ msgid "Year  "
-#~ msgstr "Ano  "
-
-#~ msgid "<b>Document</b>"
-#~ msgstr "<b>Documento<b>"
-
-#~ msgid "<b>E_xtra Fields</b>"
-#~ msgstr "<b>Campos E_xtra</b>"
-
-#~ msgid "<b>Metadata</b>"
-#~ msgstr "<b>Metadados</b>"
-
-#~ msgid "Add a field"
-#~ msgstr "Adicionar um campo"
-
-#~ msgid "Attempt to look up metadata for this document online"
-#~ msgstr "Tentativa de procurar online metadados para este documento"
-
-#~ msgid "Clear metadata"
-#~ msgstr "Limpar metadados"
-
-#~ msgid "Delete this field"
-#~ msgstr "Apagar este campo"
-
-#~ msgid "Document Properties"
-#~ msgstr "Propriedades do documento"
-
-#~ msgid "File:"
-#~ msgstr "Ficheiro"
-
-#~ msgid "Rename this field"
-#~ msgstr "Renomear este campo"
-
-#~ msgid "Select A File"
-#~ msgstr "Seleccionar um ficheiro"
-
-#~ msgid "_Key:"
-#~ msgstr "_Tecla:"
-
-#~ msgid "_Look Up"
-#~ msgstr "_Procurar"
-
-#~ msgid "<b>Proxy</b>"
-#~ msgstr "<b>Proxy</b>"
-
-#~ msgid "Move _down"
-#~ msgstr "Mover para _baixo"
-
-#~ msgid "Move _up"
-#~ msgstr "Mover _para cima"
-
-#~ msgid "Network"
-#~ msgstr "Rede"
-
-#~ msgid "Password:"
-#~ msgstr "Senha:"
-
-#~ msgid "Plugins"
-#~ msgstr "Extensões"
-
-#~ msgid "Port:"
-#~ msgstr "Porto:"
-
-#~ msgid "Preferences"
-#~ msgstr "Preferências"
-
-#~ msgid "Use authentication"
-#~ msgstr "Usar autenticação"
-
-#~ msgid "Use web proxy"
-#~ msgstr "Usar proxy web"
-
-#~ msgid "Username:"
-#~ msgstr "Nome de Utilizador:"
-
-#~ msgid "Apply choice to all ambiguous locations"
-#~ msgstr "Aplicar a escolha a todas as localizações ambíguas"
-
-#~ msgid "Keep _Original"
-#~ msgstr "Manter _Original"
-
-#~ msgid "Use _New"
-#~ msgstr "Usar _Nova"
-
-#~ msgid "Introduction"
-#~ msgstr "Introdução"
-
-#~ msgid "Downloading %1"
-#~ msgstr "A obter %1"

@@ -14,7 +14,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2014-01-14 05:14+0000\n"
+"X-Launchpad-Export-Date: 2014-01-15 05:14+0000\n"
 "X-Generator: Launchpad (build 16890)\n"
 
 #: ../plugins/ads.py:13
@@ -874,7 +874,6 @@ msgid "translator-credits"
 msgstr ""
 "Launchpad Contributions:\n"
 "  Eric Spierings https://launchpad.net/~ericspierings\n"
-"  Harm Hilvers https://launchpad.net/~harmhilvers\n"
 "  Mads Chr. Olesen https://launchpad.net/~shiyee\n"
 "  Redmar https://launchpad.net/~redmar\n"
 "  roderikk https://launchpad.net/~roderikk"
@@ -1118,36 +1117,3 @@ msgstr ""
 #: ../src/Utility.C:2197
 msgid "The"
 msgstr ""
-
-#~ msgid "Clear metadata"
-#~ msgstr "Verwijder metadata"
-
-#~ msgid "Fill out metadata from BibTeX on clipboard"
-#~ msgstr "Plaats metadata uit BibTeX in Clipbord"
-
-#~ msgid "_Look Up"
-#~ msgstr "_Opzoeken"
-
-#~ msgid "Host:"
-#~ msgstr "Serveradres:"
-
-#~ msgid "Network"
-#~ msgstr "Netwerk"
-
-#~ msgid "Plugins"
-#~ msgstr "Plugins"
-
-#~ msgid "Port:"
-#~ msgstr "Poort:"
-
-#~ msgid "Preferences"
-#~ msgstr "Voorkeuren"
-
-#~ msgid "Use authentication"
-#~ msgstr "Authenticatie gebruiken"
-
-#~ msgid "Use web proxy"
-#~ msgstr "Gebruik web proxy"
-
-#~ msgid "Username:"
-#~ msgstr "Gebruikersnaam:"
