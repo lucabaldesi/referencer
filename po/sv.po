@@ -14,8 +14,8 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2014-01-15 05:15+0000\n"
-"X-Generator: Launchpad (build 16890)\n"
+"X-Launchpad-Export-Date: 2014-01-16 05:13+0000\n"
+"X-Generator: Launchpad (build 16901)\n"
 
 #: ../plugins/ads.py:13
 msgid "NASA Astrophysics Data System DOI resolver"
@@ -1084,90 +1084,3 @@ msgstr ""
 #: ../src/Utility.C:2197
 msgid "The"
 msgstr ""
-
-#~ msgid "<b>Document</b>"
-#~ msgstr "<b>Dokument</b>"
-
-#~ msgid "<b>E_xtra Fields</b>"
-#~ msgstr "<b>E_xtra Fält</b>"
-
-#~ msgid "<b>Metadata</b>"
-#~ msgstr "<b>Metadata</b>"
-
-#~ msgid "Add a field"
-#~ msgstr "Lägg till ett fält"
-
-#~ msgid "Attempt to look up metadata for this document online"
-#~ msgstr "Försök att hämta metadata för detta dokument på nätet"
-
-#~ msgid "Clear metadata"
-#~ msgstr "Töm metadata"
-
-#~ msgid "Delete this field"
-#~ msgstr "Ta bort detta fält"
-
-#~ msgid "Document Properties"
-#~ msgstr "Dokumentegenskaper"
-
-#~ msgid "File:"
-#~ msgstr "Fil:"
-
-#~ msgid "Rename this field"
-#~ msgstr "Döp om detta fält"
-
-#~ msgid "Select A File"
-#~ msgstr "Välj en fil"
-
-#~ msgid "_Key:"
-#~ msgstr "_Tangent:"
-
-#~ msgid "_Look Up"
-#~ msgstr "_Slå upp"
-
-#~ msgid "<b>Proxy</b>"
-#~ msgstr "<b>Proxy</b>"
-
-#~ msgid "Host:"
-#~ msgstr "Värd:"
-
-#~ msgid "Move _down"
-#~ msgstr "Flytta _ner"
-
-#~ msgid "Move _up"
-#~ msgstr "Flytta _upp"
-
-#~ msgid "Network"
-#~ msgstr "Nätverk"
-
-#~ msgid "Password:"
-#~ msgstr "Lösenord:"
-
-#~ msgid "Plugins"
-#~ msgstr "Insticksmoduler"
-
-#~ msgid "Port:"
-#~ msgstr "Port:"
-
-#~ msgid "Preferences"
-#~ msgstr "Inställningar"
-
-#~ msgid "Use authentication"
-#~ msgstr "Använd autentisering"
-
-#~ msgid "Use web proxy"
-#~ msgstr "Använd webbproxy"
-
-#~ msgid "Downloaded Documents"
-#~ msgstr "Nedladdade dokument"
-
-#~ msgid "Apply choice to all ambiguous locations"
-#~ msgstr "Applicera val på alla tvetydliga platser"
-
-#~ msgid "Keep _Original"
-#~ msgstr "Behåll_Orginal"
-
-#~ msgid "Use _New"
-#~ msgstr "Använda_Ny"
-
-#~ msgid "Introduction"
-#~ msgstr "Introduktion"
