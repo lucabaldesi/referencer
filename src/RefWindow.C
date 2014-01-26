@@ -3153,6 +3153,7 @@ bool RefWindow::SearchDialog::progressCallback (void *ptr)
 bool RefWindow::SearchDialog::progress ()
 {
 	progressbar_->pulse ();
+	return false;
 }
 
 

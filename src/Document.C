@@ -906,9 +906,10 @@ bool Document::parseBibtex (Glib::ustring const &bibtex)
 		getBibData().mergeIn (newdoc.getBibData());	
 		
 		BibUtils::bibl_free( &b );
+		return true;
 	} catch (Glib::Error ex) {
 		BibUtils::bibl_free( &b );
 		Utility::exceptionDialog (&ex, _("Parsing BibTeX"));
-		return false;
 	}
+	return false;
 }

@@ -93,12 +93,14 @@ static PyObject *referencer_document_get_field (PyObject *self, PyObject *args)
 
 static PyObject *referencer_document_get_fields (PyObject *self, PyObject *args)
 {
-/* TODO */
+	/* TODO */
+	return NULL;
 }
 
 static PyObject *referencer_document_set_fields (PyObject *self, PyObject *args)
 {
-/* TODO */
+	/* TODO */
+	return NULL;
 }
 
 static PyObject *referencer_document_set_field (PyObject *self, PyObject *args)

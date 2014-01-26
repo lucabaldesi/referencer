@@ -54,6 +54,7 @@ void Linker::createUI (RefWindow *window, DocumentView *view)
 Glib::ustring Linker::getURL (Document *doc)
 {
 	DEBUG ("Linker::getURL called erroneously!");
+	return "";
 }
 
 void Linker::doLink (Document *doc)
