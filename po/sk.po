@@ -1,20 +1,20 @@
-# Serbian translation for referencer
-# Copyright (c) 2008 Rosetta Contributors and Canonical Ltd 2008
+# Slovak translation for referencer
+# Copyright (c) 2011 Rosetta Contributors and Canonical Ltd 2011
 # This file is distributed under the same license as the referencer package.
-# FIRST AUTHOR <EMAIL@ADDRESS>, 2008.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2011.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: referencer\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
 "POT-Creation-Date: 2014-01-13 11:56+0100\n"
-"PO-Revision-Date: 2014-01-14 00:47+0000\n"
-"Last-Translator: Vladimir Lazic <vlazic@gmail.com>\n"
-"Language-Team: Serbian <sr@li.org>\n"
+"PO-Revision-Date: 2011-03-09 19:41+0000\n"
+"Last-Translator: DAG Software <Unknown>\n"
+"Language-Team: Slovak <sk@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2014-01-15 05:14+0000\n"
+"X-Launchpad-Export-Date: 2014-01-14 05:15+0000\n"
 "X-Generator: Launchpad (build 16890)\n"
 
 #: ../plugins/ads.py:13
@@ -170,7 +170,7 @@ msgstr ""
 
 #: ../src/CrossRefPlugin.C:197
 msgid "_Preferences"
-msgstr ""
+msgstr "_Nastavenia"
 
 #: ../src/CrossRefPlugin.C:198
 msgid "_Disable CrossRef"
@@ -186,7 +186,7 @@ msgstr ""
 
 #: ../src/Document.C:32
 msgid "Unnamed"
-msgstr ""
+msgstr "Bez názvu"
 
 #: ../src/Document.C:89
 msgid ""
@@ -203,11 +203,11 @@ msgstr ""
 
 #: ../src/Document.C:117
 msgid "_Ignore"
-msgstr ""
+msgstr "_Ignorovať"
 
 #: ../src/Document.C:121
 msgid "_Replace"
-msgstr ""
+msgstr "Nah_radiť"
 
 #: ../src/Document.C:740
 msgid "Moving '%1' to '%2'"
@@ -235,7 +235,7 @@ msgstr ""
 
 #: ../src/DocumentProperties.C:89 ../src/RefWindow.C:1110
 msgid "Name"
-msgstr ""
+msgstr "Názov"
 
 #: ../src/DocumentProperties.C:90
 msgid "Value"
@@ -243,7 +243,7 @@ msgstr ""
 
 #: ../src/DocumentProperties.C:236
 msgid "_Type:"
-msgstr ""
+msgstr "_Typ:"
 
 #: ../src/DocumentProperties.C:399
 msgid "This key already exists.\n"
@@ -259,23 +259,23 @@ msgstr ""
 
 #: ../src/DocumentTypes.C:31 ../src/DocumentView.C:1602
 msgid "Title"
-msgstr ""
+msgstr "Názov"
 
 #: ../src/DocumentTypes.C:32
 msgid "Authors"
-msgstr ""
+msgstr "Autori"
 
 #: ../src/DocumentTypes.C:33
 msgid "Journal"
-msgstr ""
+msgstr "Žurnál"
 
 #: ../src/DocumentTypes.C:34 ../src/DocumentView.C:1604
 msgid "Year"
-msgstr ""
+msgstr "Rok"
 
 #: ../src/DocumentTypes.C:36
 msgid "Volume"
-msgstr ""
+msgstr "Zväzok"
 
 #: ../src/DocumentTypes.C:37
 msgid "Issue"
@@ -283,47 +283,47 @@ msgstr ""
 
 #: ../src/DocumentTypes.C:38
 msgid "Pages"
-msgstr ""
+msgstr "Stránky"
 
 #: ../src/DocumentTypes.C:39
 msgid "Month"
-msgstr ""
+msgstr "Mesiac"
 
 #: ../src/DocumentTypes.C:40
 msgid "Note"
-msgstr ""
+msgstr "Poznámka"
 
 #: ../src/DocumentTypes.C:41 ../src/DocumentView.C:1601
 msgid "Key"
-msgstr ""
+msgstr "Kľúč"
 
 #: ../src/DocumentTypes.C:43
 msgid "Editor"
-msgstr ""
+msgstr "Redaktor"
 
 #: ../src/DocumentTypes.C:44
 msgid "Publisher"
-msgstr ""
+msgstr "Vydavateľstvo"
 
 #: ../src/DocumentTypes.C:45
 msgid "Series"
-msgstr ""
+msgstr "Edícia"
 
 #: ../src/DocumentTypes.C:46
 msgid "Address"
-msgstr ""
+msgstr "Adresa"
 
 #: ../src/DocumentTypes.C:47
 msgid "Edition"
-msgstr ""
+msgstr "Vydanie"
 
 #: ../src/DocumentTypes.C:49
 msgid "Book title"
-msgstr ""
+msgstr "Názov knihy"
 
 #: ../src/DocumentTypes.C:50
 msgid "Organisation"
-msgstr ""
+msgstr "Organizácia"
 
 #: ../src/DocumentTypes.C:52
 msgid "How published"
@@ -331,7 +331,7 @@ msgstr ""
 
 #: ../src/DocumentTypes.C:54
 msgid "School"
-msgstr ""
+msgstr "Škola"
 
 #: ../src/DocumentTypes.C:55
 msgid "Institution"
@@ -339,23 +339,23 @@ msgstr ""
 
 #: ../src/DocumentTypes.C:56
 msgid "Chapter"
-msgstr ""
+msgstr "Kapitola"
 
 #: ../src/DocumentTypes.C:57
 msgid "Type"
-msgstr ""
+msgstr "Typ"
 
 #: ../src/DocumentTypes.C:58
 msgid "DOI"
-msgstr ""
+msgstr "DOI"
 
 #: ../src/DocumentTypes.C:61
 msgid "Article"
-msgstr ""
+msgstr "Článok"
 
 #: ../src/DocumentTypes.C:77
 msgid "Book"
-msgstr ""
+msgstr "Kniha"
 
 #: ../src/DocumentTypes.C:95
 msgid "In Proceedings"
@@ -363,11 +363,11 @@ msgstr ""
 
 #: ../src/DocumentTypes.C:114
 msgid "Misc"
-msgstr ""
+msgstr "Rôzne"
 
 #: ../src/DocumentTypes.C:124
 msgid "Unpublished"
-msgstr ""
+msgstr "Nezverejnené"
 
 #: ../src/DocumentTypes.C:133
 msgid "Master's thesis"
@@ -383,7 +383,7 @@ msgstr ""
 
 #: ../src/DocumentTypes.C:167
 msgid "Conference"
-msgstr ""
+msgstr "Konferencia"
 
 #: ../src/DocumentTypes.C:178
 msgid "In Book"
@@ -391,7 +391,7 @@ msgstr ""
 
 #: ../src/DocumentTypes.C:195
 msgid "Booklet"
-msgstr ""
+msgstr "Booklet"
 
 #: ../src/DocumentTypes.C:206
 msgid "In Collection"
@@ -399,7 +399,7 @@ msgstr ""
 
 #: ../src/DocumentTypes.C:221
 msgid "Manual"
-msgstr ""
+msgstr "Ručne"
 
 #: ../src/DocumentTypes.C:233
 msgid "Technical Report"
@@ -432,11 +432,11 @@ msgstr ""
 #. * as just "%1"
 #: ../src/DocumentView.C:1518
 msgid "By %1"
-msgstr ""
+msgstr "Podľa %1"
 
 #: ../src/DocumentView.C:1603
 msgid "Author"
-msgstr ""
+msgstr "Autor"
 
 #: ../src/Library.C:185
 msgid "Stumbled upon a tag without a name or an id."
@@ -448,7 +448,7 @@ msgstr ""
 
 #: ../src/Library.C:375
 msgid "Opening %1"
-msgstr ""
+msgstr "Otváranie %1"
 
 #: ../src/Library.C:447
 msgid "Could not create an XML writer."
@@ -456,23 +456,23 @@ msgstr ""
 
 #: ../src/Linker.C:79
 msgid "DOI Link"
-msgstr ""
+msgstr "DOI odkaz"
 
 #: ../src/Linker.C:100
 msgid "arXiv Link"
-msgstr ""
+msgstr "arXiv odkaz"
 
 #: ../src/Linker.C:119
 msgid "URL Link"
-msgstr ""
+msgstr "URL odkaz"
 
 #: ../src/Linker.C:138
 msgid "PubMed Link"
-msgstr ""
+msgstr "PubMed odkaz"
 
 #: ../src/Linker.C:181
 msgid "Google Scholar"
-msgstr ""
+msgstr "Google Scholar"
 
 #: ../src/main.C:97
 msgid "Terminating due to unhandled exception"
@@ -480,20 +480,20 @@ msgstr ""
 
 #: ../src/Preferences.C:184
 msgid "Enabled"
-msgstr ""
+msgstr "Povolené"
 
 #: ../src/Preferences.C:188 ../src/PythonPlugin.C:364
 #: ../src/PythonPlugin.C:404
 msgid "Module"
-msgstr ""
+msgstr "Modul"
 
 #: ../src/Preferences.C:190
 msgid "Description"
-msgstr ""
+msgstr "Popis"
 
 #: ../src/Preferences.C:534
 msgid "Plugin error"
-msgstr ""
+msgstr "Chyba modulu"
 
 #: ../src/PythonPlugin.C:361
 msgid ""
@@ -502,14 +502,18 @@ msgid ""
 "%3: %4\n"
 "%5: %6\n"
 msgstr ""
+"%1: %2\n"
+"\n"
+"%3: %4\n"
+"%5: %6\n"
 
 #: ../src/PythonPlugin.C:362 ../src/PythonPlugin.C:402 ../src/Utility.C:261
 msgid "Exception"
-msgstr ""
+msgstr "Výnimka"
 
 #: ../src/PythonPlugin.C:366 ../src/PythonPlugin.C:406
 msgid "Explanation"
-msgstr ""
+msgstr "Vysvetlenie"
 
 #: ../src/PythonPlugin.C:401
 msgid ""
@@ -518,10 +522,14 @@ msgid ""
 "%3: %4\n"
 "%5: %6"
 msgstr ""
+"<big><b>%1: %2</b></big>\n"
+"\n"
+"%3: %4\n"
+"%5: %6"
 
 #: ../src/RefWindow.C:262
 msgid "Tags"
-msgstr ""
+msgstr "Štítky"
 
 #: ../src/RefWindow.C:372
 msgid "_Library"
@@ -537,7 +545,7 @@ msgstr ""
 
 #: ../src/RefWindow.C:377
 msgid "_Open..."
-msgstr ""
+msgstr "_Otvoriť..."
 
 #: ../src/RefWindow.C:377 ../src/RefWindow.C:1659
 msgid "Open Library"
@@ -553,7 +561,7 @@ msgstr ""
 
 #: ../src/RefWindow.C:383
 msgid "Save _As..."
-msgstr ""
+msgstr "Uložiť _ako..."
 
 #: ../src/RefWindow.C:386
 msgid "E_xport as BibTeX..."
@@ -569,19 +577,19 @@ msgstr ""
 
 #: ../src/RefWindow.C:395
 msgid "_Import..."
-msgstr ""
+msgstr "_Imporovať..."
 
 #: ../src/RefWindow.C:398
 msgid "_Work Offline"
-msgstr ""
+msgstr "_Pracovať off-line"
 
 #: ../src/RefWindow.C:402
 msgid "_Edit"
-msgstr ""
+msgstr "_Upraviť"
 
 #: ../src/RefWindow.C:404
 msgid "_View"
-msgstr ""
+msgstr "_Zobraziť"
 
 #. Translation note: this begins the sentence completed by
 #. * the "By %1" string, which is the child menu
@@ -590,11 +598,11 @@ msgstr ""
 #. * as just "%1"
 #: ../src/RefWindow.C:410
 msgid "Arran_ge Items"
-msgstr ""
+msgstr "Usporia_dať položky"
 
 #: ../src/RefWindow.C:412
 msgid "_Paste BibTeX"
-msgstr "_Убаци BibTeX"
+msgstr ""
 
 #: ../src/RefWindow.C:413
 msgid "Import references from BibTeX on the clipboard"
@@ -626,7 +634,7 @@ msgstr ""
 
 #: ../src/RefWindow.C:433 ../src/RefWindow.C:471
 msgid "_Tags"
-msgstr ""
+msgstr "Š_títky"
 
 #: ../src/RefWindow.C:435
 msgid "_Create Tag..."
@@ -646,11 +654,11 @@ msgstr ""
 
 #: ../src/RefWindow.C:447
 msgid "_Documents"
-msgstr ""
+msgstr "_Dokumenty"
 
 #: ../src/RefWindow.C:449
 msgid "_Add File..."
-msgstr ""
+msgstr "Pridať _súbor..."
 
 #: ../src/RefWindow.C:452
 msgid "Add _Folder..."
@@ -666,7 +674,7 @@ msgstr ""
 
 #: ../src/RefWindow.C:461
 msgid "_Remove"
-msgstr ""
+msgstr "Odst_rániť"
 
 #: ../src/RefWindow.C:465
 msgid "_Open"
@@ -686,7 +694,7 @@ msgstr ""
 
 #: ../src/RefWindow.C:485
 msgid "_Tools"
-msgstr ""
+msgstr "Nás_troje"
 
 #: ../src/RefWindow.C:487
 msgid "Export Notes as HTML"
@@ -694,7 +702,7 @@ msgstr ""
 
 #: ../src/RefWindow.C:490
 msgid "_Help"
-msgstr ""
+msgstr "_Nápoveda"
 
 #: ../src/RefWindow.C:492
 msgid "Contents"
@@ -706,23 +714,23 @@ msgstr ""
 
 #: ../src/RefWindow.C:673
 msgid "All"
-msgstr ""
+msgstr "Všetko"
 
 #: ../src/RefWindow.C:678
 msgid "Untagged"
-msgstr ""
+msgstr "Neoznačené"
 
 #: ../src/RefWindow.C:944
 msgid "%1 documents (%2 selected)"
-msgstr ""
+msgstr "%1 dokumentov (%2 vybraných)"
 
 #: ../src/RefWindow.C:948
 msgid "%1 documents"
-msgstr ""
+msgstr "%1 dokumentov"
 
 #: ../src/RefWindow.C:985
 msgid "_Notes: <i>%1</i>"
-msgstr ""
+msgstr "_Poznámky: <i>%1</i>"
 
 #: ../src/RefWindow.C:988
 msgid "Multiple documents selected"
@@ -738,7 +746,7 @@ msgstr ""
 
 #: ../src/RefWindow.C:1058
 msgid "Close _without Saving"
-msgstr ""
+msgstr "Zatvoriť _bez uloženia"
 
 #: ../src/RefWindow.C:1094
 msgid "Type a tag"
@@ -781,19 +789,19 @@ msgstr ""
 #: ../src/RefWindow.C:1271 ../src/RefWindow.C:1352 ../src/RefWindow.C:1510
 #: ../src/RefWindow.C:1679 ../src/RefWindow.C:1748 ../src/RefWindow.C:2715
 msgid "All Files"
-msgstr ""
+msgstr "Všetky súbory"
 
 #: ../src/RefWindow.C:1282 ../src/RefWindow.C:1363
 msgid "Selection:"
-msgstr ""
+msgstr "Výber:"
 
 #: ../src/RefWindow.C:1285 ../src/RefWindow.C:1366
 msgid "All Documents"
-msgstr ""
+msgstr "Všetky dokumenty"
 
 #: ../src/RefWindow.C:1286 ../src/RefWindow.C:1368
 msgid "Selected Documents"
-msgstr ""
+msgstr "Vybrané dokumenty"
 
 #. Any options here should be replicated in onManageBibtex
 #. Any options here should be replicated in onExportBibtex
@@ -811,7 +819,7 @@ msgstr ""
 
 #: ../src/RefWindow.C:1347
 msgid "HTML Files"
-msgstr ""
+msgstr "HTML súbory"
 
 #: ../src/RefWindow.C:1367
 msgid "Currently Shown Documents"
@@ -823,7 +831,7 @@ msgstr ""
 
 #: ../src/RefWindow.C:1498
 msgid "Browse"
-msgstr ""
+msgstr "Prehliadať"
 
 #: ../src/RefWindow.C:1538 ../src/RefWindow.C:1553
 msgid "Manage BibTeX File"
@@ -841,7 +849,7 @@ msgstr ""
 
 #: ../src/RefWindow.C:1584
 msgid "_Browse..."
-msgstr ""
+msgstr "_Prechádzať..."
 
 #: ../src/RefWindow.C:1674 ../src/RefWindow.C:1743
 msgid "Referencer Libraries"
@@ -856,7 +864,7 @@ msgstr ""
 msgid "translator-credits"
 msgstr ""
 "Launchpad Contributions:\n"
-"  Vladimir Lazic https://launchpad.net/~vlazic"
+"  DAG Software https://launchpad.net/~dagsoftware"
 
 #: ../src/RefWindow.C:1814
 msgid "Showing '%1'"
@@ -864,7 +872,7 @@ msgstr ""
 
 #: ../src/RefWindow.C:1823
 msgid "Cancelling"
-msgstr ""
+msgstr "Ruší sa"
 
 #. Show a dialog containing a treeview of checkboxes for
 #. * tags, and a button for creating tags
@@ -893,19 +901,19 @@ msgstr ""
 
 #: ../src/RefWindow.C:2004
 msgid "Document"
-msgstr ""
+msgstr "Dokument"
 
 #: ../src/RefWindow.C:2005
 msgid "Got text"
-msgstr ""
+msgstr "Získal text"
 
 #: ../src/RefWindow.C:2006
 msgid "Got ID"
-msgstr ""
+msgstr "Získal ID"
 
 #: ../src/RefWindow.C:2007
 msgid "Got metadata"
-msgstr ""
+msgstr "Získal metadáta"
 
 #: ../src/RefWindow.C:2008
 msgid "Outcome"
@@ -921,11 +929,11 @@ msgstr ""
 
 #: ../src/RefWindow.C:2136 ../src/RefWindow.C:2138
 msgid "Cancelled"
-msgstr ""
+msgstr "Zrušené"
 
 #: ../src/RefWindow.C:2142
 msgid "Finished"
-msgstr ""
+msgstr "Ukončené"
 
 #: ../src/RefWindow.C:2184
 msgid "Add Reference with ID"
@@ -933,11 +941,11 @@ msgstr ""
 
 #: ../src/RefWindow.C:2286
 msgid "Add Document"
-msgstr ""
+msgstr "Pridať dokument"
 
 #: ../src/RefWindow.C:2307
 msgid "Add Folder"
-msgstr ""
+msgstr "Pridať priečinok"
 
 #: ../src/RefWindow.C:2347
 msgid "Are you sure you want to remove these %1 documents?"
@@ -1024,11 +1032,11 @@ msgstr ""
 
 #: ../src/RefWindow.C:2734
 msgid "Format:"
-msgstr ""
+msgstr "Formát:"
 
 #: ../src/RefWindow.C:2831
 msgid "Imported %1 BibTeX references"
-msgstr ""
+msgstr "Importované %1 BibTeX odkazy"
 
 #: ../src/RefWindow.C:3172
 msgid "Searching..."
@@ -1064,6 +1072,9 @@ msgid ""
 "\n"
 "%3"
 msgstr ""
+"<big><b>%1: %2</b></big>\n"
+"\n"
+"%3"
 
 #: ../src/Utility.C:264
 msgid "The operation underway was: \"%1\""

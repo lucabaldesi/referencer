@@ -1,20 +1,20 @@
-# Serbian translation for referencer
-# Copyright (c) 2008 Rosetta Contributors and Canonical Ltd 2008
+# Bulgarian translation for referencer
+# Copyright (c) 2009 Rosetta Contributors and Canonical Ltd 2009
 # This file is distributed under the same license as the referencer package.
-# FIRST AUTHOR <EMAIL@ADDRESS>, 2008.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2009.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: referencer\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
 "POT-Creation-Date: 2014-01-13 11:56+0100\n"
-"PO-Revision-Date: 2014-01-14 00:47+0000\n"
-"Last-Translator: Vladimir Lazic <vlazic@gmail.com>\n"
-"Language-Team: Serbian <sr@li.org>\n"
+"PO-Revision-Date: 2010-03-19 13:45+0000\n"
+"Last-Translator: svilborg <Unknown>\n"
+"Language-Team: Bulgarian <bg@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2014-01-15 05:14+0000\n"
+"X-Launchpad-Export-Date: 2014-01-14 05:14+0000\n"
 "X-Generator: Launchpad (build 16890)\n"
 
 #: ../plugins/ads.py:13
@@ -143,7 +143,7 @@ msgstr ""
 
 #: ../src/ArxivPlugin.C:65 ../src/CrossRefPlugin.C:251
 msgid "Downloading Metadata"
-msgstr ""
+msgstr "Изтегляне на Метаданни"
 
 #: ../src/ArxivPlugin.C:69 ../src/CrossRefPlugin.C:223
 #: ../src/PluginManager.C:45
@@ -170,7 +170,7 @@ msgstr ""
 
 #: ../src/CrossRefPlugin.C:197
 msgid "_Preferences"
-msgstr ""
+msgstr "_Предпочитания"
 
 #: ../src/CrossRefPlugin.C:198
 msgid "_Disable CrossRef"
@@ -186,7 +186,7 @@ msgstr ""
 
 #: ../src/Document.C:32
 msgid "Unnamed"
-msgstr ""
+msgstr "Без име"
 
 #: ../src/Document.C:89
 msgid ""
@@ -203,11 +203,11 @@ msgstr ""
 
 #: ../src/Document.C:117
 msgid "_Ignore"
-msgstr ""
+msgstr "_Игнориране"
 
 #: ../src/Document.C:121
 msgid "_Replace"
-msgstr ""
+msgstr "_Замяна"
 
 #: ../src/Document.C:740
 msgid "Moving '%1' to '%2'"
@@ -235,7 +235,7 @@ msgstr ""
 
 #: ../src/DocumentProperties.C:89 ../src/RefWindow.C:1110
 msgid "Name"
-msgstr ""
+msgstr "Име"
 
 #: ../src/DocumentProperties.C:90
 msgid "Value"
@@ -243,7 +243,7 @@ msgstr ""
 
 #: ../src/DocumentProperties.C:236
 msgid "_Type:"
-msgstr ""
+msgstr "_Тип:"
 
 #: ../src/DocumentProperties.C:399
 msgid "This key already exists.\n"
@@ -259,19 +259,19 @@ msgstr ""
 
 #: ../src/DocumentTypes.C:31 ../src/DocumentView.C:1602
 msgid "Title"
-msgstr ""
+msgstr "Заглавие"
 
 #: ../src/DocumentTypes.C:32
 msgid "Authors"
-msgstr ""
+msgstr "Автори"
 
 #: ../src/DocumentTypes.C:33
 msgid "Journal"
-msgstr ""
+msgstr "Дневник"
 
 #: ../src/DocumentTypes.C:34 ../src/DocumentView.C:1604
 msgid "Year"
-msgstr ""
+msgstr "Година"
 
 #: ../src/DocumentTypes.C:36
 msgid "Volume"
@@ -279,19 +279,19 @@ msgstr ""
 
 #: ../src/DocumentTypes.C:37
 msgid "Issue"
-msgstr ""
+msgstr "Издание"
 
 #: ../src/DocumentTypes.C:38
 msgid "Pages"
-msgstr ""
+msgstr "Страници"
 
 #: ../src/DocumentTypes.C:39
 msgid "Month"
-msgstr ""
+msgstr "Месец"
 
 #: ../src/DocumentTypes.C:40
 msgid "Note"
-msgstr ""
+msgstr "Бележка"
 
 #: ../src/DocumentTypes.C:41 ../src/DocumentView.C:1601
 msgid "Key"
@@ -299,11 +299,11 @@ msgstr ""
 
 #: ../src/DocumentTypes.C:43
 msgid "Editor"
-msgstr ""
+msgstr "Редактор"
 
 #: ../src/DocumentTypes.C:44
 msgid "Publisher"
-msgstr ""
+msgstr "Издател"
 
 #: ../src/DocumentTypes.C:45
 msgid "Series"
@@ -311,15 +311,15 @@ msgstr ""
 
 #: ../src/DocumentTypes.C:46
 msgid "Address"
-msgstr ""
+msgstr "Адрес"
 
 #: ../src/DocumentTypes.C:47
 msgid "Edition"
-msgstr ""
+msgstr "Издание"
 
 #: ../src/DocumentTypes.C:49
 msgid "Book title"
-msgstr ""
+msgstr "Заглавие на Книгата"
 
 #: ../src/DocumentTypes.C:50
 msgid "Organisation"
@@ -331,19 +331,19 @@ msgstr ""
 
 #: ../src/DocumentTypes.C:54
 msgid "School"
-msgstr ""
+msgstr "Училище"
 
 #: ../src/DocumentTypes.C:55
 msgid "Institution"
-msgstr ""
+msgstr "Учреждение"
 
 #: ../src/DocumentTypes.C:56
 msgid "Chapter"
-msgstr ""
+msgstr "Глава"
 
 #: ../src/DocumentTypes.C:57
 msgid "Type"
-msgstr ""
+msgstr "Тип"
 
 #: ../src/DocumentTypes.C:58
 msgid "DOI"
@@ -351,11 +351,11 @@ msgstr ""
 
 #: ../src/DocumentTypes.C:61
 msgid "Article"
-msgstr ""
+msgstr "Публикация"
 
 #: ../src/DocumentTypes.C:77
 msgid "Book"
-msgstr ""
+msgstr "Книга"
 
 #: ../src/DocumentTypes.C:95
 msgid "In Proceedings"
@@ -363,11 +363,11 @@ msgstr ""
 
 #: ../src/DocumentTypes.C:114
 msgid "Misc"
-msgstr ""
+msgstr "Разни"
 
 #: ../src/DocumentTypes.C:124
 msgid "Unpublished"
-msgstr ""
+msgstr "Непубликуван"
 
 #: ../src/DocumentTypes.C:133
 msgid "Master's thesis"
@@ -383,7 +383,7 @@ msgstr ""
 
 #: ../src/DocumentTypes.C:167
 msgid "Conference"
-msgstr ""
+msgstr "Конференция"
 
 #: ../src/DocumentTypes.C:178
 msgid "In Book"
@@ -399,11 +399,11 @@ msgstr ""
 
 #: ../src/DocumentTypes.C:221
 msgid "Manual"
-msgstr ""
+msgstr "Наръчник"
 
 #: ../src/DocumentTypes.C:233
 msgid "Technical Report"
-msgstr ""
+msgstr "Технически доклад"
 
 #: ../src/DocumentView.C:323
 msgid "Edit tags"
@@ -436,7 +436,7 @@ msgstr ""
 
 #: ../src/DocumentView.C:1603
 msgid "Author"
-msgstr ""
+msgstr "Автор"
 
 #: ../src/Library.C:185
 msgid "Stumbled upon a tag without a name or an id."
@@ -448,7 +448,7 @@ msgstr ""
 
 #: ../src/Library.C:375
 msgid "Opening %1"
-msgstr ""
+msgstr "Отваряне на %1"
 
 #: ../src/Library.C:447
 msgid "Could not create an XML writer."
@@ -485,15 +485,15 @@ msgstr ""
 #: ../src/Preferences.C:188 ../src/PythonPlugin.C:364
 #: ../src/PythonPlugin.C:404
 msgid "Module"
-msgstr ""
+msgstr "Модул"
 
 #: ../src/Preferences.C:190
 msgid "Description"
-msgstr ""
+msgstr "Описание"
 
 #: ../src/Preferences.C:534
 msgid "Plugin error"
-msgstr ""
+msgstr "Грешка на приставка"
 
 #: ../src/PythonPlugin.C:361
 msgid ""
@@ -502,14 +502,18 @@ msgid ""
 "%3: %4\n"
 "%5: %6\n"
 msgstr ""
+"%1: %2\n"
+"\n"
+"%3: %4\n"
+"%5: %6\n"
 
 #: ../src/PythonPlugin.C:362 ../src/PythonPlugin.C:402 ../src/Utility.C:261
 msgid "Exception"
-msgstr ""
+msgstr "Изключение"
 
 #: ../src/PythonPlugin.C:366 ../src/PythonPlugin.C:406
 msgid "Explanation"
-msgstr ""
+msgstr "Обяснение"
 
 #: ../src/PythonPlugin.C:401
 msgid ""
@@ -518,10 +522,14 @@ msgid ""
 "%3: %4\n"
 "%5: %6"
 msgstr ""
+"<big><b>%1: %2</b></big>\n"
+"\n"
+"%3: %4\n"
+"%5: %6"
 
 #: ../src/RefWindow.C:262
 msgid "Tags"
-msgstr ""
+msgstr "Етикети"
 
 #: ../src/RefWindow.C:372
 msgid "_Library"
@@ -537,11 +545,11 @@ msgstr ""
 
 #: ../src/RefWindow.C:377
 msgid "_Open..."
-msgstr ""
+msgstr "_Отваряне..."
 
 #: ../src/RefWindow.C:377 ../src/RefWindow.C:1659
 msgid "Open Library"
-msgstr ""
+msgstr "Отваряне на Библиотека"
 
 #: ../src/RefWindow.C:380
 msgid "_Save..."
@@ -553,7 +561,7 @@ msgstr ""
 
 #: ../src/RefWindow.C:383
 msgid "Save _As..."
-msgstr ""
+msgstr "Запазване _Като…"
 
 #: ../src/RefWindow.C:386
 msgid "E_xport as BibTeX..."
@@ -577,11 +585,11 @@ msgstr ""
 
 #: ../src/RefWindow.C:402
 msgid "_Edit"
-msgstr ""
+msgstr "_Редактиране"
 
 #: ../src/RefWindow.C:404
 msgid "_View"
-msgstr ""
+msgstr "_Преглед"
 
 #. Translation note: this begins the sentence completed by
 #. * the "By %1" string, which is the child menu
@@ -590,11 +598,11 @@ msgstr ""
 #. * as just "%1"
 #: ../src/RefWindow.C:410
 msgid "Arran_ge Items"
-msgstr ""
+msgstr "Подреж_дане на елементи"
 
 #: ../src/RefWindow.C:412
 msgid "_Paste BibTeX"
-msgstr "_Убаци BibTeX"
+msgstr ""
 
 #: ../src/RefWindow.C:413
 msgid "Import references from BibTeX on the clipboard"
@@ -626,7 +634,7 @@ msgstr ""
 
 #: ../src/RefWindow.C:433 ../src/RefWindow.C:471
 msgid "_Tags"
-msgstr ""
+msgstr "_Етикети"
 
 #: ../src/RefWindow.C:435
 msgid "_Create Tag..."
@@ -646,7 +654,7 @@ msgstr ""
 
 #: ../src/RefWindow.C:447
 msgid "_Documents"
-msgstr ""
+msgstr "_Документи"
 
 #: ../src/RefWindow.C:449
 msgid "_Add File..."
@@ -666,7 +674,7 @@ msgstr ""
 
 #: ../src/RefWindow.C:461
 msgid "_Remove"
-msgstr ""
+msgstr "Пре_махване"
 
 #: ../src/RefWindow.C:465
 msgid "_Open"
@@ -686,7 +694,7 @@ msgstr ""
 
 #: ../src/RefWindow.C:485
 msgid "_Tools"
-msgstr ""
+msgstr "Инс_трументи"
 
 #: ../src/RefWindow.C:487
 msgid "Export Notes as HTML"
@@ -694,7 +702,7 @@ msgstr ""
 
 #: ../src/RefWindow.C:490
 msgid "_Help"
-msgstr ""
+msgstr "Помо_щ"
 
 #: ../src/RefWindow.C:492
 msgid "Contents"
@@ -706,7 +714,7 @@ msgstr ""
 
 #: ../src/RefWindow.C:673
 msgid "All"
-msgstr ""
+msgstr "Всички"
 
 #: ../src/RefWindow.C:678
 msgid "Untagged"
@@ -742,15 +750,17 @@ msgstr ""
 
 #: ../src/RefWindow.C:1094
 msgid "Type a tag"
-msgstr ""
+msgstr "Въведете етикет"
 
 #: ../src/RefWindow.C:1098
 msgid "Create tag"
-msgstr ""
+msgstr "Създаване на етикет"
 
 #: ../src/RefWindow.C:1099
 msgid "Short memorable tag names help you organise your documents"
 msgstr ""
+"Кратките и лесно запомнящи се имена на етикети, улесняват организирането на "
+"вашите документи"
 
 #: ../src/RefWindow.C:1127
 msgid "Empty tag names are not valid"
@@ -762,7 +772,7 @@ msgstr ""
 
 #: ../src/RefWindow.C:1197
 msgid "Are you sure you want to delete \"%1\"?"
-msgstr ""
+msgstr "Сигурни ли сте, че искате да изтриете \"%1\" ?"
 
 #: ../src/RefWindow.C:1204
 msgid ""
@@ -781,19 +791,19 @@ msgstr ""
 #: ../src/RefWindow.C:1271 ../src/RefWindow.C:1352 ../src/RefWindow.C:1510
 #: ../src/RefWindow.C:1679 ../src/RefWindow.C:1748 ../src/RefWindow.C:2715
 msgid "All Files"
-msgstr ""
+msgstr "Всички Файлове"
 
 #: ../src/RefWindow.C:1282 ../src/RefWindow.C:1363
 msgid "Selection:"
-msgstr ""
+msgstr "Избор:"
 
 #: ../src/RefWindow.C:1285 ../src/RefWindow.C:1366
 msgid "All Documents"
-msgstr ""
+msgstr "Всички документи"
 
 #: ../src/RefWindow.C:1286 ../src/RefWindow.C:1368
 msgid "Selected Documents"
-msgstr ""
+msgstr "Избрани документи"
 
 #. Any options here should be replicated in onManageBibtex
 #. Any options here should be replicated in onExportBibtex
@@ -811,7 +821,7 @@ msgstr ""
 
 #: ../src/RefWindow.C:1347
 msgid "HTML Files"
-msgstr ""
+msgstr "HTML файлове"
 
 #: ../src/RefWindow.C:1367
 msgid "Currently Shown Documents"
@@ -837,11 +847,11 @@ msgstr ""
 
 #: ../src/RefWindow.C:1561
 msgid "BibTeX file:"
-msgstr ""
+msgstr "BibTeX файл:"
 
 #: ../src/RefWindow.C:1584
 msgid "_Browse..."
-msgstr ""
+msgstr "_Разглеждане…"
 
 #: ../src/RefWindow.C:1674 ../src/RefWindow.C:1743
 msgid "Referencer Libraries"
@@ -856,7 +866,8 @@ msgstr ""
 msgid "translator-credits"
 msgstr ""
 "Launchpad Contributions:\n"
-"  Vladimir Lazic https://launchpad.net/~vlazic"
+"  i.raynov https://launchpad.net/~ivaylo-raynov\n"
+"  svilborg https://launchpad.net/~svilborg"
 
 #: ../src/RefWindow.C:1814
 msgid "Showing '%1'"
@@ -864,7 +875,7 @@ msgstr ""
 
 #: ../src/RefWindow.C:1823
 msgid "Cancelling"
-msgstr ""
+msgstr "Отмяна"
 
 #. Show a dialog containing a treeview of checkboxes for
 #. * tags, and a button for creating tags
@@ -893,7 +904,7 @@ msgstr ""
 
 #: ../src/RefWindow.C:2004
 msgid "Document"
-msgstr ""
+msgstr "Документ"
 
 #: ../src/RefWindow.C:2005
 msgid "Got text"
@@ -933,11 +944,11 @@ msgstr ""
 
 #: ../src/RefWindow.C:2286
 msgid "Add Document"
-msgstr ""
+msgstr "Добавяне на документ"
 
 #: ../src/RefWindow.C:2307
 msgid "Add Folder"
-msgstr ""
+msgstr "Добавяне на папка"
 
 #: ../src/RefWindow.C:2347
 msgid "Are you sure you want to remove these %1 documents?"
@@ -964,7 +975,7 @@ msgstr ""
 
 #: ../src/RefWindow.C:2421
 msgid "Really rename this file to '%1'?"
-msgstr ""
+msgstr "Наистина ли искате да преименувате файла на '%1'?"
 
 #: ../src/RefWindow.C:2424
 msgid "Really rename these %1 files to their keys?"
@@ -1000,7 +1011,7 @@ msgstr ""
 
 #: ../src/RefWindow.C:2504
 msgid "Deleting '%1'"
-msgstr ""
+msgstr "Изтриване на '%1'"
 
 #: ../src/RefWindow.C:2527
 msgid "Trying to open file '%1'"
@@ -1064,6 +1075,9 @@ msgid ""
 "\n"
 "%3"
 msgstr ""
+"<big><b>%1: %2</b></big>\n"
+"\n"
+"%3"
 
 #: ../src/Utility.C:264
 msgid "The operation underway was: \"%1\""

@@ -1,4 +1,4 @@
-# Serbian translation for referencer
+# Slovenian translation for referencer
 # Copyright (c) 2008 Rosetta Contributors and Canonical Ltd 2008
 # This file is distributed under the same license as the referencer package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, 2008.
@@ -8,13 +8,13 @@ msgstr ""
 "Project-Id-Version: referencer\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
 "POT-Creation-Date: 2014-01-13 11:56+0100\n"
-"PO-Revision-Date: 2014-01-14 00:47+0000\n"
-"Last-Translator: Vladimir Lazic <vlazic@gmail.com>\n"
-"Language-Team: Serbian <sr@li.org>\n"
+"PO-Revision-Date: 2009-11-24 23:48+0000\n"
+"Last-Translator: Matej Urbančič <mateju@svn.gnome.org>\n"
+"Language-Team: Slovenian <sl@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2014-01-15 05:14+0000\n"
+"X-Launchpad-Export-Date: 2014-01-14 05:15+0000\n"
 "X-Generator: Launchpad (build 16890)\n"
 
 #: ../plugins/ads.py:13
@@ -23,7 +23,7 @@ msgstr ""
 
 #: ../plugins/ads.py:44 ../plugins/pubmed.py:215
 msgid "Resolving DOI"
-msgstr ""
+msgstr "Razreševanje DOI"
 
 #: ../plugins/ads.py:44
 #, python-format
@@ -91,15 +91,15 @@ msgstr ""
 
 #: ../plugins/lyx.py:11 ../plugins/lyx.py:41
 msgid "Cite in LyX"
-msgstr ""
+msgstr "Navedi v LyX"
 
 #: ../plugins/lyx.py:42
 msgid "Cite the selected documents in LyX"
-msgstr ""
+msgstr "Navajanje izbranih dokumentov v LyX"
 
 #: ../plugins/pubmed.py:16
 msgid "PubMed DOI resolver"
-msgstr ""
+msgstr "Razčlenjevalnik PubMed DOI"
 
 #: ../plugins/pubmed.py:131
 msgid "Searching pubmed"
@@ -122,76 +122,81 @@ msgstr ""
 #: ../plugins/pubmed.py:215
 #, python-format
 msgid "Finding PubMed ID from DOI %s"
-msgstr ""
+msgstr "Iskanje PubMed ID preko DOI %s"
 
 #: ../plugins/pubmed.py:243
 msgid "Resolving PubMed ID"
-msgstr ""
+msgstr "Razreševanje ID PubMed"
 
 #: ../plugins/pubmed.py:243
 #, python-format
 msgid "Fetching metadata from NCBI for PubMed ID %s"
-msgstr ""
+msgstr "Prebiranje metapodatkov preko NCBI za PubMed ID %s"
 
 #: ../src/ArxivPlugin.C:55
 msgid "Retrieving metadata"
-msgstr ""
+msgstr "Pridobivanje metapodatkov"
 
 #: ../src/ArxivPlugin.C:57
 msgid "Contacting citebase.org to retrieve metadata for '%1'"
-msgstr ""
+msgstr "Iskanje citebase.org za metapodatke dokumenta '%1'"
 
 #: ../src/ArxivPlugin.C:65 ../src/CrossRefPlugin.C:251
 msgid "Downloading Metadata"
-msgstr ""
+msgstr "prenašanje metapodatkov"
 
 #: ../src/ArxivPlugin.C:69 ../src/CrossRefPlugin.C:223
 #: ../src/PluginManager.C:45
 msgid "Downloading metadata"
-msgstr ""
+msgstr "Prenašanje metapodatkov"
 
 #: ../src/ArxivPlugin.C:107 ../src/Document.C:912
 msgid "Parsing BibTeX"
-msgstr ""
+msgstr "Razčlenjevanje BibTex navedka"
 
 #: ../src/ArxivPlugin.C:123
 msgid "Arxiv.org ArXiv-ID resolver"
-msgstr ""
+msgstr "Arxiv.org ArXiv-ID razčlenjevalec"
 
 #: ../src/CrossRefPlugin.C:187
 msgid "CrossRef credentials not found"
-msgstr ""
+msgstr "CrossRef priporočil ni mogoče najti"
 
 #: ../src/CrossRefPlugin.C:188
 msgid ""
 "To use the CrossRef service, a free account is needed.  Login information "
 "may be set in Preferences, or the CrossRef plugin may be disabled."
 msgstr ""
+"Za uporabo CrossRef storitve morate imeti brezplačen račun. Podrobnosti "
+"prijave lahko nastavite v Lastnostih ali pa morate omogočiti vstavek za "
+"CrossRef iskanje."
 
 #: ../src/CrossRefPlugin.C:197
 msgid "_Preferences"
-msgstr ""
+msgstr "_Lastnosti"
 
 #: ../src/CrossRefPlugin.C:198
 msgid "_Disable CrossRef"
-msgstr ""
+msgstr "_Onemogoči CrossRef"
 
 #: ../src/CrossRefPlugin.C:225
 msgid "Contacting crossref.org to retrieve metadata for '%1'"
-msgstr ""
+msgstr "Iskanje crossref.org za metapodatke dokumenta '%1'"
 
 #: ../src/CrossRefPlugin.C:287
 msgid "Crossref.org OpenURL DOI resolver"
-msgstr ""
+msgstr "Crossref.org OpenURL DOI razreševanje"
 
 #: ../src/Document.C:32
 msgid "Unnamed"
-msgstr ""
+msgstr "Neimenovano"
 
 #: ../src/Document.C:89
 msgid ""
 "The chosen key conflicts with an existing one.  Replace '%1' with '%2'?"
 msgstr ""
+"Izbrani ključ je v neskladju z obstoječim ključem. Ali naj se ključ '%1' "
+"zamenja z '%2'?"
 
 #: ../src/Document.C:98
 msgid "The chosen key contained invalid characters.  Replace '%1' with '%2'?"
@@ -199,43 +204,43 @@ msgstr ""
 
 #: ../src/Document.C:109
 msgid "Key naming conflict"
-msgstr ""
+msgstr "Napaka pri imenovanju ključev"
 
 #: ../src/Document.C:117
 msgid "_Ignore"
-msgstr ""
+msgstr "_Prezri"
 
 #: ../src/Document.C:121
 msgid "_Replace"
-msgstr ""
+msgstr "_Zamenjaj"
 
 #: ../src/Document.C:740
 msgid "Moving '%1' to '%2'"
-msgstr ""
+msgstr "Premikanje '%1' v '%2'"
 
 #: ../src/DocumentList.C:211
 msgid "Opening file '%1'"
-msgstr ""
+msgstr "Odpiranje datoteke '%1'"
 
 #: ../src/DocumentList.C:230
 msgid "Reading file '%1'"
-msgstr ""
+msgstr "Branje datoteke '%1'"
 
 #: ../src/DocumentList.C:251
 msgid "converting file %1 to utf8 from (guessed) latin1"
-msgstr ""
+msgstr "pretvarjanje datoteke %1 v UTF-8 iz (predvidene) Latin1"
 
 #: ../src/DocumentList.C:285
 msgid "Parsing import"
-msgstr ""
+msgstr "Razčlenjevanje uvoza"
 
 #: ../src/DocumentList.C:298
 msgid "Extracting document %1 from bibutils structure"
-msgstr ""
+msgstr "Izpisovanje dokumenta %1 iz bibutils zgradbe"
 
 #: ../src/DocumentProperties.C:89 ../src/RefWindow.C:1110
 msgid "Name"
-msgstr ""
+msgstr "Ime"
 
 #: ../src/DocumentProperties.C:90
 msgid "Value"
@@ -243,7 +248,7 @@ msgstr ""
 
 #: ../src/DocumentProperties.C:236
 msgid "_Type:"
-msgstr ""
+msgstr "Vrs_ta:"
 
 #: ../src/DocumentProperties.C:399
 msgid "This key already exists.\n"
@@ -251,159 +256,159 @@ msgstr ""
 
 #: ../src/DocumentProperties.C:509 ../src/RefWindow.C:2837
 msgid "No references found on clipboard.\n"
-msgstr ""
+msgstr "V odložišču ni mogoče najti navedkov.\n"
 
 #: ../src/DocumentProperties.C:513
 msgid "Multiple references found on clipboard.\n"
-msgstr ""
+msgstr "V odložišču je več navedenih virov.\n"
 
 #: ../src/DocumentTypes.C:31 ../src/DocumentView.C:1602
 msgid "Title"
-msgstr ""
+msgstr "Naslov"
 
 #: ../src/DocumentTypes.C:32
 msgid "Authors"
-msgstr ""
+msgstr "Avtorji"
 
 #: ../src/DocumentTypes.C:33
 msgid "Journal"
-msgstr ""
+msgstr "Revija"
 
 #: ../src/DocumentTypes.C:34 ../src/DocumentView.C:1604
 msgid "Year"
-msgstr ""
+msgstr "Leto"
 
 #: ../src/DocumentTypes.C:36
 msgid "Volume"
-msgstr ""
+msgstr "Zvezek"
 
 #: ../src/DocumentTypes.C:37
 msgid "Issue"
-msgstr ""
+msgstr "Izvod"
 
 #: ../src/DocumentTypes.C:38
 msgid "Pages"
-msgstr ""
+msgstr "Strani"
 
 #: ../src/DocumentTypes.C:39
 msgid "Month"
-msgstr ""
+msgstr "Mesec"
 
 #: ../src/DocumentTypes.C:40
 msgid "Note"
-msgstr ""
+msgstr "Opomba"
 
 #: ../src/DocumentTypes.C:41 ../src/DocumentView.C:1601
 msgid "Key"
-msgstr ""
+msgstr "Ključ"
 
 #: ../src/DocumentTypes.C:43
 msgid "Editor"
-msgstr ""
+msgstr "Urejevalnik"
 
 #: ../src/DocumentTypes.C:44
 msgid "Publisher"
-msgstr ""
+msgstr "Založnik"
 
 #: ../src/DocumentTypes.C:45
 msgid "Series"
-msgstr ""
+msgstr "Serija"
 
 #: ../src/DocumentTypes.C:46
 msgid "Address"
-msgstr ""
+msgstr "Naslov"
 
 #: ../src/DocumentTypes.C:47
 msgid "Edition"
-msgstr ""
+msgstr "Izdaja"
 
 #: ../src/DocumentTypes.C:49
 msgid "Book title"
-msgstr ""
+msgstr "Naslov knjige"
 
 #: ../src/DocumentTypes.C:50
 msgid "Organisation"
-msgstr ""
+msgstr "Ustanova"
 
 #: ../src/DocumentTypes.C:52
 msgid "How published"
-msgstr ""
+msgstr "Objava"
 
 #: ../src/DocumentTypes.C:54
 msgid "School"
-msgstr ""
+msgstr "Šola"
 
 #: ../src/DocumentTypes.C:55
 msgid "Institution"
-msgstr ""
+msgstr "Ustanova"
 
 #: ../src/DocumentTypes.C:56
 msgid "Chapter"
-msgstr ""
+msgstr "Poglavje"
 
 #: ../src/DocumentTypes.C:57
 msgid "Type"
-msgstr ""
+msgstr "Vrsta"
 
 #: ../src/DocumentTypes.C:58
 msgid "DOI"
-msgstr ""
+msgstr "DOI"
 
 #: ../src/DocumentTypes.C:61
 msgid "Article"
-msgstr ""
+msgstr "Članek"
 
 #: ../src/DocumentTypes.C:77
 msgid "Book"
-msgstr ""
+msgstr "Knjiga"
 
 #: ../src/DocumentTypes.C:95
 msgid "In Proceedings"
-msgstr ""
+msgstr "Med prispevki na konferenci"
 
 #: ../src/DocumentTypes.C:114
 msgid "Misc"
-msgstr ""
+msgstr "Razno"
 
 #: ../src/DocumentTypes.C:124
 msgid "Unpublished"
-msgstr ""
+msgstr "Neobjavljeno"
 
 #: ../src/DocumentTypes.C:133
 msgid "Master's thesis"
-msgstr ""
+msgstr "Magistrske teze"
 
 #: ../src/DocumentTypes.C:144
 msgid "PhD thesis"
-msgstr ""
+msgstr "Doktorske teze"
 
 #: ../src/DocumentTypes.C:155
 msgid "Proceedings"
-msgstr ""
+msgstr "Prispevki na konferenci"
 
 #: ../src/DocumentTypes.C:167
 msgid "Conference"
-msgstr ""
+msgstr "Konferenca"
 
 #: ../src/DocumentTypes.C:178
 msgid "In Book"
-msgstr ""
+msgstr "V knjigi"
 
 #: ../src/DocumentTypes.C:195
 msgid "Booklet"
-msgstr ""
+msgstr "Knjižica"
 
 #: ../src/DocumentTypes.C:206
 msgid "In Collection"
-msgstr ""
+msgstr "V zbirki"
 
 #: ../src/DocumentTypes.C:221
 msgid "Manual"
-msgstr ""
+msgstr "Priročnik"
 
 #: ../src/DocumentTypes.C:233
 msgid "Technical Report"
-msgstr ""
+msgstr "Tehnično poročilo"
 
 #: ../src/DocumentView.C:323
 msgid "Edit tags"
@@ -415,7 +420,7 @@ msgstr ""
 
 #: ../src/DocumentView.C:725
 msgid "Getting info for file '%1'"
-msgstr ""
+msgstr "Pridobivanje podrobnosti datoteke '%1'"
 
 #. Translators: this is the format for the document captions
 #: ../src/DocumentView.C:1135
@@ -432,11 +437,11 @@ msgstr ""
 #. * as just "%1"
 #: ../src/DocumentView.C:1518
 msgid "By %1"
-msgstr ""
+msgstr "po %1"
 
 #: ../src/DocumentView.C:1603
 msgid "Author"
-msgstr ""
+msgstr "Avtor"
 
 #: ../src/Library.C:185
 msgid "Stumbled upon a tag without a name or an id."
@@ -448,7 +453,7 @@ msgstr ""
 
 #: ../src/Library.C:375
 msgid "Opening %1"
-msgstr ""
+msgstr "Odpiranje %1"
 
 #: ../src/Library.C:447
 msgid "Could not create an XML writer."
@@ -456,44 +461,44 @@ msgstr ""
 
 #: ../src/Linker.C:79
 msgid "DOI Link"
-msgstr ""
+msgstr "Povezava DOI"
 
 #: ../src/Linker.C:100
 msgid "arXiv Link"
-msgstr ""
+msgstr "Povezava arXiv"
 
 #: ../src/Linker.C:119
 msgid "URL Link"
-msgstr ""
+msgstr "Povezava URL"
 
 #: ../src/Linker.C:138
 msgid "PubMed Link"
-msgstr ""
+msgstr "Povezava PubMed"
 
 #: ../src/Linker.C:181
 msgid "Google Scholar"
-msgstr ""
+msgstr "Google učenjak"
 
 #: ../src/main.C:97
 msgid "Terminating due to unhandled exception"
-msgstr ""
+msgstr "Zaključeno zaradi nepričakovane izjemne napake"
 
 #: ../src/Preferences.C:184
 msgid "Enabled"
-msgstr ""
+msgstr "Omogočeno"
 
 #: ../src/Preferences.C:188 ../src/PythonPlugin.C:364
 #: ../src/PythonPlugin.C:404
 msgid "Module"
-msgstr ""
+msgstr "Modul"
 
 #: ../src/Preferences.C:190
 msgid "Description"
-msgstr ""
+msgstr "Opis"
 
 #: ../src/Preferences.C:534
 msgid "Plugin error"
-msgstr ""
+msgstr "Napaka  vstavka"
 
 #: ../src/PythonPlugin.C:361
 msgid ""
@@ -502,14 +507,18 @@ msgid ""
 "%3: %4\n"
 "%5: %6\n"
 msgstr ""
+"%1: %2\n"
+"\n"
+"%3: %4\n"
+"%5: %6\n"
 
 #: ../src/PythonPlugin.C:362 ../src/PythonPlugin.C:402 ../src/Utility.C:261
 msgid "Exception"
-msgstr ""
+msgstr "Izjeme"
 
 #: ../src/PythonPlugin.C:366 ../src/PythonPlugin.C:406
 msgid "Explanation"
-msgstr ""
+msgstr "Pojasnilo"
 
 #: ../src/PythonPlugin.C:401
 msgid ""
@@ -518,14 +527,18 @@ msgid ""
 "%3: %4\n"
 "%5: %6"
 msgstr ""
+"<big><b>%1: %2</b></big>\n"
+"\n"
+"%3: %4\n"
+"%5: %6"
 
 #: ../src/RefWindow.C:262
 msgid "Tags"
-msgstr ""
+msgstr "Oznake"
 
 #: ../src/RefWindow.C:372
 msgid "_Library"
-msgstr ""
+msgstr "_Knjižnica"
 
 #: ../src/RefWindow.C:374
 msgid "_New..."
@@ -537,11 +550,11 @@ msgstr ""
 
 #: ../src/RefWindow.C:377
 msgid "_Open..."
-msgstr ""
+msgstr "_Odpri ..."
 
 #: ../src/RefWindow.C:377 ../src/RefWindow.C:1659
 msgid "Open Library"
-msgstr ""
+msgstr "Odpri knjižnico"
 
 #: ../src/RefWindow.C:380
 msgid "_Save..."
@@ -553,15 +566,15 @@ msgstr ""
 
 #: ../src/RefWindow.C:383
 msgid "Save _As..."
-msgstr ""
+msgstr "Shrani _kot ..."
 
 #: ../src/RefWindow.C:386
 msgid "E_xport as BibTeX..."
-msgstr ""
+msgstr "_Izvozi kot BibTeX ..."
 
 #: ../src/RefWindow.C:389
 msgid "_Manage BibTeX File..."
-msgstr ""
+msgstr "_Upravljaj z BibTeX datotekami"
 
 #: ../src/RefWindow.C:392
 msgid "_Properties..."
@@ -569,19 +582,19 @@ msgstr ""
 
 #: ../src/RefWindow.C:395
 msgid "_Import..."
-msgstr ""
+msgstr "_Uvozi ..."
 
 #: ../src/RefWindow.C:398
 msgid "_Work Offline"
-msgstr ""
+msgstr "_Delo brez povezave"
 
 #: ../src/RefWindow.C:402
 msgid "_Edit"
-msgstr ""
+msgstr "_Uredi"
 
 #: ../src/RefWindow.C:404
 msgid "_View"
-msgstr ""
+msgstr "_Pogled"
 
 #. Translation note: this begins the sentence completed by
 #. * the "By %1" string, which is the child menu
@@ -590,15 +603,15 @@ msgstr ""
 #. * as just "%1"
 #: ../src/RefWindow.C:410
 msgid "Arran_ge Items"
-msgstr ""
+msgstr "Pre_uredi predmete"
 
 #: ../src/RefWindow.C:412
 msgid "_Paste BibTeX"
-msgstr "_Убаци BibTeX"
+msgstr "_Prilepi BibTeX"
 
 #: ../src/RefWindow.C:413
 msgid "Import references from BibTeX on the clipboard"
-msgstr ""
+msgstr "Uvozi BibTeX podatke navedkov iz odložišča-"
 
 #: ../src/RefWindow.C:416
 msgid "_Copy LaTeX Citation"
@@ -606,67 +619,67 @@ msgstr ""
 
 #: ../src/RefWindow.C:417
 msgid "Copy currently selected keys to the clipboard as a LaTeX citation"
-msgstr ""
+msgstr "Kopiraj trenutno označene ključe v odložišče kot LaTeX navedek."
 
 #: ../src/RefWindow.C:425
 msgid "Use _List View"
-msgstr ""
+msgstr "Uporabi _seznamski pogled"
 
 #: ../src/RefWindow.C:427
 msgid "Use _Icon View"
-msgstr ""
+msgstr "Uporabi _ikonski pogled"
 
 #: ../src/RefWindow.C:429
 msgid "_Show Tag Pane"
-msgstr ""
+msgstr "_Prikaži pladenj oznak"
 
 #: ../src/RefWindow.C:431
 msgid "Show _Notes Pane"
-msgstr ""
+msgstr "Prikaži pladenj _opomb"
 
 #: ../src/RefWindow.C:433 ../src/RefWindow.C:471
 msgid "_Tags"
-msgstr ""
+msgstr "_Oznake"
 
 #: ../src/RefWindow.C:435
 msgid "_Create Tag..."
-msgstr ""
+msgstr "_Ustvari oznako ..."
 
 #: ../src/RefWindow.C:438
 msgid "_Attach New Tag..."
-msgstr ""
+msgstr "Pripni _novo oznako ..."
 
 #: ../src/RefWindow.C:441
 msgid "_Delete Tag"
-msgstr ""
+msgstr "_Izbriši oznako"
 
 #: ../src/RefWindow.C:444
 msgid "_Rename Tag"
-msgstr ""
+msgstr "_Preimenuj oznako"
 
 #: ../src/RefWindow.C:447
 msgid "_Documents"
-msgstr ""
+msgstr "_Dokumenti"
 
 #: ../src/RefWindow.C:449
 msgid "_Add File..."
-msgstr ""
+msgstr "_Dodaj datoteko ..."
 
 #: ../src/RefWindow.C:452
 msgid "Add _Folder..."
-msgstr ""
+msgstr "_Dodaj mapo ..."
 
 #: ../src/RefWindow.C:455
 msgid "Add E_mpty Reference..."
-msgstr ""
+msgstr "Dodaj prazen navedek ..."
 
 #: ../src/RefWindow.C:458
 msgid "Add Refere_nce with ID..."
-msgstr ""
+msgstr "Dodajanje navedka z ID ..."
 
 #: ../src/RefWindow.C:461
 msgid "_Remove"
-msgstr ""
+msgstr "_Odstrani"
 
 #: ../src/RefWindow.C:465
 msgid "_Open"
@@ -674,27 +687,27 @@ msgstr ""
 
 #: ../src/RefWindow.C:475
 msgid "_Get Metadata"
-msgstr ""
+msgstr "_Pridobi metapodatke"
 
 #: ../src/RefWindow.C:478
 msgid "_Delete File from Drive"
-msgstr ""
+msgstr "Izbriši datoteko s pogona"
 
 #: ../src/RefWindow.C:482
 msgid "R_ename File from Key"
-msgstr ""
+msgstr "_Preimenuj datoteko preko ključa"
 
 #: ../src/RefWindow.C:485
 msgid "_Tools"
-msgstr ""
+msgstr "_Orodja"
 
 #: ../src/RefWindow.C:487
 msgid "Export Notes as HTML"
-msgstr ""
+msgstr "Izvozi opombe kot HTML"
 
 #: ../src/RefWindow.C:490
 msgid "_Help"
-msgstr ""
+msgstr "_Pomoč"
 
 #: ../src/RefWindow.C:492
 msgid "Contents"
@@ -706,51 +719,51 @@ msgstr ""
 
 #: ../src/RefWindow.C:673
 msgid "All"
-msgstr ""
+msgstr "Vse"
 
 #: ../src/RefWindow.C:678
 msgid "Untagged"
-msgstr ""
+msgstr "Neoznačeno"
 
 #: ../src/RefWindow.C:944
 msgid "%1 documents (%2 selected)"
-msgstr ""
+msgstr "%1 dokumentov (%2 izbranih)"
 
 #: ../src/RefWindow.C:948
 msgid "%1 documents"
-msgstr ""
+msgstr "%1 dokumentov"
 
 #: ../src/RefWindow.C:985
 msgid "_Notes: <i>%1</i>"
-msgstr ""
+msgstr "_Opombe: <i>%1</i>"
 
 #: ../src/RefWindow.C:988
 msgid "Multiple documents selected"
-msgstr ""
+msgstr "Izbranih je več dokumentov"
 
 #: ../src/RefWindow.C:990
 msgid "Select a document to view and edit notes"
-msgstr ""
+msgstr "Izbor dokumenta za pregledovanje in urejanje opomb"
 
 #: ../src/RefWindow.C:1052
 msgid "Save changes to library before closing?"
-msgstr ""
+msgstr "Ali želite shraniti spremembe v knjižnici preden zaprete?"
 
 #: ../src/RefWindow.C:1058
 msgid "Close _without Saving"
-msgstr ""
+msgstr "Zapri _brez shranjevanja"
 
 #: ../src/RefWindow.C:1094
 msgid "Type a tag"
-msgstr ""
+msgstr "Vpišite oznako"
 
 #: ../src/RefWindow.C:1098
 msgid "Create tag"
-msgstr ""
+msgstr "Ustvari oznako"
 
 #: ../src/RefWindow.C:1099
 msgid "Short memorable tag names help you organise your documents"
-msgstr ""
+msgstr "Kratke oznake dokumentov omogočajo hitro razvrščanje."
 
 #: ../src/RefWindow.C:1127
 msgid "Empty tag names are not valid"
@@ -762,56 +775,58 @@ msgstr ""
 
 #: ../src/RefWindow.C:1197
 msgid "Are you sure you want to delete \"%1\"?"
-msgstr ""
+msgstr "Ali ste prepričani, da želite izbrisati \"%1\"?"
 
 #: ../src/RefWindow.C:1204
 msgid ""
 "When a tag is deleted it is also permanently removed from all documents it "
 "is currently associated with."
 msgstr ""
+"Kadar se oznaka izbriše se odstrani tudi iz vseh dokumentov, ki so trenutno "
+"na oznako vezani."
 
 #: ../src/RefWindow.C:1257
 msgid "Export BibTeX"
-msgstr ""
+msgstr "Izvozi BibTeX"
 
 #: ../src/RefWindow.C:1266 ../src/RefWindow.C:1505 ../src/RefWindow.C:2728
 msgid "BibTeX Files"
-msgstr ""
+msgstr "BibTeX datoteke"
 
 #: ../src/RefWindow.C:1271 ../src/RefWindow.C:1352 ../src/RefWindow.C:1510
 #: ../src/RefWindow.C:1679 ../src/RefWindow.C:1748 ../src/RefWindow.C:2715
 msgid "All Files"
-msgstr ""
+msgstr "Vse datoteke"
 
 #: ../src/RefWindow.C:1282 ../src/RefWindow.C:1363
 msgid "Selection:"
-msgstr ""
+msgstr "Izbira:"
 
 #: ../src/RefWindow.C:1285 ../src/RefWindow.C:1366
 msgid "All Documents"
-msgstr ""
+msgstr "Vsi dokumenti"
 
 #: ../src/RefWindow.C:1286 ../src/RefWindow.C:1368
 msgid "Selected Documents"
-msgstr ""
+msgstr "Izbrani dokumenti"
 
 #. Any options here should be replicated in onManageBibtex
 #. Any options here should be replicated in onExportBibtex
 #: ../src/RefWindow.C:1292 ../src/RefWindow.C:1600
 msgid "Protect capitalization (surround values with {})"
-msgstr ""
+msgstr "Zaščiti pisanje velikih črk (ovij vrednosti z {})"
 
 #: ../src/RefWindow.C:1294 ../src/RefWindow.C:1603
 msgid "Use Unicode (UTF-8) encoding"
-msgstr ""
+msgstr "Uporabi Unicode nabor (UTF-8)"
 
 #: ../src/RefWindow.C:1338
 msgid "Export Notes"
-msgstr ""
+msgstr "Izvozi opombe"
 
 #: ../src/RefWindow.C:1347
 msgid "HTML Files"
-msgstr ""
+msgstr "Datoteke HTML"
 
 #: ../src/RefWindow.C:1367
 msgid "Currently Shown Documents"
@@ -819,216 +834,225 @@ msgstr ""
 
 #: ../src/RefWindow.C:1444 ../src/RefWindow.C:2665
 msgid "Unnamed Library"
-msgstr ""
+msgstr "Neimenovana knjižnica"
 
 #: ../src/RefWindow.C:1498
 msgid "Browse"
-msgstr ""
+msgstr "Brskanje"
 
 #: ../src/RefWindow.C:1538 ../src/RefWindow.C:1553
 msgid "Manage BibTeX File"
-msgstr ""
+msgstr "Upravljaj z BibTex datotekami"
 
 #: ../src/RefWindow.C:1554
 msgid ""
 "If you choose a file here, it will be overwritten whenever this library is "
 "saved."
 msgstr ""
+"V primeru, da izberete datoteko na tem mestu, bo prepisana vsakič, ko boste "
+"knjižnico shranili."
 
 #: ../src/RefWindow.C:1561
 msgid "BibTeX file:"
-msgstr ""
+msgstr "BibTeX datoteke:"
 
 #: ../src/RefWindow.C:1584
 msgid "_Browse..."
-msgstr ""
+msgstr "_Prebrskaj ..."
 
 #: ../src/RefWindow.C:1674 ../src/RefWindow.C:1743
 msgid "Referencer Libraries"
-msgstr ""
+msgstr "Knjižnice z navedki dokumentov"
 
 #: ../src/RefWindow.C:1734
 msgid "Save Library As"
-msgstr ""
+msgstr "Shrani knjižnico kot"
 
 #. Translators: your name here!
 #: ../src/RefWindow.C:1795
 msgid "translator-credits"
 msgstr ""
 "Launchpad Contributions:\n"
-"  Vladimir Lazic https://launchpad.net/~vlazic"
+"  Matej Urbančič https://launchpad.net/~mateju"
 
 #: ../src/RefWindow.C:1814
 msgid "Showing '%1'"
-msgstr ""
+msgstr "Prikaz '%1'"
 
 #: ../src/RefWindow.C:1823
 msgid "Cancelling"
-msgstr ""
+msgstr "Preklic v teku ..."
 
 #. Show a dialog containing a treeview of checkboxes for
 #. * tags, and a button for creating tags
 #: ../src/RefWindow.C:1868
 msgid "Tag Added Files"
-msgstr ""
+msgstr "Označi dodane datoteke"
 
 #. "Create tag" button
 #: ../src/RefWindow.C:1908
 msgid "C_reate Tag..."
-msgstr ""
+msgstr "_Ustvari oznako ..."
 
 #: ../src/RefWindow.C:1971
 msgid "Add Document Files"
-msgstr ""
+msgstr "Dodaj dokumente"
 
 #: ../src/RefWindow.C:1978
 msgid "Adding document files"
-msgstr ""
+msgstr "Dodajanje dokumentov"
 
 #: ../src/RefWindow.C:1979
 msgid ""
 "This process may take some time as the bibliographic information for each "
 "document is looked up."
 msgstr ""
+"Postopek pregledovanja bibliografskih podrobnosti posameznega dokumenta "
+"lahko traja dalj časa."
 
 #: ../src/RefWindow.C:2004
 msgid "Document"
-msgstr ""
+msgstr "Dokument"
 
 #: ../src/RefWindow.C:2005
 msgid "Got text"
-msgstr ""
+msgstr "Z besedilom"
 
 #: ../src/RefWindow.C:2006
 msgid "Got ID"
-msgstr ""
+msgstr "Z IDjem"
 
 #: ../src/RefWindow.C:2007
 msgid "Got metadata"
-msgstr ""
+msgstr "Z metapodatki"
 
 #: ../src/RefWindow.C:2008
 msgid "Outcome"
-msgstr ""
+msgstr "Rezultat"
 
 #: ../src/RefWindow.C:2025
 msgid "_Attach tags..."
-msgstr ""
+msgstr "_Pripni oznake ..."
 
 #: ../src/RefWindow.C:2053
 msgid "%1 of %2 documents"
-msgstr ""
+msgstr "%1 od %2 dokumentov"
 
 #: ../src/RefWindow.C:2136 ../src/RefWindow.C:2138
 msgid "Cancelled"
-msgstr ""
+msgstr "Preklicano"
 
 #: ../src/RefWindow.C:2142
 msgid "Finished"
-msgstr ""
+msgstr "Končano"
 
 #: ../src/RefWindow.C:2184
 msgid "Add Reference with ID"
-msgstr ""
+msgstr "Dodaj navedek z ID"
 
 #: ../src/RefWindow.C:2286
 msgid "Add Document"
-msgstr ""
+msgstr "Dodaj dokument"
 
 #: ../src/RefWindow.C:2307
 msgid "Add Folder"
-msgstr ""
+msgstr "Dodaj mapo"
 
 #: ../src/RefWindow.C:2347
 msgid "Are you sure you want to remove these %1 documents?"
-msgstr ""
+msgstr "Ali zares želite odstraniti %1 dokumentov?"
 
 #: ../src/RefWindow.C:2349
 msgid ""
 "All tag associations and metadata for these documents will be permanently "
 "lost."
 msgstr ""
+"Vse povezave oznak in metapodatkov dokumentov bodo trajno izgubljene."
 
 #: ../src/RefWindow.C:2352
 msgid "Are you sure you want to remove '%1'?"
-msgstr ""
+msgstr "Ali zares želite odstraniti '%1'?"
 
 #: ../src/RefWindow.C:2354
 msgid ""
 "All tag associations and metadata for the document will be permanently lost."
-msgstr ""
+msgstr "Vse povezave oznak in metapodatkov dokumenta bodo trajno izgubljene."
 
 #: ../src/RefWindow.C:2391
 msgid "Fetching metadata"
-msgstr ""
+msgstr "Pridobivanje metapodatkov"
 
 #: ../src/RefWindow.C:2421
 msgid "Really rename this file to '%1'?"
-msgstr ""
+msgstr "Ali naj se res datoteka preimenuje v '%1'?"
 
 #: ../src/RefWindow.C:2424
 msgid "Really rename these %1 files to their keys?"
-msgstr ""
+msgstr "Ali naj se %1 datoteke preimenujejo po nazivih ključev?"
 
 #: ../src/RefWindow.C:2432
 msgid "This action <b>cannot be undone</b>."
-msgstr ""
+msgstr "Dejanja <b>ni mogoče povrniti</b>."
 
 #: ../src/RefWindow.C:2435
 msgid "Rename from Key"
-msgstr ""
+msgstr "Preimenuj preko ključa"
 
 #: ../src/RefWindow.C:2466
 msgid "Are you sure you want to delete the files of these %1 documents?"
-msgstr ""
+msgstr "Ali ste prepričani, da želite izbrisati %1 dokumentov?"
 
 #: ../src/RefWindow.C:2468
 msgid ""
 "All tag associations and metadata for these documents will be permanently "
 "lost, and the files they refer to will be irretrievably deleted."
 msgstr ""
+"Vse povezave oznak in metapodatkov za dokumente bodo trajno izgubljene, "
+"datoteke v povezavah pa bodo izbrisane."
 
 #: ../src/RefWindow.C:2474
 msgid "Are you sure you want to delete the file of '%1'?"
-msgstr ""
+msgstr "Ali ste prepričani, da želite izbrisati datoteko '%1'?"
 
 #: ../src/RefWindow.C:2476
 msgid ""
 "All tag associations and metadata for the document will be permanently lost, "
 "and the file it refers to will be irretrievably deleted."
 msgstr ""
+"Vse povezave oznak in metapodatkov v dokumentu bodo trajno izgubljene, "
+"datoteka v povezavi pa bo izbrisana."
 
 #: ../src/RefWindow.C:2504
 msgid "Deleting '%1'"
-msgstr ""
+msgstr "Brisanje '%1'"
 
 #: ../src/RefWindow.C:2527
 msgid "Trying to open file '%1'"
-msgstr ""
+msgstr "Poskus odpiranja datoteke '%1'"
 
 #: ../src/RefWindow.C:2629
 msgid "Working offline"
-msgstr ""
+msgstr "Delo brez povezave"
 
 #: ../src/RefWindow.C:2630
 msgid "Working online"
-msgstr ""
+msgstr "Delo s povezavo"
 
 #: ../src/RefWindow.C:2700
 msgid "Import References"
-msgstr ""
+msgstr "Uvozi navedke"
 
 #: ../src/RefWindow.C:2723
 msgid "Bibliography Files"
-msgstr ""
+msgstr "Bibliografske datoteke"
 
 #: ../src/RefWindow.C:2734
 msgid "Format:"
-msgstr ""
+msgstr "Zapis:"
 
 #: ../src/RefWindow.C:2831
 msgid "Imported %1 BibTeX references"
-msgstr ""
+msgstr "Uvoženih %1 BiblTeX skicev"
 
 #: ../src/RefWindow.C:3172
 msgid "Searching..."
@@ -1040,7 +1064,7 @@ msgstr ""
 
 #: ../src/Transfer.C:49
 msgid "Work offline?"
-msgstr ""
+msgstr "Ali želite delati brez povezave?"
 
 #: ../src/Transfer.C:50
 msgid ""
@@ -1049,14 +1073,17 @@ msgid ""
 "operations will be attempted until you choose to work online again in the "
 "Preferences dialog."
 msgstr ""
+"Prišlo je do napake med pridobivanjem metapodatkov. Ali bi želeli\n"
+"nadaljevati delo brez povezave? Brez povezave bodo preklicana vsa omrežna "
+"dejanja, dokler se spet ne povežete."
 
 #: ../src/Transfer.C:61
 msgid "_Stay Online"
-msgstr ""
+msgstr "_Ohrani povezavo"
 
 #: ../src/Transfer.C:63
 msgid "_Go Offline"
-msgstr ""
+msgstr "_Brez povezave"
 
 #: ../src/Utility.C:260
 msgid ""
@@ -1064,10 +1091,13 @@ msgid ""
 "\n"
 "%3"
 msgstr ""
+"<big><b>%1: %2</b></big>\n"
+"\n"
+"%3"
 
 #: ../src/Utility.C:264
 msgid "The operation underway was: \"%1\""
-msgstr ""
+msgstr "Dejanje je bilo: \"%1\""
 
 #: ../src/Utility.C:2195
 msgid "A"

@@ -1,20 +1,20 @@
-# Serbian translation for referencer
-# Copyright (c) 2008 Rosetta Contributors and Canonical Ltd 2008
+# Indonesian translation for referencer
+# Copyright (c) 2009 Rosetta Contributors and Canonical Ltd 2009
 # This file is distributed under the same license as the referencer package.
-# FIRST AUTHOR <EMAIL@ADDRESS>, 2008.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2009.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: referencer\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
 "POT-Creation-Date: 2014-01-13 11:56+0100\n"
-"PO-Revision-Date: 2014-01-14 00:47+0000\n"
-"Last-Translator: Vladimir Lazic <vlazic@gmail.com>\n"
-"Language-Team: Serbian <sr@li.org>\n"
+"PO-Revision-Date: 2009-12-03 22:36+0000\n"
+"Last-Translator: Waluyo Adi Siswanto <Unknown>\n"
+"Language-Team: Indonesian <id@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2014-01-15 05:14+0000\n"
+"X-Launchpad-Export-Date: 2014-01-14 05:15+0000\n"
 "X-Generator: Launchpad (build 16890)\n"
 
 #: ../plugins/ads.py:13
@@ -23,7 +23,7 @@ msgstr ""
 
 #: ../plugins/ads.py:44 ../plugins/pubmed.py:215
 msgid "Resolving DOI"
-msgstr ""
+msgstr "Pemecah masalah DOI"
 
 #: ../plugins/ads.py:44
 #, python-format
@@ -91,15 +91,15 @@ msgstr ""
 
 #: ../plugins/lyx.py:11 ../plugins/lyx.py:41
 msgid "Cite in LyX"
-msgstr ""
+msgstr "Acuan di LyX"
 
 #: ../plugins/lyx.py:42
 msgid "Cite the selected documents in LyX"
-msgstr ""
+msgstr "Mengacu dokumen yang ada di LyX"
 
 #: ../plugins/pubmed.py:16
 msgid "PubMed DOI resolver"
-msgstr ""
+msgstr "Pengambil keputusan DOI PubMed DOI"
 
 #: ../plugins/pubmed.py:131
 msgid "Searching pubmed"
@@ -122,76 +122,81 @@ msgstr ""
 #: ../plugins/pubmed.py:215
 #, python-format
 msgid "Finding PubMed ID from DOI %s"
-msgstr ""
+msgstr "Mencari PubMed ID dari DOI %s"
 
 #: ../plugins/pubmed.py:243
 msgid "Resolving PubMed ID"
-msgstr ""
+msgstr "Mengambil putusan untuk PubMed ID"
 
 #: ../plugins/pubmed.py:243
 #, python-format
 msgid "Fetching metadata from NCBI for PubMed ID %s"
-msgstr ""
+msgstr "Mengcmbil metadata dari NCBI untuk PubMed ID %s"
 
 #: ../src/ArxivPlugin.C:55
 msgid "Retrieving metadata"
-msgstr ""
+msgstr "Menerima metadata"
 
 #: ../src/ArxivPlugin.C:57
 msgid "Contacting citebase.org to retrieve metadata for '%1'"
-msgstr ""
+msgstr "Menghubungi citebase.org untuk memperoleh metadata  '%1'"
 
 #: ../src/ArxivPlugin.C:65 ../src/CrossRefPlugin.C:251
 msgid "Downloading Metadata"
-msgstr ""
+msgstr "Mengunduh Metadata"
 
 #: ../src/ArxivPlugin.C:69 ../src/CrossRefPlugin.C:223
 #: ../src/PluginManager.C:45
 msgid "Downloading metadata"
-msgstr ""
+msgstr "Mengunduh metadata"
 
 #: ../src/ArxivPlugin.C:107 ../src/Document.C:912
 msgid "Parsing BibTeX"
-msgstr ""
+msgstr "Menguraikan BibTeX"
 
 #: ../src/ArxivPlugin.C:123
 msgid "Arxiv.org ArXiv-ID resolver"
-msgstr ""
+msgstr "Pengambil putusan Arxiv.org untuk ArXiv-ID"
 
 #: ../src/CrossRefPlugin.C:187
 msgid "CrossRef credentials not found"
-msgstr ""
+msgstr "Mandat untuk CrossRef tidak ditemukan"
 
 #: ../src/CrossRefPlugin.C:188
 msgid ""
 "To use the CrossRef service, a free account is needed.  Login information "
 "may be set in Preferences, or the CrossRef plugin may be disabled."
 msgstr ""
+"Untuk menggunakan layanan CrossRef, diperlukan akaun.  Informasi cara Login "
+"dapat diatur dari Preferensi, atau plugin CrossRef bisa diatur tidak "
+"digunakan."
 
 #: ../src/CrossRefPlugin.C:197
 msgid "_Preferences"
-msgstr ""
+msgstr "_Preferensi"
 
 #: ../src/CrossRefPlugin.C:198
 msgid "_Disable CrossRef"
-msgstr ""
+msgstr "CrossRef tidak _digunakan"
 
 #: ../src/CrossRefPlugin.C:225
 msgid "Contacting crossref.org to retrieve metadata for '%1'"
-msgstr ""
+msgstr "Menghubungi crossref.org untuk mengambil metadata '%1'"
 
 #: ../src/CrossRefPlugin.C:287
 msgid "Crossref.org OpenURL DOI resolver"
-msgstr ""
+msgstr "Pengambil putusan Crossref.org OpenURL DOI"
 
 #: ../src/Document.C:32
 msgid "Unnamed"
-msgstr ""
+msgstr "TakBernama"
 
 #: ../src/Document.C:89
 msgid ""
 "The chosen key conflicts with an existing one.  Replace '%1' with '%2'?"
 msgstr ""
+"Nama Kunci yang dipilih ada kesamaan dengan yang sudah ada.  Ganti '%1' "
+"dengan '%2'?"
 
 #: ../src/Document.C:98
 msgid "The chosen key contained invalid characters.  Replace '%1' with '%2'?"
@@ -199,43 +204,43 @@ msgstr ""
 
 #: ../src/Document.C:109
 msgid "Key naming conflict"
-msgstr ""
+msgstr "Nama kunci ada konfik"
 
 #: ../src/Document.C:117
 msgid "_Ignore"
-msgstr ""
+msgstr "Lewat_i"
 
 #: ../src/Document.C:121
 msgid "_Replace"
-msgstr ""
+msgstr "_Ganti"
 
 #: ../src/Document.C:740
 msgid "Moving '%1' to '%2'"
-msgstr ""
+msgstr "Memindahkan '%1' ke '%2'"
 
 #: ../src/DocumentList.C:211
 msgid "Opening file '%1'"
-msgstr ""
+msgstr "Membuka berkas '%1'"
 
 #: ../src/DocumentList.C:230
 msgid "Reading file '%1'"
-msgstr ""
+msgstr "Membaca berkas '%1'"
 
 #: ../src/DocumentList.C:251
 msgid "converting file %1 to utf8 from (guessed) latin1"
-msgstr ""
+msgstr "mengkonversi berkas %1 ke utf8 dari (guessed) latin1"
 
 #: ../src/DocumentList.C:285
 msgid "Parsing import"
-msgstr ""
+msgstr "Proses mengurai impor"
 
 #: ../src/DocumentList.C:298
 msgid "Extracting document %1 from bibutils structure"
-msgstr ""
+msgstr "Proses ekstraksi dokumen %1 dari struktur bibulits"
 
 #: ../src/DocumentProperties.C:89 ../src/RefWindow.C:1110
 msgid "Name"
-msgstr ""
+msgstr "Nama"
 
 #: ../src/DocumentProperties.C:90
 msgid "Value"
@@ -243,7 +248,7 @@ msgstr ""
 
 #: ../src/DocumentProperties.C:236
 msgid "_Type:"
-msgstr ""
+msgstr "_Tipe:"
 
 #: ../src/DocumentProperties.C:399
 msgid "This key already exists.\n"
@@ -251,159 +256,159 @@ msgstr ""
 
 #: ../src/DocumentProperties.C:509 ../src/RefWindow.C:2837
 msgid "No references found on clipboard.\n"
-msgstr ""
+msgstr "Tidak ada referensi ditemukan dalam klipboard.\n"
 
 #: ../src/DocumentProperties.C:513
 msgid "Multiple references found on clipboard.\n"
-msgstr ""
+msgstr "Berbagai referensi ditemukan dalam klipboard.\n"
 
 #: ../src/DocumentTypes.C:31 ../src/DocumentView.C:1602
 msgid "Title"
-msgstr ""
+msgstr "Judul"
 
 #: ../src/DocumentTypes.C:32
 msgid "Authors"
-msgstr ""
+msgstr "Penulis"
 
 #: ../src/DocumentTypes.C:33
 msgid "Journal"
-msgstr ""
+msgstr "Jurnal"
 
 #: ../src/DocumentTypes.C:34 ../src/DocumentView.C:1604
 msgid "Year"
-msgstr ""
+msgstr "Tahun"
 
 #: ../src/DocumentTypes.C:36
 msgid "Volume"
-msgstr ""
+msgstr "Volume"
 
 #: ../src/DocumentTypes.C:37
 msgid "Issue"
-msgstr ""
+msgstr "Isu"
 
 #: ../src/DocumentTypes.C:38
 msgid "Pages"
-msgstr ""
+msgstr "Halaman"
 
 #: ../src/DocumentTypes.C:39
 msgid "Month"
-msgstr ""
+msgstr "Bulan"
 
 #: ../src/DocumentTypes.C:40
 msgid "Note"
-msgstr ""
+msgstr "Nota"
 
 #: ../src/DocumentTypes.C:41 ../src/DocumentView.C:1601
 msgid "Key"
-msgstr ""
+msgstr "Kunci"
 
 #: ../src/DocumentTypes.C:43
 msgid "Editor"
-msgstr ""
+msgstr "Editor"
 
 #: ../src/DocumentTypes.C:44
 msgid "Publisher"
-msgstr ""
+msgstr "Penerbit"
 
 #: ../src/DocumentTypes.C:45
 msgid "Series"
-msgstr ""
+msgstr "Seri"
 
 #: ../src/DocumentTypes.C:46
 msgid "Address"
-msgstr ""
+msgstr "Alamat"
 
 #: ../src/DocumentTypes.C:47
 msgid "Edition"
-msgstr ""
+msgstr "Edisi"
 
 #: ../src/DocumentTypes.C:49
 msgid "Book title"
-msgstr ""
+msgstr "Judul Buku"
 
 #: ../src/DocumentTypes.C:50
 msgid "Organisation"
-msgstr ""
+msgstr "Organisasi"
 
 #: ../src/DocumentTypes.C:52
 msgid "How published"
-msgstr ""
+msgstr "Bagaimana diterbitkan"
 
 #: ../src/DocumentTypes.C:54
 msgid "School"
-msgstr ""
+msgstr "Sekolah"
 
 #: ../src/DocumentTypes.C:55
 msgid "Institution"
-msgstr ""
+msgstr "Institusi"
 
 #: ../src/DocumentTypes.C:56
 msgid "Chapter"
-msgstr ""
+msgstr "Bab"
 
 #: ../src/DocumentTypes.C:57
 msgid "Type"
-msgstr ""
+msgstr "Tipe"
 
 #: ../src/DocumentTypes.C:58
 msgid "DOI"
-msgstr ""
+msgstr "DOI"
 
 #: ../src/DocumentTypes.C:61
 msgid "Article"
-msgstr ""
+msgstr "Artikel"
 
 #: ../src/DocumentTypes.C:77
 msgid "Book"
-msgstr ""
+msgstr "Buku"
 
 #: ../src/DocumentTypes.C:95
 msgid "In Proceedings"
-msgstr ""
+msgstr "Dalam Proseding"
 
 #: ../src/DocumentTypes.C:114
 msgid "Misc"
-msgstr ""
+msgstr "Rupa-Rupa"
 
 #: ../src/DocumentTypes.C:124
 msgid "Unpublished"
-msgstr ""
+msgstr "Tidak dipublikasi"
 
 #: ../src/DocumentTypes.C:133
 msgid "Master's thesis"
-msgstr ""
+msgstr "Tesis Master"
 
 #: ../src/DocumentTypes.C:144
 msgid "PhD thesis"
-msgstr ""
+msgstr "Tesis PhD"
 
 #: ../src/DocumentTypes.C:155
 msgid "Proceedings"
-msgstr ""
+msgstr "Proseding"
 
 #: ../src/DocumentTypes.C:167
 msgid "Conference"
-msgstr ""
+msgstr "Konferensi"
 
 #: ../src/DocumentTypes.C:178
 msgid "In Book"
-msgstr ""
+msgstr "Dalam Buku"
 
 #: ../src/DocumentTypes.C:195
 msgid "Booklet"
-msgstr ""
+msgstr "Buku kecil"
 
 #: ../src/DocumentTypes.C:206
 msgid "In Collection"
-msgstr ""
+msgstr "Dalam Koleksi"
 
 #: ../src/DocumentTypes.C:221
 msgid "Manual"
-msgstr ""
+msgstr "Buku Petunjuk"
 
 #: ../src/DocumentTypes.C:233
 msgid "Technical Report"
-msgstr ""
+msgstr "Laporan Teknis"
 
 #: ../src/DocumentView.C:323
 msgid "Edit tags"
@@ -415,7 +420,7 @@ msgstr ""
 
 #: ../src/DocumentView.C:725
 msgid "Getting info for file '%1'"
-msgstr ""
+msgstr "Membaca info berkas '%1'"
 
 #. Translators: this is the format for the document captions
 #: ../src/DocumentView.C:1135
@@ -432,11 +437,11 @@ msgstr ""
 #. * as just "%1"
 #: ../src/DocumentView.C:1518
 msgid "By %1"
-msgstr ""
+msgstr "Berdasarkan %1"
 
 #: ../src/DocumentView.C:1603
 msgid "Author"
-msgstr ""
+msgstr "Penulis"
 
 #: ../src/Library.C:185
 msgid "Stumbled upon a tag without a name or an id."
@@ -448,7 +453,7 @@ msgstr ""
 
 #: ../src/Library.C:375
 msgid "Opening %1"
-msgstr ""
+msgstr "Membuka %1"
 
 #: ../src/Library.C:447
 msgid "Could not create an XML writer."
@@ -456,44 +461,44 @@ msgstr ""
 
 #: ../src/Linker.C:79
 msgid "DOI Link"
-msgstr ""
+msgstr "Tautan DOI"
 
 #: ../src/Linker.C:100
 msgid "arXiv Link"
-msgstr ""
+msgstr "Tautan arXiv"
 
 #: ../src/Linker.C:119
 msgid "URL Link"
-msgstr ""
+msgstr "Tautan URL"
 
 #: ../src/Linker.C:138
 msgid "PubMed Link"
-msgstr ""
+msgstr "Tautan PubMed"
 
 #: ../src/Linker.C:181
 msgid "Google Scholar"
-msgstr ""
+msgstr "Google Scholar"
 
 #: ../src/main.C:97
 msgid "Terminating due to unhandled exception"
-msgstr ""
+msgstr "Dalam proses penghentian karena adanya kesalahan"
 
 #: ../src/Preferences.C:184
 msgid "Enabled"
-msgstr ""
+msgstr "Aktifkan"
 
 #: ../src/Preferences.C:188 ../src/PythonPlugin.C:364
 #: ../src/PythonPlugin.C:404
 msgid "Module"
-msgstr ""
+msgstr "Modul"
 
 #: ../src/Preferences.C:190
 msgid "Description"
-msgstr ""
+msgstr "Deskripsi"
 
 #: ../src/Preferences.C:534
 msgid "Plugin error"
-msgstr ""
+msgstr "Kesalahan Plugin"
 
 #: ../src/PythonPlugin.C:361
 msgid ""
@@ -502,14 +507,18 @@ msgid ""
 "%3: %4\n"
 "%5: %6\n"
 msgstr ""
+"%1: %2\n"
+"\n"
+"%3: %4\n"
+"%5: %6\n"
 
 #: ../src/PythonPlugin.C:362 ../src/PythonPlugin.C:402 ../src/Utility.C:261
 msgid "Exception"
-msgstr ""
+msgstr "Perkecualian"
 
 #: ../src/PythonPlugin.C:366 ../src/PythonPlugin.C:406
 msgid "Explanation"
-msgstr ""
+msgstr "Penjelasan"
 
 #: ../src/PythonPlugin.C:401
 msgid ""
@@ -518,14 +527,18 @@ msgid ""
 "%3: %4\n"
 "%5: %6"
 msgstr ""
+"<big><b>%1: %2</b></big>\n"
+"\n"
+"%3: %4\n"
+"%5: %6"
 
 #: ../src/RefWindow.C:262
 msgid "Tags"
-msgstr ""
+msgstr "Label"
 
 #: ../src/RefWindow.C:372
 msgid "_Library"
-msgstr ""
+msgstr "_Library"
 
 #: ../src/RefWindow.C:374
 msgid "_New..."
@@ -537,11 +550,11 @@ msgstr ""
 
 #: ../src/RefWindow.C:377
 msgid "_Open..."
-msgstr ""
+msgstr "_Buka..."
 
 #: ../src/RefWindow.C:377 ../src/RefWindow.C:1659
 msgid "Open Library"
-msgstr ""
+msgstr "Buka Pustaka"
 
 #: ../src/RefWindow.C:380
 msgid "_Save..."
@@ -553,15 +566,15 @@ msgstr ""
 
 #: ../src/RefWindow.C:383
 msgid "Save _As..."
-msgstr ""
+msgstr "Simpan _dalam..."
 
 #: ../src/RefWindow.C:386
 msgid "E_xport as BibTeX..."
-msgstr ""
+msgstr "E_kspor dalam BibTeX..."
 
 #: ../src/RefWindow.C:389
 msgid "_Manage BibTeX File..."
-msgstr ""
+msgstr "_Pengaturan berkas BibTeX..."
 
 #: ../src/RefWindow.C:392
 msgid "_Properties..."
@@ -569,19 +582,19 @@ msgstr ""
 
 #: ../src/RefWindow.C:395
 msgid "_Import..."
-msgstr ""
+msgstr "_Impor..."
 
 #: ../src/RefWindow.C:398
 msgid "_Work Offline"
-msgstr ""
+msgstr "Beker_ja Offline"
 
 #: ../src/RefWindow.C:402
 msgid "_Edit"
-msgstr ""
+msgstr "_Suntingan"
 
 #: ../src/RefWindow.C:404
 msgid "_View"
-msgstr ""
+msgstr "_Tampilan"
 
 #. Translation note: this begins the sentence completed by
 #. * the "By %1" string, which is the child menu
@@ -590,15 +603,15 @@ msgstr ""
 #. * as just "%1"
 #: ../src/RefWindow.C:410
 msgid "Arran_ge Items"
-msgstr ""
+msgstr "_Susun daftar"
 
 #: ../src/RefWindow.C:412
 msgid "_Paste BibTeX"
-msgstr "_Убаци BibTeX"
+msgstr "_Tempelkan BibTeX"
 
 #: ../src/RefWindow.C:413
 msgid "Import references from BibTeX on the clipboard"
-msgstr ""
+msgstr "Import referensi dari BibTeX dalam klipboard"
 
 #: ../src/RefWindow.C:416
 msgid "_Copy LaTeX Citation"
@@ -606,67 +619,67 @@ msgstr ""
 
 #: ../src/RefWindow.C:417
 msgid "Copy currently selected keys to the clipboard as a LaTeX citation"
-msgstr ""
+msgstr "Salin kunci yang dipilih dalam klipboard sebagai acuan LaTeX"
 
 #: ../src/RefWindow.C:425
 msgid "Use _List View"
-msgstr ""
+msgstr "Tampilan dengan _daftar"
 
 #: ../src/RefWindow.C:427
 msgid "Use _Icon View"
-msgstr ""
+msgstr "Tampilan dengan _Ikon"
 
 #: ../src/RefWindow.C:429
 msgid "_Show Tag Pane"
-msgstr ""
+msgstr "Tampilkan _Jendela Label"
 
 #: ../src/RefWindow.C:431
 msgid "Show _Notes Pane"
-msgstr ""
+msgstr "Tampilkan Jendela _Nota"
 
 #: ../src/RefWindow.C:433 ../src/RefWindow.C:471
 msgid "_Tags"
-msgstr ""
+msgstr "_Label"
 
 #: ../src/RefWindow.C:435
 msgid "_Create Tag..."
-msgstr ""
+msgstr "_Buat Label..."
 
 #: ../src/RefWindow.C:438
 msgid "_Attach New Tag..."
-msgstr ""
+msgstr "_Tambahkan Label Baru..."
 
 #: ../src/RefWindow.C:441
 msgid "_Delete Tag"
-msgstr ""
+msgstr "_Hapus Label"
 
 #: ../src/RefWindow.C:444
 msgid "_Rename Tag"
-msgstr ""
+msgstr "_Ganti Nama Label"
 
 #: ../src/RefWindow.C:447
 msgid "_Documents"
-msgstr ""
+msgstr "_Dokumen"
 
 #: ../src/RefWindow.C:449
 msgid "_Add File..."
-msgstr ""
+msgstr "_Tambah Berkas..."
 
 #: ../src/RefWindow.C:452
 msgid "Add _Folder..."
-msgstr ""
+msgstr "Tambah _Folder..."
 
 #: ../src/RefWindow.C:455
 msgid "Add E_mpty Reference..."
-msgstr ""
+msgstr "Ta_mbah Referensi Kosong..."
 
 #: ../src/RefWindow.C:458
 msgid "Add Refere_nce with ID..."
-msgstr ""
+msgstr "Tambah Refere_nsi dengan ID..."
 
 #: ../src/RefWindow.C:461
 msgid "_Remove"
-msgstr ""
+msgstr "_Hapus"
 
 #: ../src/RefWindow.C:465
 msgid "_Open"
@@ -674,27 +687,27 @@ msgstr ""
 
 #: ../src/RefWindow.C:475
 msgid "_Get Metadata"
-msgstr ""
+msgstr "Am_bil Metadata"
 
 #: ../src/RefWindow.C:478
 msgid "_Delete File from Drive"
-msgstr ""
+msgstr "_Hapus Berkas dari Drive"
 
 #: ../src/RefWindow.C:482
 msgid "R_ename File from Key"
-msgstr ""
+msgstr "Menamai _ulang Berkas dari Kunci"
 
 #: ../src/RefWindow.C:485
 msgid "_Tools"
-msgstr ""
+msgstr "Ala_tBantu"
 
 #: ../src/RefWindow.C:487
 msgid "Export Notes as HTML"
-msgstr ""
+msgstr "Expor Nota dalam HTML"
 
 #: ../src/RefWindow.C:490
 msgid "_Help"
-msgstr ""
+msgstr "_Bantuan"
 
 #: ../src/RefWindow.C:492
 msgid "Contents"
@@ -706,51 +719,51 @@ msgstr ""
 
 #: ../src/RefWindow.C:673
 msgid "All"
-msgstr ""
+msgstr "Semua"
 
 #: ../src/RefWindow.C:678
 msgid "Untagged"
-msgstr ""
+msgstr "Tanpa Label"
 
 #: ../src/RefWindow.C:944
 msgid "%1 documents (%2 selected)"
-msgstr ""
+msgstr "%1 dokumen (%2 dipilih)"
 
 #: ../src/RefWindow.C:948
 msgid "%1 documents"
-msgstr ""
+msgstr "%1 dokumen"
 
 #: ../src/RefWindow.C:985
 msgid "_Notes: <i>%1</i>"
-msgstr ""
+msgstr "_Nota: <i>%1</i>"
 
 #: ../src/RefWindow.C:988
 msgid "Multiple documents selected"
-msgstr ""
+msgstr "Beberapa dokumen dipilih"
 
 #: ../src/RefWindow.C:990
 msgid "Select a document to view and edit notes"
-msgstr ""
+msgstr "Pilih dokumen yang akan ditampilkan dan disunting notanya"
 
 #: ../src/RefWindow.C:1052
 msgid "Save changes to library before closing?"
-msgstr ""
+msgstr "Simpan perubahan dalam pustaka sebelum menutup?"
 
 #: ../src/RefWindow.C:1058
 msgid "Close _without Saving"
-msgstr ""
+msgstr "Menutup _tanpa menyimpan"
 
 #: ../src/RefWindow.C:1094
 msgid "Type a tag"
-msgstr ""
+msgstr "Tipe tag"
 
 #: ../src/RefWindow.C:1098
 msgid "Create tag"
-msgstr ""
+msgstr "Membuat Label"
 
 #: ../src/RefWindow.C:1099
 msgid "Short memorable tag names help you organise your documents"
-msgstr ""
+msgstr "Label singkat yang mudah diingat untuk dokumen anda"
 
 #: ../src/RefWindow.C:1127
 msgid "Empty tag names are not valid"
@@ -762,56 +775,58 @@ msgstr ""
 
 #: ../src/RefWindow.C:1197
 msgid "Are you sure you want to delete \"%1\"?"
-msgstr ""
+msgstr "Anda yakin akan menghapus \"%1\"?"
 
 #: ../src/RefWindow.C:1204
 msgid ""
 "When a tag is deleted it is also permanently removed from all documents it "
 "is currently associated with."
 msgstr ""
+"Apabila suatu label dihapus maka seluruh label yang ada di semua dokumen "
+"yang terkait dengan label itu juga akan dihapus."
 
 #: ../src/RefWindow.C:1257
 msgid "Export BibTeX"
-msgstr ""
+msgstr "Expor BibTeX"
 
 #: ../src/RefWindow.C:1266 ../src/RefWindow.C:1505 ../src/RefWindow.C:2728
 msgid "BibTeX Files"
-msgstr ""
+msgstr "Berkas BibTeX"
 
 #: ../src/RefWindow.C:1271 ../src/RefWindow.C:1352 ../src/RefWindow.C:1510
 #: ../src/RefWindow.C:1679 ../src/RefWindow.C:1748 ../src/RefWindow.C:2715
 msgid "All Files"
-msgstr ""
+msgstr "Semua Berkas"
 
 #: ../src/RefWindow.C:1282 ../src/RefWindow.C:1363
 msgid "Selection:"
-msgstr ""
+msgstr "Pilihan:"
 
 #: ../src/RefWindow.C:1285 ../src/RefWindow.C:1366
 msgid "All Documents"
-msgstr ""
+msgstr "Semua Dokumen"
 
 #: ../src/RefWindow.C:1286 ../src/RefWindow.C:1368
 msgid "Selected Documents"
-msgstr ""
+msgstr "Dokumen yang dipilih"
 
 #. Any options here should be replicated in onManageBibtex
 #. Any options here should be replicated in onExportBibtex
 #: ../src/RefWindow.C:1292 ../src/RefWindow.C:1600
 msgid "Protect capitalization (surround values with {})"
-msgstr ""
+msgstr "Pertahankan huruf besar (yang berada dalam {})"
 
 #: ../src/RefWindow.C:1294 ../src/RefWindow.C:1603
 msgid "Use Unicode (UTF-8) encoding"
-msgstr ""
+msgstr "Menggunakan unicode (UTF-8) encoding"
 
 #: ../src/RefWindow.C:1338
 msgid "Export Notes"
-msgstr ""
+msgstr "Expor Nota"
 
 #: ../src/RefWindow.C:1347
 msgid "HTML Files"
-msgstr ""
+msgstr "Berkas HTML"
 
 #: ../src/RefWindow.C:1367
 msgid "Currently Shown Documents"
@@ -819,216 +834,226 @@ msgstr ""
 
 #: ../src/RefWindow.C:1444 ../src/RefWindow.C:2665
 msgid "Unnamed Library"
-msgstr ""
+msgstr "Pustaka tanpa nama"
 
 #: ../src/RefWindow.C:1498
 msgid "Browse"
-msgstr ""
+msgstr "Cari"
 
 #: ../src/RefWindow.C:1538 ../src/RefWindow.C:1553
 msgid "Manage BibTeX File"
-msgstr ""
+msgstr "Mengatur Berkas BibTeX"
 
 #: ../src/RefWindow.C:1554
 msgid ""
 "If you choose a file here, it will be overwritten whenever this library is "
 "saved."
 msgstr ""
+"Apabila anda memilih berkas disini, maka berkas tersebut akan ditindih bila "
+"pustaka disimpan."
 
 #: ../src/RefWindow.C:1561
 msgid "BibTeX file:"
-msgstr ""
+msgstr "Berkas BibTeX:"
 
 #: ../src/RefWindow.C:1584
 msgid "_Browse..."
-msgstr ""
+msgstr "_Cari..."
 
 #: ../src/RefWindow.C:1674 ../src/RefWindow.C:1743
 msgid "Referencer Libraries"
-msgstr ""
+msgstr "Pengacu Pustaka"
 
 #: ../src/RefWindow.C:1734
 msgid "Save Library As"
-msgstr ""
+msgstr "Simpan Pustaka sebagai"
 
 #. Translators: your name here!
 #: ../src/RefWindow.C:1795
 msgid "translator-credits"
 msgstr ""
 "Launchpad Contributions:\n"
-"  Vladimir Lazic https://launchpad.net/~vlazic"
+"  Waluyo Adi Siswanto https://launchpad.net/~was-wlk"
 
 #: ../src/RefWindow.C:1814
 msgid "Showing '%1'"
-msgstr ""
+msgstr "Menampilkan '%1'"
 
 #: ../src/RefWindow.C:1823
 msgid "Cancelling"
-msgstr ""
+msgstr "Membatalkan"
 
 #. Show a dialog containing a treeview of checkboxes for
 #. * tags, and a button for creating tags
 #: ../src/RefWindow.C:1868
 msgid "Tag Added Files"
-msgstr ""
+msgstr "Berkas dengan label"
 
 #. "Create tag" button
 #: ../src/RefWindow.C:1908
 msgid "C_reate Tag..."
-msgstr ""
+msgstr "B_uat Label..."
 
 #: ../src/RefWindow.C:1971
 msgid "Add Document Files"
-msgstr ""
+msgstr "Menambah Berkas Dokumen"
 
 #: ../src/RefWindow.C:1978
 msgid "Adding document files"
-msgstr ""
+msgstr "Menambah berkas dokumen"
 
 #: ../src/RefWindow.C:1979
 msgid ""
 "This process may take some time as the bibliographic information for each "
 "document is looked up."
 msgstr ""
+"Proses ini memerlukan waktu sejenak saat membaca informasi bibliografi di "
+"setiap dokumen"
 
 #: ../src/RefWindow.C:2004
 msgid "Document"
-msgstr ""
+msgstr "Dokumen"
 
 #: ../src/RefWindow.C:2005
 msgid "Got text"
-msgstr ""
+msgstr "Mendapatkan teks"
 
 #: ../src/RefWindow.C:2006
 msgid "Got ID"
-msgstr ""
+msgstr "Mendapatkan ID"
 
 #: ../src/RefWindow.C:2007
 msgid "Got metadata"
-msgstr ""
+msgstr "Mendapatkan metadata"
 
 #: ../src/RefWindow.C:2008
 msgid "Outcome"
-msgstr ""
+msgstr "Hasil"
 
 #: ../src/RefWindow.C:2025
 msgid "_Attach tags..."
-msgstr ""
+msgstr "Tambahkan La_bel..."
 
 #: ../src/RefWindow.C:2053
 msgid "%1 of %2 documents"
-msgstr ""
+msgstr "%1 dari %2 dokumen"
 
 #: ../src/RefWindow.C:2136 ../src/RefWindow.C:2138
 msgid "Cancelled"
-msgstr ""
+msgstr "Dibatalkan"
 
 #: ../src/RefWindow.C:2142
 msgid "Finished"
-msgstr ""
+msgstr "Selesai"
 
 #: ../src/RefWindow.C:2184
 msgid "Add Reference with ID"
-msgstr ""
+msgstr "Tambah Referensi dengan ID"
 
 #: ../src/RefWindow.C:2286
 msgid "Add Document"
-msgstr ""
+msgstr "Tambah Dokumen"
 
 #: ../src/RefWindow.C:2307
 msgid "Add Folder"
-msgstr ""
+msgstr "Tambah Folder"
 
 #: ../src/RefWindow.C:2347
 msgid "Are you sure you want to remove these %1 documents?"
-msgstr ""
+msgstr "Anda yakin untuk menghapus dokumen %1 ?"
 
 #: ../src/RefWindow.C:2349
 msgid ""
 "All tag associations and metadata for these documents will be permanently "
 "lost."
 msgstr ""
+"Semua label yang terkait serta data dalam dokumen-dokumen akan terhapus"
 
 #: ../src/RefWindow.C:2352
 msgid "Are you sure you want to remove '%1'?"
-msgstr ""
+msgstr "Anda yakin akan menhapus '%1'?"
 
 #: ../src/RefWindow.C:2354
 msgid ""
 "All tag associations and metadata for the document will be permanently lost."
-msgstr ""
+msgstr "Semua label yang terkait serta data dalam dokumen akan terhapus"
 
 #: ../src/RefWindow.C:2391
 msgid "Fetching metadata"
-msgstr ""
+msgstr "Mengambil metadata"
 
 #: ../src/RefWindow.C:2421
 msgid "Really rename this file to '%1'?"
-msgstr ""
+msgstr "Mengganti nama berkas menjadi '%1'?"
 
 #: ../src/RefWindow.C:2424
 msgid "Really rename these %1 files to their keys?"
-msgstr ""
+msgstr "Anda yakin mengganti nama berkas-berkas %1 menggunakan kuncinya?"
 
 #: ../src/RefWindow.C:2432
 msgid "This action <b>cannot be undone</b>."
-msgstr ""
+msgstr "Proses ini <b>tidak dapat dikembalikan</b>."
 
 #: ../src/RefWindow.C:2435
 msgid "Rename from Key"
-msgstr ""
+msgstr "Menamai ulang dari Kunci"
 
 #: ../src/RefWindow.C:2466
 msgid "Are you sure you want to delete the files of these %1 documents?"
-msgstr ""
+msgstr "Anda yakin untuk menghapus berkas dari dokumen %1 ?"
 
 #: ../src/RefWindow.C:2468
 msgid ""
 "All tag associations and metadata for these documents will be permanently "
 "lost, and the files they refer to will be irretrievably deleted."
 msgstr ""
+"Semua label yang terkait serta meta data dalam dokumen-dokumen akan "
+"terhapus, semua berkas yang diacu didalamnya juga akan dihapus dan tidak "
+"bisa dikembalikan."
 
 #: ../src/RefWindow.C:2474
 msgid "Are you sure you want to delete the file of '%1'?"
-msgstr ""
+msgstr "Anda yakin akan menghapus berkas dari '%1'?"
 
 #: ../src/RefWindow.C:2476
 msgid ""
 "All tag associations and metadata for the document will be permanently lost, "
 "and the file it refers to will be irretrievably deleted."
 msgstr ""
+"Semua label yang terkait serta meta data dalam dokumen akan terhapus, semua "
+"berkas yang diacu didalamnya juga akan dihapus dan tidak bisa dikembalikan."
 
 #: ../src/RefWindow.C:2504
 msgid "Deleting '%1'"
-msgstr ""
+msgstr "Menhapus '%1'"
 
 #: ../src/RefWindow.C:2527
 msgid "Trying to open file '%1'"
-msgstr ""
+msgstr "Mencoba membuka berkas '%1'"
 
 #: ../src/RefWindow.C:2629
 msgid "Working offline"
-msgstr ""
+msgstr "Bekerja offline"
 
 #: ../src/RefWindow.C:2630
 msgid "Working online"
-msgstr ""
+msgstr "Bekerja online"
 
 #: ../src/RefWindow.C:2700
 msgid "Import References"
-msgstr ""
+msgstr "Impor Referensi"
 
 #: ../src/RefWindow.C:2723
 msgid "Bibliography Files"
-msgstr ""
+msgstr "Berkas Bibliografi"
 
 #: ../src/RefWindow.C:2734
 msgid "Format:"
-msgstr ""
+msgstr "Format:"
 
 #: ../src/RefWindow.C:2831
 msgid "Imported %1 BibTeX references"
-msgstr ""
+msgstr "Mengimpor referensi BibTeX %1"
 
 #: ../src/RefWindow.C:3172
 msgid "Searching..."
@@ -1040,7 +1065,7 @@ msgstr ""
 
 #: ../src/Transfer.C:49
 msgid "Work offline?"
-msgstr ""
+msgstr "Bekerja offline?"
 
 #: ../src/Transfer.C:50
 msgid ""
@@ -1049,14 +1074,18 @@ msgid ""
 "operations will be attempted until you choose to work online again in the "
 "Preferences dialog."
 msgstr ""
+"Ada masalah ketika mengambil metadata, apakah anda \n"
+"bekerja secara offline?  Apabila ingin offline, tidak akan ada interaksi "
+"dengan jaringan sampai anda memutuskan\n"
+"untuk bekerja online lagi dari dialog preferensi."
 
 #: ../src/Transfer.C:61
 msgid "_Stay Online"
-msgstr ""
+msgstr "_Tetap Online"
 
 #: ../src/Transfer.C:63
 msgid "_Go Offline"
-msgstr ""
+msgstr "_Keluar Offline"
 
 #: ../src/Utility.C:260
 msgid ""
@@ -1064,10 +1093,13 @@ msgid ""
 "\n"
 "%3"
 msgstr ""
+"<big><b>%1: %2</b></big>\n"
+"\n"
+"%3"
 
 #: ../src/Utility.C:264
 msgid "The operation underway was: \"%1\""
-msgstr ""
+msgstr "Operasi yang sedang berlangsung: \"%1\""
 
 #: ../src/Utility.C:2195
 msgid "A"
