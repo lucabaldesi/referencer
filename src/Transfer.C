@@ -152,7 +152,7 @@ void fetcherThread (Glib::ustring const &filename, Glib::RefPtr<Gio::Cancellable
 			Gio::File::create_for_uri (filename);
 		file->load_contents(cancellable, buffer, len);
 	} catch (const Glib::Error ex) {
-		DEBUG ("Got an exception from load_contents");
+		DEBUG ("Got an exception from load_contents", ex.what());
 		transferStatus |= TRANSFER_FAIL_SILENT;
 		return;
 	}
