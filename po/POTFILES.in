@@ -5,6 +5,7 @@ data/libraryfolder.ui
 data/search.ui
 plugins/ads.py
 plugins/dblp.py
+plugins/expj.py
 plugins/genkey.py
 plugins/google-books.py
 plugins/isi-plugin.py

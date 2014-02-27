@@ -4,7 +4,7 @@ AC_PREREQ(2.13)
 dnl ============================================================================
 dnl Package name and version number (user defined)
 dnl ============================================================================
-AC_INIT([referencer], [1.2.1], [referencer@icculus.org])
+AC_INIT([referencer], [1.2.2], [referencer@icculus.org])
 
 AC_CONFIG_SRCDIR([src/RefWindow.C])
 
