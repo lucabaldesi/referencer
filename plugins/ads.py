@@ -3,6 +3,7 @@
 # ADS metadata scraper, Copyright 2008 John Spray
 
 import urllib
+import re
 import referencer
 from referencer import _
 
@@ -50,7 +51,6 @@ def resolve_metadata (doc, method):
 	fields = []
 	try:
 		xmldoc = minidom.parseString (data)
-		fields.append (["journal", get_field(xmldoc, "journal")])
 		fields.append (["title",   get_field(xmldoc, "title")])
 		fields.append (["volume",  get_field(xmldoc, "volume")])
 		fields.append (["issue",  get_field(xmldoc, "issue")])
@@ -58,6 +58,12 @@ def resolve_metadata (doc, method):
 		fields.append (["Month", str.lower(get_field(xmldoc, "pubdate").partition(' ')[0])])
 		fields.append (["Adsurl", xmldoc.getElementsByTagName('url')[-1].childNodes[0].data.encode("utf-8")])
 		fields.append (["Adsbibcode",  get_field(xmldoc, "bibcode")])
+
+		# ADS include full bibliographic information in the journal XML tag,
+		# see http://doc.adsabs.harvard.edu/abs_doc/help_pages/taggedformat.html#jnl
+		journal = get_field(xmldoc, "journal")
+		journalString = re.sub(', [vV]ol(ume|\.).*', '', journal)
+		fields.append (["journal", journalString])
 
 		authors = xmldoc.getElementsByTagName('author')
 		authorString = ""
