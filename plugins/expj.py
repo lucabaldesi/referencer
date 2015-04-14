@@ -12,14 +12,14 @@ The short and long versions of the journal names are read from a database.
 The journal name database syntax follows the one used by JabRef 
 see http://jabref.sourceforge.net/resources.php for details
 Example files with a lot of already defined Abbreviations can be found at this
-webpage
+web page
 
 Briefly: lines starting with '#' are considered comments
 and a typical entry is
 
 <full name> = <abbreviation>
 
-currently this means the names are not allowed to contain a '='
+Currently this means the names are not allowed to contain a '='
 example of an entry would be:
 
 Physical Review B = Phys. Rev. B
@@ -360,7 +360,7 @@ def load_db():
                         expanded.append(longv.strip())
                         contracted.append(shortv.strip())
                     elif DEBUG:
-                        print("expj: unparseable line in Journal name database (%s)"%line.strip())
+                        print("expj: unparsable line in Journal name database (%s)"%line.strip())
             DISPHINT = False # at least one file was loaded so remove the hint
         except IOError:
             pass #raise IOError("Database file for plugin expj could not be loaded.")
@@ -372,6 +372,8 @@ def save_db():
     """
     global expanded,contracted
     try:
+        if not os.path.exists(os.path.dirname(DBs[0])):
+            os.makedirs(os.path.dirname(DBs[0]))
         with open(DBs[0],'a') as fh:
             newentry = expanded[-1]
             newentry += " = "
@@ -402,6 +404,8 @@ def download_db(link):
         downloadException("Document type must be text/plain and not %s"%response.headers.type)
         return 
     # write to base database 
+    if not os.path.exists(os.path.dirname(DBs[1])):
+        os.makedirs(os.path.dirname(DBs[1]))
     with open(DBs[1],'w') as fh:
         fh.write(response.read())
     # clean old databases to trigger reload upon next usage
@@ -445,7 +449,7 @@ class preferencesDialog(gtk.Dialog):
         self.vbox.pack_start(self.dllink,padding=3)
         
         hbox = gtk.HBox()
-        text = _('The above link should direct to a text file following the syntax described on the JabRef webpage where also other possible useful Journal name database files can be found.\n<a href="http://jabref.sourceforge.net/resources.php">http://jabref.sourceforge.net/resources.php</a>\nBe aware that the downloaded file will replace your current Journal name database. Your costom entries saved in a separate file will remain unchanged!')
+        text = _('The above link should direct to a text file following the syntax described on the JabRef web page where also other possible useful Journal name database files can be found.\n<a href="http://jabref.sourceforge.net/resources.php">http://jabref.sourceforge.net/resources.php</a>\nBe aware that the downloaded file will replace your current Journal name database. Your custom entries saved in a separate file will remain unchanged!')
         label = gtk.Label()
         label.set_markup(text)
         label.set_line_wrap(True)
